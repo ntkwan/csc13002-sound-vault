@@ -1,0 +1,41 @@
+{
+  "name": "soundvault",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm start\"",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntkwan/csc13002-sound-vault.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntkwan/csc13002-sound-vault/issues"
+  },
+  "homepage": "https://github.com/ntkwan/csc13002-sound-vault#readme",
+  "lint-staged": {
+    "*.{css, scss}": [
+      "prettier --ignore-path .eslintignore --single-quote --tab-width 4 --write"
+    ],
+    "*.{js, jsx, ts, tsx}": [
+      "prettier --ignore-path .eslintignore --single-quote --tab-width 4 --trailing-comma all --write"
+    ],
+    "*.json": [
+      "prettier --ignore-path .eslintignore --write"
+    ],
+    "*.{html, md, yml}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

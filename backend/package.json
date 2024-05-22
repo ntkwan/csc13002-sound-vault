@@ -1,0 +1,32 @@
+{
+  "name": "soundvault-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --inspect src/server.js",
+    "prettier-fix": "prettier --write --single-quote --tab-width 4 --trailing-comma all \"src/**/*.js\"",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntkwan/csc13002-sound-vault.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntkwan/csc13002-sound-vault/issues"
+  },
+  "homepage": "https://github.com/ntkwan/csc13002-sound-vault#readme",
+  "description": "",
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.6.2",
+    "mongoose": "^8.4.0"
+  }
+}
