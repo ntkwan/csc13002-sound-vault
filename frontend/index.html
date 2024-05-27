@@ -1,13 +1,173 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React</title>
+
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./src/assets/style.css">
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <div class="wrapper">
+    <div class="authen">
+      <h1 class="authen__title">Sign up</h1>
+      <p class="authen__description">
+        To upload music and products, you must accept our
+        <a href="" class="authen__description-link">terms</a> and
+        <a href="" class="authen__description-link">conditions</a> on the registration website
+      </p>
+
+      <div class="authen__input">
+        <input type="text" class="authen__input-name" placeholder="Full Name" required>
+        <i class='bx bxs-user'></i>
+      </div>
+
+      <div class="authen__input">
+        <input type="text" class="authen__input-name" placeholder="Email" required>
+        <i class='bx bx-envelope'></i>
+      </div>
+
+      <div class="authen__input">
+        <input type="password" class="authen__input-name" placeholder="Password" required>
+        <i class='bx bx-hide'></i>
+      </div>
+
+      <div class="authen__button">
+        <a class="authen__button-google">
+          <i class='bx bxl-google'></i>
+        </a>
+        <a class="authen__button-signup">
+          <span>Sign up</span>
+        </a>
+      </div>
+
+      <div class="authen_accept-terms">
+        <label for="">
+          <input type="checkbox" class="accept-terms__checkbox custom-checkbox">
+          I read and accepted the
+          <a href="">terms</a>
+          and
+          <a href="">conditions</a>
+        </label>
+      </div>
+
+      <div class="authen_members">
+        <p>Already a member?
+          <a href="">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="wrapper">
+            <div class="authen">
+                <h1 class="authen__title">Sign in</h1>
+                <div class="authen__input">
+                    <input type="text" class="authen__input-name" placeholder="Email" required>
+                    <i class='bx bx-envelope'></i>
+                </div>
+    
+                <div class="authen__input">
+                    <input type="password" class="authen__input-name" placeholder="Password" required>
+                    <i class='bx bx-hide'></i>
+                </div>
+                <a href="" class="authen__forgot">
+                    Forgot your password?
+                </a>
+    
+                <div class="authen__button">
+                    <a class="authen__button-google">
+                        <i class='bx bxl-google'></i>
+                    </a>
+                    <a class="authen__button-signup">
+                        <span>Sign up</span>
+                    </a>
+                </div>
+    
+                <div class="authen_members">
+                    <p>Not a member?
+                        <a href="">Sign in</a>
+                        now
+                    </p>
+                </div>
+            </div>
+        </div> -->
+  <!-- <div class="wrapper">
+            <div class="authen">
+                <h1 class="authen__title">Forgot Password</h1>
+                <p class="authen__description">
+                    Enter your email address below and we'll email you a link to reset your password.
+                </p>
+    
+                <div class="authen__input">
+                    <input type="text" class="authen__input-name" placeholder="Email" required>
+                    <i class='bx bx-envelope'></i>
+                </div>
+    
+                <div class="authen__button">
+                    <a class="authen__button-google">
+                        <i class='bx bxl-google'></i>
+                    </a>
+                    <a class="authen__button-signup">
+                        <span>Send email</span>
+                    </a>
+                </div>
+            </div>
+        </div> -->
+  <!-- <div class="wrapper">
+    <div class="authen">
+      <h1 class="authen__title">Reset your password</h1>
+      <p class="authen__description">
+        Enter new your new password carefully. The new password must be 8 characters long.
+      </p>
+
+      <div class="authen__input">
+        <input type="password" class="authen__input-name" placeholder="New password" required>
+        <i class='bx bx-hide'></i>
+      </div>
+
+      <div class="authen__input">
+        <input type="password" class="authen__input-name" placeholder="Repeat the password" required>
+        <i class='bx bx-hide'></i>
+      </div>
+
+      <div class="authen__button">
+        <a class="authen__button-google">
+          <i class='bx bxl-google'></i>
+        </a>
+        <a class="authen__button-signup">
+          <span>Sign up</span>
+        </a>
+      </div>
+    </div>
+  </div> -->
+</body>
+
 </html>
