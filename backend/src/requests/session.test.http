@@ -1,0 +1,50 @@
+### [SUCCESS] server connection
+GET http://localhost:5000
+
+### [FAILED] server connection: connect to invalid page
+GET http://localhost:5000/chat 
+
+### [FAILED] signin: wrong email 
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "email": "admin@gmail.com", 
+    "password": "12345678"
+}
+
+### [FAILED] signin: wrong password
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "1234"
+}
+
+### [SUCCESS] signin
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "12345678"
+}
+
+### [SUCCESS] signup
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "12345678"
+}
+
+### [FAILED] signup: email is invalid
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "email": "a@a",
+    "password": "12345678"
+}

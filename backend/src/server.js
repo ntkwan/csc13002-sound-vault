@@ -12,11 +12,12 @@ const port = process.env.PORT;
 const app = express();
 
 databaseModule.connect_database();
-app.use(cors({
-    origin: process.env.CLIENT_URI,
-    credentials: true
-}
-));
+app.use(
+    cors({
+        origin: process.env.CLIENT_URI,
+        credentials: true,
+    }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,6 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
 
 //Routes
+const authorize = require('./routes/auth.route');
+
+app.use(authorize);
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
@@ -35,7 +40,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     res.json({
         status: err.status || 500,
-        message: err.message
+        message: err.message,
     });
 });
 
