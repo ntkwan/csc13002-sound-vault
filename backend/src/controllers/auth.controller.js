@@ -1,4 +1,5 @@
 const UserModel = require('../models/user.schema');
+const jwt = require('jsonwebtoken');
 
 const signup = async (req, res, next) => {
     const { email, password } = req.body;
@@ -59,8 +60,18 @@ const signin = async (req, res) => {
             });
         }
 
+        const Token = jwt.sign(
+            {
+                email: User.email,
+            },
+            process.env.JWT_KEY,
+            {
+                expiresIn: '1h',
+            },
+        );
         return res.status(200).json({
             message: 'Sign in successfully',
+            token: Token,
         });
     } catch (error) {
         return res.status(500).json({

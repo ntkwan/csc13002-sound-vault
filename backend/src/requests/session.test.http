@@ -48,3 +48,7 @@ Content-Type: application/json
     "email": "a@a",
     "password": "12345678"
 }
+
+### get profile 
+GET http://localhost:5000/profile
+Authorization: Bearer [TOKEN]

@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+// Error handling
 app.use((req, res, next) => {
     next(errorLogging.NotFound('This page does not exists'));
 });
