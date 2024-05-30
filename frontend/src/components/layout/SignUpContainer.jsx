@@ -1,9 +1,28 @@
-import { Link } from "react-router-dom";
-import hide from "../../assets/img/hide.svg";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 function SignUpContainer() {
+    const navigate = useNavigate();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const signup = (req, res) => {
+        axios({
+            method: "post",
+            data: {
+                name: name,
+                email: email,
+                password: password
+            },
+            withCredentials: true,
+            url: "http://localhost:5000/signup"
+        }).then(res => console.log(res)).catch(err => console.log(err));
+    };
+
     return (
-        <div class="w-screen h-screen flex justify-center items-center">
+        <div className="w-screen h-screen flex justify-center items-center">
             <div className="w-[370px] bg-transparent">
                 <h1 className="text-center text-[55px] text-[#fcfcfc] font-italianno font-light my-3 cursor-default">
                     Sign up
@@ -21,7 +40,9 @@ function SignUpContainer() {
                         placeholder="Full Name"
                         required
                         className="font-poppins text-[13.6px] w-full h-[50px] bg-[#383838] border-none outline-none rounded-[12px] p-4 pr-12 text-[#fcfcfc] placeholder-[#a5a5a5] shadow-md"
-                    />
+                        onChange={e => setName(e.target.value)}
+                    >
+                    </input>
                 </div>
 
                 <div className="relative mt-4">
@@ -30,7 +51,9 @@ function SignUpContainer() {
                         placeholder="Email"
                         required
                         className="font-poppins text-[13.6px] w-full h-[50px] bg-[#383838] border-none outline-none rounded-[12px] p-4 pr-12 text-[#fcfcfc] placeholder-[#a5a5a5] shadow-md"
-                    />
+                        onChange={e => setEmail(e.target.value)}
+                    >
+                    </input>
                 </div>
 
                 <div className="relative mt-4">
@@ -39,7 +62,9 @@ function SignUpContainer() {
                         placeholder="Password"
                         required
                         className="font-poppins text-[13.6px] w-full h-[50px] bg-[#383838] border-none outline-none rounded-[12px] p-4 pr-12 text-[#fcfcfc] placeholder-[#a5a5a5] shadow-md"
-                    />
+                        onChange={e => setPassword(e.target.value)}
+                    >
+                    </input>
                     <img
                         src="{hide}"
                         alt=""
@@ -51,9 +76,9 @@ function SignUpContainer() {
                     <a className="flex items-center justify-center w-[110px] h-[49px] border-2 border-[#fcfcfc] rounded-[15px] hover:bg-[#2d2c30] hover:border-[#2d2c30] hover:scale-105 transition-all cursor-pointer">
                         <i className='bx bxl-google text-[#fcfcfc] text-3xl'></i>
                     </a>
-                    <a className="flex-1 flex items-center justify-center h-[49px] bg-[#383838] rounded-[12px] text-[#fcfcfc] shadow-md hover:opacity-75 hover:scale-105 transition-all cursor-pointer">
+                    <button onClick={signup} className="flex-1 flex items-center justify-center h-[49px] bg-[#383838] rounded-[12px] text-[#fcfcfc] shadow-md hover:opacity-75 hover:scale-105 transition-all cursor-pointer">
                         <span className="font-kodchasan text-[13.5px]">Sign up</span>
-                    </a>
+                    </button>
                 </div>
 
                 <div className="mt-4 text-[#a6a6a6] text-[16px]">
@@ -74,7 +99,7 @@ function SignUpContainer() {
                     <Link to="/login" className="font-semibold text-[#fcfcfc] px-1">Sign in</Link>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
