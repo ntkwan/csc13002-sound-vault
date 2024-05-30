@@ -1,5 +1,5 @@
-import chart from "../../assets/img/chart.svg";
-import ChartTable from "../common/ChartTable";
+import chart from "@assets/img/chart.svg";
+import ChartTable from "@components/common/ChartTable";
 const tablesData = [
   {
     country: "Vietnam",
@@ -110,17 +110,19 @@ const tablesData = [
 
 function ChartContainer() {
   return (
-    <div className="chart m-8 flex flex-col text-lg">
-      <div className=" chart__info grid max-w-[calc(80%)] grid-cols-2 items-end justify-items-end self-center">
-        <p className="font-kodchasan font-bold">
-          SoundVault Chart is a dynamic music ranking chart based on the number
-          of listeners. It tracks the most popular songs across various genres,
-          reflecting real-time listening habits and trends
-        </p>
-        <h1 className="heading-stroke -mb-5 font-italianno text-[6.25rem] leading-none drop-shadow-[0_4px_4px_#00000040]">
-          SoundVault Chart
-        </h1>
-        <p className="col-start-2 font-kodchasan font-medium">
+    <div className="chart m-8 text-lg">
+      <div className="chart__info m-20 self-center">
+        <div className="flex flex-col-reverse min-[1264px]:flex-row">
+          <p className="flex-1 font-kodchasan font-bold">
+            SoundVault Chart is a dynamic music ranking chart based on the
+            number of listeners. It tracks the most popular songs across various
+            genres, reflecting real-time listening habits and trends
+          </p>
+          <h1 className="heading-stroke -mb-3 flex-1 font-italianno text-[6.25rem] leading-none drop-shadow-[0_4px_4px_#00000040] min-[1264px]:text-right">
+            SoundVault Chart
+          </h1>
+        </div>
+        <p className="pt-2 font-kodchasan font-medium xl:text-right ">
           Chart dated May 19, 2024
         </p>
       </div>
@@ -132,7 +134,7 @@ function ChartContainer() {
         </h2>
         <div className="chart__tables grid auto-rows-auto gap-20">
           {tablesData.map((tableData) => (
-            <ChartTable tableData={tableData} />
+            <ChartTable key={tableData.country} tableData={tableData} />
           ))}
         </div>
       </div>
