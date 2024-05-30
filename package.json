@@ -23,9 +23,6 @@
     "*.{js, jsx, ts, tsx}": [
       "prettier --ignore-path .eslintignore --single-quote --tab-width 4 --trailing-comma all --write"
     ],
-    "*.json": [
-      "prettier --ignore-path .eslintignore --write"
-    ],
     "*.{html, md, yml}": [
       "prettier --ignore-path .eslintignore --single-quote --write"
     ]
