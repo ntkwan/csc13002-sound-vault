@@ -7,6 +7,7 @@ export default {
                 kodchasan: ['Kodchasan', 'sans-serif'],
                 italianno: ['Italianno', 'cursive'],
                 montserrat: ['Montserrat', 'sans-serif'],
+                poppins: ['Poppins', 'sans-serif'],
             },
             backgroundImage: {
                 'grad-pattern': "url('./assets/img/background.svg')",
