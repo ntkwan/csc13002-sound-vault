@@ -8,7 +8,7 @@ function Sidebar() {
             <div className="ml-2">
                 <span className="ml-3">Brown</span>
                 <SidebarLink to="/" icon="ti-home">Home</SidebarLink>
-                <SidebarLink to="profile" icon="ti-user">Profile</SidebarLink>
+                <SidebarLink to="/" icon="ti-user">Profile</SidebarLink>
                 <SidebarLink to="/" icon="ti-music-alt">Library</SidebarLink>
                 <SidebarLink to="/" icon="ti-headphone">Artists</SidebarLink>
             </div>
