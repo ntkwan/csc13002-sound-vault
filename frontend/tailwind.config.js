@@ -7,6 +7,8 @@ export default {
                 kodchasan: ['Kodchasan', 'sans-serif'],
                 italianno: ['Italianno', 'cursive'],
                 montserrat: ['Montserrat', 'sans-serif'],
+                lilitaOne: ["Lilita One", 'sans-serif'],
+                alfaSlabOne: ["Alfa Slab One", 'cursive'],
             },
             backgroundImage: {
                 'grad-pattern': "url('./assets/img/background.svg')",
