@@ -7,6 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap'); /* Inter 600 font */
 @import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap'); /* Arimo font */
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap'); /* Alfa Slab One font */
+@import url('https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css'); /* Remixicon font */
 
 @tailwind base;
 @tailwind components;

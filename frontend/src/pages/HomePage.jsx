@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import { Musicbar } from "@components/index";
 function HomePage() {
   return (
     <div>
@@ -10,6 +10,7 @@ function HomePage() {
       <div>
         <Link to="/signup">Sign Up</Link>
       </div>
+      <Musicbar />
     </div>
   );
 }

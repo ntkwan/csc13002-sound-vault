@@ -14,6 +14,7 @@ export default {
             },
             backgroundImage: {
                 'auth-pattern': "url('./assets/img/authbg.svg')",
+                'musicbar': "radial-gradient(50% 40% at center , #710083, transparent )",
             },
         },
     },
