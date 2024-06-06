@@ -22,7 +22,7 @@ Content-Type: application/json
     "password": "1234"
 }
 
-### [SUCCESS] signin
+### [SUCCESS] signin: admin
 POST http://localhost:5000/signin
 Content-Type: application/json
 
@@ -31,12 +31,31 @@ Content-Type: application/json
     "password": "12345678"
 }
 
-### [SUCCESS] signup
+### [SUCCESS] signin: user
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "email": "u@gmail.com",
+    "password": "12345678"
+}
+
+### [SUCCESS] signup: admin
 POST http://localhost:5000/signup
 Content-Type: application/json
 
 {
     "email": "a@gmail.com",
+    "password": "12345678"
+}
+
+### [SUCESS] signup: user
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "name": "user",
+    "email": "u@gmail.com",
     "password": "12345678"
 }
 
@@ -49,6 +68,10 @@ Content-Type: application/json
     "password": "12345678"
 }
 
-### get profile 
+### [USER] get profile 
 GET http://localhost:5000/profile
+Authorization: Bearer [TOKEN]
+
+### [ADMIN] get all users
+GET http://localhost:5000/getall
 Authorization: Bearer [TOKEN]

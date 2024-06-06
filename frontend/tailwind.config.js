@@ -7,11 +7,14 @@ export default {
                 kodchasan: ['Kodchasan', 'sans-serif'],
                 italianno: ['Italianno', 'cursive'],
                 montserrat: ['Montserrat', 'sans-serif'],
-                lilitaOne: ["Lilita One", 'sans-serif'],
-                alfaSlabOne: ["Alfa Slab One", 'cursive'],
+                lilitaone: ['Lilita One', 'cursive'],
+                inter: ['Inter', 'sans-serif'],
+                arimo: ['Arimo', 'sans-serif'],
+                alfaslabone: ['Alfa Slab One', 'serif'],
             },
             backgroundImage: {
-                'grad-pattern': "url('./assets/img/background.svg')",
+                'auth-pattern': "url('./assets/img/authbg.svg')",
+                'grad-pattern': "url('./assets/img/background.svg')"
             },
         },
     },

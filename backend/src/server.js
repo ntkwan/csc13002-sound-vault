@@ -26,8 +26,10 @@ app.use(morgan('combined'));
 
 //Routes
 const authorize = require('./routes/auth.route');
+const user = require('./routes/user.route');
 
 app.use(authorize);
+app.use(user);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

@@ -1,10 +1,8 @@
 const UserModel = require('../models/user.schema');
-const jwt = require('jsonwebtoken');
-
 const signup = async (req, res, next) => {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!email || !password) {
+    if (!name || !email || !password) {
         return res.status(400).json({
             message: 'Email and password are required',
         });
@@ -17,9 +15,11 @@ const signup = async (req, res, next) => {
                 message: 'Email has already existed',
             });
         }
-        const User = new UserModel({ email });
+
+        const User = await new UserModel({ name, email });
         await User.setPassword(password);
         await User.save();
+        User.__v = undefined;
 
         if (User) {
             return res.status(200).json({
@@ -60,15 +60,7 @@ const signin = async (req, res) => {
             });
         }
 
-        const Token = jwt.sign(
-            {
-                email: User.email,
-            },
-            process.env.JWT_KEY,
-            {
-                expiresIn: '1h',
-            },
-        );
+        const Token = User.generateToken();
         return res.status(200).json({
             message: 'Sign in successfully',
             token: Token,
@@ -80,4 +72,9 @@ const signin = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin };
+const signout = async (req, res) => {
+    res.clearCookie('jwt');
+    res.redirect('/');
+};
+
+module.exports = { signup, signin, signout };
