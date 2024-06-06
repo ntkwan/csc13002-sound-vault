@@ -14,7 +14,7 @@ Form.defaultProps = {
     haveIcon: false,
 }
 function Form(props) {
-    const { type, placeholder, haveIcon, isHiden } = props;
+    const { type, placeholder, haveIcon, isHiden, action } = props;
     const [isHidden, setIsHidden] = useState(isHiden);
 
     const toggleVisibility = () => {
@@ -28,6 +28,7 @@ function Form(props) {
                 placeholder={placeholder}
                 required
                 className="font-poppins text-[13.6px] w-full h-[50px] bg-[#383838] border-none outline-none rounded-[12px] p-4 pr-12 text-[#fcfcfc] placeholder-[#a5a5a5] shadow-md"
+                onChange={action}
             />
             {type === 'password' && haveIcon && (
                 <img
