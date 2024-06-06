@@ -10,11 +10,6 @@ const check_user = (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_KEY);
-        if (!decoded.isAdmin) {
-            return res.status(401).json({
-                message: 'Unauthorized',
-            });
-        }
         req.user = decoded;
         next();
     } catch (error) {
@@ -33,6 +28,11 @@ const check_admin = (req, res, next) => {
             });
         }
 
+        if (!decoded.isAdmin) {
+            return res.status(401).json({
+                message: 'Unauthorized',
+            });
+        }
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         req.user = decoded;
         next();
