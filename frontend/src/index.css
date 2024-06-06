@@ -1,13 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-/* Kodchasan font */
-@import url('https://fonts.googleapis.com/css2?family=Italianno&family=Kodchasan:ital@0;1&display=swap');
-/* Italianno font */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-/* Montserrat 400 font */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-/* Montserrat 700 font */
-@import url('https: //fonts.googleapis.com/css2?family=Italianno&family=Poppins:ital,wght@1,900&display=swap');
-/* Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap'); /* Kodchasan font */
+@import url('https://fonts.googleapis.com/css2?family=Italianno&family=Kodchasan:ital@0;1&display=swap'); /* Italianno font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap'); /* Montserrat 400 font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap'); /* Montserrat 700 font */
 
 @tailwind base;
 @tailwind components;

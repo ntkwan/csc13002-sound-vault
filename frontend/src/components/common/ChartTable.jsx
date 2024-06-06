@@ -1,5 +1,6 @@
-import star from "../../assets/img/star.svg";
-import headphone from "../../assets/img/headphone.svg";
+import star from "@assets/img/star.svg";
+import headphone from "@assets/img/headphone.svg";
+import propTypes from "prop-types";
 
 function ChartTable({ tableData }) {
   const { country, data } = tableData;
@@ -18,19 +19,23 @@ function ChartTable({ tableData }) {
           <p className="col-span-3">View</p>
         </div>
         {data.map((row_data) => {
-          const { rank, song, artist, view } = row_data;
+          const { rank } = row_data;
           const props = rank === 5 ? "border-b border-b-[#DFE1E6]" : "";
-
-          return ChartRow(rank, song, artist, view, props);
+          row_data = { ...row_data, props };
+          return <ChartRow key={rank} {...row_data} />;
         })}
       </div>
     </div>
   );
 }
 
+ChartTable.propTypes = {
+  tableData: propTypes.object.isRequired,
+};
+
 export default ChartTable;
 
-function ChartRow(rank, song, artist, view, props) {
+function ChartRow({ rank, song, artist, view, props }) {
   return (
     <div className={`grid grid-cols-12 py-4 font-montserrat ${props}`}>
       <p className="pl-1">{rank}</p>
@@ -44,3 +49,11 @@ function ChartRow(rank, song, artist, view, props) {
     </div>
   );
 }
+
+ChartRow.propTypes = {
+  rank: propTypes.number,
+  song: propTypes.string,
+  artist: propTypes.string,
+  view: propTypes.string,
+  props: propTypes.string,
+};
