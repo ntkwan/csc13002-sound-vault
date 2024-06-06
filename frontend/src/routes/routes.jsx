@@ -1,5 +1,12 @@
-import { createBrowserRouter } from "react-router-dom";
+import {
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 
+
+import ChartPage from "@pages/ChartPage";
+import HomePage from "@pages/HomePage";
 import { DefaultLayout, AuthenticationLayout } from "@layouts";
 import { HomePage, SignInPage, SignUpPage, ResetPassPage, ForgotPassPage } from "@pages";
 

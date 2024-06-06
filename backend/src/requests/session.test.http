@@ -45,7 +45,6 @@ POST http://localhost:5000/signup
 Content-Type: application/json
 
 {
-    "name": "admin",
     "email": "a@gmail.com",
     "password": "12345678"
 }

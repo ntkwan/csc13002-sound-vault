@@ -14,6 +14,7 @@ export default {
             },
             backgroundImage: {
                 'auth-pattern': "url('./assets/img/authbg.svg')",
+                'grad-pattern': "url('./assets/img/background.svg')"
             },
         },
     },
