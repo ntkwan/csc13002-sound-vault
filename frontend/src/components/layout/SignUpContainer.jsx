@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import hide from "../../assets/img/hide.svg";
 import axios from "axios";
 
 function SignUpContainer() {
-    const navigate = useNavigate();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -96,7 +96,7 @@ function SignUpContainer() {
                 <div className="mt-4 text-center text-[#a6a6a6] text-[15px] font-kodchasan cursor-default">
                     Already a member?
                     {/* <a href="#" className="font-semibold text-[#fcfcfc] px-1">Sign in</a> */}
-                    <Link to="/login" className="font-semibold text-[#fcfcfc] px-1">Sign in</Link>
+                    <Link to="/signin" className="font-semibold text-[#fcfcfc] px-1">Sign in</Link>
                 </div>
             </div>
         </div >

@@ -73,4 +73,10 @@ const signin = async (req, res) => {
     }
 };
 
+
+const signout = async(req, res) => {
+    res.clearCookie('jwt');
+    res.redirect('/')
+};
+
 module.exports = { signup, signin };
