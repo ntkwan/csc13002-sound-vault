@@ -7,6 +7,7 @@ function SignUpContainer() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const nav = useNavigate();
 
     const signup = (req, res) => {
         axios({
@@ -19,6 +20,7 @@ function SignUpContainer() {
             withCredentials: true,
             url: "http://localhost:5000/signup"
         }).then(res => console.log(res)).catch(err => console.log(err));
+        nav("/signin");
     };
 
     return (

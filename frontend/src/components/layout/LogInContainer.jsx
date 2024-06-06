@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import hide from "../../assets/img/hide.svg";
 import axios from "axios"
@@ -6,7 +6,7 @@ import axios from "axios"
 function LogInContainer() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const nav = useNavigate();
     const signin = (req, res) => {
         axios({
             method: "post",
@@ -17,6 +17,7 @@ function LogInContainer() {
             withCredentials: true,
             url: "http://localhost:5000/signin"
         }).then(res => console.log(res)).catch(err => console.log(err));
+        nav("/home");
     };
 
     return (

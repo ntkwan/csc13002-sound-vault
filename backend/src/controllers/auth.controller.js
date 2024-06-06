@@ -79,4 +79,4 @@ const signout = async(req, res) => {
     res.redirect('/')
 };
 
-module.exports = { signup, signin };
+module.exports = { signup, signin, signout };
