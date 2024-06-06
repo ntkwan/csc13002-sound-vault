@@ -1,12 +1,11 @@
 function GoogleButton() {
-    return (
-        <div>
-            <a
-                className="flex items-center justify-center w-[110px] h-[49px] border-2 border-[#fcfcfc] rounded-[15px] hover:bg-[#2d2c30] hover:border-[#2d2c30] hover:scale-105 cursor-pointer">
-                <i className='bx bxl-google text-[#fcfcfc] text-3xl'></i>
-            </a>
-        </div>
-    );
+  return (
+    <div>
+      <button className="flex h-[49px] w-[110px] cursor-pointer items-center justify-center rounded-[15px] border-2 border-[#fcfcfc] hover:scale-105 hover:border-[#2d2c30] hover:bg-[#2d2c30]">
+        <i className="bx bxl-google text-3xl text-[#fcfcfc]"></i>
+      </button>
+    </div>
+  );
 }
 
 export default GoogleButton;
