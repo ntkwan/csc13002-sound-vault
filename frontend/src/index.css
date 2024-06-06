@@ -7,6 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap'); /* Inter 600 font */
 @import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap'); /* Arimo font */
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap'); /* Alfa Slab One font */
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'); /* Boxicons font */
 
 @tailwind base;
 @tailwind components;
