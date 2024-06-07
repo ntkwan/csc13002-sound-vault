@@ -81,14 +81,3 @@ Authorization: Bearer [TOKEN]
 
 ### sign out
 POST {{host}}/signout
-
-### reset password
-@email = [EMAIL]
-@token = [TOKEN]
-POST {{host}}/reset-password/{{email}}/{{token}}
-Content-Type: application/json
-
-{
-    "attempt_password": "12345678",
-    "confirm_password": "12345678"
-}

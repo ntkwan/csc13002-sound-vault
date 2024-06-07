@@ -3,7 +3,21 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const UserModel = require('../models/user.schema');
 
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const HOST_EMAIL = process.env.HOST_EMAIL;
+
+const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI,
+);
 
 const signup = async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -121,4 +135,76 @@ const reset_password = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin, signout, reset_password };
+const send_email = async (send_to, url) => {
+    try {
+        console.log(REFRESH_TOKEN);
+        oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+        const accessToken = await oAuth2Client.getAccessToken();
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: HOST_EMAIL,
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken,
+            },
+        });
+
+        console.log(HOST_EMAIL, send_to, url);
+
+        const mailOptions = {
+            from: HOST_EMAIL,
+            to: send_to,
+            subject: 'Reset Password',
+            html: `<a href="${url}">Click here to reset password</a>`,
+        };
+
+        const result = await transporter.sendMail(mailOptions);
+        return result;
+    } catch (error) {
+        return error;
+    }
+};
+
+const forgot_password = async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({
+            message: 'Email is required',
+        });
+    }
+
+    try {
+        const User = await UserModel.findOne({ email });
+        if (!User) {
+            return res.status(400).json({
+                message: 'Email does not exist',
+            });
+        }
+
+        const token = jwt.sign({ email: email }, process.env.JWT_KEY, {
+            expiresIn: '1m',
+        });
+        const url = `http://localhost:${process.env.PORT}/reset-password/${email}/${token}`;
+        send_email(email, url)
+            .then((result) => {
+                return res.status(200).json({
+                    message: 'Email sent successfully',
+                    url: url,
+                });
+            })
+            .catch((err) => {
+                return res.status(400).json({
+                    message: err.message,
+                });
+            });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+module.exports = { signup, signin, signout, reset_password, forgot_password };
