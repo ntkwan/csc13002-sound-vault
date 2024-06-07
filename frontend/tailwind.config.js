@@ -14,7 +14,11 @@ export default {
             },
             backgroundImage: {
                 'auth-pattern': "url('./assets/img/authbg.svg')",
+                'home-pattern': "url('./assets/img/homebg.svg')",
             },
+            transitionDuration: {
+                '400': '400ms',
+            }
         },
     },
     plugins: [],
