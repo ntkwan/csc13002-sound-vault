@@ -19,6 +19,12 @@
         @apply text-white;
         @apply font-kodchasan;
     }
+    
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background-color: black; }
+    ::-webkit-scrollbar-thumb { background-color: #444; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #666; }
+    ::-webkit-scrollbar-corner { background-color: #000; }
 }
 
 @layer utilities {
