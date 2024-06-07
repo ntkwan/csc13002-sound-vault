@@ -44,7 +44,7 @@ function SignInPage() {
           action={(e) => setPassword(e.target.value)}
         />
         <Link
-          to="/forgotpass"
+          to="/forgot-password"
           className="select-none text-[12px] font-medium text-[#8774f9]"
         >
           Forgot your password?

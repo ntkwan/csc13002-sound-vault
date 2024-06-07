@@ -22,21 +22,12 @@ Content-Type: application/json
     "password": "1234"
 }
 
-### forgot password
+### forgot password (template)
 POST {{host}}/forgot-password
 Content-Type: application/json
 
 {
-    "email": "npquan2704@gmail.com"
-}
-
-### reset password
-POST http://localhost:5000/reset-password/npquan2704@gmail.com/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5wcXVhbjI3MDRAZ21haWwuY29tIiwiaWF0IjoxNzE3NzczNjM2LCJleHAiOjE3MTc3NzM2OTZ9.emRdOE6ULqB1zPez35vn_xyV_P3gmmEuURtFeYN4QHg
-Content-Type: application/json
-
-{
-    "attempt_password": "12345678",
-    "confirm_password": "12345678"
+    "email": "[EMAIL]"
 }
 
 ### [FAILED] signin: old password
