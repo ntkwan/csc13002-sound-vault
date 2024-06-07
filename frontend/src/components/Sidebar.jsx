@@ -30,9 +30,8 @@ function SidebarLink({ to, icon, children }) {
         <NavLink
             to={to}
             className={({ isActive }) =>
-                `relative flex items-center px-3 py-3 my-1 rounded-full leading-none transition-colors duration-300 ease-in-out
+                `relative flex items-center px-3 py-3 my-1 rounded-full leading-none transition-colors duration-400 ease-in-out
                 ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20'}`}>
-            {/* <i className={`${icon} text-2xl`}></i> */}
             {icon()}
             <span className="pl-3">{children}</span>
         </NavLink>
