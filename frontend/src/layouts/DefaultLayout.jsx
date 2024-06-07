@@ -4,10 +4,9 @@ import { Header, Sidebar } from "@components";
 function DefaultLayout() {
   return (
     <>
-      Default Layout
       <Header />
       <Sidebar />
-      <main className="relative px-10 mt-[70px] ml-[175px] ">
+      <main className="relative px-20 mt-[70px] mb-[70px] ml-[175px]">
         <Outlet />
       </main>
     </>
