@@ -1,4 +1,9 @@
-import { AuthenTitle, FormInput, GoogleButton, ConfirmButton } from "@features";
+import {
+  AuthenTitle,
+  FormInput,
+  GoogleButton,
+  ConfirmButton,
+} from "@features/authentication";
 
 function ResetPassPage() {
   return (

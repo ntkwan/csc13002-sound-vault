@@ -31,7 +31,7 @@ function FormInput({ isHiden = true, haveIcon = false, action, ...props }) {
   };
   return (
     <>
-      <div className="input_bar relative mt-4">
+      <div className="input-bar relative mt-4">
         <input
           {...props}
           onChange={action}
@@ -49,7 +49,7 @@ function FormInput({ isHiden = true, haveIcon = false, action, ...props }) {
         )}
       </div>
       {focused && (
-        <span className="error_msg ml-2 hidden text-sm font-bold text-red-500">
+        <span className="error-msg ml-2 hidden text-sm font-bold text-red-500">
           {error}
         </span>
       )}

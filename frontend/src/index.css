@@ -31,7 +31,7 @@
             0 -2px #b352f3;
     }
 
-    .input_bar:has(input:invalid) + .error_msg {
+    .input-bar:has(input:invalid) + .error-msg {
         display: flex;
     }
 }

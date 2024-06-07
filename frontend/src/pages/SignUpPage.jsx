@@ -1,6 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { AuthenTitle, FormInput, GoogleButton, ConfirmButton } from "@features";
+import {
+  AuthenTitle,
+  FormInput,
+  GoogleButton,
+  ConfirmButton,
+} from "@features/authentication";
 import axios from "axios";
 
 const inputs = [
