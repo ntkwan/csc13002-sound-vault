@@ -10,7 +10,6 @@ import axios from "axios";
 
 function ForgotPassPage() {
   const [email, setEmail] = useState("");
-  console.log(email);
 
   const nav = useNavigate();
   const forgotpsw = () => {
