@@ -78,24 +78,21 @@ function MediaItems2({ type, name, desc, src }) {
 	const imageClass = type === "artist" ? "rounded-[100%]" : "rounded-lg";
 	return (
 		<div className="group relative w-[170px] aspect-[1/1.3] rounded-lg bg-white bg-opacity-10
-                    hover:bg-opacity-20 transition-all duration-400 ease-in-out">
+                    hover:bg-opacity-20 transition-all duration-300 ease-in-out">
 			{
 				type === "artist" &&
 				<div className="absolute top-3 right-3 w-5 h-5 flex justify-center items-center rounded-[100%] bg-black">
-					<i className="ti-close text-xs text-white"></i>
+					<i className="ri-close-large-line text-xs"></i>
 				</div>
 			}
 			<div className="absolute left-4 right-4 top-4 flex flex-col">
 				<div className="relative">
-					<img className={`w-full aspect-square ${imageClass}`} src={src} alt="" />
-					{
-						type !== "artist" &&
-						<button
-							className="absolute bottom-0 right-0 w-10 h-10 -translate-x-2 rounded-[100%] bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 
+					<img className={`w-full aspect-square object-cover ${imageClass}`} src={src} alt="" />
+					<button
+						className="absolute bottom-0 right-0 w-10 h-10 -translate-x-2 rounded-[100%] bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 
                          group-hover:opacity-100 group-hover:-translate-y-2 transition-all duration-300 ease-in-out" >
-							<i className="ri-play-fill text-xl"></i>
-						</button>
-					}
+						<i className="ri-play-fill text-xl"></i>
+					</button>
 				</div>
 				<span className="text-sm font-semibold text-nowrap text-ellipsis overflow-hidden mt-3">{name}</span>
 				<span className="text-xs font-medium text-nowrap text-ellipsis overflow-hidden mt-1 text-[#b2b2b2]">{desc}</span>
