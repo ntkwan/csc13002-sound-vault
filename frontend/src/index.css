@@ -7,6 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap'); /* Inter 600 font */
 @import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap'); /* Arimo font */
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap'); /* Alfa Slab One font */
+@import url('https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css'); /* Remixicon font */
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'); /* Boxicons font */
 
 @tailwind base;
@@ -15,10 +16,28 @@
 
 @layer base {
     body {
-        @apply bg-black;
+        @apply bg-home-pattern;
         @apply bg-cover;
         @apply text-white;
         @apply font-kodchasan;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: black;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #444;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #666;
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: #000;
     }
 }
 
@@ -33,5 +52,9 @@
 
     .input-bar:has(input:invalid) + .error-msg {
         display: flex;
+    }
+
+    .heading-stroke-logo {
+        -webkit-text-stroke: 3px #b352f3;
     }
 }

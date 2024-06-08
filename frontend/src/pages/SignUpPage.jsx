@@ -6,7 +6,8 @@ import {
   GoogleButton,
   ConfirmButton,
 } from "@features/authentication";
-import axios from "axios";
+import * as request from "@services/httpService";
+import { InformationCircle } from "@components";
 
 const inputs = [
   {
@@ -42,22 +43,8 @@ function SignUpPage() {
     password: "",
   });
   const [checked, setChecked] = useState(false);
+  const [error, setError] = useState("");
   const nav = useNavigate();
-
-  const signup = () => {
-    axios({
-      method: "post",
-      data: {
-        name: values["name"],
-        email: values["email"],
-        password: values["password"],
-      },
-      withCredentials: true,
-      url: "http://localhost:5000/signup",
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,13 +54,26 @@ function SignUpPage() {
       !values["password"] ||
       !checked ||
       !values["name"].match(inputs[0].pattern) ||
-      !values["email"].match(inputs[1].pattern) ||
       !values["password"].match(inputs[2].pattern)
     ) {
       return;
     }
-    signup();
-    nav("/signin");
+    const fetch = async () => {
+      try {
+        const res = await request.post("/signup", {
+          name: values["name"],
+          email: values["email"],
+          password: values["password"],
+        });
+        console.log(res.message);
+        nav("/signin");
+      } catch (error) {
+        const errMsg = error.response.data.message;
+        console.error(errMsg);
+        setError(errMsg);
+      }
+    };
+    fetch();
   };
 
   const handleAction = (e) => {
@@ -95,6 +95,12 @@ function SignUpPage() {
           </a>
           <span className="text-[#7b7b7b]"> on the registration</span> website
         </p>
+        {error && (
+          <div className="mt-3 flex place-content-center gap-1 rounded-xl bg-red-500 py-1 font-bold">
+            <InformationCircle />
+            <span>{error}</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           {inputs.map((input) => (
             <FormInput
