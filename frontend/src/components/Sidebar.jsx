@@ -7,7 +7,7 @@ function Sidebar() {
         <div className="sidebar select-none flex flex-col justify-evenly fixed top-[70px] bottom-[70px] z-10
                         w-max backdrop-blur-md uppercase text-xs">
             <div className="ml-2">
-                <span className="ml-3">Brown</span>
+                <span className="ml-3">Browse</span>
                 <SidebarLink to="" icon={HomeIcon}>Home</SidebarLink>
                 <SidebarLink to="profile" icon={ProfileIcon}>Profile</SidebarLink>
                 <SidebarLink to="library" icon={MusicIcon}>Library</SidebarLink>
