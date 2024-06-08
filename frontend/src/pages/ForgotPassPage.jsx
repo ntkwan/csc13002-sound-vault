@@ -39,7 +39,6 @@ function ForgotPassPage() {
           action={(e) => setEmail(e.target.value)}
         />
         <div className="mt-6 flex select-none space-x-2">
-          <GoogleButton />
           <a className="flex h-[49px] flex-1 cursor-pointer items-center justify-center rounded-[12px] bg-[#383838] text-[#fcfcfc] shadow-md hover:opacity-75">
             <ConfirmButton title="Send email" action={forgotpsw} />
           </a>

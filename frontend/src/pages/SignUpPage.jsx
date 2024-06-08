@@ -117,9 +117,9 @@ function SignUpPage() {
               title="Sign up"
               disabled={
                 !values["name"] ||
-                !values["email"] ||
-                !values["password"] ||
-                !checked
+                  !values["email"] ||
+                  !values["password"] ||
+                  !checked
                   ? true
                   : false
               }

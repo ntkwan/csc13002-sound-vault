@@ -50,7 +50,6 @@ function ResetPassPage() {
           action={(e) => setConfirmPassword(e.target.value)}
         />
         <div className="mt-6 flex select-none space-x-2">
-          <GoogleButton />
           <ConfirmButton title="Change password" action={resetpsw} />
         </div>
       </div>
