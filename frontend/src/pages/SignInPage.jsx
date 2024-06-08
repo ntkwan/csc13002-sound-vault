@@ -48,7 +48,7 @@ function SignInPage() {
           password: values["password"],
         });
         console.log(res.message);
-        nav("/home");
+        nav("/");
       } catch (error) {
         const errMsg = error.response.data.message;
         console.log(errMsg);
