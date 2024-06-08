@@ -1,11 +1,13 @@
+@host = http://localhost:5000
+
 ### [SUCCESS] server connection
-GET http://localhost:5000
+GET {{host}}
 
 ### [FAILED] server connection: connect to invalid page
-GET http://localhost:5000/chat 
+GET {{host}}/chat 
 
 ### [FAILED] signin: wrong email 
-POST http://localhost:5000/signin
+POST {{host}}/signin
 Content-Type: application/json
 
 {
@@ -14,7 +16,7 @@ Content-Type: application/json
 }
 
 ### [FAILED] signin: wrong password
-POST http://localhost:5000/signin
+POST {{host}}/signin
 Content-Type: application/json
 
 {
@@ -23,7 +25,7 @@ Content-Type: application/json
 }
 
 ### [SUCCESS] signin: admin
-POST http://localhost:5000/signin
+POST {{host}}/signin
 Content-Type: application/json
 
 {
@@ -32,7 +34,7 @@ Content-Type: application/json
 }
 
 ### [SUCCESS] signin: user
-POST http://localhost:5000/signin
+POST {{host}}/signin
 Content-Type: application/json
 
 {
@@ -41,7 +43,7 @@ Content-Type: application/json
 }
 
 ### [SUCCESS] signup: admin
-POST http://localhost:5000/signup
+POST {{host}}/signup
 Content-Type: application/json
 
 {
@@ -51,7 +53,7 @@ Content-Type: application/json
 }
 
 ### [SUCESS] signup: user
-POST http://localhost:5000/signup
+POST {{host}}/signup
 Content-Type: application/json
 
 {
@@ -61,7 +63,7 @@ Content-Type: application/json
 }
 
 ### [FAILED] signup: email is invalid
-POST http://localhost:5000/signup
+POST {{host}}/signup
 Content-Type: application/json
 
 {
@@ -70,9 +72,12 @@ Content-Type: application/json
 }
 
 ### [USER] get profile 
-GET http://localhost:5000/profile
+GET {{host}}profile
 Authorization: Bearer [TOKEN]
 
 ### [ADMIN] get all users
-GET http://localhost:5000/getall
+GET {{host}}/getall
 Authorization: Bearer [TOKEN]
+
+### sign out
+POST {{host}}/signout

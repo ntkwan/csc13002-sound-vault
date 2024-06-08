@@ -13,8 +13,8 @@ const router = createBrowserRouter([
     children: [
       { path: "signin", Component: SignInPage },
       { path: "signup", Component: SignUpPage },
-      { path: "resetpass", Component: ResetPassPage },
-      { path: "forgotpass", Component: ForgotPassPage },
+      { path: "reset-password", Component: ResetPassPage },
+      { path: "forgot-password", Component: ForgotPassPage },
     ],
   },
 ]);

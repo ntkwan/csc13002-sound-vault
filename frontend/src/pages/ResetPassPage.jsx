@@ -14,7 +14,11 @@ function ResetPassPage() {
           Enter your new password carefully. The new password must be 8
           characters long.
         </p>
-        <FormInput type="password" placeholder="New password" haveIcon={true} />
+        <FormInput
+          type="password"
+          placeholder="New password"
+          haveIcon={true}
+        />
         <FormInput
           type="password"
           placeholder="Repeat the password"
