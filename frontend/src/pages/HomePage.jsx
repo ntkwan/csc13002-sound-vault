@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChartIntroContainer, MediaContainer } from "@features/homepage";
 import homeintroImage from "@assets/img/homeintro.svg";
-
 function HomePage() {
   useEffect(() => {
     const reloadKey = Date.now();

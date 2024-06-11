@@ -1,14 +1,16 @@
 import { Outlet } from "react-router-dom";
 import { Header, Sidebar } from "@components";
+import { Musicbar } from "@components/index";
 
 function DefaultLayout() {
   return (
     <>
       <Header />
       <Sidebar />
-      <main className="relative px-20 mt-[70px] mb-[70px] ml-[175px]">
+      <main className="relative mb-[70px] ml-[175px] mt-[70px] px-20">
         <Outlet />
       </main>
+      <Musicbar />
     </>
   );
 }

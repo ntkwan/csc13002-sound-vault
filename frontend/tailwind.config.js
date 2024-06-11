@@ -15,6 +15,8 @@ export default {
             backgroundImage: {
                 'auth-pattern': "url('./assets/img/authbg.svg')",
                 'home-pattern': "url('./assets/img/homebg.svg')",
+                musicbar:
+                    'radial-gradient(50% 40% at center , #710083, transparent )',
             },
             transitionDuration: {
                 400: '400ms',
