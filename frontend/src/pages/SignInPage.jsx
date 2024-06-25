@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { logIn } from "@features/authentication/slices";
+import { useSignInMutation } from "@services/api";
 import {
   AuthenTitle,
   FormInput,
   GoogleButton,
   ConfirmButton,
-} from "@features/authentication";
-import * as request from "@services/httpService";
+} from "@features/authentication/components";
 import { InformationCircle } from "@components";
 
 const inputs = [
@@ -30,35 +32,35 @@ function SignInPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [signIn, { isLoading }] = useSignInMutation();
   const nav = useNavigate();
+  const dispatch = useDispatch();
 
   const handleAction = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!values["email"] || !values["password"]) {
       return;
     }
-    const fetch = async () => {
-      try {
-        const res = await request.post("/signin", {
-          email: values["email"],
-          password: values["password"],
-        });
-        console.log(res.message);
-        nav("/");
-      } catch (error) {
-        const errMsg = error.response.data.message;
-        console.log(errMsg);
-        setError(errMsg);
-      }
-    };
-    fetch();
+    try {
+      const res = await signIn(values).unwrap();
+      const user = values["email"];
+      const token = res.token;
+      dispatch(logIn({ user, token }));
+      setValues({ email: "", password: "" });
+      nav("/");
+    } catch (error) {
+      const errMsg = error.data.message;
+      setError(errMsg);
+    }
   };
 
-  return (
+  return isLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
       <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
         <AuthenTitle title="Sign in" />

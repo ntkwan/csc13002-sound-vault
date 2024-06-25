@@ -1,7 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { DefaultLayout, AuthenticationLayout } from "@layouts";
-import { HomePage, ProfilePage, ArtistPage, SignInPage, SignUpPage, ResetPassPage, ForgotPassPage } from "@pages";
+import {
+  HomePage,
+  ProfilePage,
+  ArtistPage,
+  SignInPage,
+  SignUpPage,
+  ResetPassPage,
+  ForgotPassPage,
+} from "@pages";
 
 const router = createBrowserRouter([
   {

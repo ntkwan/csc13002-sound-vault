@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useSignUpMutation } from "@services/api";
 import {
   AuthenTitle,
   FormInput,
   GoogleButton,
   ConfirmButton,
-} from "@features/authentication";
-import * as request from "@services/httpService";
+} from "@features/authentication/components";
 import { InformationCircle } from "@components";
 
 const inputs = [
@@ -46,7 +46,9 @@ function SignUpPage() {
   const [error, setError] = useState("");
   const nav = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [signUp, { isLoading }] = useSignUpMutation();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       !values["name"] ||
@@ -58,29 +60,25 @@ function SignUpPage() {
     ) {
       return;
     }
-    const fetch = async () => {
-      try {
-        const res = await request.post("/signup", {
-          name: values["name"],
-          email: values["email"],
-          password: values["password"],
-        });
-        console.log(res.message);
-        nav("/signin");
-      } catch (error) {
-        const errMsg = error.response.data.message;
-        console.error(errMsg);
-        setError(errMsg);
-      }
-    };
-    fetch();
+    try {
+      const res = await signUp(values).unwrap();
+      console.log(res.message);
+      setValues({ name: "", email: "", password: "" });
+      nav("/signin");
+    } catch (error) {
+      const errMsg = error.data.message;
+      console.error(errMsg);
+      setError(errMsg);
+    }
   };
 
   const handleAction = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  return (
+  return isLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
       <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
         <AuthenTitle title="Sign up" />
@@ -117,9 +115,9 @@ function SignUpPage() {
               title="Sign up"
               disabled={
                 !values["name"] ||
-                  !values["email"] ||
-                  !values["password"] ||
-                  !checked
+                !values["email"] ||
+                !values["password"] ||
+                !checked
                   ? true
                   : false
               }

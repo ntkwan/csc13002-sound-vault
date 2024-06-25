@@ -1,32 +1,36 @@
+import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { useResetPasswordMutation } from "@services/api";
 import {
   AuthenTitle,
   FormInput,
-  GoogleButton,
   ConfirmButton,
-} from "@features/authentication";
-import axios from "axios";
-import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+} from "@features/authentication/components";
 
 function ResetPassPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email");
   const [new_password, setPassword] = useState("");
   const [confirm_password, setConfirmPassword] = useState("");
+  const [resetPassword] = useResetPasswordMutation();
 
-  const resetpsw = () => {
-    axios({
-      method: "post",
-      data: {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!new_password || !confirm_password) {
+      return;
+    }
+    try {
+      const data = {
         attempt_password: new_password,
-        confirm_password: confirm_password,
-      },
-      withCredentials: true,
-      url: `http://localhost:5000/reset-password/${email}/${token}`,
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+        confirm_password,
+      };
+      await resetPassword({ email, token, data });
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -50,7 +54,7 @@ function ResetPassPage() {
           action={(e) => setConfirmPassword(e.target.value)}
         />
         <div className="mt-6 flex select-none space-x-2">
-          <ConfirmButton title="Change password" action={resetpsw} />
+          <ConfirmButton title="Change password" action={handleSubmit} />
         </div>
       </div>
     </div>
