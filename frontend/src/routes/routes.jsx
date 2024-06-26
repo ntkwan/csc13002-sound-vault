@@ -9,6 +9,7 @@ import {
   SignUpPage,
   ResetPassPage,
   ForgotPassPage,
+  ChartPage,
 } from "@pages";
 
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "", Component: HomePage },
       { path: "profile", Component: ProfilePage },
       { path: "artist", Component: ArtistPage },
+      { path: "chart", Component: ChartPage },
     ],
   },
   {
