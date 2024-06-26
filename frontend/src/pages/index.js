@@ -1,5 +1,6 @@
 export { default as HomePage } from './HomePage';
 export { default as ProfilePage } from './ProfilePage';
+export { default as ProfilePageEditing } from "./ProfilePageEditing";
 export { default as ArtistPage } from './ArtistPage';
 export { default as SignInPage } from './SignInPage';
 export { default as SignUpPage } from './SignUpPage';

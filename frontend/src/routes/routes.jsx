@@ -4,6 +4,7 @@ import { DefaultLayout, AuthenticationLayout } from "@layouts";
 import {
   HomePage,
   ProfilePage,
+  ProfilePageEditing,
   ArtistPage,
   SignInPage,
   SignUpPage,
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", Component: HomePage },
       { path: "profile", Component: ProfilePage },
+      { path: "profile/editing", Component: ProfilePageEditing },
       { path: "artist", Component: ArtistPage },
     ],
   },
