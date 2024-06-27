@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { SearchIcon, NotificationIcon } from ".";
 import propType from "prop-types";
+import { selectCurrentToken } from "@services/selectors";
+import { useSelector } from "react-redux";
+import Logout from "./Logout";
 
-Header.propTypes = {
-  setIsExploring: propType.func,
-};
-
-function Header({ setIsExploring }) {
+function Header() {
+  const token = useSelector(selectCurrentToken);
   return (
     <div className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
       {/* Logo */}
@@ -19,17 +19,21 @@ function Header({ setIsExploring }) {
           {SearchIcon()}
         </div>
         <input
-          className="header__search-input h-9 w-1/2 rounded-full bg-[#443F3F66] px-11 placeholder:italic placeholder:text-[#B5B3B3]"
+          className="header__search-input h-11 w-1/2 rounded-full bg-[#443F3F66] px-11 placeholder:italic placeholder:text-[#B5B3B3] focus:border-2 focus:outline-none"
           type="text"
           placeholder="search music, album, artist,..."
-          onFocus={() => setIsExploring(true)}
-          onBlur={() => setIsExploring(false)}
         ></input>
       </div>
       {/* link */}
       <div className="header__link flex h-1/2 flex-[1] items-center justify-end space-x-5 pl-5 text-xs uppercase">
-        <HeaderLink to="/signup">sign up</HeaderLink>
-        <HeaderLink to="/signin">sign in</HeaderLink>
+        {token ? (
+          <Logout />
+        ) : (
+          <>
+            <HeaderLink to="/signup">sign up</HeaderLink>
+            <HeaderLink to="/signin">sign in</HeaderLink>
+          </>
+        )}
         <HeaderLink to="/">{NotificationIcon()}</HeaderLink>
       </div>
     </div>
