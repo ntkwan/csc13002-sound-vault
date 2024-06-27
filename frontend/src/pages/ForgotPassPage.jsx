@@ -15,7 +15,7 @@ function ForgotPassPage() {
       return;
     }
     try {
-      await forgotPassword(email);
+      await forgotPassword({ email: email });
       setEmail("");
     } catch (error) {
       console.log(error);
@@ -30,16 +30,20 @@ function ForgotPassPage() {
           Enter your email address below and we send you a link to reset your
           password.
         </p>
-        <FormInput
-          type="email"
-          placeholder="Email"
-          action={(e) => setEmail(e.target.value)}
-        />
-        <div className="mt-6 flex select-none space-x-2">
-          <a className="flex h-[49px] flex-1 cursor-pointer items-center justify-center rounded-[12px] bg-[#383838] text-[#fcfcfc] shadow-md hover:opacity-75">
-            <ConfirmButton title="Send email" action={handleSubmit} />
-          </a>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <FormInput
+            type="email"
+            placeholder="Email"
+            value={email}
+            action={(e) => setEmail(e.target.value)}
+          />
+          <div className="mt-6 flex select-none space-x-2">
+            <ConfirmButton
+              title="Send email"
+              disabled={!email ? true : false}
+            />
+          </div>
+        </form>
       </div>
     </div>
   );

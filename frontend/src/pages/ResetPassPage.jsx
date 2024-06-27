@@ -6,6 +6,7 @@ import {
   FormInput,
   ConfirmButton,
 } from "@features/authentication/components";
+import { INPUTS } from "@components";
 
 function ResetPassPage() {
   const [searchParams] = useSearchParams();
@@ -13,8 +14,8 @@ function ResetPassPage() {
   const email = searchParams.get("email");
   const [new_password, setPassword] = useState("");
   const [confirm_password, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [resetPassword] = useResetPasswordMutation();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!new_password || !confirm_password) {
@@ -29,7 +30,7 @@ function ResetPassPage() {
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
-      console.log(error);
+      setError(error.data.message);
     }
   };
 
@@ -41,21 +42,29 @@ function ResetPassPage() {
           Enter your new password carefully. The new password must be 8
           characters long.
         </p>
-        <FormInput
-          type="password"
-          placeholder="New password"
-          haveIcon={true}
-          action={(e) => setPassword(e.target.value)}
-        />
-        <FormInput
-          type="password"
-          placeholder="Repeat the password"
-          haveIcon={true}
-          action={(e) => setConfirmPassword(e.target.value)}
-        />
-        <div className="mt-6 flex select-none space-x-2">
-          <ConfirmButton title="Change password" action={handleSubmit} />
-        </div>
+        <form onSubmit={handleSubmit}>
+          {INPUTS.RESET_PASS.map((input) => (
+            <FormInput
+              key={input.name}
+              {...input}
+              value={
+                input.name === "new_password" ? new_password : confirm_password
+              }
+              action={
+                input.name === "new_password"
+                  ? (e) => setPassword(e.target.value)
+                  : (e) => setConfirmPassword(e.target.value)
+              }
+              error={input.name === "new_password" ? input.error : error}
+            />
+          ))}
+          <div className="mt-6 flex select-none space-x-2">
+            <ConfirmButton
+              title="Change password"
+              disabled={!new_password || !confirm_password ? true : false}
+            />
+          </div>
+        </form>
       </div>
     </div>
   );

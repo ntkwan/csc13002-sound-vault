@@ -7,34 +7,7 @@ import {
   GoogleButton,
   ConfirmButton,
 } from "@features/authentication/components";
-import { InformationCircle } from "@components";
-
-const inputs = [
-  {
-    name: "name",
-    type: "text",
-    placeholder: "User name",
-    required: true,
-    error: "User name should be at 3-16 characters!",
-    pattern: "^.{3,16}$",
-  },
-  {
-    name: "email",
-    type: "email",
-    placeholder: "Email",
-    required: true,
-    error: "Invalid email",
-  },
-  {
-    name: "password",
-    type: "password",
-    placeholder: "Password",
-    required: true,
-    error:
-      "Password should be at least 6 characters and contain 1 letter, 1 number and 1 special character!",
-    pattern: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,}$",
-  },
-];
+import { InformationCircle, INPUTS, Loading } from "@components";
 
 function SignUpPage() {
   const [values, setValues] = useState({
@@ -55,8 +28,8 @@ function SignUpPage() {
       !values["email"] ||
       !values["password"] ||
       !checked ||
-      !values["name"].match(inputs[0].pattern) ||
-      !values["password"].match(inputs[2].pattern)
+      !values["name"].match(INPUTS.SIGN_UP[0].pattern) ||
+      !values["password"].match(INPUTS.SIGN_UP[2].pattern)
     ) {
       return;
     }
@@ -77,7 +50,7 @@ function SignUpPage() {
   };
 
   return isLoading ? (
-    <div>Loading...</div>
+    <Loading />
   ) : (
     <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
       <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
@@ -100,7 +73,7 @@ function SignUpPage() {
           </div>
         )}
         <form onSubmit={handleSubmit}>
-          {inputs.map((input) => (
+          {INPUTS.SIGN_UP.map((input) => (
             <FormInput
               key={input.name}
               {...input}
