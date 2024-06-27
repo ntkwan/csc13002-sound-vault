@@ -14,13 +14,21 @@ const SongSchema = new Schema({
         type: String,
         required: true,
     },
-    img: {
+    imageurl: {
+        type: String,
+        required: true,
+    },
+    audiourl: {
         type: String,
         required: true,
     },
     duration: {
         type: String,
         required: true,
+    },
+    view: {
+        type: Number,
+        default: 0,
     },
 });
 
