@@ -7,7 +7,7 @@ AuthenTitle.propTypes = {
 function AuthenTitle({ title }) {
     return (
         <div>
-            <h1 className="text-center text-[55px] text-[#fcfcfc] font-italianno font-light mb-4 leading-[45px] cursor-default select-none">
+            <h1 className="mb-4 cursor-default select-none text-center font-italianno text-[55px] font-light leading-[45px] text-[#fcfcfc]">
                 {title}
             </h1>
         </div>
