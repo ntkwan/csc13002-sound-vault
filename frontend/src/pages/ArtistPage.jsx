@@ -1,62 +1,66 @@
 import MediaDisplay from "@components/MediaDisplay";
+import { PageTitle } from "@components/index";
 
 function ArtistPage() {
   const mediaData = [
     {
-      type: "artist",
-      header: "Popular Artists",
+      type: "Artist",
+      title: "Popular Artists",
       visibility: "",
       link: "",
       data: [
-        { name: "Hoàng Thùy Linh", desc: "artist" },
-        { name: "Phan Mạnh Quỳnh", desc: "artist" },
-        { name: "Obito", desc: "artist" },
-        { name: "HIEUTHUHAI", desc: "artist" },
-        { name: "Anh Tú", desc: "artist", ext: "png" },
-        { name: "Sơn Tùng MTP", desc: "artist" },
+        { name: "Hoàng Thùy Linh" },
+        { name: "Phan Mạnh Quỳnh" },
+        { name: "Obito" },
+        { name: "HIEUTHUHAI" },
+        { name: "Anh Tú", ext: "png" },
+        { name: "Sơn Tùng MTP" },
       ],
     },
     {
-      type: "artist",
-      header: "Indie Artists",
+      type: "Artist",
+      title: "Indie Artists",
       visibility: "",
       link: "",
       data: [
-        { name: "Hoàng Thùy Linh", desc: "artist" },
-        { name: "Phan Mạnh Quỳnh", desc: "artist" },
-        { name: "Obito", desc: "artist" },
-        { name: "HIEUTHUHAI", desc: "artist" },
-        { name: "Anh Tú", desc: "artist", ext: "png" },
-        { name: "Sơn Tùng MTP", desc: "artist" },
+        { name: "Hoàng Thùy Linh" },
+        { name: "Phan Mạnh Quỳnh" },
+        { name: "Obito" },
+        { name: "HIEUTHUHAI" },
+        { name: "Anh Tú", ext: "png" },
+        { name: "Sơn Tùng MTP" },
       ],
     },
     {
-      type: "artist",
-      header: "New Artists",
+      type: "Artist",
+      title: "New Artists",
       visibility: "",
       link: "",
       data: [
-        { name: "Hoàng Thùy Linh", desc: "artist" },
-        { name: "Phan Mạnh Quỳnh", desc: "artist" },
-        { name: "Obito", desc: "artist" },
-        { name: "HIEUTHUHAI", desc: "artist" },
-        { name: "Anh Tú", desc: "artist", ext: "png" },
-        { name: "Sơn Tùng MTP", desc: "artist" },
+        { name: "Hoàng Thùy Linh" },
+        { name: "Phan Mạnh Quỳnh" },
+        { name: "Obito" },
+        { name: "HIEUTHUHAI" },
+        { name: "Anh Tú", ext: "png" },
+        { name: "Sơn Tùng MTP" },
       ],
     },
   ];
 
   return (
-    <div className="Media__container mt-20 grid auto-rows-auto gap-y-14 font-kodchasan">
-      {mediaData.map((media, index) => (
-        <MediaDisplay
-          key={index}
-          media={media}
-          displayItems="2"
-          displayType="grid grid-cols-6"
-        />
-      ))}
-    </div>
+    <div className="pt-4">
+      <PageTitle title="Artists" />
+      <div className="Media__container grid auto-rows-auto gap-y-14 font-kodchasan">
+        {mediaData.map((media, index) => (
+          <MediaDisplay
+            key={index}
+            media={media}
+            displayItems="2"
+            displayType="grid grid-cols-6"
+          />
+        ))}
+      </div>
+    </div >
   );
 }
 

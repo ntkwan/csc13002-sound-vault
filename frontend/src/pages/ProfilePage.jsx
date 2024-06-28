@@ -1,36 +1,39 @@
-import { MediaDisplay } from "@components";
 import { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
-import verifiedIcon from "@assets/img/verified-icon.svg";
 
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserProfile, toggleFollow } from "@features/profilepage/slices";
 
-const AVATAR_URL = "src/assets/img/artist/";
-const COVER_URL = "src/assets/img/artist/";
+import verifiedIcon from "@assets/img/verified-icon.svg";
+import { selectUserProfile, toggleFollow } from "@features/profilepage/slices";
+import { MediaDisplay } from "@components";
+
+const ARTIST_IMG_URL = "src/assets/img/artist/";
 
 function ProfilePage() {
   const [menuVisible, setMenuVisible] = useState(null);
   const menuRef = useRef(null);
+
   function handleClickOutside(event) {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setMenuVisible(null);
     }
   }
+
   useEffect(() => {
     if (menuVisible !== null) {
-      document.body.style.overflowY = "hidden"; // Chỉ cấm cuộn theo trục y
+      document.body.style.overflowY = "hidden";
       document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.body.style.overflowY = "auto"; // Cho phép cuộn theo trục y khi menu đóng
+      document.body.style.overflowY = "auto";
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.body.style.overflowY = 'auto'; // Đảm bảo cuộn trang được bật lại khi component bị unmount
+      document.body.style.overflowY = 'auto';
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [menuVisible]);
+
   const toggleMenu = (index) => {
     setMenuVisible(menuVisible === index ? null : index);
   };
@@ -38,30 +41,47 @@ function ProfilePage() {
   const isFollowing = false;
   const isMyProfile = true;
   const userProfile = useSelector(selectUserProfile);
-  const { fullName, isVerified, followers, avatar, cover, popular, mediaData } = userProfile
+  // const popular = useSelector(selectPopular);
+  // const mediaData = useSelector(selectMediaData);
+  const { fullName, isVerified, followers, avatar, cover, popular, mediaData } = userProfile;
   const dispatch = useDispatch();
 
   return (
-    <div className="profile-page caret-transparent grid auto-rows-auto gap-y-10 pt-1">
-      {/* Profile Header */}
-      <div className="profile-page__header relative h-80">
-        <img className="header__cover max-w-full h-80" src={`${COVER_URL}${cover}`} alt="" />
-        <div className="absolute flex top-1/4 left-10">
+    <div className="profile__page grid auto-rows-auto gap-y-10 caret-transparent">
+      {/* profile header */}
+      <div className="profile__header relative h-80">
+        {/* profile cover */}
+        <img
+          className="profile__cover w-full h-full shadow-2xl object-cover"
+          src={ARTIST_IMG_URL + cover} alt=""
+        />
+        <div className="profile__container absolute top-1/4 left-10 flex">
           <div className="relative">
-            <img className="w-40 h-40 rounded-full shadow-2xl" src={`${AVATAR_URL}${avatar}`} alt="" />
-            {isVerified && <img className="absolute bottom-[6px] right-[6px] w-8 h-8 mr-1" src={verifiedIcon} alt="" />}
+            {/* profile avatar */}
+            <img
+              className="profile__avatar w-40 aspect-square rounded-full shadow-2xl object-cover"
+              src={ARTIST_IMG_URL + avatar} alt=""
+            />
+            {/* verified icon */}
+            {isVerified &&
+              <img className="profile__verified-icon absolute bottom-[6px] right-[10px] w-8 aspect-square"
+                src={verifiedIcon} alt=""
+              />}
           </div>
+          {/* profile info */}
           <div className="relative content-center ml-5">
-            <div className="font-alfaslabone text-7xl drop-shadow-2xl">{fullName}</div>
-            <p className="absolute">{followers.toLocaleString()} followers</p>
+            <p className="text-shadow-1">Profile</p>
+            <p className="font-alfaslabone text-7xl text-shadow-2 text-stroke-1">{fullName}</p>
+            <p className="text-shadow-1">{followers.toLocaleString()} followers</p>
           </div>
         </div>
       </div>
+      {/* profile header end */}
 
       {/* Actions Section */}
       <div className="flex space-x-6">
         <button className="w-[70px] h-[70px] rounded-full content-center bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-          <i class="ri-play-fill text-[42px]"></i>
+          <i className="ri-play-fill text-[42px]"></i>
         </button>
         {isMyProfile ? (
           <>
@@ -144,20 +164,16 @@ function ProfilePage() {
 
 export default ProfilePage;
 
-// Button.propTypes = {
-//   onClick: PropTypes.func,
-//   children: PropTypes.node,
-// };
-
 function Button({ to, onClick, children }) {
   return (
     <Link
-      to={to}
-      className="button group relative w-[200px] py-3 m-auto text-nowrap text-xs text-center uppercase rounded-xl border-[2px] border-white"
-      onClick={onClick}>
+      className="button group relative w-[200px] py-3 m-auto text-xs text-nowrap text-center uppercase rounded-xl border-[2px] border-white"
+      onClick={onClick} to={to}
+    >
       {children}
-      <div className="button__bg absolute top-0 left-0 w-full h-full z-[-1] rounded-lg opacity-0 
-            bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] group-hover:opacity-100 transition duration-500 ease-in-out">
+      <div
+        className="button__bg absolute top-0 left-0 w-full h-full z-[-1] rounded-lg opacity-0 bg-gradient-to-r 
+                 from-[#06DBAC] to-[#BD00FF] group-hover:opacity-100 transition duration-400 ease-in-out">
       </div>
     </Link>
   );

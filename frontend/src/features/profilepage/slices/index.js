@@ -1,1 +1,10 @@
-export { default as profileReducer, selectUserProfile, toggleFollow, uploadMusic, updateInfo, updatePassword } from './profileSlice';
+export {
+    default as profileReducer,
+    selectUserProfile,
+    toggleFollow,
+    uploadMusic,
+    updateAvatar,
+    updateCover,
+    updateInfo,
+    updatePassword
+} from './profileSlice';

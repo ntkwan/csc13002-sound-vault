@@ -57,4 +57,16 @@
     .heading-stroke-logo {
         -webkit-text-stroke: 3px #b352f3;
     }
+
+    .text-shadow-1 {
+        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .text-shadow-2 {
+        text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .text-stroke-1 {
+        -webkit-text-stroke: 1px #000;
+    }
 }

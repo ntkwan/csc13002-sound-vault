@@ -1,74 +1,75 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
-// const PROFILE_URL = '';
+// const PROFILE_URL = ";
 
 const initialState = {
     fullName: "Sơn Tùng MTP",
     isVerified: true,
     followers: 9875425,
     email: "",
-    dob: "5/7/1944",
+    dob: "1994-07-05",
     shortDesc: "",
     avatar: "Sơn Tùng MTP.jpg",
     cover: "Sơn Tùng MTP-bg.jpg",
     password: "tung1234",
     popular: [
-        { name: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17' },
-        { name: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17' },
-        { name: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17' },
-        { name: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17' },
-        { name: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17' },
+        { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
+        { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
+        { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
+        { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
+        { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
     ],
     mediaData: [
         {
-            type: 'song',
-            header: "Popular Releases",
-            visibility: '',
+            type: "song",
+            title: "Popular Releases",
+            visibility: "",
             link: "",
             data: [
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
             ],
         },
         {
-            type: 'song',
-            header: "Albums",
-            visibility: '',
+            type: "song",
+            title: "Albums",
+            visibility: "",
             link: "",
             data: [
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
+                { name: "Chúng Ta Của Tương Lai", desc: "2023" },
             ],
         },
         {
-            type: 'artist',
-            header: "Following",
-            visibility: '(only me)',
+            type: "Artist",
+            title: "Following",
+            visibility: "(only me)",
             link: "",
             data: [
-                { name: 'Sơn Tùng MTP', desc: 'Artist' },
-                { name: 'Sơn Tùng MTP', desc: 'Artist' },
-                { name: 'Sơn Tùng MTP', desc: 'Artist' },
+                { name: "Sơn Tùng MTP" },
+                { name: "Sơn Tùng MTP" },
+                { name: "Sơn Tùng MTP" },
             ],
         },
         {
-            type: 'song',
-            header: "My Playlist",
-            visibility: '(only me)',
+            type: "song",
+            title: "My Playlist",
+            visibility: "(only me)",
             link: "library",
             data: [
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
+                { name: "Chúng Ta Của Tương Lai", desc: "playlist" },
             ],
         },
     ],
-    status: 'idle',
+    status: "idle",
     error: null,
 };
 
@@ -82,11 +83,18 @@ const profileSlice = createSlice({
         uploadMusic: (state) => {
 
         },
+        updateAvatar: (state, actions) => {
+            state.avatar = actions.payload.avatar;
+        },
+        updateCover: (state, actions) => {
+            state.cover = actions.payload.cover;
+        },
         updateInfo: (state, actions) => {
-            state.fullName = actions.payload.fullName;
-            state.email = actions.payload.email;
-            state.dob = actions.payload.dob;
-            state.shortDesc = actions.payload.shortDesc;
+            const { fullName, email, dob, shortDesc } = actions.payload;
+            state.fullName = fullName;
+            state.email = email;
+            state.dob = dob;
+            state.shortDesc = shortDesc;
         },
         updatePassword: (state, actions) => {
             state.password = actions.payload.password;
@@ -96,5 +104,14 @@ const profileSlice = createSlice({
 });
 
 export const selectUserProfile = (state) => state.profile;
-export const { toggleFollow, uploadMusic, updateInfo, updatePassword } = profileSlice.actions;
+
+export const {
+    toggleFollow,
+    uploadMusic,
+    updateAvatar,
+    updateCover,
+    updateInfo,
+    updatePassword
+} = profileSlice.actions;
+
 export default profileSlice.reducer;
