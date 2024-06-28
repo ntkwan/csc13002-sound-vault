@@ -1,4 +1,5 @@
 const multer = require('multer');
+const { updateMany } = require('../models/user.schema');
 
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
@@ -10,7 +11,7 @@ const storage = multer.diskStorage({
     },
 });
 
-const fileFilter = (req, file, cb) => {
+const audioFilter = (req, file, cb) => {
     if (file.mimetype !== 'audio/mpeg' && file.mimetype !== 'audio/mp3') {
         req.fileValidationError = 'File type must be audio/mp3 or audio/mpeg';
 
@@ -20,9 +21,24 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({
+const imageFilter = (req, file, cb) => {
+    if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+        req.fileValidationError = 'File type must be image/jpeg or image/png';
+
+        return cb(null, false, req.fileValidationError);
+    } else {
+        cb(null, true);
+    }
+};
+
+const audio_upload = multer({
     storage,
-    fileFilter,
+    audioFilter,
 }).single('audio');
 
-module.exports = { upload };
+const image_upload = multer({
+    storage,
+    imageFilter,
+}).single('image');
+
+module.exports = { audio_upload, image_upload };

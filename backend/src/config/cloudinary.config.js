@@ -7,7 +7,7 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 
-const cloudinaryUploader = async (req, res) => {
+const audioUploader = async (req, res) => {
     const file = req.file;
 
     if (!file) {
@@ -29,4 +29,27 @@ const cloudinaryUploader = async (req, res) => {
     }
 };
 
-module.exports = { cloudinaryUploader };
+const imageUploader = async (req, res) => {
+    const file = req.file;
+    const email = req.params.email;
+
+    if (!file) {
+        return res.status(400).json({ message: 'File not found' });
+    }
+    const fName = email;
+
+    try {
+        const uploadImage = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: 'auto',
+            public_id: fName,
+            folder: 'profiles',
+        });
+
+        return uploadImage;
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: error.message });
+    }
+};
+
+module.exports = { audioUploader, imageUploader };

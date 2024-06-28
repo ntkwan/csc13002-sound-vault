@@ -8,14 +8,14 @@ const SongSchema = new Schema(
             required: true,
         },
         /*
-    artist: {
-        ref: 'User',
-        required: true,
-    },
-    album: {
-        ref: 'Playlist',
-    }
-    */
+        artist: {
+            ref: 'User',
+            required: true,
+        },
+        album: {
+            ref: 'Playlist',
+        }
+        */
         genre: {
             type: String,
             required: true,
@@ -39,7 +39,9 @@ const SongSchema = new Schema(
             default: 0,
         },
     },
-    { timestamps: true },
+    {
+        timestamps: true,
+    },
 );
 
 module.exports = mongoose.model('Song', SongSchema);
