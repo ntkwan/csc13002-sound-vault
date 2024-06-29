@@ -1,13 +1,13 @@
 import { useState, useRef, memo } from 'react';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
-const UploadImage = memo(({ label, desc, className, onUpdateChange }) => {
+const UploadImage = memo(({ className, label, desc, onUpdateChange }) => {
 	const [preview, setPreview] = useState(null);
 	const [selectedFileName, setSelectedFileName] = useState('');
 	const formRef = useRef(null);
 
-	const handleImageUpload = (event) => {
-		const file = event.target.files[0];
+	const handleImageUpload = e => {
+		const file = e.target.files[0];
 		if (file) {
 			setSelectedFileName(file.name);
 			const reader = new FileReader();
@@ -18,8 +18,8 @@ const UploadImage = memo(({ label, desc, className, onUpdateChange }) => {
 		}
 	};
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
+	const handleSubmit = e => {
+		e.preventDefault();
 		if (onUpdateChange && selectedFileName) {
 			onUpdateChange(selectedFileName);
 			formRef.current.reset();
@@ -29,7 +29,10 @@ const UploadImage = memo(({ label, desc, className, onUpdateChange }) => {
 	};
 
 	return (
-		<form ref={formRef} className={`upload__container w-full space-y-2 ${className}`} onSubmit={handleSubmit}>
+		<form
+			ref={formRef}
+			className={`upload__container w-full space-y-2 ${className}`}
+			onSubmit={handleSubmit}>
 			<label className="upload__label">{label}</label>
 			<div className="upload__onclick relative w-44 aspect-square border-2 border-dashed rounded-xl content-center">
 				{preview ? (
@@ -49,7 +52,8 @@ const UploadImage = memo(({ label, desc, className, onUpdateChange }) => {
 					className="upload__submit-button w-20 block ml-[19%] text-sm rounded-xl bg-[#666] shadow-md
                     hover:bg-[#888] transition duration-500 ease-in-out"
 					type="submit"
-				>Submit
+				>
+					Submit
 				</button>
 			)}
 			{!preview && (

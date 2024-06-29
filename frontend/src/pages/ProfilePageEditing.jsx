@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { map } from "lodash";
 
 import { PageTitle } from "@components/index";
 import { UploadImage, InputForm } from "@features/profilepage/components/index";
@@ -18,38 +19,24 @@ function ProfilePageEditing() {
 
   const { fullName, email, dob, shortDesc, password } = userProfile;
 
-  // State for form inputs
-  const [newFullName, setNewFullName] = useState(fullName);
-  const [newEmail, setNewEmail] = useState(email);
-  const [newDob, setNewDob] = useState(dob);
-  const [newShortDesc, setNewShortDesc] = useState(shortDesc);
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-
   // State for update success/failure messages
   const [updateInfoSuccess, setUpdateInfoSuccess] = useState(null);
   const [updatePasswordSuccess, setUpdatePasswordSuccess] = useState(null);
 
-  const handleUpdateInfo = () => {
-    setUpdateInfoSuccess(true);
-    dispatch(updateInfo({
-      fullName: newFullName,
-      email: newEmail,
-      dob: newDob,
-      shortDesc: newShortDesc,
-    }));
-
+  const handleUpdateInfo = e => {
+    e.preventDefault();
+    const [fullName, email, dob, shortDesc] = map(e.target, input => input.value);
+    dispatch(updateInfo({ fullName, email, dob, shortDesc }));
     setTimeout(() => {
       setUpdateInfoSuccess(null);
     }, 4000);
   };
 
-  const handleUpdatePassword = () => {
+  const handleUpdatePassword = e => {
+    e.preventDefault();
+    const [oldPassword, newPassword, repeatPassword] = map(e.target, input => input.value);
     if (oldPassword === password && newPassword === repeatPassword) {
-      dispatch(updatePassword({
-        password: newPassword
-      }));
+      dispatch(updatePassword({ password: newPassword }));
       setUpdatePasswordSuccess(true);
     } else {
       setUpdatePasswordSuccess(false);
@@ -59,13 +46,13 @@ function ProfilePageEditing() {
     }, 4000);
   };
 
-  const handleAvatarChange = (fileName) => {
+  const handleAvatarChange = fileName => {
     dispatch(updateAvatar({
       avatar: fileName
     }));
   };
 
-  const handleCoverChange = (fileName) => {
+  const handleCoverChange = fileName => {
     dispatch(updateCover({
       cover: fileName
     }));
@@ -78,15 +65,15 @@ function ProfilePageEditing() {
       {/* Upload profile images */}
       <div className="editing__upload flex items-center space-x-10">
         <UploadImage
+          className="flex-[0.85]"
           label="To upload an avatar click on box or drop file here!"
           desc="File size is less than 320 KB"
-          className="flex-[0.85]"
           onUpdateChange={handleAvatarChange}
         />
         <UploadImage
+          className="flex-[0.85]"
           label="To upload a cover click on box or drop file here!"
           desc="File size is less than 320 KB"
-          className="flex-[0.85]"
           onUpdateChange={handleCoverChange}
         />
         <PageTitle className="flex-[1.8] text-center" title="Upload Profile" />
@@ -94,62 +81,56 @@ function ProfilePageEditing() {
 
       <div className="editing__container flex mt-2 text-sm">
         {/* Information editing form */}
-        <form className="editing__infomation flex-1 relative space-y-4">
+        <form
+          className="editing__infomation flex-1 relative space-y-4"
+          onSubmit={handleUpdateInfo}>
           <h2 className="inline font-bold text-3xl">Your Information</h2>
           <div className="w-5/6 space-y-4">
             <InputForm
               placeholder="Full Name"
-              value={newFullName}
-              onChange={(value) => setNewFullName(value)}
+              initValue={fullName}
             />
             <InputForm
               placeholder="Email"
-              value={newEmail}
-              onChange={(value) => setNewEmail(value)}
+              initValue={email}
             />
             <InputForm
               placeholder="DOB"
-              value={newDob}
-              onChange={(value) => setNewDob(value)}
+              initValue={dob}
               type="date"
             />
             <InputForm
               placeholder="Short Description"
-              value={newShortDesc}
-              onChange={(value) => setNewShortDesc(value)}
+              initValue={shortDesc}
             />
             <div className="flex justify-end items-center">
               <UpdateSuccess onUpdate={updateInfoSuccess} />
-              <UpdateInput onUpdate={handleUpdateInfo} />
+              <UpdateInput />
             </div>
           </div>
         </form>
 
         {/* Password recovery form */}
-        <form className="editing__password flex-1 space-y-4 flex flex-col items-center">
+        <form
+          className="editing__password flex-1 space-y-4 flex flex-col items-center"
+          onSubmit={handleUpdatePassword}>
           <h2 className="inline w-5/6 font-bold text-3xl">Password Recovery</h2>
           <div className="w-5/6 space-y-4">
             <InputForm
               placeholder="Old password"
-              value={oldPassword}
-              onChange={(value) => setOldPassword(value)}
               isPassword
             />
             <InputForm
               placeholder="New password"
-              value={newPassword}
-              onChange={(value) => setNewPassword(value)}
               isPassword
             />
             <InputForm
               placeholder="Repeat the password"
-              value={repeatPassword}
-              onChange={(value) => setRepeatPassword(value)}
               isPassword
             />
             <div className="flex justify-end items-center">
               <UpdateSuccess onUpdate={updatePasswordSuccess} />
-              <UpdateInput onUpdate={handleUpdatePassword} />
+              <UpdateInput />
             </div>
           </div>
         </form>
@@ -160,24 +141,21 @@ function ProfilePageEditing() {
 
 export default ProfilePageEditing;
 
-function UpdateInput({ onUpdate }) {
+function UpdateInput() {
   return (
-    <button
-      className="group w-1/4 h-12 rounded-xl bg-[#666] relative shadow-md
-               hover:bg-[#888] transition duration-500 ease-in-out"
-      onClick={onUpdate}
-      type="button"
-    >Update
-    </button>
+    <input
+      className="group w-1/4 h-12 rounded-xl bg-[#666] relative shadow-md hover:bg-[#888] transition duration-500 ease-in-out"
+      placeholder="Update"
+      type="submit"
+    >
+    </input>
   );
 }
 
 function UpdateSuccess({ onUpdate }) {
   if (onUpdate === null) return null;
-
   const updateStatus = onUpdate ? "Update successfully!" : "Update failed!";
   const color = onUpdate ? "text-[#06dbac]" : "text-[#ff0000]";
-
   return (
     <div className="">
       <span className={`block mr-4 font-bold translate-y-6 ${color} animate-flyInOut opacity-0`}>{updateStatus}</span>
