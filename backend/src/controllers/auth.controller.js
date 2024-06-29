@@ -137,7 +137,6 @@ const reset_password = async (req, res) => {
 
 const send_email = async (send_to, url) => {
     try {
-        console.log(REFRESH_TOKEN);
         oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
         const accessToken = await oAuth2Client.getAccessToken();
         const transporter = nodemailer.createTransport({

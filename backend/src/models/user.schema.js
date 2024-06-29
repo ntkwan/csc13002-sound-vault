@@ -6,30 +6,50 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 
-const UserSchema = new Schema({
-    name: {
-        type: String,
-        require: true,
+const UserSchema = new Schema(
+    {
+        name: {
+            type: String,
+            require: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
+        image: {
+            publicId: {
+                type: String,
+                required: true,
+            },
+            url: {
+                type: String,
+                required: true,
+            },
+        },
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+    {
+        timestamps: true,
     },
-    password: {
-        type: String,
-        required: true,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
-});
+);
 
 UserSchema.methods.setPassword = async function (password) {
     const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
     this.password = await bcrypt.hash(password, salt);
+};
+
+UserSchema.methods.setProfilePicture = async function (imageurl) {
+    this.image.publicId = imageurl.public_id;
+    this.image.url = imageurl.secure_url;
 };
 
 UserSchema.methods.validatePassword = async function (password) {

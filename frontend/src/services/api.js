@@ -53,6 +53,13 @@ export const api = createApi({
                 dispatch(logOut());
             },
         }),
+        uploadAudio: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-audio',
+                method: 'POST',
+                body: file,
+            }),
+        }),
     }),
 });
 

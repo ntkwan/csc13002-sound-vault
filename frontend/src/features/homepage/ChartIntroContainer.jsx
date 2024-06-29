@@ -1,59 +1,70 @@
 function ChartIntroContainer() {
-	const songs = {
-		src: "./src/assets/img/song/",
-		data: [
-			{
-				ext: 'jpg',
-				name: "Chúng ta của hiện tại",
-				artist: "Sơn Tùng MTP"
-			},
-			{
-				ext: 'png',
-				name: "Nếu lúc đó",
-				artist: "tlinh"
-			},
-			{
-				ext: 'png',
-				name: "Lover",
-				artist: "Taylor Swift"
-			},
-			{
-				ext: 'png',
-				name: "Hit me up",
-				artist: "Binz"
-			}
-		]
-	};
+    const songs = {
+        src: './src/assets/img/song/',
+        data: [
+            {
+                ext: 'jpg',
+                name: 'Chúng ta của hiện tại',
+                artist: 'Sơn Tùng MTP',
+            },
+            {
+                ext: 'png',
+                name: 'Nếu lúc đó',
+                artist: 'tlinh',
+            },
+            {
+                ext: 'png',
+                name: 'Lover',
+                artist: 'Taylor Swift',
+            },
+            {
+                ext: 'png',
+                name: 'Hit me up',
+                artist: 'Binz',
+            },
+        ],
+    };
 
-	const { src, data } = songs;
+    const { src, data } = songs;
 
-	return (
-		<div>
-			{/* Intro chart */}
-			<div className="flex-[1] grid grid-rows-2 grid-cols-[auto_auto] gap-20 relative  text-sm">
-				{data.map((song, index) => {
-					const { ext, name, artist } = song;
-					// song container
-					return (
-						<div key={index} className="song__container relative w-[200px] h-[210px]">
-							<div className="song__frame absolute top-5 w-[90%] h-full border-l-[1px] border-b-[1px] border-white
-                              before:content-[''] before:absolute before:bg-white before:top-0 before:left-0 before:w-3 before:h-px
-                            	after:content-[''] after:absolute after:bg-white after:bottom-0 after:right-0 after:w-px after:h-10">
-							</div>
-							<div className="song__info absolute flex flex-col left-5 w-44 h-[110%] space-y-1">
-								<img className="w-full aspect-square" src={`${src}${name}.${ext}`} alt="" />
-								<span className="w-[155px] whitespace-nowrap overflow-hidden text-ellipsis">{name}</span>
-								<div className="flex items-center space-x-2">
-									<img src="src/assets/img/artist-icon.svg" alt="song icon" />
-									<span className="w-[135px] whitespace-nowrap overflow-hidden text-ellipsis">{artist}</span>
-								</div>
-							</div>
-						</div>
-					)
-				})}
-			</div>
-		</div>
-	);
+    return (
+        <div>
+            {/* Intro chart */}
+            <div className="relative grid flex-[1] grid-cols-[auto_auto] grid-rows-2 gap-20 text-sm">
+                {data.map((song, index) => {
+                    const { ext, name, artist } = song;
+                    // song container
+                    return (
+                        <div
+                            key={index}
+                            className="song__container relative h-[210px] w-[200px]"
+                        >
+                            <div className="song__frame absolute top-5 h-full w-[90%] border-b-[1px] border-l-[1px] border-white before:absolute before:left-0 before:top-0 before:h-px before:w-3 before:bg-white before:content-[''] after:absolute after:bottom-0 after:right-0 after:h-10 after:w-px after:bg-white after:content-['']"></div>
+                            <div className="song__info absolute left-5 flex h-[110%] w-44 flex-col space-y-1">
+                                <img
+                                    className="aspect-square w-full"
+                                    src={`${src}${name}.${ext}`}
+                                    alt=""
+                                />
+                                <span className="w-[155px] overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {name}
+                                </span>
+                                <div className="flex items-center space-x-2">
+                                    <img
+                                        src="src/assets/img/artist-icon.svg"
+                                        alt="song icon"
+                                    />
+                                    <span className="w-[135px] overflow-hidden text-ellipsis whitespace-nowrap">
+                                        {artist}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
 }
 
 export default ChartIntroContainer;
