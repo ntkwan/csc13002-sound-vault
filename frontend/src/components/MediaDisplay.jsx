@@ -33,8 +33,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             </div>
             {/* Media content */}
             <div className={`${displayType} mt-4 justify-items-center`}>
-                {data.map((media, index) => {
-                    let { name, desc, ext } = media;
+                {data.map((mediaData, index) => {
+                    let { name, desc, ext } = mediaData;
                     let MediaComponent;
                     switch (displayItems) {
                         case '1':
@@ -66,6 +66,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         </div>
     );
 });
+
+MediaDisplay.displayName = 'MediaDisplay';
 
 MediaDisplay.propTypes = {
     media: PropTypes.shape({
@@ -109,6 +111,8 @@ const MediaItems = memo(({ name, desc, src }) => {
     );
 });
 
+MediaItems.displayName = 'MediaItems';
+
 MediaItems.propTypes = {
     name: PropTypes.string,
     desc: PropTypes.string,
@@ -144,6 +148,8 @@ const MediaItems2 = memo(({ type, name, desc, src }) => {
     );
 });
 
+MediaItems2.displayName = 'MediaItems2';
+
 MediaItems2.propTypes = {
     type: PropTypes.string,
     name: PropTypes.string,
@@ -151,7 +157,7 @@ MediaItems2.propTypes = {
     src: PropTypes.string,
 };
 
-const MediaItems3 = memo(({ type, name, desc, src }) => {
+const MediaItems3 = memo(({ type, name, src }) => {
     const propsDiv =
         type === 'genre'
             ? 'col-span-2 aspect-[2/1]'
@@ -174,6 +180,8 @@ const MediaItems3 = memo(({ type, name, desc, src }) => {
         </div>
     );
 });
+
+MediaItems3.displayName = 'MediaItems3';
 
 MediaItems3.propTypes = {
     type: PropTypes.string,
