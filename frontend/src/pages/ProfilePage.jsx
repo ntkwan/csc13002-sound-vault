@@ -1,155 +1,99 @@
-import { MediaDisplay } from '@components';
 import { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
+import { useSelector, useDispatch } from 'react-redux';
+
 import verifiedIcon from '@assets/img/verified-icon.svg';
+import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
+import { MediaDisplay } from '@components';
+
+const ARTIST_IMG_URL = 'src/assets/img/artist/';
 
 function ProfilePage() {
-    const userProfile = {
-        isMyProfile: true,
-        name: 'Sơn Tùng MTP',
-        isVerified: true,
-        followers: 9875425,
-        popular: [
-            {
-                name: 'Chúng Ta Của Tương Lai',
-                view: 4564561,
-                duration: '03:17',
-            },
-            {
-                name: 'Chúng Ta Của Tương Lai',
-                view: 4564561,
-                duration: '03:17',
-            },
-            {
-                name: 'Chúng Ta Của Tương Lai',
-                view: 4564561,
-                duration: '03:17',
-            },
-            {
-                name: 'Chúng Ta Của Tương Lai',
-                view: 4564561,
-                duration: '03:17',
-            },
-            {
-                name: 'Chúng Ta Của Tương Lai',
-                view: 4564561,
-                duration: '03:17',
-            },
-        ],
-        mediaData: [
-            {
-                type: 'song',
-                header: 'Popular Releases',
-                visibility: '',
-                link: '',
-                data: [
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                ],
-            },
-            {
-                type: 'song',
-                header: 'Albums',
-                visibility: '',
-                link: '',
-                data: [
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: '2023' },
-                ],
-            },
-            {
-                type: 'artist',
-                header: 'Following',
-                visibility: '(only me)',
-                link: '',
-                data: [
-                    { name: 'Sơn Tùng MTP', desc: 'Artist' },
-                    { name: 'Sơn Tùng MTP', desc: 'Artist' },
-                    { name: 'Sơn Tùng MTP', desc: 'Artist' },
-                ],
-            },
-            {
-                type: 'song',
-                header: 'My Playlist',
-                visibility: '(only me)',
-                link: 'library',
-                data: [
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                    { name: 'Chúng Ta Của Tương Lai', desc: 'playlist' },
-                ],
-            },
-        ],
-    };
-
-    const { isMyProfile, name, isVerified, followers, popular, mediaData } =
-        userProfile;
-
-    const [isFollowing, setIsFollowing] = useState(false);
     const [menuVisible, setMenuVisible] = useState(null);
     const menuRef = useRef(null);
+
     function handleClickOutside(event) {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
             setMenuVisible(null);
         }
     }
+
     useEffect(() => {
         if (menuVisible !== null) {
-            document.body.style.overflowY = 'hidden'; // Chỉ cấm cuộn theo trục y
+            document.body.style.overflowY = 'hidden';
             document.addEventListener('mousedown', handleClickOutside);
         } else {
-            document.body.style.overflowY = 'auto'; // Cho phép cuộn theo trục y khi menu đóng
+            document.body.style.overflowY = 'auto';
             document.removeEventListener('mousedown', handleClickOutside);
         }
 
         return () => {
-            document.body.style.overflowY = 'auto'; // Đảm bảo cuộn trang được bật lại khi component bị unmount
+            document.body.style.overflowY = 'auto';
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [menuVisible]);
+
     const toggleMenu = (index) => {
         setMenuVisible(menuVisible === index ? null : index);
     };
 
+    const isFollowing = false;
+    const isMyProfile = true;
+    const userProfile = useSelector(selectUserProfile);
+    // const popular = useSelector(selectPopular);
+    // const mediaData = useSelector(selectMediaData);
+    const {
+        fullName,
+        isVerified,
+        followers,
+        avatar,
+        cover,
+        popular,
+        mediaData,
+    } = userProfile;
+    const dispatch = useDispatch();
+
     return (
-        <div className="profile-page grid auto-rows-auto gap-y-10 pt-1 caret-transparent">
-            {/* Profile Header */}
-            <div className="profile-page__header relative h-80">
+        <div className="profile__page grid auto-rows-auto gap-y-10 caret-transparent">
+            {/* profile header */}
+            <div className="profile__header relative h-80">
+                {/* profile cover */}
                 <img
-                    className="header__bg h-80 max-w-full"
-                    src={`src/assets/img/artist/${name}-bg.jpg`}
+                    className="profile__cover h-full w-full object-cover shadow-2xl"
+                    src={ARTIST_IMG_URL + cover}
                     alt=""
                 />
-                <div className="absolute left-10 top-1/4 flex">
+                <div className="profile__container absolute left-10 top-1/4 flex">
                     <div className="relative">
+                        {/* profile avatar */}
                         <img
-                            className="h-40 w-40 rounded-full shadow-2xl"
-                            src={`src/assets/img/artist/${name}.jpg`}
+                            className="profile__avatar aspect-square w-40 rounded-full object-cover shadow-2xl"
+                            src={ARTIST_IMG_URL + avatar}
                             alt=""
                         />
+                        {/* verified icon */}
                         {isVerified && (
                             <img
-                                className="absolute bottom-[6px] right-[6px] mr-1 h-8 w-8"
+                                className="profile__verified-icon absolute bottom-[6px] right-[10px] aspect-square w-8"
                                 src={verifiedIcon}
                                 alt=""
                             />
                         )}
                     </div>
+                    {/* profile info */}
                     <div className="relative ml-5 content-center">
-                        <div className="font-alfaslabone text-7xl drop-shadow-2xl">
-                            {name}
-                        </div>
-                        <p className="absolute">
+                        <p className="text-shadow-1">Profile</p>
+                        <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
+                            {fullName}
+                        </p>
+                        <p className="text-shadow-1">
                             {followers.toLocaleString()} followers
                         </p>
                     </div>
                 </div>
             </div>
+            {/* profile header end */}
 
             {/* Actions Section */}
             <div className="flex space-x-6">
@@ -159,20 +103,14 @@ function ProfilePage() {
                 {isMyProfile ? (
                     <>
                         <Button>upload music</Button>
-                        <Button>edit profile</Button>
+                        <Button to="editing">edit profile</Button>
                         <Button>donation</Button>
                     </>
                 ) : (
                     <>
-                        {(() => {
-                            const handleClick = () => {
-                                setIsFollowing(!isFollowing);
-                            };
-                            const content = isFollowing ? 'unfollow' : 'follow';
-                            return (
-                                <Button onClick={handleClick}>{content}</Button>
-                            );
-                        })()}
+                        <Button onClick={() => dispatch(toggleFollow())}>
+                            {isFollowing ? 'unfollow' : 'follow'}
+                        </Button>
                         <Button>donate</Button>
                     </>
                 )}
@@ -246,19 +184,15 @@ function ProfilePage() {
 
 export default ProfilePage;
 
-Button.propTypes = {
-    onClick: PropTypes.func,
-    children: PropTypes.node,
-};
-
-function Button({ onClick, children }) {
+function Button({ to, onClick, children }) {
     return (
-        <button
-            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-xs uppercase"
+        <Link
+            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
             onClick={onClick}
+            to={to}
         >
             {children}
-            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-500 ease-in-out group-hover:opacity-100"></div>
-        </button>
+            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+        </Link>
     );
 }

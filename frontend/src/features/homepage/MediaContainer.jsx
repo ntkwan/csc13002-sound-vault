@@ -3,8 +3,8 @@ import { MediaDisplay } from '@components';
 function MediaContainer() {
     const mediaData = [
         {
-            type: 'artist',
-            header: 'Featured Artists',
+            type: 'Artist',
+            title: 'Featured Artists',
             visibility: '',
             link: 'artist',
             data: [
@@ -17,7 +17,7 @@ function MediaContainer() {
         },
         {
             type: 'song',
-            header: 'Trending',
+            title: 'Trending',
             visibility: '',
             link: 'library',
             data: [
@@ -31,7 +31,7 @@ function MediaContainer() {
         },
         {
             type: 'song',
-            header: 'New Release',
+            title: 'New Release',
             visibility: '',
             link: 'library',
             data: [
@@ -48,7 +48,7 @@ function MediaContainer() {
         },
         {
             type: 'album',
-            header: 'Top Album',
+            title: 'Top Album',
             visibility: '',
             link: 'library',
             data: [
@@ -70,7 +70,7 @@ function MediaContainer() {
                     media={media}
                     displayItems="1"
                     displayType={
-                        media.header === 'Featured Artists'
+                        media.title === 'Featured Artists'
                             ? 'grid grid-cols-5'
                             : 'grid grid-cols-6'
                     }

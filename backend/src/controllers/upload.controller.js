@@ -35,13 +35,11 @@ const upload_song = async (req, res) => {
         });
     }
 
-    return res
-        .status(200)
-        .json({
-            message: 'Upload song successfully',
-            song: song_data,
-            audioResponse: audioResponse.secure_url,
-        });
+    return res.status(200).json({
+        message: 'Upload song successfully',
+        song: song_data,
+        audioResponse: audioResponse.secure_url,
+    });
 };
 
 const upload_profile_pic = async (req, res) => {

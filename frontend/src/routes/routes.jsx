@@ -4,12 +4,12 @@ import { DefaultLayout, AuthenticationLayout } from '@layouts';
 import {
     HomePage,
     ProfilePage,
+    ProfilePageEditing,
     ArtistPage,
     SignInPage,
     SignUpPage,
     ResetPassPage,
     ForgotPassPage,
-    ChartPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
         children: [
             { path: '', Component: HomePage },
             { path: 'profile', Component: ProfilePage },
+            { path: 'profile/editing', Component: ProfilePageEditing },
             { path: 'artist', Component: ArtistPage },
-            { path: 'chart', Component: ChartPage },
         ],
     },
     {

@@ -7,7 +7,7 @@ function DefaultLayout() {
         <>
             <Header />
             <Sidebar />
-            <main className="relative mb-[70px] ml-[175px] mt-[70px] px-20">
+            <main className="relative mb-[70px] ml-[175px] mt-[70px] px-28 pb-8">
                 <Outlet />
             </main>
             <Musicbar />
