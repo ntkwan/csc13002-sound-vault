@@ -1,3 +1,4 @@
+import { logOut } from '@features/authentication/slices';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
@@ -43,6 +44,22 @@ export const api = createApi({
                 body,
             }),
         }),
+        logOut: builder.mutation({
+            query: () => ({
+                url: '/signout',
+                method: 'POST',
+            }),
+            onQueryStarted: (_, { dispatch }) => {
+                dispatch(logOut());
+            },
+        }),
+        uploadAudio: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-audio',
+                method: 'POST',
+                body: file,
+            }),
+        }),
     }),
 });
 
@@ -51,4 +68,5 @@ export const {
     useSignUpMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation,
+    useLogOutMutation,
 } = api;

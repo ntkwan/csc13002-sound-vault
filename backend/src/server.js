@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const express = require('express');
 const cors = require('cors');
 
-const databaseModule = require('./database');
+const databaseModule = require('./config/database.config');
 const errorLogging = require('http-errors');
 
 const port = process.env.PORT;
@@ -27,13 +27,15 @@ app.use(morgan('combined'));
 //Routes
 const authorize = require('./routes/auth.route');
 const user = require('./routes/user.route');
-
-app.use(authorize);
-app.use(user);
+const file_controller = require('./routes/upload.route');
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+app.use(authorize);
+app.use(user);
+app.use(file_controller);
 
 // Error handling
 app.use((req, res, next) => {
