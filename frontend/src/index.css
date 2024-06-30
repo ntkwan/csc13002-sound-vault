@@ -57,4 +57,14 @@
     .heading-stroke-logo {
         -webkit-text-stroke: 3px #b352f3;
     }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        @apply appearance-none;
+    }
+    .slider:hover::-webkit-slider-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
+    }
 }

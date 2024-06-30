@@ -12,16 +12,20 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { api } from '@services/api';
 import { authReducer } from '@features/authentication/slices';
+import { playerReducer } from '@features/player/slices';
+import playerTransform from '@features/player/transform';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth'],
+    whitelist: ['auth', 'player'],
+    transforms: [playerTransform],
 };
 
 const rootReducer = combineReducers({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
+    player: playerReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
