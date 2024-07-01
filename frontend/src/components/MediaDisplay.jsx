@@ -1,23 +1,24 @@
-import { memo } from 'react';
+import { useState, useRef, memo } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const IMG_URL = 'src/assets/img/';
+const SONG_IMG_URL = 'src/assets/img/song/';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     if (!media) return null;
     const { type, title, visibility, link, data } = media;
     return (
-        <div className="media__display grid grid-rows-[min-content_auto]">
+        <section className="media__display grid grid-rows-[min-content_auto]">
             {/* media title container*/}
-            <div className="media__title-container flex items-center justify-between">
+            <title className="media__title-container flex items-center justify-between">
                 {/* media tile */}
-                <div className="media__title space-x-3 text-3xl">
+                <h2 className="media__title space-x-3 text-3xl">
                     <span className="media__title-name font-bold">{title}</span>
                     <span className="media__title-visibility italic">
                         {visibility}
                     </span>
-                </div>
+                </h2>
                 {/* media link */}
                 {link && (
                     <Link
@@ -30,7 +31,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         <i className="media__link-icon ri-arrow-right-line text-base"></i>
                     </Link>
                 )}
-            </div>
+            </title>
             {/* Media content */}
             <div className={`${displayType} mt-4 justify-items-center`}>
                 {data.map((mediaData, index) => {
@@ -63,11 +64,9 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     );
                 })}
             </div>
-        </div>
+        </section>
     );
 });
-
-MediaDisplay.displayName = 'MediaDisplay';
 
 MediaDisplay.propTypes = {
     media: PropTypes.shape({
@@ -111,8 +110,6 @@ const MediaItems = memo(({ name, desc, src }) => {
     );
 });
 
-MediaItems.displayName = 'MediaItems';
-
 MediaItems.propTypes = {
     name: PropTypes.string,
     desc: PropTypes.string,
@@ -148,8 +145,6 @@ const MediaItems2 = memo(({ type, name, desc, src }) => {
     );
 });
 
-MediaItems2.displayName = 'MediaItems2';
-
 MediaItems2.propTypes = {
     type: PropTypes.string,
     name: PropTypes.string,
@@ -181,11 +176,53 @@ const MediaItems3 = memo(({ type, name, src }) => {
     );
 });
 
-MediaItems3.displayName = 'MediaItems3';
+MediaItems3.propTypes = MediaItems.propTypes;
 
-MediaItems3.propTypes = {
-    type: PropTypes.string,
-    name: PropTypes.string,
-    desc: PropTypes.string,
-    src: PropTypes.string,
-};
+const MediaItems4 = memo(({ mediaList }) => {
+    const [menuVisible, setMenuVisible] = useState(null);
+
+    const toggleMenu = (index) => {
+        setMenuVisible(menuVisible === index ? null : index);
+    };
+
+    return mediaList.map((media, index) => {
+        const { name, view, duration } = media;
+        return (
+            <div key={index} className="flex w-full justify-between items-center px-8">
+                <div className="flex items-center space-x-8">
+                    <span className="w-2">{index + 1}</span>
+                    <img
+                        className="w-14 aspect-square object-cover"
+                        src={SONG_IMG_URL + `${name}.jpg`}
+                        alt={name}
+                    />
+                    <span>{name}</span>
+                </div>
+                <span>{view}</span>
+                <span>{duration}</span>
+                <button
+                    className="relative"
+                    onClick={() => toggleMenu(index)}>
+                    <i className="ri-more-fill text-2xl"></i>
+                    {menuVisible === index && (
+                        <div className="absolute right-0 z-[2] mt-2 w-40 h-max rounded-xl text-sm border-[2px] shadow-md border-[#999] bg-[#222]">
+                            <ul>
+                                <li className="cursor-pointer flex space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    <i className="ri-share-line text-xl leading-none"></i>
+                                    <span>Share</span>
+                                </li>
+                                <li className="cursor-pointer flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    <i className="ri-error-warning-line text-xl leading-none"></i>
+                                    <span>Report</span>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </button>
+            </div>
+        );
+    });
+});
+
+
+export { MediaItems, MediaItems2, MediaItems3, MediaItems4 };

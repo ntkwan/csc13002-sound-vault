@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 function Sidebar() {
     return (
-        <div className="sidebar fixed bottom-[70px] top-[70px] z-10 flex w-max select-none flex-col justify-evenly text-xs uppercase backdrop-blur-md">
-            <div className="ml-2">
+        <aside className="sidebar fixed bottom-[70px] top-[70px] z-10 flex w-max select-none flex-col justify-evenly text-xs uppercase backdrop-blur-md">
+            <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <SidebarLink to="" icon={HomeIcon}>
                     Home
@@ -20,8 +20,8 @@ function Sidebar() {
                 <SidebarLink to="artist" icon={HeadphoneIcon}>
                     Artists
                 </SidebarLink>
-            </div>
-            <div className="ml-2">
+            </section>
+            <section className="ml-2">
                 <span className="ml-3">Help</span>
                 <SidebarLink to="setting" icon={SettingIcon}>
                     Settings
@@ -32,8 +32,8 @@ function Sidebar() {
                 <SidebarLink to="term&policy" icon={InfoIcon}>
                     Terms & Policy
                 </SidebarLink>
-            </div>
-        </div>
+            </section>
+        </aside>
     );
 }
 

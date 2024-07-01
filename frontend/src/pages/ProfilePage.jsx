@@ -5,44 +5,15 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
-import { MediaDisplay } from '@components';
+import { MediaDisplay, MediaItems4 } from '@components';
 
 const ARTIST_IMG_URL = 'src/assets/img/artist/';
+const SONG_IMG_URL = 'src/assets/img/song/';
 
 function ProfilePage() {
-    const [menuVisible, setMenuVisible] = useState(null);
-    const menuRef = useRef(null);
-
-    function handleClickOutside(event) {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-            setMenuVisible(null);
-        }
-    }
-
-    useEffect(() => {
-        if (menuVisible !== null) {
-            document.body.style.overflowY = 'hidden';
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.body.style.overflowY = 'auto';
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.body.style.overflowY = 'auto';
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [menuVisible]);
-
-    const toggleMenu = (index) => {
-        setMenuVisible(menuVisible === index ? null : index);
-    };
-
     const isFollowing = false;
     const isMyProfile = true;
     const userProfile = useSelector(selectUserProfile);
-    // const popular = useSelector(selectPopular);
-    // const mediaData = useSelector(selectMediaData);
     const {
         fullName,
         isVerified,
@@ -53,25 +24,34 @@ function ProfilePage() {
         mediaData,
     } = userProfile;
     const dispatch = useDispatch();
-
     return (
-        <div className="profile__page grid auto-rows-auto gap-y-10 caret-transparent">
+        <div className="profile__page space-y-10 caret-transparent">
             {/* profile header */}
-            <div className="profile__header relative h-80">
+            <div className="profile__header w-full h-96 content-center">
                 {/* profile cover */}
-                <img
-                    className="profile__cover h-full w-full object-cover shadow-2xl"
-                    src={ARTIST_IMG_URL + cover}
-                    alt=""
-                />
-                <div className="profile__container absolute left-10 top-1/4 flex">
-                    <div className="relative">
-                        {/* profile avatar */}
-                        <img
-                            className="profile__avatar aspect-square w-40 rounded-full object-cover shadow-2xl"
-                            src={ARTIST_IMG_URL + avatar}
+                {cover != "" ? (
+                    <div className="absolute top-0 left-28 right-0 h-96">
+                        < img
+                            className="profile__cover w-full h-full rounded-xl object-cover shadow-2xl"
+                            src={ARTIST_IMG_URL + cover}
                             alt=""
                         />
+                    </div>
+                ) : (
+                    <div className="profile__cover absolute top-0 left-28 right-0 h-96 border-2 border-t-0 rounded-xl"></div>
+                )}
+                <div className="profile__container flex items-center ml-[5%]">
+                    <div className="relative min-w-40 h-40">
+                        {/* profile avatar */}
+                        {avatar != "" ? (
+                            <img
+                                className="profile__avatar w-full h-full rounded-full object-cover shadow-2xl"
+                                src={ARTIST_IMG_URL + avatar}
+                                alt=""
+                            />
+                        ) : (
+                            <i className="bx bxs-user-circle w-40 aspect-square text-[180px] leading-none"></i>
+                        )}
                         {/* verified icon */}
                         {isVerified && (
                             <img
@@ -84,7 +64,7 @@ function ProfilePage() {
                     {/* profile info */}
                     <div className="relative ml-5 content-center">
                         <p className="text-shadow-1">Profile</p>
-                        <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
+                        <p className="text-shadow-2 text-stroke-1 text-7xl font-alfaslabone">
                             {fullName}
                         </p>
                         <p className="text-shadow-1">
@@ -97,8 +77,8 @@ function ProfilePage() {
 
             {/* Actions Section */}
             <div className="flex space-x-6">
-                <button className="h-[70px] w-[70px] content-center rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                    <i className="ri-play-fill text-[42px]"></i>
+                <button className="min-w-[70px] h-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
+                    <i className="ri-play-fill text-[42px] ml-1"></i>
                 </button>
                 {isMyProfile ? (
                     <>
@@ -117,57 +97,15 @@ function ProfilePage() {
             </div>
 
             {/* Content Section */}
-            <div className="slider grid grid-rows-[min-content_auto]">
-                <div className="space-x-3">
-                    <h2 className="inline text-3xl font-bold">Popular</h2>
-                </div>
+            <div className="media grid grid-rows-[min-content_auto]">
+                <h2 className="inline text-3xl font-bold">Popular</h2>
                 <div className="slider__media mt-4 grid gap-y-3">
-                    {popular.map((media, index) => {
-                        const { name, view, duration } = media;
-                        return (
-                            <div
-                                key={index}
-                                className="flex w-full items-center justify-between px-8"
-                            >
-                                <div className="flex items-center space-x-8">
-                                    <span className="w-2">{index + 1}</span>
-                                    <img
-                                        className="h-14 w-14"
-                                        src={`src/assets/img/song/${name}.jpg`}
-                                        alt={name}
-                                    />
-                                    <span>{name}</span>
-                                </div>
-                                <span>{view}</span>
-                                <span>{duration}</span>
-                                <div className="relative" ref={menuRef}>
-                                    <i
-                                        className="ti-more-alt cursor-pointer"
-                                        onClick={() => toggleMenu(index)}
-                                    ></i>
-                                    {menuVisible === index && (
-                                        <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                            <ul>
-                                                <li className="cursor-pointer space-x-2 rounded-t-xl border-b border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ti-share"></i>{' '}
-                                                    <span>Share</span>
-                                                </li>
-                                                <li className="cursor-pointer space-x-2 rounded-b-xl border-t border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ti-flag"></i>{' '}
-                                                    <span>Report</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
+                    <MediaItems4 mediaList={popular} />
                 </div>
             </div>
 
             {mediaData.map((media, index) => {
-                if (media.visibility === '(only me)' && !isMyProfile)
+                if (!media.visibility && !isMyProfile)
                     return null;
                 return (
                     <MediaDisplay

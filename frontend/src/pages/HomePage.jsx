@@ -5,19 +5,20 @@ import homeintroImage from '@assets/img/homeintro.svg';
 function HomePage() {
     useEffect(() => {
         const reloadKey = Date.now();
+        console.log('reloadKey', reloadKey);
         document.querySelector('.homepage').setAttribute('key', reloadKey);
     }, []);
 
     return (
         <div className="homepage relative grid auto-rows-auto gap-y-16 caret-transparent">
             {/* Intro SoundVault */}
-            <div className="homepage__container flex items-center justify-between text-white">
+            <div className="homepage__container flex items-center text-white">
                 {/* Intro text */}
-                <div className="homepage__text flex-[0.75] self-center">
-                    <h2 className="heading-stroke-logo font-lilitaone text-7xl">
+                <div className="homepage__text -translate-y-[20%]">
+                    <h2 className="heading-stroke-logo font-lilitaone text-[90px] text-nowrap leading-none">
                         SoundVault
                     </h2>
-                    <h3 className="font-italianno text-7xl">
+                    <h3 className="font-italianno text-[90px] text-nowrap leading-none">
                         Digital Music for fans
                     </h3>
                     <p className="text-xl">
@@ -29,16 +30,18 @@ function HomePage() {
                 </div>
                 {/* Intro image */}
                 <img
-                    className="homepage__img w-[450px]"
+                    className="homepage__img object-cover translate-x-[15%] -translate-y-[8%]"
                     src={homeintroImage}
                     alt=""
                 />
             </div>
+
+            {/* Chart Intro */}
             <div className="chart-intro flex justify-between font-kodchasan text-white">
                 <ChartIntroContainer />
                 {/* Intro chart text */}
-                <div className="flex-[0.75] content-center">
-                    <h2 className="heading-stroke font-italianno text-7xl">
+                <div className="flex-[0.75] content-center w-min">
+                    <h2 className="heading-stroke font-italianno text-[100px] text-nowrap">
                         SoundVault Charts
                     </h2>
                     <p className="text-xl">
