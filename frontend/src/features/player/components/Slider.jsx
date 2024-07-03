@@ -11,16 +11,16 @@ function Slider(props) {
     const { value, max } = props;
     return (
         <div className="relative h-1 w-full">
-            <div className="absolute h-full w-full rounded-full bg-gray-600"></div>
+            <div className="absolute left-0 h-full w-full rounded-full bg-gray-600"></div>
             <input
                 type="range"
                 min={0}
                 step="any"
                 {...props}
-                className="slider peer absolute z-20 h-full w-full cursor-pointer appearance-none rounded-full bg-transparent"
+                className="slider peer absolute left-0 z-30 h-full w-full cursor-pointer appearance-none rounded-full bg-transparent"
             />
             <div
-                className="absolute z-10 h-full rounded-full bg-white peer-hover:bg-teal-500"
+                className="absolute left-0 z-20 h-full rounded-full bg-white peer-hover:bg-teal-500"
                 style={{
                     width: `${(value / max) * 100}%`,
                 }}

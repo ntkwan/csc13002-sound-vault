@@ -1,7 +1,7 @@
 export {
     default as playerReducer,
     setIsPlaying,
-    setIsShuffled,
+    setIsShuffle,
     setIsRepeat,
     setCurrentTrack,
     setCurrentTrackIndex,

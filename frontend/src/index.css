@@ -58,11 +58,24 @@
         -webkit-text-stroke: 3px #b352f3;
     }
 
+    /* 
+        webkit: Chrome, Safari, Edge, Opera
+        moz: Firefox
+    */
     .slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         @apply appearance-none;
     }
+    .slider::-moz-range-thumb {
+        @apply bg-transparent;
+        @apply border-none;
+    }
     .slider:hover::-webkit-slider-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
+    }
+    .slider:hover::-moz-range-thumb {
         @apply bg-white;
         @apply size-3;
         @apply rounded-full;
