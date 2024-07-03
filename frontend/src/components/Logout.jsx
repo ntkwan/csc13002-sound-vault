@@ -15,7 +15,7 @@ function Logout() {
         <Loading />
     ) : (
         <button
-            className="block h-full w-max content-center rounded-full px-[9px] uppercase transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+            className="block h-full w-max content-center rounded-full uppercase transition-colors"
             onClick={handleAction}
         >
             Log out

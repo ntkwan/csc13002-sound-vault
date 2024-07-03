@@ -13,6 +13,7 @@ const initialState = {
     avatar: "Sơn Tùng MTP.jpg",
     cover: "Sơn Tùng MTP-bg.jpg",
     password: "tung1234",
+    isAdmin: true,
     popular: [
         { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },
         { name: "Chúng Ta Của Tương Lai", view: 4564561, duration: "03:17" },

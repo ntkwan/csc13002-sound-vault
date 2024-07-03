@@ -69,4 +69,9 @@
     .text-stroke-1 {
         -webkit-text-stroke: 1px #000;
     }
+
+    input[type='date']::-webkit-calendar-picker-indicator,
+    input[type='search']::-webkit-search-cancel-button {
+        display: none;
+    }
 }

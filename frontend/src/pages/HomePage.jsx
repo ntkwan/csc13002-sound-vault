@@ -10,7 +10,7 @@ function HomePage() {
     }, []);
 
     return (
-        <div className="homepage relative grid auto-rows-auto gap-y-16 caret-transparent">
+        <div className="homepage grid auto-rows-auto gap-y-16 caret-transparent">
             {/* Intro SoundVault */}
             <div className="homepage__container flex items-center text-white">
                 {/* Intro text */}
@@ -30,7 +30,7 @@ function HomePage() {
                 </div>
                 {/* Intro image */}
                 <img
-                    className="homepage__img object-cover translate-x-[15%] -translate-y-[8%]"
+                    className="homepage__img object-cover translate-x-[13%] -translate-y-[8%]"
                     src={homeintroImage}
                     alt=""
                 />

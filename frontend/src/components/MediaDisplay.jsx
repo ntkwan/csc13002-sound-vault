@@ -1,4 +1,4 @@
-import { useState, useRef, memo } from 'react';
+import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -68,6 +68,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     );
 });
 
+MediaDisplay.displayName = 'MediaDisplay';
 MediaDisplay.propTypes = {
     media: PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -110,6 +111,7 @@ const MediaItems = memo(({ name, desc, src }) => {
     );
 });
 
+MediaItems.displayName = 'MediaItems';
 MediaItems.propTypes = {
     name: PropTypes.string,
     desc: PropTypes.string,
@@ -145,6 +147,7 @@ const MediaItems2 = memo(({ type, name, desc, src }) => {
     );
 });
 
+MediaItems2.displayName = 'MediaItems2';
 MediaItems2.propTypes = {
     type: PropTypes.string,
     name: PropTypes.string,
@@ -176,6 +179,7 @@ const MediaItems3 = memo(({ type, name, src }) => {
     );
 });
 
+MediaItems3.displayName = 'MediaItems3';
 MediaItems3.propTypes = MediaItems.propTypes;
 
 const MediaItems4 = memo(({ mediaList }) => {
