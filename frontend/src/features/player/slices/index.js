@@ -1,10 +1,10 @@
 export {
     default as playerReducer,
-    setIsPlaying,
+    play,
+    pause,
     setIsShuffle,
     setIsRepeat,
     setCurrentTrack,
-    setCurrentTrackIndex,
     setCurrentTime,
     setDuration,
     setVolume,

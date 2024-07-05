@@ -12,8 +12,8 @@ const initialState = {
         thumbnail:
             'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/6/d/1/b6d1ed0d09b63c3006e56f7e7839014e.jpg',
         screen: 'https://i.scdn.co/image/ab67618600001016587d17a2b9860077302125d1',
+        theme: '',
     },
-    currentTrackIndex: 0,
     currentTime: 0,
     duration: 0,
     volume: 50,
@@ -23,8 +23,11 @@ const playerSlice = createSlice({
     name: 'player',
     initialState,
     reducers: {
-        setIsPlaying(state, action) {
-            state.isPlaying = action.payload;
+        play(state) {
+            state.isPlaying = true;
+        },
+        pause(state) {
+            state.isPlaying = false;
         },
         setIsShuffle(state, action) {
             state.isShuffle = action.payload;
@@ -34,9 +37,6 @@ const playerSlice = createSlice({
         },
         setCurrentTrack(state, action) {
             state.currentTrack = action.payload;
-        },
-        setCurrentTrackIndex(state, action) {
-            state.currentTrackIndex = Number(action.payload);
         },
         setCurrentTime(state, action) {
             state.currentTime = Number(action.payload);
@@ -51,11 +51,11 @@ const playerSlice = createSlice({
 });
 
 export const {
-    setIsPlaying,
+    play,
+    pause,
     setIsShuffle,
     setIsRepeat,
     setCurrentTrack,
-    setCurrentTrackIndex,
     setCurrentTime,
     setDuration,
     setVolume,

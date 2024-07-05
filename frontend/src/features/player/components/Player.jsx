@@ -1,13 +1,15 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentPlayer } from '@services/selectors';
 import {
-    setIsPlaying,
+    play,
+    pause,
     setIsShuffle,
     setIsRepeat,
     setCurrentTime,
     setDuration,
 } from '../slices';
+import { useLoading, useSpacebar, useMouseMove } from '../hooks';
 import Slider from './Slider';
 import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
@@ -16,7 +18,6 @@ function Player() {
     const [isSolidHeart, setIsSolidHeart] = useState(false);
     const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
-    const [isMouseMoved, setIsMouseMoved] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
 
@@ -61,7 +62,8 @@ function Player() {
     );
 
     const handlePlayClick = () => {
-        dispatch(setIsPlaying(!isPlaying));
+        if (isPlaying) dispatch(pause());
+        else dispatch(play());
     };
 
     const handleRepeatClick = () => {
@@ -83,19 +85,16 @@ function Player() {
         setOnMouseDown(false);
     };
 
+    const [isLoading, setLoading] = useLoading(1000);
+    const isMouseMoved = useMouseMove();
+    useSpacebar();
+
     const handleExpandClick = () => {
         setIsExpand(!isExpand);
+        if (!isExpand) {
+            setLoading();
+        }
     };
-
-    const handleMouseMove = () => {
-        setIsMouseMoved(true);
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            setIsMouseMoved(false);
-        }, 2000);
-    };
-
-    let timeout;
 
     useEffect(() => {
         if (!audioRef.current) return;
@@ -103,11 +102,10 @@ function Player() {
         const handleLoadedMetadata = () => {
             dispatch(setDuration(audio.duration));
             setDurationRender(formatTimeDataToRender(audio.duration));
-            if (currentTime !== '0:00') {
+            if (currentTime !== 0) {
                 audio.currentTime = currentTime;
             }
         };
-
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement) {
                 setIsExpand(false);
@@ -115,9 +113,7 @@ function Player() {
         };
 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-
         document.addEventListener('fullscreenchange', handleFullscreenChange);
-        document.addEventListener('mousemove', handleMouseMove);
 
         return () => {
             audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
@@ -125,9 +121,8 @@ function Player() {
                 'fullscreenchange',
                 handleFullscreenChange,
             );
-            document.removeEventListener('mousemove', handleMouseMove);
         };
-    }, []);
+    }, [dispatch, currentTime]);
 
     useEffect(() => {
         if (isExpand) {
@@ -155,7 +150,7 @@ function Player() {
         return () => {
             audio.removeEventListener('timeupdate', handleTimeUpdate);
         };
-    }, [onMouseDown, onMouseUp, currentTime]);
+    }, [onMouseDown, onMouseUp, currentTime, dispatch]);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -166,20 +161,7 @@ function Player() {
     useEffect(() => {
         if (!audioRef.current) return;
         const audio = audioRef.current;
-
-        const handleEnded = () => {
-            if (isRepeat) {
-                audio.play();
-            } else {
-                dispatch(setIsPlaying(false));
-            }
-        };
-
-        audio.addEventListener('ended', handleEnded);
-
-        return () => {
-            audio.removeEventListener('ended', handleEnded);
-        };
+        audio.loop = isRepeat;
     }, [isRepeat, dispatch]);
 
     useEffect(() => {
@@ -195,7 +177,7 @@ function Player() {
         } else {
             audio.pause();
         }
-    }, [isPlaying]);
+    }, [isPlaying, currentTime]);
 
     const DefaultPlayer = (
         <div
@@ -288,10 +270,6 @@ function Player() {
                 <AudioButton>
                     <i className="playlist-icon ri-play-list-2-fill"></i>
                 </AudioButton>
-                {/* lyric */}
-                <AudioButton>
-                    <i className="ri-music-2-fill"></i>
-                </AudioButton>
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
                 {/* expand */}
@@ -315,16 +293,23 @@ function Player() {
                     alt="Song Screen Image"
                     className="absolute size-full object-cover"
                 />
-                <div className="absolute size-full bg-black opacity-70 transition-opacity duration-1000 ease-in-out"></div>
+                <div className="absolute size-full bg-black opacity-70"></div>
+                <div
+                    className={`absolute size-full animate-fade-out opacity-0 ${currentTrack.theme}`}
+                ></div>
             </div>
             {/* title */}
-            <div className="absolute bottom-80 ml-24 flex items-center gap-10">
+            <div
+                className={`absolute bottom-56 ml-24 flex -translate-y-20 items-center gap-10 ${isLoading ? 'transition-transform duration-1000' : ''}`}
+            >
                 <img
-                    className="size-44 rounded-lg object-cover"
+                    className={`size-44 animate-fade-in rounded-lg object-cover transition-all duration-1000 ${isLoading ? 'size-[30rem]' : ''}`}
                     src={currentTrack.thumbnail}
                     alt=""
                 />
-                <div className="flex flex-col gap-3 self-end">
+                <div
+                    className={`-ml-40 flex translate-x-40 flex-col gap-3 self-end ${isLoading ? 'transition-transform duration-1000' : ''}`}
+                >
                     <span className="font-alfaslabone text-5xl">
                         {currentTrack.title}
                     </span>
@@ -335,7 +320,7 @@ function Player() {
             </div>
             {/* top */}
             <div
-                className={`absolute bottom-[4.5rem] left-0 right-0 flex flex-col items-center transition-opacity duration-500 ease-in-out ${!isMouseMoved ? 'opacity-0' : 'opacity-100'}`}
+                className={`absolute bottom-[4.5rem] left-0 right-0 flex flex-col items-center opacity-0 ${!isLoading ? 'will-change-opacity transition-opacity duration-1000' : ''} ${isMouseMoved ? 'opacity-100' : ''}`}
             >
                 <div className="flex h-min w-11/12 items-center justify-between gap-3">
                     <div className="min-w-10 text-right">
@@ -414,10 +399,6 @@ function Player() {
                             ) : (
                                 <i className="ri-bookmark-line"></i>
                             )}
-                        </AudioButton>
-                        {/* lyric */}
-                        <AudioButton className="text-2xl">
-                            <i className="ri-music-2-fill"></i>
                         </AudioButton>
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
