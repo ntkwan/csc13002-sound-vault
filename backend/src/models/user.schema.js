@@ -36,6 +36,9 @@ const UserSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        refreshToken: {
+            type: String,
+        },
     },
     {
         timestamps: true,
@@ -59,13 +62,26 @@ UserSchema.methods.validatePassword = async function (password) {
 UserSchema.methods.generateToken = function () {
     return jwt.sign(
         {
+            _id: this._id,
             name: this.name,
             email: this.email,
             isAdmin: this.isAdmin,
         },
-        process.env.JWT_KEY,
+        process.env.ACCESS_KEY,
         {
-            expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+            expiresIn: process.env.ACCESS_KEY_EXPIRES_IN || '1h',
+        },
+    );
+};
+
+UserSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id,
+        },
+        process.env.REFRESH_KEY,
+        {
+            expiresIn: process.env.REFRESH_KEY_EXPIRES_IN || '1d',
         },
     );
 };

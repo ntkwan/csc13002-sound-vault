@@ -80,4 +80,20 @@ GET {{host}}/getall
 Authorization: Bearer [TOKEN]
 
 ### sign out
+@AccessToken = 
 POST {{host}}/signout
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+{
+    "email": "a@gmail.com"
+}
+
+### refresh token
+@refreshToken = 
+POST {{host}}/refresh-token 
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}

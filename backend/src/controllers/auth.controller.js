@@ -80,11 +80,30 @@ const signin = async (req, res) => {
             });
         }
 
-        const Token = User.generateToken();
-        return res.status(200).json({
-            message: 'Sign in successfully',
-            token: Token,
-        });
+        const accessToken = User.generateToken();
+        const refreshToken = User.generateRefreshToken();
+
+        User.refreshToken = refreshToken;
+        await User.save({ validateBeforeSave: false });
+
+        const loggedInUser = await UserModel.findById(User._id).select(
+            '-password -refreshToken',
+        );
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        return res
+            .status(200)
+            .cookie('refreshToken', refreshToken, options)
+            .json({
+                user: loggedInUser,
+                accessToken,
+                refreshToken,
+                message: 'Sign in successfully',
+            });
     } catch (error) {
         return res.status(500).json({
             message: error.message,
@@ -92,9 +111,72 @@ const signin = async (req, res) => {
     }
 };
 
+const refresh_token = async (req, res) => {
+    const incomingRefreshToken =
+        req.body.refreshToken || req.cookies.refreshToken;
+
+    if (!incomingRefreshToken) {
+        return res.status(401).json({ message: 'Refresh token not found' });
+    }
+
+    try {
+        const decodedToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_KEY,
+        );
+
+        const user = await UserModel.findById(decodedToken?._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user?.refreshToken !== incomingRefreshToken) {
+            return res
+                .status(401)
+                .json({ message: 'Refresh token is incorrect' });
+        }
+
+        const options = {
+            httpOnly: true,
+            secure: true, // Enable in a production environment with HTTPS
+        };
+
+        const accessToken = user.generateToken();
+        const refreshToken = user.generateRefreshToken();
+
+        return res
+            .status(200)
+            .cookie('refreshToken', refreshToken, options)
+            .json({
+                accessToken,
+                refreshToken,
+                message: 'Access token refreshed',
+            });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 const signout = async (req, res) => {
-    res.clearCookie('jwt');
-    res.redirect('/');
+    const userId = UserModel.findOne({ email: req.body.email })._id;
+    await UserModel.findByIdAndUpdate(
+        userId,
+        {
+            $set: { refreshToken: undefined },
+        },
+        { new: true },
+    );
+
+    const options = {
+        httpOnly: true,
+        secure: true, // Enable in a production environment with HTTPS
+    };
+
+    return res
+        .status(200)
+        .cookie('refreshToken', options)
+        .json({ user: {}, message: 'Logged out successfully' });
 };
 
 const reset_password = async (req, res) => {
@@ -206,4 +288,11 @@ const forgot_password = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin, signout, reset_password, forgot_password };
+module.exports = {
+    signup,
+    signin,
+    signout,
+    reset_password,
+    forgot_password,
+    refresh_token,
+};

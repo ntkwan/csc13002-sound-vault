@@ -1,16 +1,31 @@
 const jwt = require('jsonwebtoken');
+const UserModel = require('../models/user.schema');
 
-const check_user = (req, res, next) => {
+const check_user = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
+        const token =
+            req.cookies?.accessToken ||
+            req.header('Authorization')?.replace('Bearer ', '');
+
         if (!token) {
             return res.status(401).json({
-                message: 'Unauthorized',
+                message: 'Token not found',
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_KEY);
-        req.user = decoded;
+        const decoded = jwt.verify(token, process.env.ACCESS_KEY);
+
+        const user = await UserModel.findById(decoded?._id).select(
+            '-password -refreshToken',
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        req.user = user;
         next();
     } catch (error) {
         return res.status(401).json({
@@ -19,22 +34,37 @@ const check_user = (req, res, next) => {
     }
 };
 
-const check_admin = (req, res, next) => {
+const check_admin = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
+        const token =
+            req.cookies?.accessToken ||
+            req.header('Authorization')?.replace('Bearer ', '');
+
         if (!token) {
+            return res.status(401).json({
+                message: 'Token not found',
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.ACCESS_KEY);
+
+        const user = await UserModel.findById(decoded?._id).select(
+            '-password -refreshToken',
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        if (!user.isAdmin) {
             return res.status(401).json({
                 message: 'Unauthorized',
             });
         }
 
-        if (!decoded.isAdmin) {
-            return res.status(401).json({
-                message: 'Unauthorized',
-            });
-        }
-        const decoded = jwt.verify(token, process.env.JWT_KEY);
-        req.user = decoded;
+        req.user = user;
         next();
     } catch (error) {
         return res.status(401).json({
