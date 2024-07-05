@@ -74,4 +74,27 @@
     input[type='search']::-webkit-search-cancel-button {
         display: none;
     }
+
+    /* 
+        webkit: Chrome, Safari, Edge, Opera
+        moz: Firefox
+    */
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        @apply appearance-none;
+    }
+    .slider::-moz-range-thumb {
+        @apply bg-transparent;
+        @apply border-none;
+    }
+    .slider:hover::-webkit-slider-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
+    }
+    .slider:hover::-moz-range-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
+    }
 }
