@@ -89,8 +89,8 @@ function Header() {
                 </div >
             ) : (
                 <div className="flex-[1] flex justify-end h-1/2 space-x-5 pr-5 text-xs">
-                    <HeaderLink to="/signup">SIGN IN</HeaderLink>
-                    <HeaderLink to="/signin">SIGN UP</HeaderLink>
+                    <HeaderLink to="/signin">SIGN IN</HeaderLink>
+                    <HeaderLink to="/signup">SIGN UP</HeaderLink>
                 </div>
             )
             }
