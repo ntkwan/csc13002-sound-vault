@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 const morgan = require('morgan');
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const databaseModule = require('./config/database.config');
 const errorLogging = require('http-errors');
@@ -20,6 +21,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // HTTP method logging
 app.use(morgan('combined'));
