@@ -1,11 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { HomeIcon, ProfileIcon, MusicIcon, HeadphoneIcon } from '.';
-import { SettingIcon, EmailIcon, InfoIcon, LogoutIcon } from '.';
+import { SettingIcon, EmailIcon, InfoIcon } from '.';
 import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile } from '@features/profilepage/slices';
 import { useSelector } from 'react-redux';
 import Logout from './Logout';
-
 import PropTypes from 'prop-types';
 
 function Sidebar() {
@@ -13,40 +12,70 @@ function Sidebar() {
     const userProfile = useSelector(selectUserProfile);
     const { isAdmin } = userProfile;
     return (
-        <aside className="sidebar fixed bottom-[70px] top-[70px] z-10 pt-10 space-y-10 w-max select-none text-xs uppercase backdrop-blur-md">
+        <aside className="sidebar fixed bottom-[70px] top-[70px] z-10 w-max select-none space-y-10 pt-10 text-xs uppercase backdrop-blur-md">
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
-                {(token && isAdmin) ? (
+                {token && isAdmin ? (
                     <>
-                        <SidebarLink to="admin/user" icon={ProfileIcon} label="users" />
-                        <SidebarLink to="admin/song" icon={MusicIcon} label="songs" />
-                        <SidebarLink to="admin/report" icon={EmailIcon} label="review report" />
+                        <SidebarLink
+                            to="admin/user"
+                            icon={ProfileIcon}
+                            label="users"
+                        />
+                        <SidebarLink
+                            to="admin/song"
+                            icon={MusicIcon}
+                            label="songs"
+                        />
+                        <SidebarLink
+                            to="admin/report"
+                            icon={EmailIcon}
+                            label="review report"
+                        />
                     </>
                 ) : (
                     <>
                         <SidebarLink to="" icon={HomeIcon} label="home" />
-                        <SidebarLink to="profile" icon={ProfileIcon} label="profile" />
-                        <SidebarLink to="library" icon={MusicIcon} label="library" />
-                        <SidebarLink to="artist" icon={HeadphoneIcon} label="artists" />
+                        <SidebarLink
+                            to="profile"
+                            icon={ProfileIcon}
+                            label="profile"
+                        />
+                        <SidebarLink
+                            to="library"
+                            icon={MusicIcon}
+                            label="library"
+                        />
+                        <SidebarLink
+                            to="artist"
+                            icon={HeadphoneIcon}
+                            label="artists"
+                        />
                     </>
                 )}
             </section>
             <section className="ml-2">
                 <span className="ml-3">Help</span>
-                {(token && isAdmin) ? (
-                    <>
-
-                    </>
+                {token && isAdmin ? (
+                    <></>
                 ) : (
                     <>
-                        <SidebarLink to="aboutus" icon={EmailIcon} label="About Us" />
-                        <SidebarLink to="term&policy" icon={InfoIcon} label="Terms & Policy" />
+                        <SidebarLink
+                            to="aboutus"
+                            icon={EmailIcon}
+                            label="About Us"
+                        />
+                        <SidebarLink
+                            to="term&policy"
+                            icon={InfoIcon}
+                            label="Terms & Policy"
+                        />
                     </>
                 )}
                 <SidebarLink to="setting" icon={SettingIcon} label="setting" />
-                {token && <SidebarLink to="logout?" icon={LogoutIcon}><Logout /></SidebarLink>}
+                {token && <Logout />}
             </section>
-        </aside >
+        </aside>
     );
 }
 
@@ -55,6 +84,7 @@ export default Sidebar;
 SidebarLink.propTypes = {
     to: PropTypes.string,
     icon: PropTypes.func,
+    label: PropTypes.string,
     children: PropTypes.node,
 };
 

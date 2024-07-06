@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { logIn } from '@features/authentication/slices';
+import { setCredentials } from '@features/authentication/slices';
 import { useSignInMutation } from '@services/api';
 import {
     AuthenTitle,
@@ -33,8 +33,8 @@ function SignInPage() {
         try {
             const res = await signIn(values).unwrap();
             const user = values['email'];
-            const token = res.token;
-            dispatch(logIn({ user, token }));
+            const token = res.accessToken;
+            dispatch(setCredentials({ user, token }));
             setValues({ email: '', password: '' });
             nav('/');
         } catch (error) {

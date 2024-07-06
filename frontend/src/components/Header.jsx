@@ -56,45 +56,51 @@ function Header() {
             )}
             {/* Link */}
             {token ? (
-                <div className="header__section flex-[1] flex justify-end items-center h-full text-sm space-x-3">
+                <div className="header__section flex h-full flex-[1] items-center justify-end space-x-3 text-sm">
                     <img
-                        className="inline w-10 h-10 rounded-full object-cover"
+                        className="inline h-10 w-10 rounded-full object-cover"
                         src={ARTIST_IMG_URL + avatar}
                         alt=""
                     />
                     <span>Hello, {fullName}</span>
                     <div className="relative">
                         <i
-                            className="bx bx-bell relative block min-w-10 h-10 text-center content-center text-2xl text-black rounded-full bg-white transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
-                            onClick={handleShowNotice}>
-                        </i>
+                            className="bx bx-bell relative block h-10 min-w-10 content-center rounded-full bg-white text-center text-2xl text-black transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
+                            onClick={handleShowNotice}
+                        ></i>
                         {notice && pingNotice && (
                             <>
-                                <div className="absolute top-2 right-2 w-[10px] h-[10px] rounded-full bg-red-500"></div>
-                                <div className="absolute top-2 right-2 w-[10px] h-[10px] rounded-full bg-red-500 animate-[ping_2.5s_cubic-bezier(0,_0,_0.2,_1)_infinite]"></div>
+                                <div className="absolute right-2 top-2 h-[10px] w-[10px] rounded-full bg-red-500"></div>
+                                <div className="absolute right-2 top-2 h-[10px] w-[10px] animate-[ping_2.5s_cubic-bezier(0,_0,_0.2,_1)_infinite] rounded-full bg-red-500"></div>
                             </>
                         )}
                         {showNotice && (
-                            <notice className="absolute right-0 mt-2 w-60 h-max rounded-xl shadow-md text-sm z-[11]">
+                            <notice className="absolute right-0 z-[11] mt-2 h-max w-60 rounded-xl text-sm shadow-md">
                                 {notice.map((item, index) => (
-                                    <div className={`${item.seen ? 'bg-[#c8c8c8]' : 'bg-white hover:bg-[#c8c8c8]'} grid auto-rows-max p-3 text-black ring-1 ring-black transition-colors duration-400 ease-in-out hover:cursor-pointer`} key={index} >
-                                        <span className="text-start">Title: {item.message}</span>
-                                        <span className="text-start">Time: {item.time}</span>
+                                    <div
+                                        className={`${item.seen ? 'bg-[#c8c8c8]' : 'bg-white hover:bg-[#c8c8c8]'} grid auto-rows-max p-3 text-black ring-1 ring-black transition-colors duration-400 ease-in-out hover:cursor-pointer`}
+                                        key={index}
+                                    >
+                                        <span className="text-start">
+                                            Title: {item.message}
+                                        </span>
+                                        <span className="text-start">
+                                            Time: {item.time}
+                                        </span>
                                     </div>
                                 ))}
                             </notice>
                         )}
                     </div>
                     {/* <HeaderLink to="/">{NotificationIcon()}</HeaderLink> */}
-                </div >
+                </div>
             ) : (
-                <div className="flex-[1] flex justify-end h-1/2 space-x-5 pr-5 text-xs">
+                <div className="flex h-1/2 flex-[1] justify-end space-x-5 pr-5 text-xs">
                     <HeaderLink to="/signin">SIGN IN</HeaderLink>
                     <HeaderLink to="/signup">SIGN UP</HeaderLink>
                 </div>
-            )
-            }
-        </header >
+            )}
+        </header>
     );
 }
 
@@ -108,7 +114,7 @@ HeaderLink.propTypes = {
 function HeaderLink({ to, children }) {
     return (
         <Link
-            className="block h-full w-max px-3 content-center rounded-full transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+            className="block h-full w-max content-center rounded-full px-3 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
             to={to}
         >
             {children}
