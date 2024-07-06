@@ -25,11 +25,9 @@ const UserSchema = new Schema(
         image: {
             publicId: {
                 type: String,
-                required: true,
             },
             url: {
                 type: String,
-                required: true,
             },
         },
         isAdmin: {
