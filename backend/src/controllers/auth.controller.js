@@ -145,6 +145,9 @@ const refresh_token = async (req, res) => {
         const accessToken = user.generateToken();
         const refreshToken = user.generateRefreshToken();
 
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
         return res
             .status(200)
             .cookie('refreshToken', refreshToken, options)
@@ -192,7 +195,7 @@ const reset_password = async (req, res) => {
     }
 
     try {
-        const payload = jwt.verify(token, process.env.JWT_KEY);
+        const payload = jwt.verify(token, process.env.REFRESH_KEY);
 
         if (!payload) {
             res.send('Invalid token');
@@ -206,9 +209,25 @@ const reset_password = async (req, res) => {
 
             await User.setPassword(confirm_password);
             await User.save();
-            return res.status(200).json({
-                message: 'Password updated successfully',
-            });
+
+            const accessToken = User.generateToken();
+            const refreshToken = User.generateRefreshToken();
+            User.refreshToken = refreshToken;
+            await User.save({ validateBeforeSave: false });
+
+            const options = {
+                httpOnly: true,
+                secure: true, // Enable in a production environment with HTTPS
+            };
+
+            return res
+                .status(200)
+                .cookie('refreshToken', refreshToken, options)
+                .json({
+                    accessToken,
+                    refreshToken,
+                    message: 'Password updated successfully',
+                });
         }
     } catch (error) {
         return res.status(500).json({

@@ -1,14 +1,14 @@
 @host = http://localhost:5000
 
 ### reset password (template)
-@email = [EMAIL]
-@token = [TOKEN]
-POST {{host}}/reset-password/{{email}}/{{token}}
+@email = 
+@refreshToken = 
+POST {{host}}/reset-password/{{email}}/{{refreshToken}}
 Content-Type: application/json
 
 {
-    "attempt_password": "12345678",
-    "confirm_password": "12345678"
+    "attempt_password": "1234",
+    "confirm_password": "1234"
 }
 
 
