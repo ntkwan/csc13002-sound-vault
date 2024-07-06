@@ -99,7 +99,6 @@ const signin = async (req, res) => {
             .status(200)
             .cookie('refreshToken', refreshToken, options)
             .json({
-                user: loggedInUser,
                 accessToken,
                 refreshToken,
                 message: 'Sign in successfully',
