@@ -284,7 +284,7 @@ const forgot_password = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ email: email }, process.env.JWT_KEY, {
+        const token = jwt.sign({ email: email }, process.env.REFRESH_KEY, {
             expiresIn: '1m',
         });
         const url = `http://localhost:${process.env.CLIENT_PORT}/reset-password?email=${email}&token=${token}`;
