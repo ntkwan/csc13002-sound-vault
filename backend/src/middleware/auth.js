@@ -4,7 +4,7 @@ const UserModel = require('../models/user.schema');
 const check_user = async (req, res, next) => {
     try {
         const token =
-            req.cookies?.accessToken ||
+            req.cookies?.refreshToken ||
             req.header('Authorization')?.replace('Bearer ', '');
 
         if (!token) {
@@ -13,7 +13,7 @@ const check_user = async (req, res, next) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.ACCESS_KEY);
+        const decoded = jwt.verify(token, process.env.REFRESH_KEY);
 
         const user = await UserModel.findById(decoded?._id).select(
             '-password -refreshToken',

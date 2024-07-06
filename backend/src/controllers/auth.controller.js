@@ -194,10 +194,12 @@ const reset_password = async (req, res) => {
     }
 
     try {
-        const payload = jwt.verify(token, process.env.REFRESH_KEY);
+        const payload = jwt.verify(token, process.env.RESET_PSW_KEY);
 
         if (!payload) {
-            res.send('Invalid token');
+            return res.status(400).json({
+                message: 'Invalid or expired token',
+            });
         } else {
             const User = await UserModel.findOne({ email });
             if (!User) {
@@ -283,7 +285,7 @@ const forgot_password = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ email: email }, process.env.REFRESH_KEY, {
+        const token = jwt.sign({ email: email }, process.env.RESET_PSW_KEY, {
             expiresIn: '1m',
         });
         const url = `http://localhost:${process.env.CLIENT_PORT}/reset-password?email=${email}&token=${token}`;
