@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForgotPasswordMutation } from '@services/api';
+import { resetPwd } from '@features/authentication/slices';
 import {
     AuthenTitle,
     FormInput,
@@ -9,13 +11,17 @@ import {
 function ForgotPassPage() {
     const [email, setEmail] = useState('');
     const [forgotPassword] = useForgotPasswordMutation();
+    const dispatch = useDispatch();
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!email) {
             return;
         }
         try {
-            await forgotPassword({ email: email });
+            const res = await forgotPassword({ email: email });
+            const resetUrl = res.data.url;
+            const resetPwdToken = resetUrl.split('&token=')[1];
+            dispatch(resetPwd(resetPwdToken));
             setEmail('');
         } catch (error) {
             console.log(error);

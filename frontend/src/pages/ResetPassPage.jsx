@@ -1,6 +1,8 @@
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useResetPasswordMutation } from '@services/api';
+import { selectCurrentResetPwdToken } from '@services/selectors';
 import {
     AuthenTitle,
     FormInput,
@@ -16,17 +18,18 @@ function ResetPassPage() {
     const [confirm_password, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [resetPassword] = useResetPasswordMutation();
+    const resetPwdToken = useSelector(selectCurrentResetPwdToken);
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!new_password || !confirm_password) {
             return;
         }
         try {
-            const data = {
+            const body = {
                 attempt_password: new_password,
                 confirm_password,
             };
-            await resetPassword({ email, token, data });
+            await resetPassword({ email, token, body });
             setPassword('');
             setConfirmPassword('');
         } catch (error) {
@@ -34,7 +37,7 @@ function ResetPassPage() {
         }
     };
 
-    return (
+    return email && token && resetPwdToken === token ? (
         <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
             <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
                 <AuthenTitle title="Reset your password" />
@@ -77,6 +80,8 @@ function ResetPassPage() {
                 </form>
             </div>
         </div>
+    ) : (
+        <Navigate to="/" from={{ from: location }} replace></Navigate>
     );
 }
 
