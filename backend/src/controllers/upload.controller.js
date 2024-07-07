@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const uploader = require('../config/cloudinary.config');
 const SongModel = require('../models/song.schema');
 const UserModel = require('../models/user.schema');
