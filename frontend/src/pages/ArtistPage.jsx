@@ -1,6 +1,8 @@
 import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
 
+const IMGURL = "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png";
+
 function ArtistPage() {
     const mediaData = [
         {
@@ -9,12 +11,12 @@ function ArtistPage() {
             visibility: '',
             link: '',
             data: [
-                { name: 'Hoàng Thùy Linh' },
-                { name: 'Phan Mạnh Quỳnh' },
-                { name: 'Obito' },
-                { name: 'HIEUTHUHAI' },
-                { name: 'Anh Tú', ext: 'png' },
-                { name: 'Sơn Tùng MTP' },
+                { artist: 'Hoàng Thùy Linh', imageurl: IMGURL },
+                { artist: 'Phan Mạnh Quỳnh', imageurl: IMGURL },
+                { artist: 'Obito', imageurl: IMGURL },
+                { artist: 'HIEUTHUHAI', imageurl: IMGURL },
+                { artist: 'Anh Tú', imageurl: IMGURL },
+                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
             ],
         },
         {
@@ -23,12 +25,12 @@ function ArtistPage() {
             visibility: '',
             link: '',
             data: [
-                { name: 'Hoàng Thùy Linh' },
-                { name: 'Phan Mạnh Quỳnh' },
-                { name: 'Obito' },
-                { name: 'HIEUTHUHAI' },
-                { name: 'Anh Tú', ext: 'png' },
-                { name: 'Sơn Tùng MTP' },
+                { artist: 'Hoàng Thùy Linh', imageurl: IMGURL },
+                { artist: 'Phan Mạnh Quỳnh', imageurl: IMGURL },
+                { artist: 'Obito', imageurl: IMGURL },
+                { artist: 'HIEUTHUHAI', imageurl: IMGURL },
+                { artist: 'Anh Tú', imageurl: IMGURL },
+                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
             ],
         },
         {
@@ -37,12 +39,12 @@ function ArtistPage() {
             visibility: '',
             link: '',
             data: [
-                { name: 'Hoàng Thùy Linh' },
-                { name: 'Phan Mạnh Quỳnh' },
-                { name: 'Obito' },
-                { name: 'HIEUTHUHAI' },
-                { name: 'Anh Tú', ext: 'png' },
-                { name: 'Sơn Tùng MTP' },
+                { artist: 'Hoàng Thùy Linh', imageurl: IMGURL },
+                { artist: 'Phan Mạnh Quỳnh', imageurl: IMGURL },
+                { artist: 'Obito', imageurl: IMGURL },
+                { artist: 'HIEUTHUHAI', imageurl: IMGURL },
+                { artist: 'Anh Tú', imageurl: IMGURL },
+                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
             ],
         },
     ];
