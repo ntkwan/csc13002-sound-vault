@@ -103,13 +103,19 @@ const MediaItems = memo(({ type, mediaData, onClick }) => {
     const imageClass = isArtist ? 'w-[150px] rounded-full' : 'w-[120px] rounded-[30px]';
 
     return (
-        <div className="media-item grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
-            <img
-                className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
-                onClick={onClick}
-                src={imageurl}
-                alt={title}
-            />
+        <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
+            <div className="relative h-full">
+                <img
+                    className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
+                    src={imageurl}
+                    alt={title}
+                />
+                <button className="media-item__play absolute bottom-1 right-1 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100"
+                    onClick={onClick}
+                >
+                    <i className="ri-play-fill text-xl"></i>
+                </button>
+            </div>
             <span className="media-item__name text-center">{isArtist ? artist : title}</span>
             {!isArtist && (<span className="media-item__desc text-center text-sm text-[#808080]">{artist}</span>)}
         </div>
@@ -140,11 +146,12 @@ const MediaItems2 = memo(({ type, mediaData, onClick }) => {
                 <div className="media-item__image relative">
                     <img
                         className={`media-item__img aspect-square w-full object-cover hover:cursor-pointer ${imageClass}`}
-                        onClick={onClick}
                         src={imageurl}
                         alt={title}
                     />
-                    <button className="media-item__play absolute bottom-0 right-0 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100">
+                    <button className="media-item__play absolute bottom-0 right-0 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100"
+                        onClick={onClick}
+                    >
                         <i className="ri-play-fill text-xl"></i>
                     </button>
                 </div>
