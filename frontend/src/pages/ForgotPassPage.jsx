@@ -7,6 +7,7 @@ import {
     FormInput,
     ConfirmButton,
 } from '@features/authentication/components';
+import { toast } from 'react-toastify';
 
 function ForgotPassPage() {
     const [email, setEmail] = useState('');
@@ -18,13 +19,15 @@ function ForgotPassPage() {
             return;
         }
         try {
-            const res = await forgotPassword({ email: email });
-            const resetUrl = res.data.url;
+            const res = await forgotPassword({ email: email }).unwrap();
+            const resetUrl = res.url;
             const resetPwdToken = resetUrl.split('&token=')[1];
             dispatch(resetPwd(resetPwdToken));
             setEmail('');
+            toast.success(res.message);
         } catch (error) {
-            console.log(error);
+            const errMsg = error.data.message;
+            toast.error(errMsg);
         }
     };
 

@@ -1,4 +1,4 @@
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useResetPasswordMutation } from '@services/api';
@@ -9,6 +9,7 @@ import {
     ConfirmButton,
 } from '@features/authentication/components';
 import { INPUTS } from '@components';
+import { toast } from 'react-toastify';
 
 function ResetPassPage() {
     const [searchParams] = useSearchParams();
@@ -16,9 +17,10 @@ function ResetPassPage() {
     const email = searchParams.get('email');
     const [new_password, setPassword] = useState('');
     const [confirm_password, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
     const [resetPassword] = useResetPasswordMutation();
     const resetPwdToken = useSelector(selectCurrentResetPwdToken);
+    const nav = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!new_password || !confirm_password) {
@@ -29,11 +31,14 @@ function ResetPassPage() {
                 attempt_password: new_password,
                 confirm_password,
             };
-            await resetPassword({ email, token, body });
+            const res = await resetPassword({ email, token, body }).unwrap();
             setPassword('');
             setConfirmPassword('');
+            toast.success(res.message);
+            nav('/signin');
         } catch (error) {
-            setError(error.data.message);
+            const errMsg = error.data.message;
+            toast.error(errMsg);
         }
     };
 
@@ -59,11 +64,6 @@ function ResetPassPage() {
                                 input.name === 'new_password'
                                     ? (e) => setPassword(e.target.value)
                                     : (e) => setConfirmPassword(e.target.value)
-                            }
-                            error={
-                                input.name === 'new_password'
-                                    ? input.error
-                                    : error
                             }
                         />
                     ))}

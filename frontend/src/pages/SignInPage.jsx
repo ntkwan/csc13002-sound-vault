@@ -9,14 +9,14 @@ import {
     GoogleButton,
     ConfirmButton,
 } from '@features/authentication/components';
-import { InformationCircle, INPUTS, Loading } from '@components';
+import { INPUTS, Loading } from '@components';
+import { toast } from 'react-toastify';
 
 function SignInPage() {
     const [values, setValues] = useState({
         email: '',
         password: '',
     });
-    const [error, setError] = useState('');
     const [signIn, { isLoading }] = useSignInMutation();
     const nav = useNavigate();
     const dispatch = useDispatch();
@@ -36,10 +36,11 @@ function SignInPage() {
             const token = res.accessToken;
             dispatch(setCredentials({ user, token }));
             setValues({ email: '', password: '' });
+            toast.success(res.message);
             nav('/');
         } catch (error) {
             const errMsg = error.data.message;
-            setError(errMsg);
+            toast.error(errMsg);
         }
     };
     return isLoading ? (
@@ -48,12 +49,6 @@ function SignInPage() {
         <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
             <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
                 <AuthenTitle title="Sign in" />
-                {error && (
-                    <div className="mt-3 flex place-content-center gap-1 rounded-xl bg-red-500 py-1 font-bold">
-                        <InformationCircle />
-                        <span>{error}</span>
-                    </div>
-                )}
                 <form onSubmit={handleSubmit}>
                     {INPUTS.SIGN_IN.map((input) => (
                         <FormInput

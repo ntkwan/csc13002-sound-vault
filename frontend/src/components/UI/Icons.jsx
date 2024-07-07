@@ -106,12 +106,38 @@ export const InfoIcon = () => {
 
 export const LogoutIcon = () => {
     return (
-        <svg width="24px" height="24px" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21.3062 17.8606L24.4336 14.7332L21.3062 11.6057" stroke="white" stroke-width="1.94" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M11.9224 14.7334H24.3467" stroke="white" stroke-width="1.94" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M14.3656 24.4334C8.96585 24.4334 4.59229 20.7684 4.59229 14.6601C4.59229 8.55172 8.96585 4.88672 14.3656 4.88672" stroke="white" stroke-width="1.94" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        <svg
+            width="24px"
+            height="24px"
+            viewBox="0 0 27 27"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M21.3062 17.8606L24.4336 14.7332L21.3062 11.6057"
+                stroke="white"
+                strokeWidth="1.94"
+                strokeMiterlimit="10"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M11.9224 14.7334H24.3467"
+                stroke="white"
+                strokeWidth="1.94"
+                strokeMiterlimit="10"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M14.3656 24.4334C8.96585 24.4334 4.59229 20.7684 4.59229 14.6601C4.59229 8.55172 8.96585 4.88672 14.3656 4.88672"
+                stroke="white"
+                strokeWidth="1.94"
+                strokeMiterlimit="10"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
         </svg>
-
     );
 };
 

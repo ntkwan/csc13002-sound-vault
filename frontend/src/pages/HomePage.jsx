@@ -15,10 +15,10 @@ function HomePage() {
             <div className="homepage__container flex items-center text-white">
                 {/* Intro text */}
                 <div className="homepage__text -translate-y-[20%]">
-                    <h2 className="heading-stroke-logo font-lilitaone text-[90px] text-nowrap leading-none">
+                    <h2 className="heading-stroke-logo text-nowrap font-lilitaone text-[90px] leading-none">
                         SoundVault
                     </h2>
-                    <h3 className="font-italianno text-[90px] text-nowrap leading-none">
+                    <h3 className="text-nowrap font-italianno text-[90px] leading-none">
                         Digital Music for fans
                     </h3>
                     <p className="text-xl">
@@ -30,7 +30,7 @@ function HomePage() {
                 </div>
                 {/* Intro image */}
                 <img
-                    className="homepage__img object-cover translate-x-[13%] -translate-y-[8%]"
+                    className="homepage__img -translate-y-[8%] translate-x-[13%] object-cover"
                     src={homeintroImage}
                     alt=""
                 />
@@ -40,8 +40,8 @@ function HomePage() {
             <div className="chart-intro flex justify-between font-kodchasan text-white">
                 <ChartIntroContainer />
                 {/* Intro chart text */}
-                <div className="flex-[0.75] content-center w-min">
-                    <h2 className="heading-stroke font-italianno text-[100px] text-nowrap">
+                <div className="w-min flex-[0.75] content-center">
+                    <h2 className="heading-stroke text-nowrap font-italianno text-[100px]">
                         SoundVault Charts
                     </h2>
                     <p className="text-xl">

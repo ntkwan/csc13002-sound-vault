@@ -7,7 +7,8 @@ import {
     GoogleButton,
     ConfirmButton,
 } from '@features/authentication/components';
-import { InformationCircle, INPUTS, Loading } from '@components';
+import { INPUTS, Loading } from '@components';
+import { toast } from 'react-toastify';
 
 function SignUpPage() {
     const [values, setValues] = useState({
@@ -16,7 +17,6 @@ function SignUpPage() {
         password: '',
     });
     const [checked, setChecked] = useState(false);
-    const [error, setError] = useState('');
     const nav = useNavigate();
 
     const [signUp, { isLoading }] = useSignUpMutation();
@@ -37,11 +37,11 @@ function SignUpPage() {
             const res = await signUp(values).unwrap();
             console.log(res.message);
             setValues({ name: '', email: '', password: '' });
+            toast.success(res.message);
             nav('/signin');
         } catch (error) {
             const errMsg = error.data.message;
-            console.error(errMsg);
-            setError(errMsg);
+            toast.error(errMsg);
         }
     };
 
@@ -67,12 +67,6 @@ function SignUpPage() {
                     <span className="text-[#7b7b7b]"> on the registration</span>{' '}
                     website
                 </p>
-                {error && (
-                    <div className="mt-3 flex place-content-center gap-1 rounded-xl bg-red-500 py-1 font-bold">
-                        <InformationCircle />
-                        <span>{error}</span>
-                    </div>
-                )}
                 <form onSubmit={handleSubmit}>
                     {INPUTS.SIGN_UP.map((input) => (
                         <FormInput

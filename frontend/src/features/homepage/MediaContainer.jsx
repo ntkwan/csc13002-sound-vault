@@ -1,6 +1,4 @@
 import { MediaDisplay } from '@components';
-import { Loading } from '@components/index';
-import React from 'react';
 
 function MediaContainer() {
     const mediaData = [
@@ -12,23 +10,28 @@ function MediaContainer() {
             data: [
                 {
                     artist: 'Hoàng Thùy Linh',
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
                 },
                 {
                     artist: 'Phan Mạnh Quỳnh',
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
                 },
                 {
                     artist: 'Obito',
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
                 },
                 {
                     artist: 'HIEUTHUHAI',
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
                 },
                 {
                     artist: 'Anh Tú',
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
                 },
             ],
         },
@@ -39,52 +42,64 @@ function MediaContainer() {
             link: 'library',
             data: [
                 {
-                    title: "Ngày Mai Người Ta Lấy Chồng",
-                    artist: "Thành Đạt",
-                    genre: "Pop",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3",
-                    view: 0
+                    title: 'Ngày Mai Người Ta Lấy Chồng',
+                    artist: 'Thành Đạt',
+                    genre: 'Pop',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3',
+                    view: 0,
                 },
                 {
-                    title: "trời giấu trời mang đi",
-                    artist: "AMEE",
-                    genre: "Pop",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352422/tracks/troigiautroimangdi-amee.mp3",
-                    view: 0
+                    title: 'trời giấu trời mang đi',
+                    artist: 'AMEE',
+                    genre: 'Pop',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352422/tracks/troigiautroimangdi-amee.mp3',
+                    view: 0,
                 },
                 {
-                    title: "Duyên Mình Lỡ",
-                    artist: "Hương Tràm",
-                    genre: "Pop",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352815/tracks/duyenminhlo-huongtram.mp3",
-                    view: 0
+                    title: 'Duyên Mình Lỡ',
+                    artist: 'Hương Tràm',
+                    genre: 'Pop',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352815/tracks/duyenminhlo-huongtram.mp3',
+                    view: 0,
                 },
                 {
-                    title: "ngủ một mình",
-                    artist: "HIEUTHUHAI",
-                    genre: "Rap",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353266/tracks/ngumotminh-hieuthuhai.mp3",
-                    view: 0
+                    title: 'ngủ một mình',
+                    artist: 'HIEUTHUHAI',
+                    genre: 'Rap',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353266/tracks/ngumotminh-hieuthuhai.mp3',
+                    view: 0,
                 },
                 {
-                    title: "Cô Đơn Trên Sofa",
-                    artist: "Hồ Ngọc Hà",
-                    genre: "Pop",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353414/tracks/codontrensofa-hongocha.mp3",
-                    view: 0
+                    title: 'Cô Đơn Trên Sofa',
+                    artist: 'Hồ Ngọc Hà',
+                    genre: 'Pop',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353414/tracks/codontrensofa-hongocha.mp3',
+                    view: 0,
                 },
                 {
-                    title: "Đom Đóm",
-                    artist: "J97",
-                    genre: "Pop",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353558/tracks/domdom-j97.mp3",
-                    view: 0
+                    title: 'Đom Đóm',
+                    artist: 'J97',
+                    genre: 'Pop',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353558/tracks/domdom-j97.mp3',
+                    view: 0,
                 },
             ],
         },
@@ -95,12 +110,14 @@ function MediaContainer() {
             link: 'library',
             data: [
                 {
-                    title: "Lucki",
-                    artist: "Liu Grace",
-                    genre: "Rap",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353701/tracks/lucki-liugrace.mp3",
-                    view: 0
+                    title: 'Lucki',
+                    artist: 'Liu Grace',
+                    genre: 'Rap',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720353701/tracks/lucki-liugrace.mp3',
+                    view: 0,
                 },
                 // {
                 //     title: 'Heya',
@@ -119,12 +136,14 @@ function MediaContainer() {
                 //     artist: 'VSOUL, MCK, OBITO, RONBOOGZ, BOYZED',
                 // },
                 {
-                    title: "Đánh đổi",
-                    artist: "Obito",
-                    genre: "Rap",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720351860/tracks/danhdoi-obito.mp3",
-                    view: 0
+                    title: 'Đánh đổi',
+                    artist: 'Obito',
+                    genre: 'Rap',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720351860/tracks/danhdoi-obito.mp3',
+                    view: 0,
                 },
             ],
         },
@@ -135,12 +154,14 @@ function MediaContainer() {
             link: 'library',
             data: [
                 {
-                    title: "Đánh đổi",
-                    artist: "Obito",
-                    genre: "Rap",
-                    imageurl: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png",
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720351860/tracks/danhdoi-obito.mp3",
-                    view: 0
+                    title: 'Đánh đổi',
+                    artist: 'Obito',
+                    genre: 'Rap',
+                    imageurl:
+                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720351860/tracks/danhdoi-obito.mp3',
+                    view: 0,
                 },
                 // { name: 'Loi Choi', desc: 'Wren Evans' },
                 // { name: 'Minh Tinh', desc: 'Văn Mai Hương' },
@@ -151,9 +172,7 @@ function MediaContainer() {
         },
     ];
 
-    return isLoading ? (
-        <Loading />
-    ) : (
+    return (
         <div className="Media__container mt-20 grid auto-rows-auto gap-y-14 font-kodchasan">
             {mediaData.map((media, index) => (
                 <MediaDisplay

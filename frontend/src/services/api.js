@@ -33,7 +33,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
             api.dispatch(logOut());
         }
     }
-
     return result;
 };
 
@@ -84,6 +83,9 @@ export const api = createApi({
                 body: file,
             }),
         }),
+        getTrendingSongs: builder.query({
+            query: () => '/get-trending-songs',
+        }),
     }),
 });
 
@@ -93,4 +95,6 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useLogOutMutation,
+    useUploadAudioMutation,
+    useGetTrendingSongsQuery,
 } = api;
