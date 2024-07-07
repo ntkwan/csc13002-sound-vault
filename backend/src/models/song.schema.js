@@ -8,10 +8,16 @@ const SongSchema = new Schema(
             required: true,
         },
         /*
-        artist: {
+        uploader: {
             ref: 'User',
             required: true,
         },
+        */
+        artist: {
+            type: String,
+            required: true,
+        },
+        /*
         album: {
             ref: 'Playlist',
         }
