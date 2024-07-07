@@ -7,3 +7,5 @@ export { default as SignUpPage } from './SignUpPage';
 export { default as ForgotPassPage } from './ForgotPassPage';
 export { default as ResetPassPage } from './ResetPassPage';
 export { default as ChartPage } from './ChartPage';
+export { default as AdminSongPage } from './SongManagementPage';
+export { default as AdminAccountPage } from './AccountManagementPage';
