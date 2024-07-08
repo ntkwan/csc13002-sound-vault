@@ -36,9 +36,14 @@ const audio_upload = multer({
     audioFilter,
 }).single('audio');
 
-const image_upload = multer({
+const profile_pic_upload = multer({
     storage,
     imageFilter,
 }).single('image');
 
-module.exports = { audio_upload, image_upload };
+const song_thumbnail_upload = multer({
+    storage,
+    imageFilter,
+}).single('image');
+
+module.exports = { audio_upload, profile_pic_upload, song_thumbnail_upload };

@@ -59,7 +59,7 @@ const upload_profile_pic = async (req, res) => {
         });
     }
 
-    const imageResponse = await uploader.imageUploader(req, res);
+    const imageResponse = await uploader.profilePicUploader(req, res);
     if (!imageResponse) {
         return res.status(500).json({
             message: 'Error occured while uploading profile picture',
@@ -75,4 +75,35 @@ const upload_profile_pic = async (req, res) => {
     });
 };
 
-module.exports = { upload_song, upload_profile_pic };
+const upload_song_thumbnail = async (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).json({
+            message: `File validation error: ${req.fileValidationError}`,
+        });
+    }
+
+    const songId = req.params.id;
+    const Song = await SongModel.findById(songId);
+    if (!Song) {
+        return res.status(500).json({
+            message: 'Error occured while uploading song thumbnail',
+        });
+    }
+
+    const imageResponse = await uploader.songThumbnailUploader(req, res);
+    if (!imageResponse) {
+        return res.status(500).json({
+            message: 'Error occured while uploading song thumbnail',
+        });
+    }
+
+    await Song.setSongThumbnail(imageResponse);
+    await Song.save();
+
+    return res.status(200).json({
+        message: 'Upload song thumbnail successfully',
+        imageurl: imageResponse.secure_url,
+    });
+};
+
+module.exports = { upload_song, upload_profile_pic, upload_song_thumbnail };

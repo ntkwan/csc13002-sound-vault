@@ -29,7 +29,7 @@ const audioUploader = async (req, res) => {
     }
 };
 
-const imageUploader = async (req, res) => {
+const profilePicUploader = async (req, res) => {
     const file = req.file;
     const email = req.params.email;
 
@@ -52,4 +52,27 @@ const imageUploader = async (req, res) => {
     }
 };
 
-module.exports = { audioUploader, imageUploader };
+const songThumbnailUploader = async (req, res) => {
+    const file = req.file;
+    const songId = req.params.id;
+
+    if (!file) {
+        return res.status(400).json({ message: 'File not found' });
+    }
+    const fName = songId;
+
+    try {
+        const uploadImage = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: 'auto',
+            public_id: fName,
+            folder: 'thumbnail',
+        });
+
+        return uploadImage;
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: error.message });
+    }
+};
+
+module.exports = { audioUploader, profilePicUploader, songThumbnailUploader };

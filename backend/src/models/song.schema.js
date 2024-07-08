@@ -26,9 +26,13 @@ const SongSchema = new Schema(
             type: String,
             required: true,
         },
-        imageurl: {
-            type: String,
-            required: true,
+        image: {
+            publicId: {
+                type: String,
+            },
+            url: {
+                type: String,
+            },
         },
         audiourl: {
             type: String,
@@ -49,5 +53,10 @@ const SongSchema = new Schema(
         timestamps: true,
     },
 );
+
+SongSchema.methods.setSongThumbnail = async function (imageurl) {
+    this.image.publicId = imageurl.public_id;
+    this.image.url = imageurl.secure_url;
+};
 
 module.exports = mongoose.model('Song', SongSchema);
