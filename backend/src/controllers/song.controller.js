@@ -14,7 +14,7 @@ const get_trending_songs = async (req, res) => {
                     title: song.title,
                     artist: song.artist,
                     genre: song.genre,
-                    imageurl: song.imageurl,
+                    imageurl: song.image,
                     audiourl: song.audiourl,
                 };
             }),
