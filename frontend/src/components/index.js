@@ -2,6 +2,7 @@ export { default as Header } from './Header';
 export { default as Sidebar } from './Sidebar';
 export { default as Loading } from './UI/Loading';
 export { default as PageTitle } from './UI/PageTitle';
+export { default as PlayButton } from './PlayButton';
 export {
     default as MediaDisplay,
     MediaItems,

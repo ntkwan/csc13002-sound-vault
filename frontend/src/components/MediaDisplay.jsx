@@ -1,24 +1,63 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { setCurrentTrack, setCurrentTime, setDuration } from '../features/player/slices/playerSlice';
+import { PropTypes } from 'prop-types';
+import { PlayButton } from '.';
+import {
+    play,
+    pause,
+    setCurrentTrack,
+    setCurrentTime,
+    setDuration
+} from '../features/player/slices/playerSlice';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     if (!media) return null;
-    const { type, title, visibility, link, data } = media;
 
     const dispatch = useDispatch();
+    const playerState = useSelector(state => state.player);
+
+    const [currentSong, setCurrentSong] = useState(playerState.currentTrack.url);
+    const [isPlaying, setIsPlaying] = useState(playerState.isPlaying);
     const handlePlay = ({ title, artist, imageurl, audiourl }) => () => {
-        dispatch(setCurrentTrack({ title, artist, url: audiourl, thumbnail: imageurl }));
-        dispatch(setCurrentTime(0));
-        dispatch(setDuration(0));
+        if (!audiourl)
+            return;
+        if (currentSong == null && playerState.currentTrack.url == audiourl)
+            return;
+        if (currentSong != audiourl) {
+            dispatch(setCurrentTrack({
+                title,
+                artist,
+                url: audiourl,
+                thumbnail: imageurl.url
+            }));
+            dispatch(setCurrentTime(0));
+            dispatch(setDuration(0));
+            dispatch(play());
+            setCurrentSong(audiourl);
+            setIsPlaying(true);
+        }
+        else {
+            setIsPlaying(!isPlaying);
+            dispatch(!isPlaying ? play() : pause());
+        }
     }
+
+    useEffect(() => {
+        if (playerState.currentTrack.url != currentSong) {
+            setCurrentSong(null);
+            setIsPlaying(false);
+        }
+        if (playerState.isPlaying != isPlaying) {
+            setIsPlaying(playerState.isPlaying)
+        }
+    }, [playerState]);
 
     const handleProfile = ({ artist }) => {
 
     }
+
+    const { type, title, visibility, link, data } = media;
 
     return (
         <section className="media__display grid grid-rows-[min-content_auto]">
@@ -59,12 +98,21 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         default:
                             MediaComponent = MediaItems;
                     }
+                    let onClick, isOnPlaying
+                    if (type == 'Song') {
+                        onClick = handlePlay(mediaData);
+                        isOnPlaying = currentSong == mediaData.audiourl && isPlaying;
+                    } else {
+                        onClick = null;
+                        isOnPlaying = false;
+                    }
                     return (
                         <MediaComponent
                             key={index}
                             type={type}
                             mediaData={mediaData}
-                            onClick={type == 'Song' ? handlePlay(mediaData) : handleProfile(mediaData)}
+                            onClick={onClick}
+                            isOnPlaying={isOnPlaying}
                         />
                     );
                 })}
@@ -76,29 +124,21 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 MediaDisplay.displayName = 'MediaDisplay';
 MediaDisplay.propTypes = {
     media: PropTypes.shape({
-        type: PropTypes.string.isRequired,
+        type: PropTypes.string,
         title: PropTypes.string,
         visibility: PropTypes.string,
         link: PropTypes.string,
-        data: PropTypes.arrayOf(
-            PropTypes.shape({
-                title: PropTypes.string,
-                artist: PropTypes.string,
-                genre: PropTypes.string,
-                imageurl: PropTypes.string,
-                audiourl: PropTypes.string,
-                view: PropTypes.number,
-            }),
-        ),
-    }).isRequired,
+        data: PropTypes.array,
+    }),
     displayItems: PropTypes.string,
     displayType: PropTypes.string,
 };
 
 export default MediaDisplay;
 
-const MediaItems = memo(({ type, mediaData, onClick }) => {
+const MediaItems = memo(({ type, mediaData, onClick, isOnPlaying }) => {
     const { title, artist, imageurl } = mediaData;
+    const { url } = imageurl;
     const isArtist = type === 'Artist';
     const imageClass = isArtist ? 'w-[150px] rounded-full' : 'w-[120px] rounded-[30px]';
 
@@ -107,18 +147,17 @@ const MediaItems = memo(({ type, mediaData, onClick }) => {
             <div className="relative h-full">
                 <img
                     className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
-                    src={imageurl}
+                    src={url}
                     alt={title}
                 />
-                <button className="media-item__play absolute bottom-1 right-1 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100"
+                <PlayButton
                     onClick={onClick}
-                >
-                    <i className="ri-play-fill text-xl"></i>
-                </button>
+                    isOnPlaying={isOnPlaying}
+                />
             </div>
             <span className="media-item__name text-center">{isArtist ? artist : title}</span>
             {!isArtist && (<span className="media-item__desc text-center text-sm text-[#808080]">{artist}</span>)}
-        </div>
+        </div >
     );
 });
 
@@ -128,12 +167,19 @@ MediaItems.propTypes = {
     mediaData: PropTypes.shape({
         title: PropTypes.string,
         artist: PropTypes.string,
-        imageurl: PropTypes.string,
+        genre: PropTypes.string,
+        imageurl: PropTypes.shape({
+            publicId: PropTypes.string,
+            url: PropTypes.string,
+        })
     }),
+    onClick: PropTypes.func,
+    isCurrentSong: PropTypes.bool,
 };
 
-const MediaItems2 = memo(({ type, mediaData, onClick }) => {
+const MediaItems2 = memo(({ type, mediaData, onClick, isCurrentSong }) => {
     const { title, artist, imageurl } = mediaData;
+    const { url } = imageurl;
     const isArtist = type === 'Artist';
     const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
 
@@ -146,7 +192,7 @@ const MediaItems2 = memo(({ type, mediaData, onClick }) => {
                 <div className="media-item__image relative">
                     <img
                         className={`media-item__img aspect-square w-full object-cover hover:cursor-pointer ${imageClass}`}
-                        src={imageurl}
+                        src={url}
                         alt={title}
                     />
                     <button className="media-item__play absolute bottom-0 right-0 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100"
