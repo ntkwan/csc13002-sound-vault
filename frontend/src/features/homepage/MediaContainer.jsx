@@ -1,11 +1,15 @@
-import { useGetTrendingSongsQuery } from '@services/api';
+import { useGetTrendingSongsQuery, useGetNewSongsQuery } from '@services/api';
 import { MediaDisplay } from '@components';
 import { Loading } from '@components/index';
 
 function MediaContainer() {
-    const { data, error, isLoading } = useGetTrendingSongsQuery();
-    if (isLoading) return <Loading />;
-    const topTrending = data.slice(0, 6);
+    const { data: trendingSongs, error: trendingSongsError, isLoading: trendingSongsLoading } = useGetTrendingSongsQuery();
+    const { data: newSongs, error: newSongsError, isLoading: newSongsLoading } = useGetNewSongsQuery();
+
+    if (trendingSongsLoading || newSongsLoading) return <Loading />;
+
+    const topTrending = trendingSongs.slice(0, 6);
+    const newReleases = newSongs.slice(0, 6);
     const mediaData = [
         {
             type: 'Artist',
@@ -49,10 +53,10 @@ function MediaContainer() {
         },
         {
             type: 'Song',
-            title: 'New Release',
+            title: 'New Releases',
             visibility: '',
             link: 'library',
-            data: topTrending,
+            data: newReleases,
         },
         {
             type: 'Album',

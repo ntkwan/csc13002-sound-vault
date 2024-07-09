@@ -19,14 +19,11 @@ const upload_song = async (req, res) => {
         });
     }
 
-    let imageurl = process.env.DEFAULT_THUMBNAIL;
-
     let song_data = {
         title: req.body.title,
         artist: req.body.artist,
         //album: req.body.album,
         genre: req.body.genre,
-        imageurl: req.body?.imageurl || imageurl,
         audiourl: audioResponse.secure_url,
     };
 

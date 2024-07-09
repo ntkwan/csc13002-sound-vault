@@ -86,6 +86,9 @@ export const api = createApi({
         getTrendingSongs: builder.query({
             query: () => '/get-trending-songs',
         }),
+        getNewSongs: builder.query({
+            query: () => '/get-new-songs',
+        }),
     }),
 });
 
@@ -97,4 +100,5 @@ export const {
     useLogOutMutation,
     useUploadAudioMutation,
     useGetTrendingSongsQuery,
+    useGetNewSongsQuery,
 } = api;

@@ -26,4 +26,26 @@ const get_trending_songs = async (req, res) => {
     }
 };
 
-module.exports = { get_trending_songs };
+const get_new_songs = async (req, res) => {
+    try {
+        const songs = await SongModel.find().sort({ createdAt: -1 }).limit(10);
+
+        res.status(200).send(
+            songs.map((song) => {
+                return {
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    audiourl: song.audiourl,
+                };
+            }),
+        );
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+module.exports = { get_trending_songs, get_new_songs };

@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -29,9 +32,11 @@ const SongSchema = new Schema(
         image: {
             publicId: {
                 type: String,
+                default: 'default',
             },
             url: {
                 type: String,
+                default: process.env.DEFAULT_THUMBNAIL,
             },
         },
         audiourl: {
