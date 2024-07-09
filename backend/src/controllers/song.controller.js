@@ -11,6 +11,7 @@ const get_trending_songs = async (req, res) => {
         res.status(200).send(
             songs.map((song) => {
                 return {
+                    id: song._id,
                     title: song.title,
                     artist: song.artist,
                     genre: song.genre,
@@ -35,6 +36,7 @@ const get_new_songs = async (req, res) => {
         res.status(200).send(
             songs.map((song) => {
                 return {
+                    id: song._id,
                     title: song.title,
                     artist: song.artist,
                     genre: song.genre,
