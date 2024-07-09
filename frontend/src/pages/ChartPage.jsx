@@ -9,7 +9,7 @@ function ChartPage() {
     const { data: kpopData, isLoading: kpopLoading } =
         useGetChartSongsQuery('KPop');
     const { data: usukData, isLoading: usukLoading } =
-        useGetChartSongsQuery('USUK');
+        useGetChartSongsQuery('US-UK');
     const [tableDatas, setTableDatas] = useState([]);
     useEffect(() => {
         if (!vpopData || !kpopData || !usukData) return;
@@ -28,7 +28,7 @@ function ChartPage() {
             },
         ]);
     }, [vpopData, kpopData, usukData]);
-    console.log(tableDatas);
+
     return vpopLoading || kpopLoading || usukLoading ? (
         <Loading />
     ) : (

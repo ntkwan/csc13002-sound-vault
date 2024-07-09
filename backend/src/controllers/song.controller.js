@@ -99,7 +99,9 @@ const get_songs_by_region = async (req, res) => {
     // 3 regions: 'VPop', 'KPop', 'USUK'
     const region = req.params.region;
     try {
-        const songs = await SongModel.find({ region: region }).limit(10);
+        const songs = await SongModel.find({ region: region })
+            .sort({ view: -1 })
+            .limit(5);
 
         if (!songs) {
             return res.status(404).json({
