@@ -128,10 +128,36 @@ const get_songs_by_region = async (req, res) => {
     }
 };
 
+/*
+const set_song_uploader = async (req, res) => {
+    const songId = req.params.id;
+    const uploader = req.body.uploader;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song not found',
+            });
+        }
+
+        await Song.setUploader(uploader);
+        await Song.save();
+
+        res.status(200).json({
+            message: 'Uploader has been set',
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+*/
 module.exports = {
     get_trending_songs,
     get_new_songs,
     play_song,
     get_song_view,
     get_songs_by_region,
+    //set_song_uploader,
 };

@@ -25,9 +25,11 @@ const UserSchema = new Schema(
         image: {
             publicId: {
                 type: String,
+                default: 'avatar-default',
             },
             url: {
                 type: String,
+                default: process.env.DEFAULT_AVATAR,
             },
         },
         isAdmin: {
@@ -36,6 +38,10 @@ const UserSchema = new Schema(
         },
         refreshToken: {
             type: String,
+        },
+        followers: {
+            type: Number,
+            default: 0,
         },
     },
     {

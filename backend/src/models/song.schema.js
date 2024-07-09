@@ -2,6 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 const mongoose = require('mongoose');
+const objectId = mongoose.Schema.Types.ObjectId;
 const Schema = mongoose.Schema;
 
 const SongSchema = new Schema(
@@ -10,12 +11,11 @@ const SongSchema = new Schema(
             type: String,
             required: true,
         },
-        /*
         uploader: {
-            ref: 'User',
+            type: objectId,
+            ref: 'users',
             required: true,
         },
-        */
         artist: {
             type: String,
             required: true,
@@ -68,6 +68,10 @@ SongSchema.methods.increaseView = async function () {
 
 SongSchema.methods.setRegion = async function (region) {
     this.region = region;
+};
+
+SongSchema.methods.setUploader = async function (uploader) {
+    this.uploader = uploader;
 };
 
 module.exports = mongoose.model('Song', SongSchema);
