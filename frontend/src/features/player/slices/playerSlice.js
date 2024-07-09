@@ -36,7 +36,6 @@ const playerSlice = createSlice({
         },
         setCurrentTrack(state, action) {
             state.currentTrack = action.payload;
-            state.currentTrack.id = Math.floor(Math.random() * 1000);
         },
         setCurrentTime(state, action) {
             state.currentTime = Number(action.payload);

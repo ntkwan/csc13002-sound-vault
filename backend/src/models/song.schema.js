@@ -14,7 +14,7 @@ const SongSchema = new Schema(
         uploader: {
             type: objectId,
             ref: 'users',
-            required: true,
+            // required: true,
         },
         artist: {
             type: String,

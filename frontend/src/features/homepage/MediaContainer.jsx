@@ -3,16 +3,10 @@ import { MediaDisplay } from '@components';
 import { Loading } from '@components/index';
 
 function MediaContainer() {
-    const {
-        data: trendingSongs,
-        error: trendingSongsError,
-        isLoading: trendingSongsLoading,
-    } = useGetTrendingSongsQuery();
-    const {
-        data: newSongs,
-        error: newSongsError,
-        isLoading: newSongsLoading,
-    } = useGetNewSongsQuery();
+    const { data: trendingSongs, isLoading: trendingSongsLoading } =
+        useGetTrendingSongsQuery();
+    const { data: newSongs, isLoading: newSongsLoading } =
+        useGetNewSongsQuery();
     if (trendingSongsLoading || newSongsLoading) return <Loading />;
 
     const topTrending = trendingSongs ? trendingSongs.slice(0, 6) : [];
@@ -28,32 +22,31 @@ function MediaContainer() {
                     artist: 'Hoàng Thùy Linh',
                     imageurl: {
                         url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    }
-
+                    },
                 },
                 {
                     artist: 'Phan Mạnh Quỳnh',
                     imageurl: {
                         url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    }
+                    },
                 },
                 {
                     artist: 'Obito',
                     imageurl: {
                         url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    }
+                    },
                 },
                 {
                     artist: 'HIEUTHUHAI',
                     imageurl: {
                         url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    }
+                    },
                 },
                 {
                     artist: 'Anh Tú',
                     imageurl: {
                         url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    }
+                    },
                 },
             ],
         },

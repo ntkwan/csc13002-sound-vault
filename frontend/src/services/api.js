@@ -85,11 +85,20 @@ export const api = createApi({
                 body: file,
             }),
         }),
+        playSong: builder.mutation({
+            query: (id) => ({
+                url: `/play-song/${id}`,
+                method: 'POST',
+            }),
+        }),
         getTrendingSongs: builder.query({
             query: () => '/get-trending-songs',
         }),
         getNewSongs: builder.query({
             query: () => '/get-new-songs',
+        }),
+        getChartSongs: builder.query({
+            query: (region) => `/get-songs-by-region/${region}`,
         }),
     }),
 });
@@ -101,6 +110,8 @@ export const {
     useResetPasswordMutation,
     useLogOutMutation,
     useUploadAudioMutation,
+    usePlaySongMutation,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
+    useGetChartSongsQuery,
 } = api;

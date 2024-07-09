@@ -5,33 +5,40 @@ import { PropTypes } from 'prop-types';
 import { PlayButton } from '.';
 import { selectCurrentPlayer } from '@services/selectors';
 import { play, pause, setCurrentTrack } from '../features/player/slices';
+import { usePlaySongMutation } from '@services/api';
+import { toast } from 'react-toastify';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const dispatch = useDispatch();
     const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
-    const currentSong = currentTrack?.url;
+    const currentSong = currentTrack.id;
+    const [playSong] = usePlaySongMutation();
 
-    const handlePlay =
-        ({ title, artist, imageurl, audiourl }) =>
-        () => {
-            if (currentSong !== audiourl) {
+    const handlePlay = async ({ id, title, artist, imageurl }) => {
+        if (currentSong !== id) {
+            try {
+                const res = await playSong(id).unwrap();
                 dispatch(
                     setCurrentTrack({
+                        id,
                         title,
                         artist,
-                        url: audiourl,
+                        url: res.audiourl,
                         thumbnail: imageurl.url,
                     }),
                 );
                 dispatch(play());
-            } else {
-                if (!isPlaying) {
-                    dispatch(play());
-                } else {
-                    dispatch(pause());
-                }
+            } catch (error) {
+                toast.error('Failed to play song');
             }
-        };
+        } else {
+            if (!isPlaying) {
+                dispatch(play());
+            } else {
+                dispatch(pause());
+            }
+        }
+    };
 
     const { type, title, visibility, link, data } = media;
 
@@ -82,9 +89,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     }
                     let onClick, isOnPlaying;
                     if (type == 'Song') {
-                        onClick = handlePlay(mediaData);
-                        isOnPlaying =
-                            currentSong == mediaData.audiourl && isPlaying;
+                        onClick = () => handlePlay(mediaData);
+                        isOnPlaying = currentSong == mediaData.id && isPlaying;
                     } else {
                         onClick = null;
                         isOnPlaying = false;
@@ -153,6 +159,7 @@ MediaItems.displayName = 'MediaItems';
 MediaItems.propTypes = {
     type: PropTypes.string,
     mediaData: PropTypes.shape({
+        id: PropTypes.string,
         title: PropTypes.string,
         artist: PropTypes.string,
         genre: PropTypes.string,
