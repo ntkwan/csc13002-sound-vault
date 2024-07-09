@@ -64,12 +64,14 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             {/* media title container*/}
             <title className="media__title-container flex items-center justify-between">
                 {/* media tile */}
-                <h2 className="media__title space-x-3 text-3xl">
-                    <span className="media__title-name font-bold">{title}</span>
-                    <span className="media__title-visibility italic">
-                        {visibility}
-                    </span>
-                </h2>
+                {title && (
+                    <h2 className="media__title space-x-3 text-3xl">
+                        <span className="media__title-name font-bold">{title}</span>
+                        <span className="media__title-visibility italic">
+                            {visibility}
+                        </span>
+                    </h2>
+                )}
                 {/* media link */}
                 {link && (
                     <Link
@@ -177,9 +179,10 @@ MediaItems.propTypes = {
     isCurrentSong: PropTypes.bool,
 };
 
-const MediaItems2 = memo(({ type, mediaData, onClick, isCurrentSong }) => {
+const MediaItems2 = memo(({ type, mediaData, onClick, isOnPlaying }) => {
     const { title, artist, imageurl } = mediaData;
     const { url } = imageurl;
+    console.log(url);
     const isArtist = type === 'Artist';
     const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
 
@@ -195,11 +198,10 @@ const MediaItems2 = memo(({ type, mediaData, onClick, isCurrentSong }) => {
                         src={url}
                         alt={title}
                     />
-                    <button className="media-item__play absolute bottom-0 right-0 h-10 w-10 -translate-x-2 rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] opacity-0 transition-all duration-300 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100"
+                    <PlayButton
                         onClick={onClick}
-                    >
-                        <i className="ri-play-fill text-xl"></i>
-                    </button>
+                        isOnPlaying={isOnPlaying}
+                    />
                 </div>
                 <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
                     {isArtist ? artist : title}

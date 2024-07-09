@@ -8,8 +8,8 @@ function MediaContainer() {
 
     if (trendingSongsLoading || newSongsLoading) return <Loading />;
 
-    const topTrending = trendingSongs.slice(0, 6);
-    const newReleases = newSongs.slice(0, 6);
+    const topTrending = trendingSongs ? trendingSongs.slice(0, 6) : [];
+    const newReleases = newSongs ? newSongs.slice(0, 6) : [];
     const mediaData = [
         {
             type: 'Artist',
@@ -19,28 +19,34 @@ function MediaContainer() {
             data: [
                 {
                     artist: 'Hoàng Thùy Linh',
-                    imageurl:
-                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    imageurl: {
+                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    }
+
                 },
                 {
                     artist: 'Phan Mạnh Quỳnh',
-                    imageurl:
-                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    imageurl: {
+                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    }
                 },
                 {
                     artist: 'Obito',
-                    imageurl:
-                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    imageurl: {
+                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    }
                 },
                 {
                     artist: 'HIEUTHUHAI',
-                    imageurl:
-                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    imageurl: {
+                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    }
                 },
                 {
                     artist: 'Anh Tú',
-                    imageurl:
-                        'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    imageurl: {
+                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
+                    }
                 },
             ],
         },
@@ -48,21 +54,21 @@ function MediaContainer() {
             type: 'Song',
             title: 'Trending',
             visibility: '',
-            link: 'library',
+            link: 'trending',
             data: topTrending,
         },
         {
             type: 'Song',
             title: 'New Releases',
             visibility: '',
-            link: 'library',
+            link: 'newrelease',
             data: newReleases,
         },
         {
             type: 'Album',
             title: 'Top Album',
             visibility: '',
-            link: 'library',
+            link: 'album',
             data: topTrending,
         },
     ];
@@ -75,7 +81,7 @@ function MediaContainer() {
                     media={media}
                     displayItems="1"
                     displayType={
-                        media.title === 'Featured Artists'
+                        media.type === 'Artist'
                             ? 'grid grid-cols-5'
                             : 'grid grid-cols-6'
                     }
