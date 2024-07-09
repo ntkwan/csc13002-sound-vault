@@ -29,6 +29,10 @@ const SongSchema = new Schema(
             type: String,
             required: true,
         },
+        region: {
+            type: String,
+            required: true,
+        },
         image: {
             publicId: {
                 type: String,
@@ -60,6 +64,10 @@ SongSchema.methods.setSongThumbnail = async function (imageurl) {
 
 SongSchema.methods.increaseView = async function () {
     this.view += 1;
+};
+
+SongSchema.methods.setRegion = async function (region) {
+    this.region = region;
 };
 
 module.exports = mongoose.model('Song', SongSchema);
