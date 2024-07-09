@@ -13,4 +13,5 @@ export {
 /* eslint-disable react-refresh/only-export-components */
 export * from './UI/Icons';
 export * from './Constants';
+export * from './ArticleSection';
 /* eslint-disable react-refresh/only-export-components */

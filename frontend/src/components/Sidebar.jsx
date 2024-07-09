@@ -17,11 +17,7 @@ function Sidebar() {
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <div>
-                    <SidebarLink
-                        to=""
-                        icon={HomeIcon}
-                        label="home"
-                    />
+                    <SidebarLink to="" icon={HomeIcon} label="home" />
                     {token ? (
                         isAdmin ? (
                             <>
@@ -74,13 +70,17 @@ function Sidebar() {
                                 label="About Us"
                             />
                             <SidebarLink
-                                to="term&policy"
+                                to="termandpolicy"
                                 icon={InfoIcon}
                                 label="Terms & Policy"
                             />
                         </>
                     )}
-                    <SidebarLink to="setting" icon={SettingIcon} label="setting" />
+                    <SidebarLink
+                        to="setting"
+                        icon={SettingIcon}
+                        label="setting"
+                    />
                     {token && <Logout />}
                 </div>
             </section>
