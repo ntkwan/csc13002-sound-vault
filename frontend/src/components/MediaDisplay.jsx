@@ -1,72 +1,50 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { PlayButton } from '.';
-import {
-    play,
-    pause,
-    setCurrentTrack,
-    setCurrentTime,
-    setDuration
-} from '../features/player/slices/playerSlice';
+import { selectCurrentPlayer } from '@services/selectors';
+import { play, pause, setCurrentTrack } from '../features/player/slices';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
-    if (!media) return null;
-
     const dispatch = useDispatch();
-    const playerState = useSelector(state => state.player);
+    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
+    const currentSong = currentTrack?.url;
 
-    const [currentSong, setCurrentSong] = useState(playerState.currentTrack.url);
-    const [isPlaying, setIsPlaying] = useState(playerState.isPlaying);
-    const handlePlay = ({ title, artist, imageurl, audiourl }) => () => {
-        if (!audiourl)
-            return;
-        if (currentSong == null && playerState.currentTrack.url == audiourl)
-            return;
-        if (currentSong != audiourl) {
-            dispatch(setCurrentTrack({
-                title,
-                artist,
-                url: audiourl,
-                thumbnail: imageurl.url
-            }));
-            dispatch(setCurrentTime(0));
-            dispatch(setDuration(0));
-            dispatch(play());
-            setCurrentSong(audiourl);
-            setIsPlaying(true);
-        }
-        else {
-            setIsPlaying(!isPlaying);
-            dispatch(!isPlaying ? play() : pause());
-        }
-    }
-
-    useEffect(() => {
-        if (playerState.currentTrack.url != currentSong) {
-            setCurrentSong(null);
-            setIsPlaying(false);
-        }
-        if (playerState.isPlaying != isPlaying) {
-            setIsPlaying(playerState.isPlaying)
-        }
-    }, [playerState]);
-
-    const handleProfile = ({ artist }) => {
-
-    }
+    const handlePlay =
+        ({ title, artist, imageurl, audiourl }) =>
+        () => {
+            if (currentSong !== audiourl) {
+                dispatch(
+                    setCurrentTrack({
+                        title,
+                        artist,
+                        url: audiourl,
+                        thumbnail: imageurl.url,
+                    }),
+                );
+                dispatch(play());
+            } else {
+                if (!isPlaying) {
+                    dispatch(play());
+                } else {
+                    dispatch(pause());
+                }
+            }
+        };
 
     const { type, title, visibility, link, data } = media;
 
-    return (
+    return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
             {/* media title container*/}
             <title className="media__title-container flex items-center justify-between">
                 {/* media tile */}
                 {title && (
                     <h2 className="media__title space-x-3 text-3xl">
-                        <span className="media__title-name font-bold">{title}</span>
+                        <span className="media__title-name font-bold">
+                            {title}
+                        </span>
                         <span className="media__title-visibility italic">
                             {visibility}
                         </span>
@@ -78,7 +56,9 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         className="media__link text-sm text-[#808080] hover:text-white hover:underline hover:underline-offset-2"
                         to={link}
                     >
-                        <span className="media__link-desc font-medium">See More</span>
+                        <span className="media__link-desc font-medium">
+                            See More
+                        </span>
                         <i className="media__link-icon ri-arrow-right-line text-base"></i>
                     </Link>
                 )}
@@ -100,10 +80,11 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         default:
                             MediaComponent = MediaItems;
                     }
-                    let onClick, isOnPlaying
+                    let onClick, isOnPlaying;
                     if (type == 'Song') {
                         onClick = handlePlay(mediaData);
-                        isOnPlaying = currentSong == mediaData.audiourl && isPlaying;
+                        isOnPlaying =
+                            currentSong == mediaData.audiourl && isPlaying;
                     } else {
                         onClick = null;
                         isOnPlaying = false;
@@ -120,7 +101,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 })}
             </div>
         </section>
-    );
+    ) : null;
 });
 
 MediaDisplay.displayName = 'MediaDisplay';
@@ -142,7 +123,9 @@ const MediaItems = memo(({ type, mediaData, onClick, isOnPlaying }) => {
     const { title, artist, imageurl } = mediaData;
     const { url } = imageurl;
     const isArtist = type === 'Artist';
-    const imageClass = isArtist ? 'w-[150px] rounded-full' : 'w-[120px] rounded-[30px]';
+    const imageClass = isArtist
+        ? 'w-[150px] rounded-full'
+        : 'w-[120px] rounded-[30px]';
 
     return (
         <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
@@ -152,14 +135,17 @@ const MediaItems = memo(({ type, mediaData, onClick, isOnPlaying }) => {
                     src={url}
                     alt={title}
                 />
-                <PlayButton
-                    onClick={onClick}
-                    isOnPlaying={isOnPlaying}
-                />
+                <PlayButton onClick={onClick} isOnPlaying={isOnPlaying} />
             </div>
-            <span className="media-item__name text-center">{isArtist ? artist : title}</span>
-            {!isArtist && (<span className="media-item__desc text-center text-sm text-[#808080]">{artist}</span>)}
-        </div >
+            <span className="media-item__name text-center">
+                {isArtist ? artist : title}
+            </span>
+            {!isArtist && (
+                <span className="media-item__desc text-center text-sm text-[#808080]">
+                    {artist}
+                </span>
+            )}
+        </div>
     );
 });
 
@@ -173,16 +159,15 @@ MediaItems.propTypes = {
         imageurl: PropTypes.shape({
             publicId: PropTypes.string,
             url: PropTypes.string,
-        })
+        }),
     }),
     onClick: PropTypes.func,
-    isCurrentSong: PropTypes.bool,
+    isOnPlaying: PropTypes.bool,
 };
 
 const MediaItems2 = memo(({ type, mediaData, onClick, isOnPlaying }) => {
     const { title, artist, imageurl } = mediaData;
     const { url } = imageurl;
-    console.log(url);
     const isArtist = type === 'Artist';
     const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
 
@@ -198,10 +183,7 @@ const MediaItems2 = memo(({ type, mediaData, onClick, isOnPlaying }) => {
                         src={url}
                         alt={title}
                     />
-                    <PlayButton
-                        onClick={onClick}
-                        isOnPlaying={isOnPlaying}
-                    />
+                    <PlayButton onClick={onClick} isOnPlaying={isOnPlaying} />
                 </div>
                 <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
                     {isArtist ? artist : title}
@@ -218,6 +200,7 @@ MediaItems2.displayName = 'MediaItems2';
 MediaItems2.propTypes = MediaItems.propTypes;
 
 const MediaItems3 = memo(({ type, mediaData }) => {
+    const { title, imageurl } = mediaData;
     const propsDiv =
         type === 'genre'
             ? 'col-span-2 aspect-[2/1]'
@@ -254,11 +237,14 @@ const MediaItems4 = memo(({ mediaList }) => {
     return mediaList.map((media, index) => {
         const { title, view, duration, imageurl } = media;
         return (
-            <div key={index} className="flex w-full justify-between items-center px-8">
+            <div
+                key={index}
+                className="flex w-full items-center justify-between px-8"
+            >
                 <div className="flex items-center space-x-8">
                     <span className="w-2">{index + 1}</span>
                     <img
-                        className="w-14 aspect-square object-cover"
+                        className="aspect-square w-14 object-cover"
                         src={imageurl}
                         alt={title}
                     />
@@ -266,18 +252,16 @@ const MediaItems4 = memo(({ mediaList }) => {
                 </div>
                 <span>{view}</span>
                 <span>{duration}</span>
-                <button
-                    className="relative"
-                    onClick={() => toggleMenu(index)}>
+                <button className="relative" onClick={() => toggleMenu(index)}>
                     <i className="ri-more-fill text-2xl"></i>
                     {menuVisible === index && (
-                        <div className="absolute right-0 z-[2] mt-2 w-40 h-max rounded-xl text-sm border-[2px] shadow-md border-[#999] bg-[#222]">
+                        <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                             <ul>
-                                <li className="cursor-pointer flex space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                     <i className="ri-share-line text-xl leading-none"></i>
                                     <span>Share</span>
                                 </li>
-                                <li className="cursor-pointer flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                     <i className="ri-error-warning-line text-xl leading-none"></i>
                                     <span>Report</span>
                                 </li>

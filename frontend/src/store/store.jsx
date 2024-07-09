@@ -9,18 +9,18 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { api } from '@services/api';
 import { authReducer } from '@features/authentication/slices';
 import { profileReducer } from '@features/profilepage/slices';
 import { playerReducer } from '@features/player/slices';
+import storage from 'redux-persist/lib/storage';
 import playerTransform from '@features/player/transform';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'player'],
     transforms: [playerTransform],
+    whitelist: ['auth', 'player'],
 };
 
 const rootReducer = combineReducers({

@@ -1,6 +1,12 @@
-function Loading() {
+import PropTypes from 'prop-types';
+
+function Loading({ className = '' }) {
     return (
-        <div className="flex h-screen place-content-center items-center">
+        <div
+            className={
+                'flex h-screen place-content-center items-center ' + className
+            }
+        >
             <svg
                 className="h-[10em] w-[10em] animate-spin text-blue-500"
                 fill="none"
@@ -23,5 +29,9 @@ function Loading() {
         </div>
     );
 }
+
+Loading.propTypes = {
+    className: PropTypes.string,
+};
 
 export default Loading;

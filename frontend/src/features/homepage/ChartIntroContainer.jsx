@@ -1,95 +1,85 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     play,
-    setCurrentTime,
-    setDuration,
+    pause,
     setCurrentTrack,
-} from "@features/player/slices/playerSlice";
-import { PlayButton } from "@components/index";
+} from '@features/player/slices/playerSlice';
+import { selectCurrentPlayer } from '@services/selectors';
+import { PlayButton } from '@components/index';
 
 function ChartIntroContainer() {
     const data = [
         {
-            title: "Nếu lúc đó",
-            artist: "tlinh",
-            genre: "Pop",
+            title: 'Nếu lúc đó',
+            artist: 'tlinh',
+            genre: 'Pop',
             imageurl: {
-                url: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png",
+                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png',
             },
-            audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3",
+            audiourl:
+                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
             view: 0,
         },
         {
-            title: "Nếu lúc đó",
-            artist: "tlinh",
-            genre: "Pop",
+            title: 'Nếu lúc đó',
+            artist: 'tlinh',
+            genre: 'Pop',
             imageurl: {
-                url: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png",
+                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png',
             },
-            audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3",
+            audiourl:
+                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
             view: 0,
         },
         {
-            title: "Ngày Mai Người Ta Lấy Chồng",
-            artist: "Thành Đạt",
-            genre: "Pop",
+            title: 'Ngày Mai Người Ta Lấy Chồng',
+            artist: 'Thành Đạt',
+            genre: 'Pop',
             imageurl: {
-                url: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg",
+                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg',
             },
-            audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3",
-            view: 0
+            audiourl:
+                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3',
+            view: 0,
         },
         {
-            title: "Ngày Mai Người Ta Lấy Chồng",
-            artist: "Thành Đạt",
-            genre: "Pop",
+            title: 'Ngày Mai Người Ta Lấy Chồng',
+            artist: 'Thành Đạt',
+            genre: 'Pop',
             imageurl: {
-                url: "https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg",
+                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg',
             },
-            audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3",
-            view: 0
+            audiourl:
+                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3',
+            view: 0,
         },
     ];
 
     const dispatch = useDispatch();
-    const playerState = useSelector(state => state.player);
+    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
+    const currentSong = currentTrack?.url;
 
-    const [currentSong, setCurrentSong] = useState(playerState.currentTrack.url);
-    const [isPlaying, setIsPlaying] = useState(playerState.isPlaying);
-    const handlePlay = ({ title, artist, imageurl, audiourl }) => () => {
-        if (!audiourl)
-            return;
-        if (currentSong == null && playerState.currentTrack.url == audiourl)
-            return;
-        if (currentSong != audiourl) {
-            dispatch(setCurrentTrack({
-                title,
-                artist,
-                url: audiourl,
-                thumbnail: imageurl.url
-            }));
-            dispatch(setCurrentTime(0));
-            dispatch(setDuration(0));
-            dispatch(play());
-            setCurrentSong(audiourl);
-            setIsPlaying(true);
-        }
-        else {
-            setIsPlaying(!isPlaying);
-            dispatch(!isPlaying ? play() : pause());
-        }
-    }
-
-    useEffect(() => {
-        if (playerState.currentTrack.url != currentSong) {
-            setCurrentSong(null);
-            setIsPlaying(false);
-        }
-        if (playerState.isPlaying != isPlaying) {
-            setIsPlaying(playerState.isPlaying)
-        }
-    }, [playerState]);
+    const handlePlay =
+        ({ title, artist, imageurl, audiourl }) =>
+        () => {
+            if (currentSong !== audiourl) {
+                dispatch(
+                    setCurrentTrack({
+                        title,
+                        artist,
+                        url: audiourl,
+                        thumbnail: imageurl.url,
+                    }),
+                );
+                dispatch(play());
+            } else {
+                if (!isPlaying) {
+                    dispatch(play());
+                } else {
+                    dispatch(pause());
+                }
+            }
+        };
 
     return (
         <div>
@@ -105,7 +95,7 @@ function ChartIntroContainer() {
                         >
                             <div className="song__frame absolute top-5 h-full w-[90%] border-b-[1px] border-l-[1px] border-white before:absolute before:left-0 before:top-0 before:h-px before:w-3 before:bg-white before:content-[''] after:absolute after:bottom-0 after:right-0 after:h-10 after:w-px after:bg-white after:content-['']"></div>
                             <div className="song__info absolute left-5 flex h-[110%] w-44 flex-col space-y-1">
-                                <div className="w-full relative group">
+                                <div className="group relative w-full">
                                     <img
                                         className="aspect-square w-full hover:cursor-pointer"
                                         src={url}
@@ -113,7 +103,9 @@ function ChartIntroContainer() {
                                     />
                                     <PlayButton
                                         onClick={handlePlay(song)}
-                                        isOnPlaying={currentSong == audiourl && isPlaying}
+                                        isOnPlaying={
+                                            currentSong == audiourl && isPlaying
+                                        }
                                         position="bottom-1 right-1"
                                     />
                                 </div>

@@ -5,13 +5,12 @@ const initialState = {
     isShuffle: false,
     isRepeat: false,
     currentTrack: {
-        id: 0,
-        title: 'nếu lúc đó',
-        artist: 'tlinh',
-        url: 'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-        thumbnail:
-            'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/6/d/1/b6d1ed0d09b63c3006e56f7e7839014e.jpg',
-        screen: 'https://i.scdn.co/image/ab67618600001016587d17a2b9860077302125d1',
+        id: -1,
+        title: '',
+        artist: '',
+        url: '',
+        thumbnail: '',
+        screen: '',
         theme: '',
     },
     currentTime: 0,
@@ -37,6 +36,7 @@ const playerSlice = createSlice({
         },
         setCurrentTrack(state, action) {
             state.currentTrack = action.payload;
+            state.currentTrack.id = Math.floor(Math.random() * 1000);
         },
         setCurrentTime(state, action) {
             state.currentTime = Number(action.payload);
@@ -46,6 +46,9 @@ const playerSlice = createSlice({
         },
         setVolume(state, action) {
             state.volume = Number(action.payload);
+        },
+        resetPlayer() {
+            return initialState;
         },
     },
 });
@@ -59,6 +62,7 @@ export const {
     setCurrentTime,
     setDuration,
     setVolume,
+    resetPlayer,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

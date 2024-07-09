@@ -26,30 +26,30 @@ function ProfilePage() {
     return (
         <div className="profile__page space-y-10 caret-transparent">
             {/* profile header */}
-            <div className="profile__header w-full h-96 content-center">
+            <div className="profile__header h-96 w-full content-center">
                 {/* profile cover */}
-                {cover != "" ? (
-                    <div className="absolute top-0 left-28 right-0 h-96">
-                        < img
-                            className="profile__cover w-full h-full rounded-xl object-cover shadow-2xl"
+                {cover != '' ? (
+                    <div className="absolute left-28 right-0 top-0 h-96">
+                        <img
+                            className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl"
                             src={ARTIST_IMG_URL + cover}
                             alt=""
                         />
                     </div>
                 ) : (
-                    <div className="profile__cover absolute top-0 left-28 right-0 h-96 border-2 border-t-0 rounded-xl"></div>
+                    <div className="profile__cover absolute left-28 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
                 )}
-                <div className="profile__container flex items-center ml-[5%]">
-                    <div className="relative min-w-40 h-40">
+                <div className="profile__container ml-[5%] flex items-center">
+                    <div className="relative h-40 min-w-40">
                         {/* profile avatar */}
-                        {avatar != "" ? (
+                        {avatar != '' ? (
                             <img
-                                className="profile__avatar w-full h-full rounded-full object-cover shadow-2xl"
+                                className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
                                 src={ARTIST_IMG_URL + avatar}
                                 alt=""
                             />
                         ) : (
-                            <i className="bx bxs-user-circle w-40 aspect-square text-[180px] leading-none"></i>
+                            <i className="bx bxs-user-circle aspect-square w-40 text-[180px] leading-none"></i>
                         )}
                         {/* verified icon */}
                         {isVerified && (
@@ -63,7 +63,7 @@ function ProfilePage() {
                     {/* profile info */}
                     <div className="relative ml-5 content-center">
                         <p className="text-shadow-1">Profile</p>
-                        <p className="text-shadow-2 text-stroke-1 text-7xl font-alfaslabone">
+                        <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
                             {fullName}
                         </p>
                         <p className="text-shadow-1">
@@ -76,8 +76,8 @@ function ProfilePage() {
 
             {/* Actions Section */}
             <div className="flex space-x-6">
-                <button className="min-w-[70px] h-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                    <i className="ri-play-fill text-[42px] ml-1"></i>
+                <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
+                    <i className="ri-play-fill ml-1 text-[42px]"></i>
                 </button>
                 {isMyProfile ? (
                     <>
@@ -104,8 +104,7 @@ function ProfilePage() {
             </div>
 
             {mediaData.map((media, index) => {
-                if (!media.visibility && !isMyProfile)
-                    return null;
+                if (!media.visibility && !isMyProfile) return null;
                 return (
                     <MediaDisplay
                         key={index}

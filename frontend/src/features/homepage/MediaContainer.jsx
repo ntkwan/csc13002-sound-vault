@@ -3,9 +3,16 @@ import { MediaDisplay } from '@components';
 import { Loading } from '@components/index';
 
 function MediaContainer() {
-    const { data: trendingSongs, error: trendingSongsError, isLoading: trendingSongsLoading } = useGetTrendingSongsQuery();
-    const { data: newSongs, error: newSongsError, isLoading: newSongsLoading } = useGetNewSongsQuery();
-
+    const {
+        data: trendingSongs,
+        error: trendingSongsError,
+        isLoading: trendingSongsLoading,
+    } = useGetTrendingSongsQuery();
+    const {
+        data: newSongs,
+        error: newSongsError,
+        isLoading: newSongsLoading,
+    } = useGetNewSongsQuery();
     if (trendingSongsLoading || newSongsLoading) return <Loading />;
 
     const topTrending = trendingSongs ? trendingSongs.slice(0, 6) : [];

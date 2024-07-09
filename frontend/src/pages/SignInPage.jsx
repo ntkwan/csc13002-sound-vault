@@ -11,6 +11,7 @@ import {
 } from '@features/authentication/components';
 import { INPUTS, Loading } from '@components';
 import { toast } from 'react-toastify';
+import { resetPlayer } from '@features/player/slices';
 
 function SignInPage() {
     const [values, setValues] = useState({
@@ -35,6 +36,7 @@ function SignInPage() {
             const user = values['email'];
             const token = res.accessToken;
             dispatch(setCredentials({ user, token }));
+            dispatch(resetPlayer());
             setValues({ email: '', password: '' });
             toast.success(res.message);
             nav('/');

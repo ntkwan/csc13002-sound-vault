@@ -8,4 +8,5 @@ export {
     setCurrentTime,
     setDuration,
     setVolume,
+    resetPlayer,
 } from './playerSlice';

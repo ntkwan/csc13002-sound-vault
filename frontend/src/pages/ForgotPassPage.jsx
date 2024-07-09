@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 
 function ForgotPassPage() {
     const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [forgotPassword] = useForgotPasswordMutation();
     const dispatch = useDispatch();
     const handleSubmit = async (e) => {
@@ -18,6 +19,7 @@ function ForgotPassPage() {
         if (!email) {
             return;
         }
+        setIsLoading(true);
         try {
             const res = await forgotPassword({ email: email }).unwrap();
             const resetUrl = res.url;
@@ -29,6 +31,7 @@ function ForgotPassPage() {
             const errMsg = error.data.message;
             toast.error(errMsg);
         }
+        setIsLoading(false);
     };
 
     return (
@@ -48,6 +51,7 @@ function ForgotPassPage() {
                     />
                     <div className="mt-6 flex select-none space-x-2">
                         <ConfirmButton
+                            isLoading={isLoading}
                             title="Send email"
                             disabled={!email ? true : false}
                         />

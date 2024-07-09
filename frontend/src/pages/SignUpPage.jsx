@@ -35,7 +35,6 @@ function SignUpPage() {
         }
         try {
             const res = await signUp(values).unwrap();
-            console.log(res.message);
             setValues({ name: '', email: '', password: '' });
             toast.success(res.message);
             nav('/signin');

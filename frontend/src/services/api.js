@@ -1,5 +1,6 @@
-import { logOut, setCredentials } from '@features/authentication/slices';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { logOut, setCredentials } from '@features/authentication/slices';
+import { resetPlayer } from '@features/player/slices';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
@@ -74,6 +75,7 @@ export const api = createApi({
             }),
             onQueryStarted: (_, { dispatch }) => {
                 dispatch(logOut());
+                dispatch(resetPlayer());
             },
         }),
         uploadAudio: builder.mutation({
