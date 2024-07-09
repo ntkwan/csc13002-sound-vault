@@ -48,4 +48,54 @@ const get_new_songs = async (req, res) => {
     }
 };
 
-module.exports = { get_trending_songs, get_new_songs };
+const play_song = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song not found',
+            });
+        }
+
+        await Song.increaseView();
+        await Song.save();
+
+        res.status(200).json({
+            title: Song.title,
+            artist: Song.artist,
+            view: Song.view,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const get_song_view = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song not found',
+            });
+        }
+
+        res.status(200).json({
+            view: Song.view,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+module.exports = {
+    get_trending_songs,
+    get_new_songs,
+    play_song,
+    get_song_view,
+};

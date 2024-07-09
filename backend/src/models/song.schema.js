@@ -43,12 +43,6 @@ const SongSchema = new Schema(
             type: String,
             required: true,
         },
-        /*
-    duration: {
-        type: String,
-        required: true,
-    },
-    */
         view: {
             type: Number,
             default: 0,
@@ -62,6 +56,10 @@ const SongSchema = new Schema(
 SongSchema.methods.setSongThumbnail = async function (imageurl) {
     this.image.publicId = imageurl.public_id;
     this.image.url = imageurl.secure_url;
+};
+
+SongSchema.methods.increaseView = async function () {
+    this.view += 1;
 };
 
 module.exports = mongoose.model('Song', SongSchema);
