@@ -37,6 +37,13 @@ export const INPUTS = {
             error: 'Password should be at least 6 characters and contain 1 letter, 1 number and 1 special character!',
             pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,}$',
         },
+        {
+            name: 'confirm_password',
+            type: 'password',
+            placeholder: 'Repeat the password',
+            required: true,
+            error: 'Passwords do not match!',
+        },
     ],
     RESET_PASS: [
         {
