@@ -150,9 +150,9 @@ export const sections = [
                         conduct that could constitute a criminal offense or
                         violate any local, national, or international law. While
                         we respect freedom of speech, we reserve the right to
-                        edit or delete any part or all of a User's post if it is
-                        deemed to violate these points, regardless of whether
-                        the violation is explicit or implied;
+                        edit or delete any part or all of a User&apos;s post if
+                        it is deemed to violate these points, regardless of
+                        whether the violation is explicit or implied;
                     </li>
                     <li>
                         -Users will not send or transmit any advertising,
@@ -197,7 +197,7 @@ export const sections = [
         content: (
             <p>
                 We reserve the full right, at any time, to prohibit or deny a
-                User's access to SoundVault or any part of the website
+                User&apos;s access to SoundVault or any part of the website
                 immediately and without notice if we believe the User has
                 violated any terms of these Terms and Policies, or if we deem it
                 appropriate and necessary within our authority to refuse access.
@@ -244,10 +244,11 @@ export const sections = [
                 <li>
                     The intellectual property rights of the content published by
                     SoundVault belong to SoundVault or are legally licensed to
-                    SoundVault. Unless with SoundVault's consent, users are not
-                    allowed to upload, send, publish, reproduce, transmit, or
-                    distribute in any form any part of the SoundVault website or
-                    create modifications of the content provided by SoundVault.
+                    SoundVault. Unless with SoundVault&apos;s consent, users are
+                    not allowed to upload, send, publish, reproduce, transmit,
+                    or distribute in any form any part of the SoundVault website
+                    or create modifications of the content provided by
+                    SoundVault.
                 </li>
                 <li>
                     In areas where posting is allowed, users may share permitted
@@ -276,12 +277,12 @@ export const sections = [
                     .Users agree that we are free to use, disclose, apply, and
                     modify any ideas, concepts, methods, suggestions, comments,
                     or other forms of communication that users provide to us
-                    ("Feedback") related to SoundVault and/or SoundVault’s
-                    services, entirely free of charge. Users waive and agree to
-                    waive any rights and claims for any rewards, fees,
-                    royalties, and/or other payments related to our use,
-                    disclosure, application, and/or modification of any or all
-                    of your Feedback.
+                    (&ldquo;Feedback&rdquo;) related to SoundVault and/or
+                    SoundVault&rsquo;s services, entirely free of charge. Users
+                    waive and agree to waive any rights and claims for any
+                    rewards, fees, royalties, and/or other payments related to
+                    our use, disclosure, application, and/or modification of any
+                    or all of your Feedback.
                 </li>
             </ol>
         ),
@@ -302,8 +303,8 @@ export const sections = [
                         license applies to any form, medium, technology known or
                         developed later. The user should note that posts on the
                         forum or in authorized areas may continue to be on our
-                        website even if the user's account has been deleted for
-                        any reason.
+                        website even if the user&apos;s account has been deleted
+                        for any reason.
                     </li>
                     <li>
                         The user warrants that they have all legal, moral, and
@@ -363,11 +364,11 @@ export const sections = [
         content: (
             <p>
                 The user agrees that the Terms of Use and any disputes arising
-                from the user's use of this website or our products and services
-                will be governed by the current laws of the Socialist Republic
-                of Vietnam. By registering or using our website and services,
-                the user implicitly agrees to and complies with all provisions
-                of Vietnamese law.
+                from the user&apos;s use of this website or our products and
+                services will be governed by the current laws of the Socialist
+                Republic of Vietnam. By registering or using our website and
+                services, the user implicitly agrees to and complies with all
+                provisions of Vietnamese law.
             </p>
         ),
     },
@@ -519,7 +520,7 @@ export const sections = [
                             <li>
                                 Clear evidence of your ownership rights to the
                                 work (e.g., Documents proving the reporting
-                                entity's rights, documents proving that the
+                                entity&apos;s rights, documents proving that the
                                 reported content is infringing, authorization
                                 letter if the reporter is authorized by the
                                 rights holder).
@@ -574,10 +575,11 @@ export const sections = [
                             severity of the violation.
                         </li>
                         <li>
-                            In cases where a user's violation is not specified
-                            in this agreement, depending on the nature and
-                            severity of the violation, SoundVault reserves the
-                            unilateral right to determine a reasonable penalty.
+                            In cases where a user&apos;s violation is not
+                            specified in this agreement, depending on the nature
+                            and severity of the violation, SoundVault reserves
+                            the unilateral right to determine a reasonable
+                            penalty.
                         </li>
                         <li>
                             Penalty forms include temporary or permanent

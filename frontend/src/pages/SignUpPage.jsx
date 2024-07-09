@@ -20,7 +20,7 @@ function SignUpPage() {
         name: '',
         email: '',
         password: '',
-        confirmPassword: '',
+        confirm_password: '',
     });
     const [checked, setChecked] = useState(false);
     const nav = useNavigate();
@@ -29,17 +29,18 @@ function SignUpPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (values['password'] !== values['confirmPassword']) return;
         if (
             !values['name'] ||
             !values['email'] ||
             !values['password'] ||
+            !values['confirm_password'] ||
             !checked ||
             !values['name'].match(INPUTS.SIGN_UP[0].pattern) ||
             !values['password'].match(INPUTS.SIGN_UP[2].pattern)
         ) {
             return;
-        }
+        } else if (values['password'] !== values['confirm_password'])
+            return toast.error(INPUTS.SIGN_UP[3].error);
         try {
             const res = await signUp(values).unwrap();
             setValues({ name: '', email: '', password: '' });
@@ -101,6 +102,7 @@ function SignUpPage() {
                                     !values['name'] ||
                                     !values['email'] ||
                                     !values['password'] ||
+                                    !values['confirm_password'] ||
                                     !checked
                                         ? true
                                         : false
@@ -113,7 +115,7 @@ function SignUpPage() {
                         <label className="flex items-center">
                             <input
                                 type="checkbox"
-                                value={checked}
+                                checked={checked}
                                 onClick={() => setChecked(!checked)}
                                 className="mr-3 h-[16px] w-[16px] cursor-pointer rounded-[2px] border border-[#ccc] bg-white font-kodchasan checked:bg-[#383838]"
                             />
