@@ -3,9 +3,6 @@
 ### [SUCCESS] server connection
 GET {{host}}
 
-### [FAILED] server connection: connect to invalid page
-GET {{host}}/chat 
-
 ### [FAILED] signin: wrong email 
 POST {{host}}/signin
 Content-Type: application/json
@@ -38,8 +35,8 @@ POST {{host}}/signin
 Content-Type: application/json
 
 {
-    "email": "u@gmail.com",
-    "password": "12345678"
+    "email": "dummy@sontungmtp.soundvault",
+    "password": "a"
 }
 
 ### [SUCCESS] signup: admin
@@ -71,19 +68,25 @@ Content-Type: application/json
     "password": "12345678"
 }
 
-### [USER] get profile 
-GET {{host}}profile
+### [USER] get my profile
+GET {{host}}/get-my-profile
+Content-Type: application/json
 Authorization: Bearer [TOKEN]
 
-### [ADMIN] get all users
-GET {{host}}/getall
-Authorization: Bearer [TOKEN]
+### [USER] get profile by id
+@profileId = 
+GET {{host}}/get-profile-by-id/{{profileId}}
 
+### [USER] get popular songs of the profile
+@profileId = 668d51ca6dad72a3f2d093f9
+GET {{host}}/get-profile-popular-songs/{{profileId}}
+Content-Type: application/json
+Authorization: Bearer [TOKEN]
 ### sign out
-@AccessToken = 
+@accessToken = 
 POST {{host}}/signout
 Content-Type: application/json
-Authorization: Bearer {{AccessToken}}
+Authorization: Bearer {{accessToken}}
 
 {
     "email": "a@gmail.com"
