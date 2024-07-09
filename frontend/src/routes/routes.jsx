@@ -9,6 +9,7 @@ import {
     AlbumPage,
     NewReleasePage,
     TrendingPage,
+    AboutUsPage,
     SignInPage,
     SignUpPage,
     ResetPassPage,
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
             { path: 'trending', Component: TrendingPage },
             { path: 'newrelease', Component: NewReleasePage },
             { path: 'album', Component: AlbumPage },
+            { path: 'aboutus', Component: AboutUsPage }
         ],
     },
     {

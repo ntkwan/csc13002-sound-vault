@@ -5,6 +5,7 @@ export { default as ArtistPage } from './ArtistPage';
 export { default as TrendingPage } from './TrendingPage';
 export { default as AlbumPage } from './AlbumPage';
 export { default as NewReleasePage } from './NewReleasePage';
+export { default as AboutUsPage } from './AboutUsPage';
 export { default as SignInPage } from './SignInPage';
 export { default as SignUpPage } from './SignUpPage';
 export { default as ForgotPassPage } from './ForgotPassPage';
