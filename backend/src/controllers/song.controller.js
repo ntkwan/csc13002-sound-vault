@@ -16,7 +16,6 @@ const get_trending_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
-                    audiourl: song.audiourl,
                     view: song.view,
                     region: song.region,
                 };
@@ -41,7 +40,6 @@ const get_new_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
-                    audiourl: song.audiourl,
                     view: song.view,
                     region: song.region,
                 };
@@ -68,9 +66,7 @@ const play_song = async (req, res) => {
         await Song.save();
 
         res.status(200).json({
-            title: Song.title,
-            artist: Song.artist,
-            view: Song.view,
+            audiourl: Song.audiourl,
         });
     } catch (error) {
         res.status(500).json({
@@ -118,7 +114,6 @@ const get_songs_by_region = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
-                    audiourl: song.audiourl,
                     view: song.view,
                 };
             }),
