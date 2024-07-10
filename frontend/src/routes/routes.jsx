@@ -15,6 +15,7 @@ import {
     ResetPassPage,
     ForgotPassPage,
     TermAndPolicyPage,
+    LibraryPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
             { path: 'aboutus', Component: AboutUsPage },
             { path: 'chart', Component: ChartPage },
             { path: 'termandpolicy', Component: TermAndPolicyPage },
+            { path: 'library', Component: LibraryPage },
             {
                 path: '',
                 Component: Protected,

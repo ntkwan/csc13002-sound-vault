@@ -3,7 +3,7 @@ import { sections } from '@components';
 
 function TermAndPolicyPage() {
     return (
-        <div>
+        <div className="select-none">
             <PageTitle title="Terms & Policy" className="text-[170px]" />
             <p className="font-kodchasan text-[25px] font-bold">
                 AGREEMENT ON THE EXCHANGE AND PROVISION OF INFORMATION ON THE

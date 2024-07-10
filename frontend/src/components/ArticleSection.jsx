@@ -399,7 +399,7 @@ export const sections = [
                         through designated channels provided on the SoundVault
                         platform or by contacting our customer support team
                         directly via email at
-                        <p className="mx-1 inline text-blue-500">
+                        <p className="mx-1 inline select-text text-blue-400 hover:underline">
                             soundvault.co@gmail.com
                         </p>
                     </li>
@@ -497,7 +497,7 @@ export const sections = [
                         SoundVault infringes your intellectual property rights,
                         please send a copyright infringement report to us via
                         email at
-                        <p className="mx-1 inline text-blue-500">
+                        <p className="mx-1 inline select-text text-blue-400 hover:underline">
                             soundvault.co@gmail.com
                         </p>
                         or using the report buttons displayed on the screens of

@@ -12,3 +12,4 @@ export { default as ForgotPassPage } from './ForgotPassPage';
 export { default as ResetPassPage } from './ResetPassPage';
 export { default as ChartPage } from './ChartPage';
 export { default as TermAndPolicyPage } from './TermAndPolicyPage';
+export { default as LibraryPage } from './LibraryPage';
