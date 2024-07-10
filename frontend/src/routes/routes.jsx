@@ -12,6 +12,7 @@ import {
     ForgotPassPage,
     AdminAccountPage,
     AdminSongPage,
+    ReviewReportPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -22,8 +23,9 @@ const router = createBrowserRouter([
             { path: 'profile', Component: ProfilePage },
             { path: 'profile/editing', Component: ProfilePageEditing },
             { path: 'artist', Component: ArtistPage },
-            { path: 'adminsongpage', Component: AdminSongPage },
-            { path: 'adminaccountpage', Component: AdminAccountPage },
+            { path: 'adminsong', Component: AdminSongPage },
+            { path: 'adminaccount', Component: AdminAccountPage },
+            { path: 'reviewreport', Component: ReviewReportPage },
         ],
     },
     {

@@ -13,10 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import { api } from '@services/api';
 import { authReducer } from '@features/authentication/slices';
 import { profileReducer } from '@features/profilepage/slices';
-import {
-    adminSongReducer,
-    adminAccountReducer,
-} from '@features/admindashboard/slices';
+import { adminDashboardReducer } from '@features/admindashboard/slices';
 
 const persistConfig = {
     key: 'root',
@@ -28,8 +25,7 @@ const rootReducer = combineReducers({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
     profile: profileReducer,
-    adminSong: adminSongReducer,
-    adminAccount: adminAccountReducer,
+    admindashboard: adminDashboardReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

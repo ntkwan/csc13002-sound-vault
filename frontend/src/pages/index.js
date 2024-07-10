@@ -9,3 +9,4 @@ export { default as ResetPassPage } from './ResetPassPage';
 export { default as ChartPage } from './ChartPage';
 export { default as AdminSongPage } from './SongManagementPage';
 export { default as AdminAccountPage } from './AccountManagementPage';
+export { default as ReviewReportPage } from './ReviewReportPage';

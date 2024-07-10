@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import {
     ManagementButtons,
     FilterStatus,
@@ -9,19 +8,8 @@ import {
     ItemsPerPageSelector,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import {
-    setSongs,
-    setDate,
-    setSortOption,
-    setFilterDate,
-    setFilterSortOption,
-    setTabStatus,
-    setSearchTerm,
-    setCurrentPage,
-    setItemsPerPage,
-    selectAdminSongManagement,
-    setShowFilters,
-} from '@features/admindashboard/slices';
+import { setSongList } from '@features/admindashboard/slices';
+import { useDispatch, useSelector } from 'react-redux';
 
 const sampleSongs = [
     {
@@ -78,27 +66,27 @@ const initialSongs = generateSongs(sampleSongs, counts);
 
 function AdminSongPage() {
     const dispatch = useDispatch();
-    const adminSong = useSelector(selectAdminSongManagement);
-    const {
-        songs,
-        date,
-        sortOption,
-        filterDate,
-        filterSortOption,
-        tabStatus,
-        searchTerm,
-        currentPage,
-        itemsPerPage,
-        showFilters,
-    } = adminSong;
+    const songs = useSelector((state) => state.admindashboard.songList);
+    const [date, setDate] = useState('');
+    const [sortOption, setSortOption] = useState('Date (newest first)');
+    const [filterDate, setFilterDate] = useState('');
+    const [filterSortOption, setFilterSortOption] = useState(
+        'Date (newest first)',
+    );
+    const [tabStatus, setTabStatus] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [showFilters, setShowFilters] = useState(false);
+
     useEffect(() => {
-        dispatch(setSongs(initialSongs));
+        dispatch(setSongList(initialSongs));
     }, [dispatch]);
 
     const applyFilter = () => {
-        dispatch(setCurrentPage(1));
-        dispatch(setFilterDate(date));
-        dispatch(setFilterSortOption(sortOption));
+        setCurrentPage(1);
+        setFilterDate(date);
+        setFilterSortOption(sortOption);
     };
 
     const filteredSongs = songs.filter((song) => {
@@ -158,8 +146,8 @@ function AdminSongPage() {
     ];
 
     const handleItemsPerPageChange = (e) => {
-        dispatch(setItemsPerPage(Number(e.target.value)));
-        dispatch(setCurrentPage(1));
+        setItemsPerPage(Number(e.target.value));
+        setCurrentPage(1);
     };
 
     return (
@@ -173,8 +161,8 @@ function AdminSongPage() {
                     filterList={buttonFilter}
                     tabStatus={tabStatus}
                     onFilterClick={(tabStatus) => {
-                        dispatch(setTabStatus(tabStatus));
-                        dispatch(setCurrentPage(1));
+                        setTabStatus(tabStatus);
+                        setCurrentPage(1);
                     }}
                 />
             </div>
@@ -183,13 +171,13 @@ function AdminSongPage() {
                 <SearchBar
                     searchTerm={searchTerm}
                     onSearch={(term) => {
-                        dispatch(setSearchTerm(term));
-                        dispatch(setCurrentPage(1));
+                        setSearchTerm(term);
+                        setCurrentPage(1);
                     }}
                 />
                 <button
                     className="admin-page__filter h-11 rounded-xl bg-black px-4"
-                    onClick={() => dispatch(setShowFilters(!showFilters))}
+                    onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
                     Filters
@@ -199,10 +187,10 @@ function AdminSongPage() {
             {showFilters && (
                 <FilterSort
                     date={date}
-                    setDate={(date) => dispatch(setDate(date))}
+                    setDate={setDate}
                     sortMethods={sortMethods}
                     sortOption={sortOption}
-                    setSortOption={(option) => dispatch(setSortOption(option))}
+                    setSortOption={setSortOption}
                     applyFilter={applyFilter}
                 />
             )}
@@ -264,7 +252,7 @@ function AdminSongPage() {
                 />
                 <Pagination
                     currentPage={currentPage}
-                    setCurrentPage={(page) => dispatch(setCurrentPage(page))}
+                    setCurrentPage={setCurrentPage}
                     totalPages={totalPages}
                 />
             </div>

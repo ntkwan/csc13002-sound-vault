@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
-    ManagementButtons,
     FilterStatus,
     SearchBar,
     Pagination,
@@ -9,67 +7,95 @@ import {
     ItemsPerPageSelector,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import { setAccountList } from '@features/admindashboard/slices';
+import { setReportList } from '@features/admindashboard/slices';
+import { useDispatch, useSelector } from 'react-redux';
 
-const sampleAccounts = [
+const sampleReports = [
     {
-        name: 'John Doe',
+        username: 'SmokeShack Burger',
         date: '23-05-2024',
-        gmail: 'john_doe@gmail.com',
-        status: 'Verified',
+        category: 'song',
+        status: 'Finished',
+        description: 'Description',
+        adminAssignee: 'Silva',
+        image: {
+            url: '',
+        },
     },
     {
-        name: 'Jane Smith',
+        username: 'Waffle Fries',
         date: '21-04-2022',
-        gmail: 'janesmith@gmail.com',
-        status: 'Unverified',
+        category: 'artist',
+        status: 'Pending',
+        description: 'Description',
+        adminAssignee: 'Rice',
+        image: {
+            url: '',
+        },
     },
     {
-        name: 'Alice Johnson',
+        username: 'Chalupa Supreme',
         date: '19-01-2020',
-        gmail: 'fkalicejohnson@gmail.com',
-        status: 'Pending',
+        category: 'song',
+        status: 'Reject',
+        description: 'Description',
+        adminAssignee: 'Saka',
+        image: {
+            url: '',
+        },
     },
     {
-        name: 'Bob Brown',
+        username: 'Checkers Seasoned Fries',
         date: '02-10-2024',
-        gmail: 'lulbob_brown@gmail.com',
-        status: 'Verified',
-    },
-    {
-        name: 'Charlie Davis',
-        date: '03-12-2019',
-        gmail: 'charliedavis@gmail.com',
-        status: 'Unverified',
-    },
-    {
-        name: 'Eve Martinez',
-        date: '23-04-2024',
-        gmail: 'evemartinez@gmail.com',
+        category: 'song',
         status: 'Pending',
+        description: 'Description',
+        adminAssignee: 'Bruno',
+        image: {
+            url: '',
+        },
+    },
+    {
+        username: 'French Fries',
+        date: '03-12-2019',
+        category: 'artist',
+        status: 'Finished',
+        description: 'Description',
+        adminAssignee: 'Booker',
+        image: {
+            url: '',
+        },
+    },
+    {
+        username: 'Taquito with Cheese',
+        date: '23-04-2024',
+        category: 'artist',
+        status: 'Reject',
+        description: 'Description',
+        adminAssignee: 'Kendall',
+        image: {
+            url: '',
+        },
     },
 ];
 
-const generateAccounts = (samples, counts) => {
-    let accounts = [];
+const generateReports = (samples, counts) => {
+    let reports = [];
     samples.forEach((sample, index) => {
         for (let i = 0; i < counts[index]; i++) {
-            accounts.push({
-                ...sample,
-                gmail: `${sample.gmail}${i}@gmail.com`,
-            });
+            reports.push({ ...sample });
         }
     });
-    return accounts;
+    return reports;
 };
 
 const counts = [10, 10, 10, 10, 5, 5];
 
-const initialAccounts = generateAccounts(sampleAccounts, counts);
+const initialReports = generateReports(sampleReports, counts);
 
-function AdminAccountPage() {
+function ReviewReportPage() {
     const dispatch = useDispatch();
-    const accounts = useSelector((state) => state.admindashboard.accountList);
+    const reports = useSelector((state) => state.admindashboard.reportList);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -83,7 +109,7 @@ function AdminAccountPage() {
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => {
-        dispatch(setAccountList(initialAccounts));
+        dispatch(setReportList(initialReports));
     }, [dispatch]);
 
     const applyFilter = () => {
@@ -92,27 +118,29 @@ function AdminAccountPage() {
         setFilterSortOption(sortOption);
     };
 
-    const filteredAccounts = accounts.filter((account) => {
+    const filteredReports = reports.filter((report) => {
         const parseDate1 = (dateStr) =>
             parse(dateStr, 'dd-MM-yyyy', new Date());
         const parseDate2 = (dateStr) =>
             parse(dateStr, 'yyyy-MM-dd', new Date());
         return (
-            (tabStatus === 'all' || account.status === tabStatus) &&
+            (tabStatus === 'all' || report.status === tabStatus) &&
             (!filterDate ||
-                isEqual(parseDate1(account.date), parseDate2(filterDate))) &&
+                isEqual(parseDate1(report.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                account.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+                report.username
+                    .toLowerCase()
+                    .startsWith(searchTerm.toLowerCase()))
         );
     });
 
-    const sortedAccounts = filteredAccounts.sort((a, b) => {
+    const sortedReports = filteredReports.sort((a, b) => {
         const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
 
-        if (filterSortOption === 'Name') {
-            return a.name.localeCompare(b.name);
-        } else if (filterSortOption === 'Gmail') {
-            return a.gmail.localeCompare(b.gmail);
+        if (filterSortOption === 'Username') {
+            return a.username.localeCompare(b.username);
+        } else if (filterSortOption === 'Admin Assignee') {
+            return a.adminAssignee.localeCompare(b.adminAssignee);
         } else if (filterSortOption === 'Date (oldest first)') {
             return compareAsc(parseDate(a.date), parseDate(b.date));
         } else if (filterSortOption === 'Date (newest first)') {
@@ -120,30 +148,23 @@ function AdminAccountPage() {
         }
     });
 
-    const paginatedAccounts = sortedAccounts.slice(
+    const paginatedReports = sortedReports.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage,
     );
 
-    const totalPages = Math.ceil(filteredAccounts.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
 
     const buttonFilter = [
-        { name: 'All accounts', status: 'all' },
-        { name: 'Verified', status: 'Verified' },
-        { name: 'Unverified', status: 'Unverified' },
+        { name: 'All reports', status: 'all' },
+        { name: 'Finished', status: 'Finished' },
         { name: 'Pending', status: 'Pending' },
-    ];
-
-    const actionsButton = [
-        { name: 'View', background: 'bg-[#195FF0]' },
-        { name: 'Edit', background: 'bg-[#34AAA3]' },
-        { name: 'Remove', background: 'bg-[#B63D65]' },
-        { name: 'Disable', background: 'bg-[#CACD6D]' },
+        { name: 'Reject', status: 'Reject' },
     ];
 
     const sortMethods = [
-        'Name',
-        'Gmail',
+        'Username',
+        'Admin Assignee',
         'Date (oldest first)',
         'Date (newest first)',
     ];
@@ -156,7 +177,7 @@ function AdminAccountPage() {
     return (
         <div className="admin-page">
             <h1 className="admin-page__title inline-block px-4 py-8 text-7xl">
-                Accounts
+                Review Reports
             </h1>
 
             <div className="admin-page__filter flex space-x-4 border-b-2 px-2">
@@ -167,6 +188,7 @@ function AdminAccountPage() {
                         setTabStatus(tabStatus);
                         setCurrentPage(1);
                     }}
+                    isReviewPage={true}
                 />
             </div>
 
@@ -184,7 +206,6 @@ function AdminAccountPage() {
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
                     Filters
-                    {console.log(showFilters)}
                 </button>
             </div>
 
@@ -203,47 +224,55 @@ function AdminAccountPage() {
                 <thead>
                     <tr className="border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">
-                            Name
+                            User name
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Date
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
-                            Gmail
+                            Category
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
+                            Description
+                        </th>
+                        <th className="px-2 py-5 text-right font-normal">
                             Status
                         </th>
-                        <th className="px-2 py-5 font-normal">Actions</th>
+                        <th className="px-2 py-5 text-right font-normal">
+                            Assignee
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedAccounts.map((account, index) => (
+                    {paginatedReports.map((report, index) => (
                         <tr key={index} className="border-b-2">
-                            <td className="px-2 py-5">{account.name}</td>
-                            <td className="px-2 py-5">{account.date}</td>
-                            <td className="px-2 py-5">{account.gmail}</td>
-                            <td className="px-2 py-5">
-                                <span
-                                    className={`rounded-lg px-2 py-1 ${
-                                        account.status === 'Verified'
-                                            ? 'bg-[#FFF0F0] text-[#FD6A6A]'
-                                            : account.status === 'Unverified'
-                                              ? 'bg-[#FFF0E6] text-[#FE964A]'
-                                              : 'bg-[#E7F7EF] text-[#0CAF60]'
+                            <td className="px-2 py-5">{report.username}</td>
+                            <td className="px-2 py-5">{report.date}</td>
+                            <td className="px-2 py-5">{report.category}</td>
+                            <td className="px-2 py-5">{report.description}</td>
+                            <td className="flex items-end justify-end p-2 py-5">
+                                <div
+                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
+                                        report.status === 'Finished'
+                                            ? 'bg-[#188038]'
+                                            : report.status === 'Pending'
+                                              ? 'bg-[#F6FE00]'
+                                              : 'bg-[#FD0053]'
                                     }`}
-                                >
-                                    {account.status}
-                                </span>
+                                />
                             </td>
-                            <td className="flex justify-evenly p-2 py-5">
-                                {actionsButton.map((action, index) => (
-                                    <ManagementButtons
-                                        key={index}
-                                        background={action.background}
-                                        children={action.name}
-                                    />
-                                ))}
+                            <td>
+                                <div className="ml-auto flex h-[40px] w-[40px] items-center justify-center rounded-full border-[3px]">
+                                    {report?.image?.url ? (
+                                        <img
+                                            src={report.image.url}
+                                            alt="user avatar"
+                                            className="h-full w-full rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <i className="ri-user-3-fill text-2xl" />
+                                    )}
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -264,4 +293,4 @@ function AdminAccountPage() {
     );
 }
 
-export default AdminAccountPage;
+export default ReviewReportPage;
