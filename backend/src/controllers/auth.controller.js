@@ -86,10 +86,6 @@ const signin = async (req, res) => {
         User.refreshToken = refreshToken;
         await User.save({ validateBeforeSave: false });
 
-        const loggedInUser = await UserModel.findById(User._id).select(
-            '-password -refreshToken',
-        );
-
         const options = {
             httpOnly: true,
             secure: true,
@@ -175,9 +171,9 @@ const signout = async (req, res) => {
         secure: true, // Enable in a production environment with HTTPS
     };
 
+    res.clearCookie('refreshToken');
     return res
         .status(200)
-        .cookie('refreshToken', options)
         .json({ user: {}, message: 'Logged out successfully' });
 };
 
