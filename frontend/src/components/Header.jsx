@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { SearchIcon } from '.';
 import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile } from '@features/profilepage/slices';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import propTypes from 'prop-types';
 
@@ -14,6 +14,7 @@ function Header() {
     const [search, setSearch] = useState('');
     const [pingNotice, setPingNotice] = useState(true);
     const [showNotice, setShowNotice] = useState(false);
+    const noticeRef = useRef(null);
 
     const notice = [
         {
@@ -26,10 +27,29 @@ function Header() {
     const handleSearch = (e) => {
         setSearch(e.target.value);
     };
+
     const handleShowNotice = () => {
         setShowNotice(!showNotice);
         setPingNotice(false);
     };
+
+    const handleClickOutside = (event) => {
+        if (noticeRef.current && !noticeRef.current.contains(event.target)) {
+            setShowNotice(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showNotice) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showNotice]);
 
     const userProfile = useSelector(selectUserProfile);
     const { fullName, avatar, isAdmin } = userProfile;
@@ -63,7 +83,7 @@ function Header() {
                         alt=""
                     />
                     <span>Hello, {fullName}</span>
-                    <div className="relative">
+                    <div className="relative" ref={noticeRef}>
                         <i
                             className="bx bx-bell relative block h-10 min-w-10 content-center rounded-full bg-white text-center text-2xl text-black transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
                             onClick={handleShowNotice}
@@ -92,7 +112,6 @@ function Header() {
                             </notice>
                         )}
                     </div>
-                    {/* <HeaderLink to="/">{NotificationIcon()}</HeaderLink> */}
                 </div>
             ) : (
                 <div className="flex h-1/2 flex-[1] justify-end space-x-5 pr-5 text-xs">

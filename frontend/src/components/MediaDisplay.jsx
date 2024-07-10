@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
@@ -84,6 +84,9 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         case '3':
                             MediaComponent = MediaItems3;
                             break;
+                        case '4':
+                            MediaComponent = MediaItems4;
+                            break;
                         default:
                             MediaComponent = MediaItems;
                     }
@@ -102,6 +105,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                             mediaData={mediaData}
                             onClick={onClick}
                             isOnPlaying={isOnPlaying}
+                            index={index}
                         />
                     );
                 })}
@@ -234,63 +238,76 @@ const MediaItems3 = memo(({ type, mediaData }) => {
 MediaItems3.displayName = 'MediaItems3';
 MediaItems3.propTypes = MediaItems.propTypes;
 
-const MediaItems4 = memo(({ mediaList }) => {
+const MediaItems4 = memo(({ type, mediaData, onClick, isOnPlaying, index }) => {
     const [menuVisible, setMenuVisible] = useState(null);
+    const [duration, setDuration] = useState('0:00');
 
     const toggleMenu = (index) => {
         setMenuVisible(menuVisible === index ? null : index);
     };
 
-    return mediaList.map((media, index) => {
-        const { title, view, duration, imageurl } = media;
-        return (
-            <div
-                key={index}
-                className="flex w-full items-center justify-between px-8"
-            >
-                <div className="flex items-center space-x-8">
-                    <span className="w-2">{index + 1}</span>
-                    <img
-                        className="aspect-square w-14 object-cover"
-                        src={imageurl}
-                        alt={title}
+    const { title, view, imageurl, audiourl } = mediaData;
+    const { url } = imageurl;
+
+    useEffect(() => {
+        if (audiourl) {
+            const audio = new Audio(audiourl);
+            audio.addEventListener('loadedmetadata', () => {
+                const minutes = Math.floor(audio.duration / 60);
+                const seconds = Math.floor(audio.duration % 60);
+                setDuration(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+            });
+        }
+    }, [audiourl]);
+
+    return (
+        <div className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_60px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
+            {/* index - img - name */}
+            <div className="flex items-center space-x-8">
+                <div className="">
+                    <PlayButton
+                        onClick={onClick}
+                        isOnPlaying={isOnPlaying}
+                        position="left-6 z-index-10"
                     />
-                    <span>{title}</span>
+                    <span className="block w-3 group-hover:cursor-pointer">
+                        {index + 1}
+                    </span>
                 </div>
-                <span>{view}</span>
-                <span>{duration}</span>
-                <button className="relative" onClick={() => toggleMenu(index)}>
-                    <i className="ri-more-fill text-2xl"></i>
-                    {menuVisible === index && (
-                        <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                            <ul>
-                                <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                    <i className="ri-share-line text-xl leading-none"></i>
-                                    <span>Share</span>
-                                </li>
-                                <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                    <i className="ri-error-warning-line text-xl leading-none"></i>
-                                    <span>Report</span>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                </button>
+                <img
+                    className="aspect-square w-14 object-cover"
+                    src={url}
+                    alt={title}
+                />
+                <p className="block w-full">{title}</p>
             </div>
-        );
-    });
+            <span>{view}</span>
+            <span>{duration}</span>
+            <button className="relative" onClick={() => toggleMenu(index)}>
+                <i className="ri-more-fill text-2xl"></i>
+                {menuVisible === index && (
+                    <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                        <ul>
+                            <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                <i className="ri-share-line text-xl leading-none"></i>
+                                <span>Share</span>
+                            </li>
+                            <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                <i className="ri-error-warning-line text-xl leading-none"></i>
+                                <span>Report</span>
+                            </li>
+                        </ul>
+                    </div>
+                )}
+            </button>
+        </div>
+    );
 });
 
 MediaItems4.displayName = 'MediaItems4';
 MediaItems4.propTypes = {
-    mediaList: PropTypes.arrayOf(
-        PropTypes.shape({
-            title: PropTypes.string,
-            view: PropTypes.number,
-            duration: PropTypes.string,
-            imageurl: PropTypes.string,
-        }),
-    ),
+    ...MediaItems.propTypes,
+    index: PropTypes.number,
 };
 
 export { MediaItems, MediaItems2, MediaItems3, MediaItems4 };

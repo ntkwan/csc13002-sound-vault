@@ -20,6 +20,7 @@ const get_profile_by_id = async (req, res) => {
             name: User.name,
             image: User.image,
             followers: User.followers,
+            id: User._id,
         });
     } catch (error) {
         return res.status(500).json({
@@ -50,6 +51,7 @@ const get_profile_popular_songs = async (req, res) => {
         res.status(200).send(
             songs.map((song) => {
                 return {
+                    id: song._id,
                     title: song.title,
                     artist: song.artist,
                     genre: song.genre,

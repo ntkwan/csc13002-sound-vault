@@ -1,14 +1,20 @@
-import { useGetNewSongsQuery } from "@services/api";
-import { PageTitle, MediaDisplay, Loading } from "@components";
+import { useGetNewSongsQuery } from '@services/api';
+import { PageTitle, MediaDisplay, Loading } from '@components';
 
 function AlbumPage() {
-    const { data: newSongs, error: newSongsError, isLoading: newSongsLoading } = useGetNewSongsQuery();
+    const {
+        data: newSongs,
+        error: newSongsError,
+        isLoading: newSongsLoading,
+    } = useGetNewSongsQuery();
+
     if (newSongsLoading) return <Loading />;
+
     const media = {
-        type: "Album",
-        header: "",
-        visibility: "",
-        link: "",
+        type: 'Album',
+        header: '',
+        visibility: '',
+        link: '',
         data: newSongs,
     };
 
@@ -24,6 +30,6 @@ function AlbumPage() {
             </div>
         </div>
     );
-};
+}
 
 export default AlbumPage;

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const IMGURL = "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png";
+const IMGURL =
+    'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
 const initialState = {
     fullName: 'Sơn Tùng MTP',
@@ -13,13 +14,6 @@ const initialState = {
     cover: 'Sơn Tùng MTP-bg.jpg',
     password: 'tung1234',
     isAdmin: '',
-    popular: [
-        { title: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17', imageurl: IMGURL },
-        { title: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17', imageurl: IMGURL },
-        { title: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17', imageurl: IMGURL },
-        { title: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17', imageurl: IMGURL },
-        { title: 'Chúng Ta Của Tương Lai', view: 4564561, duration: '03:17', imageurl: IMGURL },
-    ],
     mediaData: [
         {
             type: 'Song',
@@ -28,27 +22,36 @@ const initialState = {
             link: '',
             data: [
                 {
-                    title: "Nếu lúc đó",
-                    artist: "tlinh",
-                    genre: "Pop",
-                    imageurl: IMGURL,
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3",
+                    title: 'Nếu lúc đó',
+                    artist: 'tlinh',
+                    genre: 'Pop',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
                     view: 0,
                 },
                 {
-                    title: "Nếu lúc đó",
-                    artist: "tlinh",
-                    genre: "Pop",
-                    imageurl: IMGURL,
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3",
+                    title: 'Nếu lúc đó',
+                    artist: 'tlinh',
+                    genre: 'Pop',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
                     view: 0,
                 },
                 {
-                    title: "Nếu lúc đó",
-                    artist: "tlinh",
-                    genre: "Pop",
-                    imageurl: IMGURL,
-                    audiourl: "https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3",
+                    title: 'Nếu lúc đó',
+                    artist: 'tlinh',
+                    genre: 'Pop',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    audiourl:
+                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
                     view: 0,
                 },
             ],
@@ -59,9 +62,27 @@ const initialState = {
             visibility: '',
             link: '',
             data: [
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: '2023' },
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: '2023' },
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: '2023' },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: '2023',
+                },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: '2023',
+                },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: '2023',
+                },
             ],
         },
         {
@@ -70,9 +91,24 @@ const initialState = {
             visibility: '(only me)',
             link: '',
             data: [
-                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
-                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
-                { artist: 'Sơn Tùng MTP', imageurl: IMGURL },
+                {
+                    artist: 'Sơn Tùng MTP',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                },
+                {
+                    artist: 'Sơn Tùng MTP',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                },
+                {
+                    artist: 'Sơn Tùng MTP',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                },
             ],
         },
         {
@@ -81,9 +117,27 @@ const initialState = {
             visibility: '(only me)',
             link: 'library',
             data: [
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: 'playlist' },
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: 'playlist' },
-                { title: 'Chúng Ta Của Tương Lai', imageurl: IMGURL, desc: 'playlist' },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: 'playlist',
+                },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: 'playlist',
+                },
+                {
+                    title: 'Chúng Ta Của Tương Lai',
+                    imageurl: {
+                        url: IMGURL,
+                    },
+                    desc: 'playlist',
+                },
             ],
         },
     ],
@@ -95,8 +149,8 @@ const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
-        toggleFollow: (state) => { },
-        uploadMusic: (state) => { },
+        toggleFollow: (state) => {},
+        uploadMusic: (state) => {},
         updateAvatar: (state, actions) => {
             state.avatar = actions.payload.avatar;
         },

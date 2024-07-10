@@ -1,28 +1,62 @@
-import { Link } from 'react-router-dom';
-
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
-import verifiedIcon from '@assets/img/verified-icon.svg';
+import { Link, useNavigate } from 'react-router-dom';
+import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
-import { MediaDisplay, MediaItems4 } from '@components';
+import { MediaDisplay, MediaItems4, Loading } from '@components';
+import verifiedIcon from '@assets/img/verified-icon.svg';
+import {
+    useGetNewSongsQuery,
+    useGetMyProfileQuery,
+    useGetProfileByIdQuery,
+    useGetProfilePopularSongsQuery,
+} from '@services/api';
 
 const ARTIST_IMG_URL = 'src/assets/img/artist/';
-const SONG_IMG_URL = 'src/assets/img/song/';
 
 function ProfilePage() {
+    const dispatch = useDispatch();
+    const {
+        data: myProfileData,
+        error: profileError,
+        isLoading: profileLoading,
+    } = useGetMyProfileQuery();
+
+    const id = myProfileData?.id;
+
+    const {
+        data: profileByIdData,
+        error: profileByIdError,
+        isLoading: profileByIdLoading,
+    } = useGetProfileByIdQuery(id, { skip: !id });
+
+    const {
+        data: popularData,
+        error: popularError,
+        isLoading: popularLoading,
+    } = useGetProfilePopularSongsQuery(id, { skip: !id });
+
+    const userProfile = useSelector(selectUserProfile);
+    const { isVerified, cover, mediaData } = userProfile;
+
+    if (profileLoading || profileByIdLoading || popularLoading) {
+        return <Loading />;
+    }
+
+    const { name, image, followers } = myProfileData || {};
+    const { url } = image || {};
+
     const isFollowing = false;
     const isMyProfile = true;
-    const userProfile = useSelector(selectUserProfile);
-    const {
-        fullName,
-        isVerified,
-        followers,
-        avatar,
-        cover,
-        popular,
-        mediaData,
-    } = userProfile;
-    const dispatch = useDispatch();
+
+    const popular = {
+        type: 'Song',
+        title: 'Songs',
+        visibility: '',
+        link: '',
+        data: popularData || [],
+    };
+
     return (
         <div className="profile__page space-y-10 caret-transparent">
             {/* profile header */}
@@ -42,10 +76,10 @@ function ProfilePage() {
                 <div className="profile__container ml-[5%] flex items-center">
                     <div className="relative h-40 min-w-40">
                         {/* profile avatar */}
-                        {avatar != '' ? (
+                        {url != '' ? (
                             <img
                                 className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
-                                src={ARTIST_IMG_URL + avatar}
+                                src={url}
                                 alt=""
                             />
                         ) : (
@@ -64,10 +98,13 @@ function ProfilePage() {
                     <div className="relative ml-5 content-center">
                         <p className="text-shadow-1">Profile</p>
                         <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
-                            {fullName}
+                            {name}
                         </p>
                         <p className="text-shadow-1">
-                            {followers.toLocaleString()} followers
+                            {followers > 999
+                                ? followers.toLocaleString()
+                                : followers}{' '}
+                            followers
                         </p>
                     </div>
                 </div>
@@ -96,14 +133,22 @@ function ProfilePage() {
             </div>
 
             {/* Content Section */}
-            <div className="media grid grid-rows-[min-content_auto]">
+            {/* <div className="media grid grid-rows-[min-content_auto]">
                 <h2 className="inline text-3xl font-bold">Popular</h2>
                 <div className="slider__media mt-4 grid gap-y-3">
-                    <MediaItems4 mediaList={popular} />
+                    <MediaItems4 mediaList={popularData} />
                 </div>
-            </div>
+            </div> */}
 
-            {mediaData.map((media, index) => {
+            {popular && (
+                <MediaDisplay
+                    media={popular}
+                    displayItems="4"
+                    displayType="grid auto-rows-auto gap-2"
+                />
+            )}
+
+            {mediaData?.map((media, index) => {
                 if (!media.visibility && !isMyProfile) return null;
                 return (
                     <MediaDisplay

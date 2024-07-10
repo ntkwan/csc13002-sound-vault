@@ -100,6 +100,15 @@ export const api = createApi({
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
         }),
+        getMyProfile: builder.query({
+            query: () => '/get-my-profile',
+        }),
+        getProfileById: builder.query({
+            query: (id) => `/get-profile-by-id/${id}`,
+        }),
+        getProfilePopularSongs: builder.query({
+            query: (id) => `/get-profile-popular-songs/${id}`,
+        }),
     }),
 });
 
@@ -114,4 +123,7 @@ export const {
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
     useGetChartSongsQuery,
+    useGetMyProfileQuery,
+    useGetProfileByIdQuery,
+    useGetProfilePopularSongsQuery,
 } = api;

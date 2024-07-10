@@ -6,5 +6,5 @@ export {
     updateAvatar,
     updateCover,
     updateInfo,
-    updatePassword
+    updatePassword,
 } from './profileSlice';
