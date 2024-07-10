@@ -1,14 +1,17 @@
 import { NavLink } from 'react-router-dom';
 import { useLogOutMutation } from '@services/api';
 import { LogoutIcon } from '.';
+import { toast } from 'react-toastify';
 
 function Logout() {
     const [logOut] = useLogOutMutation();
     const handleAction = async () => {
         try {
-            await logOut();
+            const res = await logOut().unwrap();
+            console.log(res);
+            window.location.reload();
         } catch (error) {
-            console.error(error);
+            toast.error(error.message);
         }
     };
     return (

@@ -30,11 +30,11 @@ const router = createBrowserRouter([
             { path: 'aboutus', Component: AboutUsPage },
             { path: 'chart', Component: ChartPage },
             { path: 'termandpolicy', Component: TermAndPolicyPage },
-            { path: 'library', Component: LibraryPage },
             {
                 path: '',
                 Component: Protected,
                 children: [
+                    { path: 'library', Component: LibraryPage },
                     { path: 'profile', Component: ProfilePage },
                     { path: 'profile/editing', Component: ProfilePageEditing },
                 ],

@@ -18,12 +18,19 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
     if (result?.error?.status === 401) {
+        const refreshToken = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('refreshToken'))
+            .split('=')[1];
         const refreshResult = await baseQuery(
-            '/refresh-token',
+            {
+                url: '/refresh-token',
+                method: 'POST',
+                body: { refreshToken },
+            },
             api,
             extraOptions,
         );
-        console.log(refreshResult);
         if (refreshResult?.data) {
             const user = api.getState().auth.user;
             api.dispatch(
