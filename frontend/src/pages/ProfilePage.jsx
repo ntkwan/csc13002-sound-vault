@@ -3,16 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
-import { MediaDisplay, MediaItems4, Loading } from '@components';
+import { MediaDisplay, Loading } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
-    useGetNewSongsQuery,
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
     useGetProfilePopularSongsQuery,
 } from '@services/api';
-
-const ARTIST_IMG_URL = 'src/assets/img/artist/';
 
 function ProfilePage() {
     const dispatch = useDispatch();
@@ -37,14 +34,14 @@ function ProfilePage() {
     } = useGetProfilePopularSongsQuery(id, { skip: !id });
 
     const userProfile = useSelector(selectUserProfile);
-    const { isVerified, cover, mediaData } = userProfile;
+    const { isVerified, mediaData } = userProfile;
 
     if (profileLoading || profileByIdLoading || popularLoading) {
         return <Loading />;
     }
 
     const { name, image, followers } = myProfileData || {};
-    const { url } = image || {};
+    const { url, coverimg } = image || {};
 
     const isFollowing = false;
     const isMyProfile = true;
@@ -62,11 +59,11 @@ function ProfilePage() {
             {/* profile header */}
             <div className="profile__header h-96 w-full content-center">
                 {/* profile cover */}
-                {cover != '' ? (
+                {coverimg ? (
                     <div className="absolute left-28 right-0 top-0 h-96">
                         <img
                             className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl"
-                            src={ARTIST_IMG_URL + cover}
+                            src={coverimg}
                             alt=""
                         />
                     </div>
@@ -76,7 +73,7 @@ function ProfilePage() {
                 <div className="profile__container ml-[5%] flex items-center">
                     <div className="relative h-40 min-w-40">
                         {/* profile avatar */}
-                        {url != '' ? (
+                        {url ? (
                             <img
                                 className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
                                 src={url}
@@ -131,14 +128,6 @@ function ProfilePage() {
                     </>
                 )}
             </div>
-
-            {/* Content Section */}
-            {/* <div className="media grid grid-rows-[min-content_auto]">
-                <h2 className="inline text-3xl font-bold">Popular</h2>
-                <div className="slider__media mt-4 grid gap-y-3">
-                    <MediaItems4 mediaList={popularData} />
-                </div>
-            </div> */}
 
             {popular && (
                 <MediaDisplay

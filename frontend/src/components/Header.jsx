@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom';
 import { SearchIcon } from '.';
 import { selectCurrentToken } from '@services/selectors';
-import { selectUserProfile } from '@features/profilepage/slices';
+import { useGetMyProfileQuery } from '@services/api';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import propTypes from 'prop-types';
-
-const ARTIST_IMG_URL = 'src/assets/img/artist/';
 
 function Header() {
     const token = useSelector(selectCurrentToken);
@@ -51,8 +49,16 @@ function Header() {
         };
     }, [showNotice]);
 
-    const userProfile = useSelector(selectUserProfile);
-    const { fullName, avatar, isAdmin } = userProfile;
+    const {
+        data: myProfileData,
+        error: profileError,
+        isLoading: profileLoading,
+    } = useGetMyProfileQuery();
+
+    if (profileLoading) return null;
+
+    const { name, image, isAdmin } = myProfileData || {};
+    const { url } = image || {};
 
     return (
         <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
@@ -77,12 +83,16 @@ function Header() {
             {/* Link */}
             {token ? (
                 <div className="header__section flex h-full flex-[1] items-center justify-end space-x-3 text-sm">
-                    <img
-                        className="inline h-10 w-10 rounded-full object-cover"
-                        src={ARTIST_IMG_URL + avatar}
-                        alt=""
-                    />
-                    <span>Hello, {fullName}</span>
+                    {url ? (
+                        <img
+                            className="inline h-10 w-10 rounded-full object-cover"
+                            src={url}
+                            alt=""
+                        />
+                    ) : (
+                        <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
+                    )}
+                    <span>Hello, {name}</span>
                     <div className="relative" ref={noticeRef}>
                         <i
                             className="bx bx-bell relative block h-10 min-w-10 content-center rounded-full bg-white text-center text-2xl text-black transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
