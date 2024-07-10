@@ -10,8 +10,8 @@ const initialState = {
     email: '',
     dob: '1994-07-05',
     shortDesc: '',
-    avatar: 'Sơn Tùng MTP.jpg',
-    cover: 'Sơn Tùng MTP-bg.jpg',
+    avatar: "",
+    cover: "",
     password: 'tung1234',
     isAdmin: '',
     mediaData: [
@@ -149,8 +149,8 @@ const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
-        toggleFollow: (state) => {},
-        uploadMusic: (state) => {},
+        toggleFollow: (state) => { },
+        uploadMusic: (state) => { },
         updateAvatar: (state, actions) => {
             state.avatar = actions.payload.avatar;
         },

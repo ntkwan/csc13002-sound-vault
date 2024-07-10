@@ -26,8 +26,8 @@ POST {{host}}/signin
 Content-Type: application/json
 
 {
-    "email": "a@gmail.com",
-    "password": "12345678"
+    "email": "npquan2704@gmail.com",
+    "password": "1234"
 }
 
 ### [SUCCESS] signin: user

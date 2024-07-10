@@ -29,6 +29,7 @@ app.use(morgan('combined'));
 //Routes
 const authorize = require('./routes/auth.route');
 const user = require('./routes/user.route');
+const admin = require('./routes/admin.route');
 const file_controller = require('./routes/upload.route');
 const song_controller = require('./routes/song.route');
 
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 
 app.use(authorize);
 app.use(user);
+app.use(admin);
 app.use(file_controller);
 app.use(song_controller);
 

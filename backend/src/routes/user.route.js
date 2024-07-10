@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const User = require('../models/user.schema');
 const userController = require('../controllers/user.controller');
 /*
 router.get('/profile', authMiddleware.check_user, (req, res) => {
@@ -26,5 +25,6 @@ router.get(
     authMiddleware.check_user,
     userController.get_profile_popular_songs,
 );
+router.get('/get-featured-artists', userController.get_featured_artists);
 
 module.exports = router;

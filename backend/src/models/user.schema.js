@@ -36,6 +36,10 @@ const UserSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
         refreshToken: {
             type: String,
         },
@@ -57,6 +61,10 @@ UserSchema.methods.setPassword = async function (password) {
 UserSchema.methods.setProfilePicture = async function (imageurl) {
     this.image.publicId = imageurl.public_id;
     this.image.url = imageurl.secure_url;
+};
+
+UserSchema.methods.setVerified = async function () {
+    this.isVerified = true;
 };
 
 UserSchema.methods.validatePassword = async function (password) {

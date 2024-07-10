@@ -5,6 +5,28 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
 
+const get_featured_artists = async (req, res) => {
+    try {
+        const Users = await UserModel.find({ isVerified: true }).sort({
+            followers: -1,
+        });
+
+        res.status(200).send(
+            Users.map((user) => {
+                return {
+                    name: user.name,
+                    image: user.image,
+                    id: user._id,
+                };
+            }),
+        );
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
 
@@ -73,4 +95,5 @@ module.exports = {
     get_profile_by_id,
     get_my_profile,
     get_profile_popular_songs,
+    get_featured_artists,
 };
