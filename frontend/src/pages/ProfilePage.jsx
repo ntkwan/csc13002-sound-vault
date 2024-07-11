@@ -52,7 +52,8 @@ function ProfilePage() {
     const { url, coverimg } = image || {};
     const isVerified = true;
 
-    const isSliceAllReleases = profileAllSongsData.length > 5;
+    const isSliceAllReleases =
+        profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
         type: 'Song',
         title: 'All Releases',

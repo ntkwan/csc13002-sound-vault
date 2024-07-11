@@ -17,10 +17,10 @@ function MediaContainer() {
     if (featuredArtistsLoading || trendingSongsLoading || newSongsLoading)
         return <Loading />;
 
-    const isSliceArtist = Artists.length > 6;
-    const isSliceTrending = trendingSongs.length > 6;
-    const isSliceNew = newSongs.length > 6;
-    const isSliceAlbum = trendingSongs.length > 6;
+    const isSliceArtist = Artists && Artists.length > 6;
+    const isSliceTrending = trendingSongs && trendingSongs.length > 6;
+    const isSliceNew = newSongs && newSongs.length > 6;
+    const isSliceAlbum = trendingSongs && trendingSongs.length > 6;
 
     const mediaData = [
         {
