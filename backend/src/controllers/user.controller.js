@@ -63,13 +63,14 @@ const get_my_profile = async (req, res) => {
     get_profile_by_id(req, res);
 };
 
-const get_profile_popular_songs = async (req, res) => {
+const get_profile_all_songs = async (req, res) => {
     const profileId = req.params.profileId;
 
     try {
-        const songs = await SongModel.find({ uploader: profileId })
-            .sort({ view: -1 })
-            .limit(10);
+        const songs = await SongModel.find({ uploader: profileId }).sort({
+            view: -1,
+        });
+
         res.status(200).send(
             songs.map((song) => {
                 return {
@@ -94,6 +95,6 @@ const get_profile_popular_songs = async (req, res) => {
 module.exports = {
     get_profile_by_id,
     get_my_profile,
-    get_profile_popular_songs,
+    get_profile_all_songs,
     get_featured_artists,
 };

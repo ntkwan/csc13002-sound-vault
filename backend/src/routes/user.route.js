@@ -21,9 +21,9 @@ router.get(
 );
 router.get('/get-profile-by-id/:profileId', userController.get_profile_by_id);
 router.get(
-    '/get-profile-popular-songs/:profileId',
+    '/get-profile-all-songs/:profileId',
     authMiddleware.check_user,
-    userController.get_profile_popular_songs,
+    userController.get_profile_all_songs,
 );
 router.get('/get-featured-artists', userController.get_featured_artists);
 

@@ -1,3 +1,7 @@
 @host = http://localhost:5000
 
+### get trending songs
 GET {{host}}/get-trending-songs
+
+### get top songs 
+GET {{host}}/get-top-songs

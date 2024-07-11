@@ -22,7 +22,7 @@ const get_trending_songs = async (req, res) => {
             }),
         );
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message,
         });
     }
@@ -46,7 +46,7 @@ const get_new_songs = async (req, res) => {
             }),
         );
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message,
         });
     }
@@ -65,11 +65,11 @@ const play_song = async (req, res) => {
         await Song.increaseView();
         await Song.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             audiourl: Song.audiourl,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message,
         });
     }
@@ -85,18 +85,18 @@ const get_song_view = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             view: Song.view,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message,
         });
     }
 };
 
 const get_songs_by_region = async (req, res) => {
-    // 3 regions: 'VPop', 'KPop', 'USUK'
+    // 3 regions: 'VPop', 'KPop', 'US-UK'
     const region = req.params.region;
     try {
         const songs = await SongModel.find({ region: region })
@@ -121,10 +121,25 @@ const get_songs_by_region = async (req, res) => {
             }),
         );
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message,
         });
     }
+};
+
+const get_top_songs = async (req, res) => {
+    const regions = ['VPop', 'KPop', 'US-UK'];
+    const topSongs = [];
+    for (let region of regions) {
+        const songs = await SongModel.find({ region: region })
+            .sort({ view: -1 })
+            .limit(1);
+        topSongs.push(songs);
+    }
+
+    return res.status(200).json({
+        topSongs,
+    });
 };
 
 module.exports = {
@@ -133,4 +148,5 @@ module.exports = {
     play_song,
     get_song_view,
     get_songs_by_region,
+    get_top_songs,
 };
