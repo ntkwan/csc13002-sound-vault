@@ -1,57 +1,79 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
 import { MediaDisplay, Loading } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
-    useGetMyProfileQuery,
     useGetProfileByIdQuery,
-    useGetProfilePopularSongsQuery,
+    useGetProfileAllSongsQuery,
+    useGetProfileAlbumsQuery,
 } from '@services/api';
 
 function ProfilePage() {
     const dispatch = useDispatch();
-    const {
-        data: myProfileData,
-        error: profileError,
-        isLoading: profileLoading,
-    } = useGetMyProfileQuery();
-
-    const id = myProfileData?.id;
+    const { profileId } = useParams();
+    const myProfileData = useSelector(selectUserProfile);
+    const { id } = myProfileData;
 
     const {
         data: profileByIdData,
         error: profileByIdError,
         isLoading: profileByIdLoading,
-    } = useGetProfileByIdQuery(id, { skip: !id });
+    } = useGetProfileByIdQuery(profileId, { skip: !profileId });
 
     const {
-        data: popularData,
-        error: popularError,
-        isLoading: popularLoading,
-    } = useGetProfilePopularSongsQuery(id, { skip: !id });
+        data: profileAllSongsData,
+        error: profileAllSongsError,
+        isLoading: profileAllSongsLoading,
+    } = useGetProfileAllSongsQuery(profileId || id, {
+        skip: !profileId && !id,
+    });
 
-    const userProfile = useSelector(selectUserProfile);
-    const { isVerified, mediaData } = userProfile;
+    const {
+        data: profileAlbumsData,
+        error: profileAlbumsError,
+        isLoading: profileAlbumsLoading,
+    } = useGetProfileAlbumsQuery(profileId || id, {
+        skip: !profileId && !id,
+    });
 
-    if (profileLoading || profileByIdLoading || popularLoading) {
+    const { following } = myProfileData;
+    const [isFollowing, setFollowing] = useState(following.includes(profileId));
+
+    if (profileByIdLoading || profileAllSongsLoading || profileAlbumsLoading) {
         return <Loading />;
     }
 
-    const { name, image, followers } = myProfileData || {};
+    const isMyProfile = id === profileId || !profileId;
+    const userProfile = isMyProfile ? myProfileData : profileByIdData;
+    const { name, image, followers } = userProfile || {};
     const { url, coverimg } = image || {};
+    const isVerified = true;
 
-    const isFollowing = false;
-    const isMyProfile = true;
-
-    const popular = {
+    const isSliceAllReleases = profileAllSongsData.length > 5;
+    const allReleases = {
         type: 'Song',
-        title: 'Songs',
+        title: 'All Releases',
         visibility: '',
-        link: '',
-        data: popularData || [],
+        link: isSliceAllReleases ? '' : '',
+        data: isSliceAllReleases
+            ? profileAllSongsData.slice(0, 5)
+            : profileAllSongsData,
+    };
+
+    // const albums = {
+    //     type: 'Album',
+    //     title: 'Albums',
+    //     visibility: '',
+    //     link: '',
+    //     data: profileAlbumsData || [],
+    // };
+
+    const handleFollowToggle = () => {
+        dispatch(toggleFollow(profileId));
+        setFollowing(!isFollowing);
     };
 
     return (
@@ -115,54 +137,65 @@ function ProfilePage() {
                 </button>
                 {isMyProfile ? (
                     <>
-                        <Button>upload music</Button>
-                        <Button to="editing">edit profile</Button>
-                        <Button>donation</Button>
+                        <Link
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            // to="/"
+                        >
+                            Upload Music
+                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                        </Link>
+                        <Link
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            to="editing"
+                        >
+                            Edit Profile
+                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                        </Link>
+                        <Link
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            // to="/"
+                        >
+                            Donation
+                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                        </Link>
                     </>
                 ) : (
                     <>
-                        <Button onClick={() => dispatch(toggleFollow())}>
-                            {isFollowing ? 'unfollow' : 'follow'}
-                        </Button>
-                        <Button>donate</Button>
+                        <button
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            onClick={handleFollowToggle}
+                        >
+                            {isFollowing ? 'Unfollow' : 'Follow'}
+                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                        </button>
+                        <Link
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            to="donate"
+                        >
+                            Donate
+                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                        </Link>
                     </>
                 )}
             </div>
 
-            {popular && (
+            {profileAllSongsData && (
                 <MediaDisplay
-                    media={popular}
+                    media={allReleases}
                     displayItems="4"
                     displayType="grid auto-rows-auto gap-2"
                 />
             )}
 
-            {mediaData?.map((media, index) => {
-                if (!media.visibility && !isMyProfile) return null;
-                return (
-                    <MediaDisplay
-                        key={index}
-                        media={media}
-                        displayItems="2"
-                        displayType="grid grid-cols-6"
-                    />
-                );
-            })}
+            {/* {profileAlbumsData && (
+                <MediaDisplay
+                    media={albums}
+                    displayItems="2"
+                    displayType="grid grid-cols-6"
+                />
+            )} */}
         </div>
     );
 }
 
 export default ProfilePage;
-
-function Button({ to, onClick, children }) {
-    return (
-        <Link
-            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-            onClick={onClick}
-            to={to}
-        >
-            {children}
-            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-        </Link>
-    );
-}

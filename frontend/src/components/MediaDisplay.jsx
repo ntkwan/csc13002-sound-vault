@@ -1,9 +1,9 @@
 import { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { PlayButton } from '.';
-import { selectCurrentPlayer } from '@services/selectors';
+import { selectCurrentPlayer, selectCurrentProfile } from '@services/selectors';
 import { play, pause, setCurrentTrack } from '../features/player/slices';
 import { usePlaySongMutation } from '@services/api';
 import { toast } from 'react-toastify';
@@ -37,6 +37,17 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             } else {
                 dispatch(pause());
             }
+        }
+    };
+
+    const myProfileData = useSelector(selectCurrentProfile);
+    const myProfileID = myProfileData.id;
+    const navigate = useNavigate();
+    const handleProfile = (id) => {
+        if (myProfileID === id) {
+            navigate('/profile');
+        } else {
+            navigate(`/${id}`);
         }
     };
 
@@ -90,12 +101,14 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         default:
                             MediaComponent = MediaItems;
                     }
-                    let onClick, isOnPlaying;
+
+                    let onClickImage, onClickButton, isOnPlaying;
                     if (type == 'Song') {
-                        onClick = () => handlePlay(mediaData);
+                        onClickImage = () => handlePlay(mediaData);
+                        onClickButton = onClickImage;
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
-                    } else {
-                        onClick = null;
+                    } else if (type == 'Artist') {
+                        onClickImage = () => handleProfile(mediaData.id);
                         isOnPlaying = false;
                     }
                     return (
@@ -103,7 +116,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                             key={index}
                             type={type}
                             mediaData={mediaData}
-                            onClick={onClick}
+                            onClickImage={onClickImage}
+                            onClickButton={onClickButton}
                             isOnPlaying={isOnPlaying}
                             index={index}
                         />
@@ -129,35 +143,54 @@ MediaDisplay.propTypes = {
 
 export default MediaDisplay;
 
-const MediaItems = memo(({ type, mediaData, onClick, isOnPlaying }) => {
-    const { title, artist, imageurl } = mediaData;
-    const { url } = imageurl;
-    const isArtist = type === 'Artist';
-    const imageClass = isArtist
-        ? 'w-[150px] rounded-full'
-        : 'w-[120px] rounded-[30px]';
+function prevent(fn, defaultOnly) {
+    return (e, ...params) => {
+        e && e.preventDefault();
+        !defaultOnly && e && e.stopPropagation();
+        fn(e, ...params);
+    };
+}
 
-    return (
-        <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
-            <div className="relative h-full">
-                <img
-                    className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
-                    src={url}
-                    alt={title}
-                />
-                <PlayButton onClick={onClick} isOnPlaying={isOnPlaying} />
-            </div>
-            <span className="media-item__name text-center">
-                {isArtist ? artist : title}
-            </span>
-            {!isArtist && (
-                <span className="media-item__desc text-center text-sm text-[#808080]">
-                    {artist}
+prevent.prototype = {
+    fn: PropTypes.func.isRequired,
+    defaultOnly: PropTypes.bool,
+};
+
+const MediaItems = memo(
+    ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
+        const { title, artist, image, name, imageurl } = mediaData;
+        const { url } = image || imageurl;
+        const isArtist = type === 'Artist';
+        const imageClass = isArtist
+            ? 'w-[150px] rounded-full'
+            : 'w-[120px] rounded-[30px]';
+
+        return (
+            <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
+                <div className="relative h-full">
+                    <img
+                        className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
+                        src={url}
+                        alt={isArtist ? name : title}
+                        onClick={onClickImage}
+                    />
+                    <PlayButton
+                        onClick={onClickButton}
+                        isOnPlaying={isOnPlaying}
+                    />
+                </div>
+                <span className="media-item__name text-center">
+                    {isArtist ? name : title}
                 </span>
-            )}
-        </div>
-    );
-});
+                {!isArtist && (
+                    <span className="media-item__desc text-center text-sm text-[#808080]">
+                        {artist}
+                    </span>
+                )}
+            </div>
+        );
+    },
+);
 
 MediaItems.displayName = 'MediaItems';
 MediaItems.propTypes = {
@@ -176,36 +209,46 @@ MediaItems.propTypes = {
     isOnPlaying: PropTypes.bool,
 };
 
-const MediaItems2 = memo(({ type, mediaData, onClick, isOnPlaying }) => {
-    const { title, artist, imageurl } = mediaData;
-    const { url } = imageurl;
-    const isArtist = type === 'Artist';
-    const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
+const MediaItems2 = memo(
+    ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
+        const { title, artist, image, id, name, imageurl } = mediaData;
+        const { url } = image || imageurl;
+        const isArtist = type === 'Artist';
+        const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
 
-    return (
-        <div className="media-item group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:bg-opacity-20">
-            {isArtist && (
-                <i className="ri-close-large-line absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-black bg-opacity-40 text-xs"></i>
-            )}
-            <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
-                <div className="media-item__image relative">
-                    <img
-                        className={`media-item__img aspect-square w-full object-cover hover:cursor-pointer ${imageClass}`}
-                        src={url}
-                        alt={title}
-                    />
-                    <PlayButton onClick={onClick} isOnPlaying={isOnPlaying} />
+        const negative = useNavigate();
+
+        return (
+            <div
+                className="media-item z-1 group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-opacity-20"
+                onClick={onClickImage}
+            >
+                {isArtist && (
+                    <i className="ri-close-large-line absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-black bg-opacity-40 text-xs"></i>
+                )}
+                <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
+                    <div className="media-item__image relative">
+                        <img
+                            className={`media-item__img aspect-square w-full object-cover hover:cursor-pointer ${imageClass} pointer-events-none`}
+                            src={url}
+                            alt={isArtist ? name : title}
+                        />
+                        <PlayButton
+                            onClick={prevent(onClickButton)}
+                            isOnPlaying={isOnPlaying}
+                        />
+                    </div>
+                    <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
+                        {isArtist ? name : title}
+                    </span>
+                    <span className="media-item__desc mt-1 overflow-hidden text-ellipsis text-nowrap text-[13px] text-[#b2b2b2]">
+                        {type}
+                    </span>
                 </div>
-                <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
-                    {isArtist ? artist : title}
-                </span>
-                <span className="media-item__desc mt-1 overflow-hidden text-ellipsis text-nowrap text-[13px] text-[#b2b2b2]">
-                    {type}
-                </span>
             </div>
-        </div>
-    );
-});
+        );
+    },
+);
 
 MediaItems2.displayName = 'MediaItems2';
 MediaItems2.propTypes = MediaItems.propTypes;

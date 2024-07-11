@@ -4,63 +4,17 @@ import {
     pause,
     setCurrentTrack,
 } from '@features/player/slices/playerSlice';
+import { useGetTopSongsQuery } from '@services/api';
 import { selectCurrentPlayer } from '@services/selectors';
-import { PlayButton } from '@components/index';
+import { Loading, PlayButton } from '@components/index';
 
 function ChartIntroContainer() {
-    const data = [
-        {
-            title: 'Nếu lúc đó',
-            artist: 'tlinh',
-            genre: 'Pop',
-            imageurl: {
-                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png',
-            },
-            audiourl:
-                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-            view: 0,
-        },
-        {
-            title: 'Nếu lúc đó',
-            artist: 'tlinh',
-            genre: 'Pop',
-            imageurl: {
-                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720449621/thumbnail/667ea7efa9ccf85d4fa8a099.png',
-            },
-            audiourl:
-                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-            view: 0,
-        },
-        {
-            title: 'Ngày Mai Người Ta Lấy Chồng',
-            artist: 'Thành Đạt',
-            genre: 'Pop',
-            imageurl: {
-                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg',
-            },
-            audiourl:
-                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3',
-            view: 0,
-        },
-        {
-            title: 'Ngày Mai Người Ta Lấy Chồng',
-            artist: 'Thành Đạt',
-            genre: 'Pop',
-            imageurl: {
-                url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1720450261/thumbnail/668a7f70532c8ae81fbe65d2.jpg',
-            },
-            audiourl:
-                'https://res.cloudinary.com/drnwr3wz8/video/upload/v1720352623/tracks/ngaymainguoitalaychong-thanhdat.mp3',
-            view: 0,
-        },
-    ];
-
     const dispatch = useDispatch();
     const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
     const currentSong = currentTrack?.url;
 
     const handlePlay =
-        ({ title, artist, imageurl, audiourl }) =>
+        ({ title, artist, image, audiourl }) =>
         () => {
             if (currentSong !== audiourl) {
                 dispatch(
@@ -68,7 +22,7 @@ function ChartIntroContainer() {
                         title,
                         artist,
                         url: audiourl,
-                        thumbnail: imageurl.url,
+                        thumbnail: image.url,
                     }),
                 );
                 dispatch(play());
@@ -81,51 +35,69 @@ function ChartIntroContainer() {
             }
         };
 
-    return (
-        <div>
-            {/* Intro chart */}
-            <div className="relative grid flex-[1] grid-cols-[auto_auto] grid-rows-2 gap-20 text-sm">
-                {data.map((song, index) => {
-                    const { title, artist, imageurl, audiourl } = song;
-                    const { url } = imageurl;
-                    return (
-                        <div
-                            key={index}
-                            className="song__container relative h-[210px] w-[200px]"
-                        >
-                            <div className="song__frame absolute top-5 h-full w-[90%] border-b-[1px] border-l-[1px] border-white before:absolute before:left-0 before:top-0 before:h-px before:w-3 before:bg-white before:content-[''] after:absolute after:bottom-0 after:right-0 after:h-10 after:w-px after:bg-white after:content-['']"></div>
-                            <div className="song__info absolute left-5 flex h-[110%] w-44 flex-col space-y-1">
-                                <div className="group relative w-full">
-                                    <img
-                                        className="aspect-square w-full hover:cursor-pointer"
-                                        src={url}
-                                        alt={title}
-                                    />
-                                    <PlayButton
-                                        onClick={handlePlay(song)}
-                                        isOnPlaying={
-                                            currentSong == audiourl && isPlaying
-                                        }
-                                        position="bottom-1 right-1"
-                                    />
-                                </div>
+    const { data: topSongsData, isLoading: topSongsLoading } =
+        useGetTopSongsQuery();
+    if (topSongsLoading) return <Loading />;
 
-                                <span className="w-[155px] overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {title}
-                                </span>
-                                <div className="flex items-center space-x-2">
-                                    <img
-                                        src="src/assets/img/artist-icon.svg"
-                                        alt="song icon"
-                                    />
-                                    <span className="w-[135px] overflow-hidden text-ellipsis whitespace-nowrap">
-                                        {artist}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
+    const { topSongs } = topSongsData;
+    const data = [
+        { song: topSongs[0][0], className: 'left-0 top-0' },
+        { song: topSongs[1][0], className: 'right-[15%] top-[15%]' },
+        { song: topSongs[2][0], className: 'bottom-0 left-[10%]' },
+    ];
+
+    return (
+        <div className="relative flex-[1] text-sm">
+            {data.map((item, index) => (
+                <ChartItem
+                    key={index}
+                    song={item.song}
+                    className={item.className}
+                    onClick={handlePlay(item.song)}
+                    isOnPlaying={
+                        currentSong === item.song.audiourl && isPlaying
+                    }
+                />
+            ))}
+        </div>
+    );
+}
+
+function ChartItem({ className, song, onClick, isOnPlaying }) {
+    const { title, artist, image, audiourl } = song;
+    const { url } = image;
+
+    return (
+        <div className={`absolute ${className}`}>
+            <div className="song__container relative h-[210px] w-[200px]">
+                <div className="song__frame absolute top-5 h-full w-[90%] border-b-[1px] border-l-[1px] border-white before:absolute before:left-0 before:top-0 before:h-px before:w-3 before:bg-white before:content-[''] after:absolute after:bottom-0 after:right-0 after:h-10 after:w-px after:bg-white after:content-['']"></div>
+                <div className="song__info absolute left-5 flex h-[110%] w-44 flex-col space-y-1">
+                    <div className="group relative w-full">
+                        <img
+                            className="aspect-square w-full hover:cursor-pointer"
+                            src={url}
+                            alt={title}
+                            onClick={onClick}
+                        />
+                        <PlayButton
+                            onClick={onClick}
+                            isOnPlaying={isOnPlaying}
+                            position="bottom-1 right-1"
+                        />
+                    </div>
+                    <span className="w-[155px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {title}
+                    </span>
+                    <div className="flex items-center space-x-2">
+                        <img
+                            src="src/assets/img/artist-icon.svg"
+                            alt="song icon"
+                        />
+                        <span className="w-[135px] overflow-hidden text-ellipsis whitespace-nowrap">
+                            {artist}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     );

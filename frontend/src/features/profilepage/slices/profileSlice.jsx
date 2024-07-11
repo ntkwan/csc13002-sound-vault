@@ -4,16 +4,19 @@ const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
 const initialState = {
-    fullName: 'Sơn Tùng MTP',
-    isVerified: true,
-    followers: 9875425,
+    name: '',
+    isVerified: false,
+    followers: 0,
+    following: [],
     email: '',
-    dob: '1994-07-05',
+    dob: '',
     shortDesc: '',
-    avatar: "",
-    cover: "",
-    password: 'tung1234',
-    isAdmin: '',
+    image: {
+        url: '',
+        corverimg: '',
+    },
+    password: '',
+    isAdmin: false,
     mediaData: [
         {
             type: 'Song',
@@ -149,8 +152,16 @@ const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
-        toggleFollow: (state) => { },
-        uploadMusic: (state) => { },
+        toggleFollow: (state, actions) => {
+            const profileId = actions.payload;
+            const index = state.following.indexOf(profileId);
+            if (index === -1) {
+                state.following.push(profileId);
+            } else {
+                state.following.splice(index, 1);
+            }
+        },
+        uploadMusic: (state) => {},
         updateAvatar: (state, actions) => {
             state.avatar = actions.payload.avatar;
         },
@@ -158,11 +169,7 @@ const profileSlice = createSlice({
             state.cover = actions.payload.cover;
         },
         updateInfo: (state, actions) => {
-            const { fullName, email, dob, shortDesc } = actions.payload;
-            state.fullName = fullName;
-            state.email = email;
-            state.dob = dob;
-            state.shortDesc = shortDesc;
+            Object.assign(state, actions.payload);
         },
         updatePassword: (state, actions) => {
             state.password = actions.payload.password;

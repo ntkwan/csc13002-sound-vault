@@ -1,75 +1,55 @@
-import { useGetTrendingSongsQuery, useGetNewSongsQuery } from '@services/api';
 import { MediaDisplay } from '@components';
 import { Loading } from '@components/index';
+import {
+    useGetFeaturedArtistsQuery,
+    useGetTrendingSongsQuery,
+    useGetNewSongsQuery,
+} from '@services/api';
 
 function MediaContainer() {
+    const { data: Artists, isLoading: featuredArtistsLoading } =
+        useGetFeaturedArtistsQuery();
     const { data: trendingSongs, isLoading: trendingSongsLoading } =
         useGetTrendingSongsQuery();
     const { data: newSongs, isLoading: newSongsLoading } =
         useGetNewSongsQuery();
-    if (trendingSongsLoading || newSongsLoading) return <Loading />;
 
-    const topTrending = trendingSongs ? trendingSongs.slice(0, 6) : [];
-    const newReleases = newSongs ? newSongs.slice(0, 6) : [];
+    if (featuredArtistsLoading || trendingSongsLoading || newSongsLoading)
+        return <Loading />;
+
+    const isSliceArtist = Artists.length > 6;
+    const isSliceTrending = trendingSongs.length > 6;
+    const isSliceNew = newSongs.length > 6;
+    const isSliceAlbum = trendingSongs.length > 6;
+
     const mediaData = [
         {
             type: 'Artist',
             title: 'Featured Artists',
             visibility: '',
-            link: 'artist',
-            data: [
-                {
-                    artist: 'Hoàng Thùy Linh',
-                    imageurl: {
-                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    },
-                },
-                {
-                    artist: 'Phan Mạnh Quỳnh',
-                    imageurl: {
-                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    },
-                },
-                {
-                    artist: 'Obito',
-                    imageurl: {
-                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    },
-                },
-                {
-                    artist: 'HIEUTHUHAI',
-                    imageurl: {
-                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    },
-                },
-                {
-                    artist: 'Anh Tú',
-                    imageurl: {
-                        url: 'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png',
-                    },
-                },
-            ],
+            link: isSliceArtist ? 'artist' : '',
+            data: isSliceArtist ? Artists.slice(0, 5) : Artists,
         },
         {
             type: 'Song',
             title: 'Trending',
             visibility: '',
-            link: 'trending',
-            data: topTrending,
+            link: isSliceTrending ? 'trending' : '',
+            data: isSliceTrending ? trendingSongs.slice(0, 6) : trendingSongs,
         },
         {
             type: 'Song',
             title: 'New Releases',
             visibility: '',
-            link: 'newrelease',
-            data: newReleases,
+            link: isSliceNew ? 'newrelease' : '',
+            data: isSliceNew ? newSongs.slice(0, 6) : newSongs,
         },
         {
             type: 'Album',
             title: 'Top Album',
             visibility: '',
-            link: 'album',
-            data: topTrending,
+            link: isSliceAlbum ? 'album' : '',
+            data: isSliceAlbum ? trendingSongs.slice(0, 6) : trendingSongs,
         },
     ];
 

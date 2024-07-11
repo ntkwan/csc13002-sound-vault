@@ -98,6 +98,9 @@ export const api = createApi({
                 method: 'POST',
             }),
         }),
+        getFeaturedArtists: builder.query({
+            query: () => '/get-featured-artists',
+        }),
         getTrendingSongs: builder.query({
             query: () => '/get-trending-songs',
         }),
@@ -107,6 +110,9 @@ export const api = createApi({
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
         }),
+        getTopSongs: builder.query({
+            query: () => '/get-top-songs',
+        }),
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
         }),
@@ -115,6 +121,12 @@ export const api = createApi({
         }),
         getProfilePopularSongs: builder.query({
             query: (id) => `/get-profile-popular-songs/${id}`,
+        }),
+        getProfileAllSongs: builder.query({
+            query: (id) => `/get-profile-all-songs/${id}`,
+        }),
+        getProfileAlbums: builder.query({
+            query: (id) => `/get-profile-albums/${id}`,
         }),
     }),
 });
@@ -126,11 +138,15 @@ export const {
     useResetPasswordMutation,
     useLogOutMutation,
     useUploadAudioMutation,
+    useGetFeaturedArtistsQuery,
     usePlaySongMutation,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
     useGetChartSongsQuery,
+    useGetTopSongsQuery,
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
     useGetProfilePopularSongsQuery,
+    useGetProfileAllSongsQuery,
+    useGetProfileAlbumsQuery,
 } = api;

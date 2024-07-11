@@ -16,7 +16,7 @@ function ProfilePageEditing() {
     const userProfile = useSelector(selectUserProfile);
     const dispatch = useDispatch();
 
-    const { fullName, email, dob, shortDesc, password } = userProfile;
+    const { name, email, dob, shortDesc, password } = userProfile;
 
     // State for update success/failure messages
     const [updateInfoSuccess, setUpdateInfoSuccess] = useState(null);
@@ -24,11 +24,11 @@ function ProfilePageEditing() {
 
     const handleUpdateInfo = (e) => {
         e.preventDefault();
-        const [fullName, email, dob, shortDesc] = map(
+        const [name, email, dob, shortDesc] = map(
             e.target,
             (input) => input.value,
         );
-        dispatch(updateInfo({ fullName, email, dob, shortDesc }));
+        dispatch(updateInfo({ name, email, dob, shortDesc }));
         setTimeout(() => {
             setUpdateInfoSuccess(null);
         }, 4000);
@@ -104,10 +104,7 @@ function ProfilePageEditing() {
                         Your Information
                     </h2>
                     <div className="w-5/6 space-y-4">
-                        <InputForm
-                            placeholder="Full Name"
-                            initValue={fullName}
-                        />
+                        <InputForm placeholder="Full Name" initValue={name} />
                         <InputForm placeholder="Email" initValue={email} />
                         <InputForm
                             placeholder="DOB"

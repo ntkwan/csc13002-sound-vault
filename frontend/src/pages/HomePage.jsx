@@ -37,7 +37,7 @@ function HomePage() {
             </div>
 
             {/* Chart Intro */}
-            <div className="chart-intro flex justify-between font-kodchasan text-white">
+            <div className="chart-intro flex h-[550px] justify-between font-kodchasan text-white">
                 <ChartIntroContainer />
                 {/* Intro chart text */}
                 <div className="w-min flex-[0.75] content-center">

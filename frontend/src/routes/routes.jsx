@@ -29,6 +29,7 @@ const router = createBrowserRouter([
             { path: 'album', Component: AlbumPage },
             { path: 'aboutus', Component: AboutUsPage },
             { path: 'chart', Component: ChartPage },
+            { path: ':profileId', Component: ProfilePage },
             { path: 'termandpolicy', Component: TermAndPolicyPage },
             {
                 path: '',

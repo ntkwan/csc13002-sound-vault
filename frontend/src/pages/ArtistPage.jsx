@@ -1,51 +1,36 @@
 import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
+import { useGetFeaturedArtistsQuery } from '@services/api';
+import { Loading } from '@components/index';
 
-const IMGURL = "https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png";
+const IMGURL =
+    'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
 function ArtistPage() {
+    const { data: Artists, isLoading: featuredArtistsLoading } =
+        useGetFeaturedArtistsQuery();
+    if (featuredArtistsLoading) return <Loading />;
     const mediaData = [
         {
             type: 'Artist',
             title: 'Popular Artists',
             visibility: '',
             link: '',
-            data: [
-                { artist: 'Hoàng Thùy Linh', imageurl: { url: IMGURL } },
-                { artist: 'Phan Mạnh Quỳnh', imageurl: { url: IMGURL } },
-                { artist: 'Obito', imageurl: { url: IMGURL } },
-                { artist: 'HIEUTHUHAI', imageurl: { url: IMGURL } },
-                { artist: 'Anh Tú', imageurl: { url: IMGURL } },
-                { artist: 'Sơn Tùng MTP', imageurl: { url: IMGURL } },
-            ],
+            data: Artists.slice(0, 6),
         },
         {
             type: 'Artist',
             title: 'Indie Artists',
             visibility: '',
             link: '',
-            data: [
-                { artist: 'Hoàng Thùy Linh', imageurl: { url: IMGURL } },
-                { artist: 'Phan Mạnh Quỳnh', imageurl: { url: IMGURL } },
-                { artist: 'Obito', imageurl: { url: IMGURL } },
-                { artist: 'HIEUTHUHAI', imageurl: { url: IMGURL } },
-                { artist: 'Anh Tú', imageurl: { url: IMGURL } },
-                { artist: 'Sơn Tùng MTP', imageurl: { url: IMGURL } },
-            ],
+            data: Artists.slice(6, 12),
         },
         {
             type: 'Artist',
             title: 'New Artists',
             visibility: '',
             link: '',
-            data: [
-                { artist: 'Hoàng Thùy Linh', imageurl: { url: IMGURL } },
-                { artist: 'Phan Mạnh Quỳnh', imageurl: { url: IMGURL } },
-                { artist: 'Obito', imageurl: { url: IMGURL } },
-                { artist: 'HIEUTHUHAI', imageurl: { url: IMGURL } },
-                { artist: 'Anh Tú', imageurl: { url: IMGURL } },
-                { artist: 'Sơn Tùng MTP', imageurl: { url: IMGURL } },
-            ],
+            data: Artists.slice(-6),
         },
     ];
 

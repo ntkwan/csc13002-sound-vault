@@ -3,10 +3,12 @@ import { SearchIcon } from '.';
 import { selectCurrentToken } from '@services/selectors';
 import { useGetMyProfileQuery } from '@services/api';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateInfo } from '@features/profilepage/slices';
 import propTypes from 'prop-types';
 
 function Header() {
+    const dispatch = useDispatch();
     const token = useSelector(selectCurrentToken);
 
     const [search, setSearch] = useState('');
@@ -49,11 +51,14 @@ function Header() {
         };
     }, [showNotice]);
 
-    const {
-        data: myProfileData,
-        error: profileError,
-        isLoading: profileLoading,
-    } = useGetMyProfileQuery();
+    const { data: myProfileData, isLoading: profileLoading } =
+        useGetMyProfileQuery();
+
+    useEffect(() => {
+        if (myProfileData) {
+            dispatch(updateInfo(myProfileData));
+        }
+    }, [myProfileData, dispatch]);
 
     if (profileLoading) return null;
 
@@ -87,7 +92,7 @@ function Header() {
                         <img
                             className="inline h-10 w-10 rounded-full object-cover"
                             src={url}
-                            alt=""
+                            alt={name}
                         />
                     ) : (
                         <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
