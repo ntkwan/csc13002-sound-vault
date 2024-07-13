@@ -56,20 +56,31 @@ const upload_profile_pic = async (req, res) => {
         });
     }
 
-    const imageResponse = await uploader.profilePicUploader(req, res);
+    const imageResponse = await uploader.profileUploader(req, res);
     if (!imageResponse) {
         return res.status(500).json({
             message: 'Error occured while uploading profile picture',
         });
     }
 
-    await User.setProfilePicture(imageResponse);
+    if (req.isCover) {
+        await User.setCoverPicture(imageResponse);
+    } else {
+        await User.setProfilePicture(imageResponse);
+    }
     await User.save();
 
     return res.status(200).json({
-        message: 'Upload profile picture successfully',
+        message: req.isCover
+            ? 'Upload profile cover successfully'
+            : 'Upload profile picture successfully',
         imageurl: imageResponse.secure_url,
     });
+};
+
+const upload_profile_cover = async (req, res) => {
+    req.isCover = true;
+    upload_profile_pic(req, res);
 };
 
 const upload_song_thumbnail = async (req, res) => {
@@ -103,4 +114,9 @@ const upload_song_thumbnail = async (req, res) => {
     });
 };
 
-module.exports = { upload_song, upload_profile_pic, upload_song_thumbnail };
+module.exports = {
+    upload_song,
+    upload_profile_pic,
+    upload_song_thumbnail,
+    upload_profile_cover,
+};

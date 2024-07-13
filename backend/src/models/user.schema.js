@@ -32,6 +32,14 @@ const UserSchema = new Schema(
                 default: process.env.DEFAULT_AVATAR,
             },
         },
+        coverimage: {
+            publicId: {
+                type: String,
+            },
+            url: {
+                type: String,
+            },
+        },
         isAdmin: {
             type: Boolean,
             default: false,
@@ -61,6 +69,11 @@ UserSchema.methods.setPassword = async function (password) {
 UserSchema.methods.setProfilePicture = async function (imageurl) {
     this.image.publicId = imageurl.public_id;
     this.image.url = imageurl.secure_url;
+};
+
+UserSchema.methods.setCoverPicture = async function (imageurl) {
+    this.coverimage.publicId = imageurl.public_id;
+    this.coverimage.url = imageurl.secure_url;
 };
 
 UserSchema.methods.setVerified = async function () {

@@ -14,6 +14,13 @@ router.post(
 );
 
 router.post(
+    '/upload-profile-cover',
+    authMiddleware.check_user,
+    stage_file.profile_pic_upload,
+    uploader.upload_profile_cover,
+);
+
+router.post(
     '/upload-song-thumbnail/:id',
     stage_file.song_thumbnail_upload,
     uploader.upload_song_thumbnail,
