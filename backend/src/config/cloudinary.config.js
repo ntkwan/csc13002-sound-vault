@@ -31,12 +31,12 @@ const audioUploader = async (req, res) => {
 
 const profilePicUploader = async (req, res) => {
     const file = req.file;
-    const email = req.params.email;
+    const profileId = req.user._id;
 
     if (!file) {
         return res.status(400).json({ message: 'File not found' });
     }
-    const fName = email;
+    const fName = profileId;
 
     try {
         const uploadImage = await cloudinary.uploader.upload(req.file.path, {

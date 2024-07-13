@@ -48,7 +48,7 @@ const upload_profile_pic = async (req, res) => {
         });
     }
 
-    const email = req.params.email;
+    const email = req.user.email;
     const User = await UserModel.findOne({ email });
     if (!User) {
         return res.status(500).json({
