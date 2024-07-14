@@ -13,8 +13,8 @@ const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
         if (image) {
             if (!image.type.includes('image')) {
                 toast.error('Invalid file type. Please upload an image.');
-            } else if (image.size > 320 * 1024) {
-                toast.error('File size exceeds the limit of 320KB.');
+            } else if (image.size > 800 * 1024) {
+                toast.error('File size exceeds the limit of 800KB.');
             } else if (image === uploadImage) {
                 toast.error('This image is already uploaded.');
             } else {

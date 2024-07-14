@@ -59,13 +59,13 @@ function ProfilePageEditing() {
                 <UploadImage
                     className="flex-[0.85]"
                     label="To upload an avatar click on box or drop file here!"
-                    desc="File size is less than 320 KB"
+                    desc="File size is less than 800 KB"
                     useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
                     className="flex-[0.85]"
                     label="To upload a cover click on box or drop file here!"
-                    desc="File size is less than 320 KB"
+                    desc="File size is less than 800 KB"
                     useUploadMutation={useUploadProfileCoverMutation}
                 />
                 <PageTitle
