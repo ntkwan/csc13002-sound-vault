@@ -45,7 +45,6 @@ function Header() {
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
         }
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -97,7 +96,14 @@ function Header() {
                     ) : (
                         <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
                     )}
-                    <span>Hello, {name}</span>
+                    {isAdmin ? (
+                        <div>
+                            <p>{name}</p>
+                            <p>Admin</p>
+                        </div>
+                    ) : (
+                        <p>Hello, {name}</p>
+                    )}
                     <div className="relative" ref={noticeRef}>
                         <i
                             className="bx bx-bell relative block h-10 min-w-10 content-center rounded-full bg-white text-center text-2xl text-black transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
