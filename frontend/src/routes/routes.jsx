@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         Component: DefaultLayout,
         errorElement: NotFoundPage,
         children: [
-            { path: '', Component: HomePage },
+            { index: true, Component: HomePage },
             { path: 'artist', Component: ArtistPage },
             { path: 'trending', Component: TrendingPage },
             { path: 'newrelease', Component: NewReleasePage },
@@ -34,7 +34,6 @@ const router = createBrowserRouter([
             { path: ':profileId', Component: ProfilePage },
             { path: 'termandpolicy', Component: TermAndPolicyPage },
             {
-                path: '',
                 Component: Protected,
                 children: [
                     { path: 'library', Component: LibraryPage },

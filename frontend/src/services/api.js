@@ -18,15 +18,10 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
     if (result?.error?.status === 401) {
-        const refreshToken = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('refreshToken'))
-            .split('=')[1];
         const refreshResult = await baseQuery(
             {
                 url: '/refresh-token',
                 method: 'POST',
-                body: { refreshToken },
             },
             api,
             extraOptions,
@@ -80,9 +75,14 @@ export const api = createApi({
                 url: '/signout',
                 method: 'POST',
             }),
-            onQueryStarted: (_, { dispatch }) => {
-                dispatch(logOut());
-                dispatch(resetPlayer());
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(resetPlayer());
+                    dispatch(logOut());
+                } catch (error) {
+                    console.error('Failed to log out', error);
+                }
             },
         }),
         uploadAudio: builder.mutation({
