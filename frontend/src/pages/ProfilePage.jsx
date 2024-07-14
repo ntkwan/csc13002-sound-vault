@@ -50,7 +50,7 @@ function ProfilePage() {
     const {
         name,
         image: { url: avatar } = {},
-        coverimage: { url: cover } = {},
+        coverimg: { url: cover } = {},
         followers,
         isVerified,
     } = userProfile || {};
@@ -97,7 +97,7 @@ function ProfilePage() {
                     <div className="profile__cover absolute left-28 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
                 )}
                 <div className="profile__container ml-[5%] flex items-center">
-                    <div className="relative h-40 min-w-40">
+                    <div className="relative h-40 min-w-40 max-w-40">
                         {/* profile avatar */}
                         {avatar ? (
                             <img

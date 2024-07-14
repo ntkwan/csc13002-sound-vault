@@ -5,7 +5,6 @@ import { useGetMyProfileQuery } from '@services/api';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateInfo } from '@features/profilepage/slices';
-import propTypes from 'prop-types';
 
 function Header() {
     const dispatch = useDispatch();
