@@ -41,6 +41,7 @@ const get_profile_by_id = async (req, res) => {
         return res.status(200).json({
             name: User.name,
             image: User.image,
+            coverimg: User.coverimg,
             followers: User.followers,
             id: User._id,
         });
