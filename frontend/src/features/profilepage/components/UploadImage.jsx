@@ -1,66 +1,92 @@
 import { useState, useRef, memo } from 'react';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
-const UploadImage = memo(({ className, label, desc, onUpdateChange }) => {
-	const [preview, setPreview] = useState(null);
-	const [selectedFileName, setSelectedFileName] = useState('');
-	const formRef = useRef(null);
+const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
+    const [preview, setPreview] = useState(null);
+    const [uploadImage, setUploadImage] = useState(null);
+    const formRef = useRef(null);
+    const [uploadProfilePic, { isLoading }] = useUploadMutation();
 
-	const handleImageUpload = e => {
-		const file = e.target.files[0];
-		if (file) {
-			setSelectedFileName(file.name);
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setPreview(reader.result);
-			};
-			reader.readAsDataURL(file);
-		}
-	};
+    const handleImageUpload = (e) => {
+        const image = e.target.files[0];
+        if (image) {
+            if (image.size > 320 * 1024) {
+                console.log('File size exceeds the limit of 320KB.');
+                return;
+            }
+            setPreview(URL.createObjectURL(image));
+            setUploadImage(image);
+        }
+    };
 
-	const handleSubmit = e => {
-		e.preventDefault();
-		if (onUpdateChange && selectedFileName) {
-			onUpdateChange(selectedFileName);
-			formRef.current.reset();
-			setSelectedFileName('');
-			setPreview(null);
-		}
-	};
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (uploadImage) {
+            const formData = new FormData();
+            formData.append('image', uploadImage);
+            try {
+                const response = await uploadProfilePic({
+                    file: formData,
+                }).unwrap();
+                console.log('Uploaded:', response);
+            } catch (error) {
+                console.error('Error uploading:', error);
+            }
+        }
+        formRef.current.reset();
+        setPreview(null);
+        setUploadImage(null);
+    };
 
-	return (
-		<form
-			ref={formRef}
-			className={`upload__container w-full space-y-2 ${className}`}
-			onSubmit={handleSubmit}>
-			<label className="upload__label">{label}</label>
-			<div className="upload__onclick relative w-44 aspect-square border-2 border-dashed rounded-xl content-center">
-				{preview ? (
-					<img className="upload__preview w-full h-full object-cover rounded-xl" src={preview} alt="Preview" />
-				) : (
-					<img className="upload__onclick-icon w-24 m-auto" src={uploadIcon} alt="Upload Icon" />
-				)}
-				<input
-					className="upload__input absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-					type="file"
-					onChange={handleImageUpload}
-					accept="image/*"
-				/>
-			</div>
-			{preview && (
-				<button
-					className="upload__submit-button w-20 block ml-[19%] text-sm rounded-xl bg-[#666] shadow-md
-                    hover:bg-[#888] transition duration-500 ease-in-out"
-					type="submit"
-				>
-					Submit
-				</button>
-			)}
-			{!preview && (
-				<span className="upload__desc inline-block text-[13px] text-[#b2b2b2]">{desc}</span>
-			)}
-		</form>
-	);
+    return (
+        <form
+            ref={formRef}
+            className={`upload__form w-full space-y-2 ${className}`}
+            onSubmit={handleSubmit}
+        >
+            <label htmlFor="file-upload" className="upload__label">
+                {label}
+            </label>
+            <div className="upload__container relative w-max">
+                <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
+                    {preview ? (
+                        <img
+                            className="upload__preview h-full w-full rounded-xl object-cover"
+                            src={preview}
+                            alt="previewImage"
+                        />
+                    ) : (
+                        <img
+                            className="upload__onclick-icon m-auto w-24"
+                            src={uploadIcon}
+                            alt="uploadIcon"
+                        />
+                    )}
+                    <input
+                        id="file-upload"
+                        className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                        type="file"
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                        aria-label="File upload"
+                    />
+                </div>
+                {preview ? (
+                    <button
+                        className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Uploading...' : 'Submit'}
+                    </button>
+                ) : (
+                    <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
+                        {desc}
+                    </span>
+                )}
+            </div>
+        </form>
+    );
 });
 
 export default UploadImage;

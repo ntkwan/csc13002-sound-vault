@@ -128,6 +128,20 @@ export const api = createApi({
         getProfileAlbums: builder.query({
             query: (id) => `/get-profile-albums/${id}`,
         }),
+        uploadProfilePic: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-profile-pic',
+                method: 'POST',
+                body: file,
+            }),
+        }),
+        uploadProfileCover: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-profile-cover',
+                method: 'POST',
+                body: file,
+            }),
+        }),
     }),
 });
 
@@ -149,4 +163,6 @@ export const {
     useGetProfilePopularSongsQuery,
     useGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,
+    useUploadProfilePicMutation,
+    useUploadProfileCoverMutation,
 } = api;

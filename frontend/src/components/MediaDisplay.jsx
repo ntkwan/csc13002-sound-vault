@@ -168,12 +168,18 @@ const MediaItems = memo(
         return (
             <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
                 <div className="relative h-full">
-                    <img
-                        className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
-                        src={url}
-                        alt={isArtist ? name : title}
-                        onClick={onClickImage}
-                    />
+                    {url ? (
+                        <img
+                            className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
+                            src={url}
+                            alt={isArtist ? name : title}
+                            onClick={onClickImage}
+                        />
+                    ) : (
+                        <div className="">
+                            <i className="bx bxs-user-circle aspect-square h-full -translate-y-2 text-[170px] leading-none"></i>
+                        </div>
+                    )}
                     <PlayButton
                         onClick={onClickButton}
                         isOnPlaying={isOnPlaying}
@@ -223,9 +229,6 @@ const MediaItems2 = memo(
                 className="media-item z-1 group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-opacity-20"
                 onClick={onClickImage}
             >
-                {isArtist && (
-                    <i className="ri-close-large-line absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-black bg-opacity-40 text-xs"></i>
-                )}
                 <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
                     <div className="media-item__image relative">
                         <img

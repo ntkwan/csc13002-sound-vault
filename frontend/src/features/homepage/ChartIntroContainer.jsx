@@ -47,18 +47,20 @@ function ChartIntroContainer() {
     ];
 
     return (
-        <div className="relative flex-[1] text-sm">
-            {data.map((item, index) => (
-                <ChartItem
-                    key={index}
-                    song={item.song}
-                    className={item.className}
-                    onClick={handlePlay(item.song)}
-                    isOnPlaying={
-                        currentSong === item.song.audiourl && isPlaying
-                    }
-                />
-            ))}
+        <div className="flex flex-[1] justify-center text-sm">
+            <div className="relative h-full w-[600px]">
+                {data.map((item, index) => (
+                    <ChartItem
+                        key={index}
+                        song={item.song}
+                        className={item.className}
+                        onClick={handlePlay(item.song)}
+                        isOnPlaying={
+                            currentSong === item.song.audiourl && isPlaying
+                        }
+                    />
+                ))}
+            </div>
         </div>
     );
 }

@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import { PageTitle } from '@components';
 import { UploadImage, InputForm } from '@features/profilepage/components';
 import {
     selectUserProfile,
-    updateAvatar,
     updateCover,
     updateInfo,
     updatePassword,
 } from '@features/profilepage/slices';
+import {
+    useUploadProfilePicMutation,
+    useUploadProfileCoverMutation,
+} from '@services/api';
 
 function ProfilePageEditing() {
     const userProfile = useSelector(selectUserProfile);
     const dispatch = useDispatch();
+    const [uploadProfilePic] = useUploadProfilePicMutation();
 
     const { name, email, dob, shortDesc, password } = userProfile;
 
@@ -51,12 +54,18 @@ function ProfilePageEditing() {
         }, 4000);
     };
 
-    const handleAvatarChange = (fileName) => {
-        dispatch(
-            updateAvatar({
-                avatar: fileName,
-            }),
-        );
+    const handleAvatarChange = (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        uploadProfilePic({ file: formData })
+            .unwrap()
+            .then((response) => {
+                console.log('Avatar updated successfully:', response);
+            })
+            .catch((error) => {
+                console.error('Error updating avatar:', error);
+            });
     };
 
     const handleCoverChange = (fileName) => {
@@ -68,25 +77,25 @@ function ProfilePageEditing() {
     };
 
     return (
-        <div className="profilepage__editing pb-8">
+        <div className="profilepage__editing pt-8">
             <PageTitle
                 className="editing__header inline"
                 title="Edit Profile"
             />
 
             {/* Upload profile images */}
-            <div className="editing__upload flex items-center space-x-10">
+            <div className="editing__upload flex items-center space-x-8">
                 <UploadImage
                     className="flex-[0.85]"
                     label="To upload an avatar click on box or drop file here!"
                     desc="File size is less than 320 KB"
-                    onUpdateChange={handleAvatarChange}
+                    useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
                     className="flex-[0.85]"
                     label="To upload a cover click on box or drop file here!"
                     desc="File size is less than 320 KB"
-                    onUpdateChange={handleCoverChange}
+                    useUploadMutation={useUploadProfileCoverMutation}
                 />
                 <PageTitle
                     className="flex-[1.8] text-center"
@@ -94,7 +103,7 @@ function ProfilePageEditing() {
                 />
             </div>
 
-            <div className="editing__container mt-2 flex text-sm">
+            <div className="editing__container mt-8 flex text-sm">
                 {/* Information editing form */}
                 <form
                     className="editing__infomation relative flex-1 space-y-4"
@@ -174,7 +183,3 @@ function UpdateSuccess({ onUpdate }) {
         </div>
     );
 }
-
-UpdateSuccess.propTypes = {
-    onUpdate: PropTypes.bool,
-};

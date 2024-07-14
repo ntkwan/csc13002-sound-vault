@@ -94,23 +94,23 @@ function ProfilePage() {
                     <div className="profile__cover absolute left-28 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
                 )}
                 <div className="profile__container ml-[5%] flex items-center">
-                    <div className="relative h-40 min-w-40">
+                    <div className="relative h-40 w-40">
                         {/* profile avatar */}
                         {url ? (
                             <img
                                 className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
                                 src={url}
-                                alt=""
+                                alt={name}
                             />
                         ) : (
-                            <i className="bx bxs-user-circle aspect-square w-40 text-[180px] leading-none"></i>
+                            <i className="bx bxs-user-circle h-40 w-40 text-[180px] leading-none"></i>
                         )}
                         {/* verified icon */}
                         {isVerified && (
                             <img
-                                className="profile__verified-icon absolute bottom-[6px] right-[10px] aspect-square w-8"
+                                className="profile__verified-icon absolute bottom-[6px] right-[10px] h-8 w-8"
                                 src={verifiedIcon}
-                                alt=""
+                                alt="vrf-icon"
                             />
                         )}
                     </div>

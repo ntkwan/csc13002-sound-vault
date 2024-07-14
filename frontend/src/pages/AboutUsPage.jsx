@@ -10,17 +10,15 @@ function AboutUsPage() {
                         Our product
                     </h2>
                     <p className="aup__intro-content">
-                        <span className="pr-2 font-lilitaone text-2xl">
+                        <strong className="pr-2 font-lilitaone text-2xl font-medium">
                             SoundVault
-                        </span>
-                        <span className="text-xl">
-                            is a digital music service that gives users access
-                            to millions of songs. The platform aims tobe a
-                            decentralized application that applies blockchain to
-                            music&rsquo;s reservation of rights for
-                            supportingindependent artists uploading their music
-                            on the platform with copyrights.
-                        </span>
+                        </strong>
+                        is a digital music service that gives users access to
+                        millions of songs. The platform aims tobe a
+                        decentralized application that applies blockchain to
+                        music&rsquo;s reservation of rights for
+                        supportingindependent artists uploading their music on
+                        the platform with copyrights.
                     </p>
                 </section>
 
@@ -31,71 +29,59 @@ function AboutUsPage() {
                         form.
                     </p>
                     <form className="m-auto grid w-2/3 auto-rows-auto grid-cols-2 gap-10 rounded-xl border p-12">
-                        <div className="">
-                            <label
-                                htmlFor="name"
-                                className="block text-xl italic"
-                            >
-                                First Name
-                            </label>
+                        <label
+                            htmlFor="firstName"
+                            className="block text-xl italic"
+                        >
+                            First Name
                             <input
+                                id="firstName"
                                 type="text"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
                             />
-                        </div>
+                        </label>
 
-                        <div className="">
-                            <label
-                                htmlFor="name"
-                                className="block text-xl italic"
-                            >
-                                Last Name
-                            </label>
+                        <label
+                            htmlFor="lastName"
+                            className="block text-xl italic"
+                        >
+                            Last Name
                             <input
+                                id="lastName"
                                 type="text"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
                             />
-                        </div>
+                        </label>
 
-                        <div className="">
-                            <label
-                                htmlFor="name"
-                                className="block text-xl italic"
-                            >
-                                Email
-                            </label>
+                        <label htmlFor="email" className="block text-xl italic">
+                            Email
                             <input
+                                id="email"
                                 type="email"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
                             />
-                        </div>
+                        </label>
 
-                        <div className="">
-                            <label
-                                htmlFor="name"
-                                className="block text-xl italic"
-                            >
-                                Phone Number
-                            </label>
+                        <label htmlFor="phone" className="block text-xl italic">
+                            Phone Number
                             <input
+                                id="phone"
                                 type="tel"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
                             />
-                        </div>
+                        </label>
 
-                        <div className="col-span-2 flex-col">
-                            <label
-                                htmlFor="message"
-                                className="block text-xl italic"
-                            >
-                                Message
-                            </label>
+                        <label
+                            htmlFor="message"
+                            className="col-span-2 block flex-col text-xl italic"
+                        >
+                            Message
                             <textarea
                                 id="message"
                                 className="w-full border-b bg-transparent focus-visible:outline-none"
                                 rows="3"
                             ></textarea>
-                        </div>
+                        </label>
 
                         <button
                             type="submit"
@@ -112,7 +98,7 @@ function AboutUsPage() {
                     </h2>
                     <div className="flex items-center space-x-4">
                         <i className="bx bxs-envelope pl-4 text-3xl"></i>
-                        <p className="text-xl">soundvault.co@gmail.com</p>
+                        <p>soundvault.co@gmail.com</p>
                     </div>
                 </section>
             </div>
