@@ -16,7 +16,7 @@ function Header() {
     const [showNotice, setShowNotice] = useState(false);
     const noticeRef = useRef(null);
 
-    const notice = [
+    const notices = [
         {
             message: 'Welcome to SoundVault',
             time: '1 minute ago',
@@ -58,11 +58,9 @@ function Header() {
             dispatch(updateInfo(myProfileData));
         }
     }, [myProfileData, dispatch]);
-
     if (profileLoading) return null;
 
-    const { name, image, isAdmin } = myProfileData || {};
-    const { url } = image || {};
+    const { name, image: { url: avatar } = {}, isAdmin } = myProfileData || {};
 
     return (
         <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
@@ -87,10 +85,10 @@ function Header() {
             {/* Link */}
             {token ? (
                 <div className="header__section flex h-full flex-[1] items-center justify-end space-x-3 text-sm">
-                    {url ? (
+                    {avatar ? (
                         <img
                             className="inline h-10 w-10 rounded-full object-cover"
-                            src={url}
+                            src={avatar}
                             alt={name}
                         />
                     ) : (
@@ -109,15 +107,15 @@ function Header() {
                             className="bx bx-bell relative block h-10 min-w-10 content-center rounded-full bg-white text-center text-2xl text-black transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-opacity-70"
                             onClick={handleShowNotice}
                         ></i>
-                        {notice && pingNotice && (
+                        {notices && pingNotice && (
                             <>
                                 <div className="absolute right-2 top-2 h-[10px] w-[10px] rounded-full bg-red-500"></div>
                                 <div className="absolute right-2 top-2 h-[10px] w-[10px] animate-[ping_2.5s_cubic-bezier(0,_0,_0.2,_1)_infinite] rounded-full bg-red-500"></div>
                             </>
                         )}
                         {showNotice && (
-                            <notice className="absolute right-0 z-[11] mt-2 h-max w-60 rounded-xl text-sm shadow-md">
-                                {notice.map((item, index) => (
+                            <div className="absolute right-0 z-[11] mt-2 h-max w-60 rounded-xl bg-white text-sm shadow-md">
+                                {notices.map((item, index) => (
                                     <div
                                         className={`${item.seen ? 'bg-[#c8c8c8]' : 'bg-white hover:bg-[#c8c8c8]'} grid auto-rows-max p-3 text-black ring-1 ring-black transition-colors duration-400 ease-in-out hover:cursor-pointer`}
                                         key={index}
@@ -130,14 +128,24 @@ function Header() {
                                         </span>
                                     </div>
                                 ))}
-                            </notice>
+                            </div>
                         )}
                     </div>
                 </div>
             ) : (
                 <div className="flex h-1/2 flex-[1] justify-end space-x-5 pr-5 text-xs">
-                    <HeaderLink to="/signin">SIGN IN</HeaderLink>
-                    <HeaderLink to="/signup">SIGN UP</HeaderLink>
+                    <Link
+                        to="/signin"
+                        className="block h-full w-max content-center rounded-full px-3 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+                    >
+                        SIGN IN
+                    </Link>
+                    <Link
+                        to="/signup"
+                        className="block h-full w-max content-center rounded-full px-3 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+                    >
+                        SIGN UP
+                    </Link>
                 </div>
             )}
         </header>
@@ -145,19 +153,3 @@ function Header() {
 }
 
 export default Header;
-
-HeaderLink.propTypes = {
-    to: propTypes.string.isRequired,
-    children: propTypes.node.isRequired,
-};
-
-function HeaderLink({ to, children }) {
-    return (
-        <Link
-            className="block h-full w-max content-center rounded-full px-3 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
-            to={to}
-        >
-            {children}
-        </Link>
-    );
-}

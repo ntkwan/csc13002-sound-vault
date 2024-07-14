@@ -5,7 +5,6 @@ import { PageTitle } from '@components';
 import { UploadImage, InputForm } from '@features/profilepage/components';
 import {
     selectUserProfile,
-    updateCover,
     updateInfo,
     updatePassword,
 } from '@features/profilepage/slices';
@@ -13,6 +12,8 @@ import {
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
 } from '@services/api';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ProfilePageEditing() {
     const userProfile = useSelector(selectUserProfile);
@@ -21,10 +22,6 @@ function ProfilePageEditing() {
 
     const { name, email, dob, shortDesc, password } = userProfile;
 
-    // State for update success/failure messages
-    const [updateInfoSuccess, setUpdateInfoSuccess] = useState(null);
-    const [updatePasswordSuccess, setUpdatePasswordSuccess] = useState(null);
-
     const handleUpdateInfo = (e) => {
         e.preventDefault();
         const [name, email, dob, shortDesc] = map(
@@ -32,9 +29,7 @@ function ProfilePageEditing() {
             (input) => input.value,
         );
         dispatch(updateInfo({ name, email, dob, shortDesc }));
-        setTimeout(() => {
-            setUpdateInfoSuccess(null);
-        }, 4000);
+        toast.success('Information updated successfully!');
     };
 
     const handleUpdatePassword = (e) => {
@@ -45,39 +40,15 @@ function ProfilePageEditing() {
         );
         if (oldPassword === password && newPassword === repeatPassword) {
             dispatch(updatePassword({ password: newPassword }));
-            setUpdatePasswordSuccess(true);
+            toast.success('Password updated successfully!');
         } else {
-            setUpdatePasswordSuccess(false);
+            toast.error('Password update failed!');
         }
-        setTimeout(() => {
-            setUpdatePasswordSuccess(null);
-        }, 4000);
-    };
-
-    const handleAvatarChange = (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        uploadProfilePic({ file: formData })
-            .unwrap()
-            .then((response) => {
-                console.log('Avatar updated successfully:', response);
-            })
-            .catch((error) => {
-                console.error('Error updating avatar:', error);
-            });
-    };
-
-    const handleCoverChange = (fileName) => {
-        dispatch(
-            updateCover({
-                cover: fileName,
-            }),
-        );
     };
 
     return (
         <div className="profilepage__editing pt-8">
+            <ToastContainer />
             <PageTitle
                 className="editing__header inline"
                 title="Edit Profile"
@@ -125,7 +96,6 @@ function ProfilePageEditing() {
                             initValue={shortDesc}
                         />
                         <div className="flex items-center justify-end">
-                            <UpdateSuccess onUpdate={updateInfoSuccess} />
                             <UpdateInput />
                         </div>
                     </div>
@@ -147,7 +117,6 @@ function ProfilePageEditing() {
                             isPassword
                         />
                         <div className="flex items-center justify-end">
-                            <UpdateSuccess onUpdate={updatePasswordSuccess} />
                             <UpdateInput />
                         </div>
                     </div>
@@ -161,25 +130,11 @@ export default ProfilePageEditing;
 
 function UpdateInput() {
     return (
-        <input
-            className="group relative h-12 w-1/4 rounded-xl bg-[#666] shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
-            placeholder="Update"
+        <button
+            className="group relative h-12 w-1/4 rounded-xl bg-[#666] shadow-md transition duration-500 ease-in-out hover:cursor-pointer hover:bg-[#888]"
             type="submit"
-        ></input>
-    );
-}
-
-function UpdateSuccess({ onUpdate }) {
-    if (onUpdate === null) return null;
-    const updateStatus = onUpdate ? 'Update successfully!' : 'Update failed!';
-    const color = onUpdate ? 'text-[#06dbac]' : 'text-[#ff0000]';
-    return (
-        <div className="">
-            <span
-                className={`mr-4 block translate-y-6 font-bold ${color} animate-flyInOut opacity-0`}
-            >
-                {updateStatus}
-            </span>
-        </div>
+        >
+            Submit
+        </button>
     );
 }

@@ -222,8 +222,6 @@ const MediaItems2 = memo(
         const isArtist = type === 'Artist';
         const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
 
-        const negative = useNavigate();
-
         return (
             <div
                 className="media-item z-1 group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-opacity-20"
@@ -285,12 +283,19 @@ MediaItems3.displayName = 'MediaItems3';
 MediaItems3.propTypes = MediaItems.propTypes;
 
 const MediaItems4 = memo(({ type, mediaData, onClick, isOnPlaying, index }) => {
-    const [menuVisible, setMenuVisible] = useState(null);
     const [duration, setDuration] = useState('0:00');
+    const [menuVisible, setMenuVisible] = useState(null);
 
     const toggleMenu = (index) => {
         setMenuVisible(menuVisible === index ? null : index);
     };
+
+    useEffect(() => {
+        if (menuVisible !== null) {
+            document.addEventListener('mousedown', toggleMenu);
+            return () => document.removeEventListener('mousedown', toggleMenu);
+        }
+    }, [menuVisible]);
 
     const { title, view, imageurl, audiourl } = mediaData;
     const { url } = imageurl;

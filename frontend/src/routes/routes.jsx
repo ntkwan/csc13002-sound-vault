@@ -16,11 +16,13 @@ import {
     ForgotPassPage,
     TermAndPolicyPage,
     LibraryPage,
+    NotFoundPage,
 } from '@pages';
 
 const router = createBrowserRouter([
     {
         Component: DefaultLayout,
+        errorElement: NotFoundPage,
         children: [
             { path: '', Component: HomePage },
             { path: 'artist', Component: ArtistPage },
@@ -51,6 +53,7 @@ const router = createBrowserRouter([
             { path: 'forgot-password', Component: ForgotPassPage },
         ],
     },
+    { path: '*', Component: NotFoundPage },
 ]);
 
 export default router;

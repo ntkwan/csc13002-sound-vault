@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { selectCurrentToken } from '@services/selectors';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
 import { MediaDisplay, Loading } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
@@ -48,9 +47,13 @@ function ProfilePage() {
 
     const isMyProfile = id === profileId || !profileId;
     const userProfile = isMyProfile ? myProfileData : profileByIdData;
-    const { name, image, followers } = userProfile || {};
-    const { url, coverimg } = image || {};
-    const isVerified = true;
+    const {
+        name,
+        image: { url: avatar } = {},
+        coverimage: { url: cover } = {},
+        followers,
+        isVerified,
+    } = userProfile || {};
 
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
@@ -82,28 +85,28 @@ function ProfilePage() {
             {/* profile header */}
             <div className="profile__header h-96 w-full content-center">
                 {/* profile cover */}
-                {coverimg ? (
+                {cover ? (
                     <div className="absolute left-28 right-0 top-0 h-96">
                         <img
                             className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl"
-                            src={coverimg}
-                            alt=""
+                            src={cover}
+                            alt="cover"
                         />
                     </div>
                 ) : (
                     <div className="profile__cover absolute left-28 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
                 )}
                 <div className="profile__container ml-[5%] flex items-center">
-                    <div className="relative h-40 w-40">
+                    <div className="relative h-40 min-w-40">
                         {/* profile avatar */}
-                        {url ? (
+                        {avatar ? (
                             <img
                                 className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
-                                src={url}
+                                src={avatar}
                                 alt={name}
                             />
                         ) : (
-                            <i className="bx bxs-user-circle h-40 w-40 text-[180px] leading-none"></i>
+                            <i className="bx bxs-user-circle h-full w-full text-[180px] leading-none"></i>
                         )}
                         {/* verified icon */}
                         {isVerified && (

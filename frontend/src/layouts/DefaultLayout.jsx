@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Header, Sidebar } from '@components';
 import { Player } from '@features/player/components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,11 +10,17 @@ function DefaultLayout() {
     const { currentTrack } = useSelector(selectCurrentPlayer);
     const token = useSelector(selectCurrentToken);
     const dispatch = useDispatch();
+    const location = useLocation();
+
     useEffect(() => {
         if (!token) {
             dispatch(resetPlayer());
         }
     }, [token, dispatch]);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location]);
 
     return (
         <>

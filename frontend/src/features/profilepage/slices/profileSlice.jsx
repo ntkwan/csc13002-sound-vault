@@ -5,145 +5,20 @@ const IMGURL =
 
 const initialState = {
     name: '',
-    isVerified: false,
-    followers: 0,
-    following: [],
     email: '',
     dob: '',
     shortDesc: '',
+    followers: 0,
+    following: [],
+    isVerified: false,
+    isAdmin: false,
     image: {
         url: '',
-        corverimg: '',
+    },
+    coverimage: {
+        url: '',
     },
     password: '',
-    isAdmin: false,
-    mediaData: [
-        {
-            type: 'Song',
-            title: 'Popular Releases',
-            visibility: '',
-            link: '',
-            data: [
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-            ],
-        },
-        {
-            type: 'Album',
-            title: 'Albums',
-            visibility: '',
-            link: '',
-            data: [
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: '2023',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: '2023',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: '2023',
-                },
-            ],
-        },
-        {
-            type: 'Artist',
-            title: 'Following',
-            visibility: '(only me)',
-            link: '',
-            data: [
-                {
-                    artist: 'Sơn Tùng MTP',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                },
-                {
-                    artist: 'Sơn Tùng MTP',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                },
-                {
-                    artist: 'Sơn Tùng MTP',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                },
-            ],
-        },
-        {
-            type: 'Playlist',
-            title: 'My Playlist',
-            visibility: '(only me)',
-            link: 'library',
-            data: [
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-            ],
-        },
-    ],
     status: 'idle',
     error: null,
 };
