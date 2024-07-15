@@ -282,7 +282,7 @@ const MediaItems3 = memo(({ type, mediaData }) => {
 MediaItems3.displayName = 'MediaItems3';
 MediaItems3.propTypes = MediaItems.propTypes;
 
-const MediaItems4 = memo(({ type, mediaData, onClick, isOnPlaying, index }) => {
+const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     const [duration, setDuration] = useState('0:00');
     const [menuVisible, setMenuVisible] = useState(null);
 
@@ -312,14 +312,17 @@ const MediaItems4 = memo(({ type, mediaData, onClick, isOnPlaying, index }) => {
     }, [audiourl]);
 
     return (
-        <div className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_60px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
+        <div
+            className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_60px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+            onClick={onClickButton}
+        >
             {/* index - img - name */}
             <div className="flex items-center space-x-8">
                 <div className="">
                     <PlayButton
-                        onClick={onClick}
+                        onClick={onClickButton}
                         isOnPlaying={isOnPlaying}
-                        position="left-6 z-index-10"
+                        position="left-6 z-index-[5]"
                     />
                     <span className="block w-3 group-hover:cursor-pointer">
                         {index + 1}

@@ -1,14 +1,18 @@
-import { useGetTrendingSongsQuery } from "@services/api";
-import { PageTitle, MediaDisplay, Loading } from "@components";
+import { useGetTrendingSongsQuery } from '@services/api';
+import { PageTitle, MediaDisplay, Loading } from '@components';
 
 function TrendingBar() {
-    const { data: trendingSongs, error: trendingSongsError, isLoading: trendingSongsLoading } = useGetTrendingSongsQuery();
+    const {
+        data: trendingSongs,
+        error: trendingSongsError,
+        isLoading: trendingSongsLoading,
+    } = useGetTrendingSongsQuery();
     if (trendingSongsLoading) return <Loading />;
     const media = {
-        type: "Song",
-        title: "",
-        visibility: "",
-        link: "",
+        type: 'Song',
+        title: '',
+        visibility: '',
+        link: '',
         data: trendingSongs,
     };
 
@@ -19,11 +23,11 @@ function TrendingBar() {
                 <MediaDisplay
                     media={media}
                     displayItems="2"
-                    displayType="grid grid-cols-[repeat(6,_max-content)] gap-8"
+                    displayType="grid grid-cols-6 gap-8"
                 />
             </div>
         </div>
     );
-};
+}
 
 export default TrendingBar;

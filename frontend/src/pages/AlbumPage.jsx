@@ -25,7 +25,7 @@ function AlbumPage() {
                 <MediaDisplay
                     media={media}
                     displayItems="2"
-                    displayType="grid grid-cols-[repeat(6,_max-content)] gap-8"
+                    displayType="grid grid-cols-6 gap-8"
                 />
             </div>
         </div>

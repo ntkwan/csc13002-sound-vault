@@ -1,14 +1,18 @@
-import { useGetNewSongsQuery } from "@services/api";
-import { PageTitle, MediaDisplay, Loading } from "@components";
+import { useGetNewSongsQuery } from '@services/api';
+import { PageTitle, MediaDisplay, Loading } from '@components';
 
 function NewReleaseBar() {
-    const { data: newSongs, error: newSongsError, isLoading: newSongsLoading } = useGetNewSongsQuery();
+    const {
+        data: newSongs,
+        error: newSongsError,
+        isLoading: newSongsLoading,
+    } = useGetNewSongsQuery();
     if (newSongsLoading) return <Loading />;
     const media = {
-        type: "Song",
-        header: "",
-        visibility: "",
-        link: "",
+        type: 'Song',
+        header: '',
+        visibility: '',
+        link: '',
         data: newSongs,
     };
 
@@ -19,11 +23,11 @@ function NewReleaseBar() {
                 <MediaDisplay
                     media={media}
                     displayItems="2"
-                    displayType="grid grid-cols-[repeat(6,_max-content)] gap-8"
+                    displayType="grid grid-cols-6 gap-8"
                 />
             </div>
         </div>
     );
-};
+}
 
 export default NewReleaseBar;
