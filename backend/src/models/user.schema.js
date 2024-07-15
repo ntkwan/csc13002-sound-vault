@@ -53,7 +53,6 @@ const UserSchema = new Schema(
         },
         followers: {
             type: Array,
-            default: 0,
         },
     },
     {

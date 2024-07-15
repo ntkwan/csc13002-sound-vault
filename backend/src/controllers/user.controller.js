@@ -110,12 +110,6 @@ const follow_profile_by_id = async (req, res) => {
             });
         }
 
-        if (User.followers.includes(userId)) {
-            return res.status(400).json({
-                message: 'Already followed',
-            });
-        }
-
         User.followers.push(userId);
         await User.save();
 
@@ -143,12 +137,6 @@ const unfollow_profile_by_id = async (req, res) => {
         if (!User) {
             return res.status(404).json({
                 message: 'User not found',
-            });
-        }
-
-        if (!User.followers.includes(userId)) {
-            return res.status(400).json({
-                message: 'Not followed yet',
             });
         }
 
