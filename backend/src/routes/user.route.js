@@ -14,6 +14,12 @@ router.get('/getall', authMiddleware.check_admin, async (req, res) => {
 });
 */
 
+router.post(
+    '/follow-profile-by-id/:profileId',
+    authMiddleware.check_user,
+    userController.follow_profile_by_id,
+);
+
 router.get(
     '/get-my-profile',
     authMiddleware.check_user,

@@ -52,7 +52,7 @@ const UserSchema = new Schema(
             type: String,
         },
         followers: {
-            type: Number,
+            type: Array,
             default: 0,
         },
     },

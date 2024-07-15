@@ -108,7 +108,8 @@ const signin = async (req, res) => {
 
 const refresh_token = async (req, res) => {
     const incomingRefreshToken =
-        req.body.refreshToken || req.cookies.refreshToken;
+        req.cookies?.refreshToken ||
+        req.header('Authorization')?.replace('Bearer ', '');
 
     if (!incomingRefreshToken) {
         return res.status(401).json({ message: 'Refresh token not found' });
