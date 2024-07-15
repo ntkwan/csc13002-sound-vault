@@ -9,11 +9,12 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { api } from '@services/api';
 import { authReducer } from '@features/authentication/slices';
 import { profileReducer } from '@features/profilepage/slices';
 import { playerReducer } from '@features/player/slices';
-import storage from 'redux-persist/lib/storage';
+import { loadingReducer } from '@features/loading/slices';
 import playerTransform from '@features/player/transform';
 
 const persistConfig = {
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     auth: authReducer,
     profile: profileReducer,
     player: playerReducer,
+    loading: loadingReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

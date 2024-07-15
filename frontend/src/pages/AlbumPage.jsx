@@ -1,14 +1,10 @@
 import { useGetNewSongsQuery } from '@services/api';
-import { PageTitle, MediaDisplay, Loading } from '@components';
+import { PageTitle, MediaDisplay } from '@components';
 
 function AlbumPage() {
-    const {
-        data: newSongs,
-        error: newSongsError,
-        isLoading: newSongsLoading,
-    } = useGetNewSongsQuery();
+    const { data: newSongs } = useGetNewSongsQuery();
 
-    if (newSongsLoading) return <Loading />;
+    if (!newSongs) return;
 
     const media = {
         type: 'Album',

@@ -217,7 +217,7 @@ MediaItems.propTypes = {
 
 const MediaItems2 = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
-        const { title, artist, image, id, name, imageurl } = mediaData;
+        const { title, image, name, imageurl } = mediaData;
         const { url } = image || imageurl;
         const isArtist = type === 'Artist';
         const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';

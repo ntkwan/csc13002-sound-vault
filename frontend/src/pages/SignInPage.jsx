@@ -9,7 +9,7 @@ import {
     GoogleButton,
     ConfirmButton,
 } from '@features/authentication/components';
-import { INPUTS, Loading } from '@components';
+import { INPUTS } from '@components';
 import { toast } from 'react-toastify';
 import { resetPlayer } from '@features/player/slices';
 
@@ -18,7 +18,7 @@ function SignInPage() {
         email: '',
         password: '',
     });
-    const [signIn, { isLoading }] = useSignInMutation();
+    const [signIn] = useSignInMutation();
     const nav = useNavigate();
     const dispatch = useDispatch();
 
@@ -45,9 +45,7 @@ function SignInPage() {
             toast.error(errMsg);
         }
     };
-    return isLoading ? (
-        <Loading />
-    ) : (
+    return (
         <div className="flex h-screen w-screen items-center justify-center bg-auth-pattern bg-cover">
             <div className="w-[470px] divide-solid rounded-2xl border-[2px] border-[#5882C1] bg-[#5882C1]/[0.3] px-10 py-7">
                 <AuthenTitle title="Sign in" />

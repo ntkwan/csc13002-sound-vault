@@ -1,15 +1,13 @@
 import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
 import { useGetFeaturedArtistsQuery } from '@services/api';
-import { Loading } from '@components/index';
 
 const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
 function ArtistPage() {
-    const { data: Artists, isLoading: featuredArtistsLoading } =
-        useGetFeaturedArtistsQuery();
-    if (featuredArtistsLoading) return <Loading />;
+    const { data: Artists } = useGetFeaturedArtistsQuery();
+    if (!Artists) return;
     const mediaData = [
         {
             type: 'Artist',

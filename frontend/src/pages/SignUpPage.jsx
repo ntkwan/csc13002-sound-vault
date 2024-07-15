@@ -8,7 +8,7 @@ import {
     ConfirmButton,
     TermAndPolicyBox,
 } from '@features/authentication/components';
-import { INPUTS, Loading } from '@components';
+import { INPUTS } from '@components';
 import { toast } from 'react-toastify';
 
 function SignUpPage() {
@@ -25,7 +25,7 @@ function SignUpPage() {
     const [checked, setChecked] = useState(false);
     const nav = useNavigate();
 
-    const [signUp, { isLoading }] = useSignUpMutation();
+    const [signUp] = useSignUpMutation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,9 +56,7 @@ function SignUpPage() {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
-    return isLoading ? (
-        <Loading />
-    ) : (
+    return (
         <div className="relative">
             {showTermsAndPolicy && (
                 <TermAndPolicyBox

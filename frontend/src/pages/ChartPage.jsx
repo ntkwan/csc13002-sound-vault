@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ChartTable, ChartHeader } from '@features/ranking';
 import { useGetChartSongsQuery } from '@services/api';
-import { Loading } from '@components';
 
 function ChartPage() {
-    const { data: vpopData, isLoading: vpopLoading } =
-        useGetChartSongsQuery('VPop');
-    const { data: kpopData, isLoading: kpopLoading } =
-        useGetChartSongsQuery('KPop');
-    const { data: usukData, isLoading: usukLoading } =
-        useGetChartSongsQuery('US-UK');
+    const { data: vpopData } = useGetChartSongsQuery('VPop');
+    const { data: kpopData } = useGetChartSongsQuery('KPop');
+    const { data: usukData } = useGetChartSongsQuery('US-UK');
     const [tableDatas, setTableDatas] = useState([]);
     useEffect(() => {
         if (!vpopData || !kpopData || !usukData) return;
@@ -29,9 +25,7 @@ function ChartPage() {
         ]);
     }, [vpopData, kpopData, usukData]);
 
-    return vpopLoading || kpopLoading || usukLoading ? (
-        <Loading />
-    ) : (
+    return (
         <div>
             <ChartHeader />
             <h2 className="mx-auto mb-16 w-fit bg-gradient-to-r from-[#FCF2FF] to-[#A31ED2] bg-clip-text px-32 text-center text-5xl font-bold uppercase text-transparent">

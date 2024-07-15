@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 AudioButton.propTypes = {
     onClick: PropTypes.func,
     children: PropTypes.node.isRequired,
-    props: PropTypes.object,
+    className: PropTypes.string,
 };
 
 function AudioButton({ onClick, children, ...props }) {

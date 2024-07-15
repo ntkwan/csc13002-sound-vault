@@ -1,13 +1,9 @@
 import { useGetTrendingSongsQuery } from '@services/api';
-import { PageTitle, MediaDisplay, Loading } from '@components';
+import { PageTitle, MediaDisplay } from '@components';
 
 function TrendingBar() {
-    const {
-        data: trendingSongs,
-        error: trendingSongsError,
-        isLoading: trendingSongsLoading,
-    } = useGetTrendingSongsQuery();
-    if (trendingSongsLoading) return <Loading />;
+    const { data: trendingSongs } = useGetTrendingSongsQuery();
+    if (!trendingSongs) return;
     const media = {
         type: 'Song',
         title: '',

@@ -1,13 +1,9 @@
 import { useGetNewSongsQuery } from '@services/api';
-import { PageTitle, MediaDisplay, Loading } from '@components';
+import { PageTitle, MediaDisplay } from '@components';
 
 function NewReleaseBar() {
-    const {
-        data: newSongs,
-        error: newSongsError,
-        isLoading: newSongsLoading,
-    } = useGetNewSongsQuery();
-    if (newSongsLoading) return <Loading />;
+    const { data: newSongs } = useGetNewSongsQuery();
+    if (!newSongs) return;
     const media = {
         type: 'Song',
         header: '',

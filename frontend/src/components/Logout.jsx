@@ -9,7 +9,6 @@ function Logout() {
         try {
             const res = await logOut().unwrap();
             console.log(res);
-            window.location.reload();
         } catch (error) {
             toast.error(error.message);
         }

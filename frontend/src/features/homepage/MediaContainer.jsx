@@ -1,5 +1,4 @@
 import { MediaDisplay } from '@components';
-import { Loading } from '@components/index';
 import {
     useGetFeaturedArtistsQuery,
     useGetTrendingSongsQuery,
@@ -7,15 +6,11 @@ import {
 } from '@services/api';
 
 function MediaContainer() {
-    const { data: Artists, isLoading: featuredArtistsLoading } =
-        useGetFeaturedArtistsQuery();
-    const { data: trendingSongs, isLoading: trendingSongsLoading } =
-        useGetTrendingSongsQuery();
-    const { data: newSongs, isLoading: newSongsLoading } =
-        useGetNewSongsQuery();
+    const { data: Artists } = useGetFeaturedArtistsQuery();
+    const { data: trendingSongs } = useGetTrendingSongsQuery();
+    const { data: newSongs } = useGetNewSongsQuery();
 
-    if (featuredArtistsLoading || trendingSongsLoading || newSongsLoading)
-        return <Loading />;
+    if (!Artists | !trendingSongs | !newSongs) return;
 
     const isSliceArtist = Artists && Artists.length > 6;
     const isSliceTrending = trendingSongs && trendingSongs.length > 6;

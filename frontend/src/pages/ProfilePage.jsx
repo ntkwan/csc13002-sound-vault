@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
-import { MediaDisplay, Loading } from '@components';
+import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
     useGetProfileByIdQuery,
@@ -16,33 +16,29 @@ function ProfilePage() {
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
 
-    const {
-        data: profileByIdData,
-        error: profileByIdError,
-        isLoading: profileByIdLoading,
-    } = useGetProfileByIdQuery(profileId, { skip: !profileId });
-
-    const {
-        data: profileAllSongsData,
-        error: profileAllSongsError,
-        isLoading: profileAllSongsLoading,
-    } = useGetProfileAllSongsQuery(profileId || id, {
-        skip: !profileId && !id,
+    const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
+        skip: !profileId,
     });
 
-    const {
-        data: profileAlbumsData,
-        error: profileAlbumsError,
-        isLoading: profileAlbumsLoading,
-    } = useGetProfileAlbumsQuery(profileId || id, {
-        skip: !profileId && !id,
-    });
+    const { data: profileAllSongsData } = useGetProfileAllSongsQuery(
+        profileId || id,
+        {
+            skip: !profileId && !id,
+        },
+    );
+
+    const { data: profileAlbumsData } = useGetProfileAlbumsQuery(
+        profileId || id,
+        {
+            skip: !profileId && !id,
+        },
+    );
 
     const { following } = myProfileData;
     const [isFollowing, setFollowing] = useState(following.includes(profileId));
 
-    if (profileByIdLoading || profileAllSongsLoading || profileAlbumsLoading) {
-        return <Loading />;
+    if (!profileByIdData || !profileAllSongsData || !profileAlbumsData) {
+        return;
     }
 
     const isMyProfile = id === profileId || !profileId;

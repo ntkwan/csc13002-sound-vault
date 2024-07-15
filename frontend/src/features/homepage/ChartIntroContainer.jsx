@@ -1,49 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import {
     play,
     pause,
     setCurrentTrack,
 } from '@features/player/slices/playerSlice';
-import { useGetTopSongsQuery } from '@services/api';
+import { useGetTopSongsQuery, usePlaySongMutation } from '@services/api';
 import { selectCurrentPlayer } from '@services/selectors';
-import { Loading, PlayButton } from '@components/index';
+import { PlayButton } from '@components/index';
 
 function ChartIntroContainer() {
-    const dispatch = useDispatch();
-    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
-    const currentSong = currentTrack?.url;
-
-    const handlePlay =
-        ({ title, artist, image, audiourl }) =>
-        () => {
-            if (currentSong !== audiourl) {
-                dispatch(
-                    setCurrentTrack({
-                        title,
-                        artist,
-                        url: audiourl,
-                        thumbnail: image.url,
-                    }),
-                );
-                dispatch(play());
-            } else {
-                if (!isPlaying) {
-                    dispatch(play());
-                } else {
-                    dispatch(pause());
-                }
-            }
-        };
-
-    const { data: topSongsData, isLoading: topSongsLoading } =
-        useGetTopSongsQuery();
-    if (topSongsLoading) return <Loading />;
+    const { data: topSongsData } = useGetTopSongsQuery();
+    if (!topSongsData) return;
 
     const { topSongs } = topSongsData;
     const data = [
-        { song: topSongs[0][0], className: 'left-0 top-0' },
-        { song: topSongs[1][0], className: 'right-[15%] top-[15%]' },
-        { song: topSongs[2][0], className: 'bottom-0 left-[10%]' },
+        { song: topSongs[0], className: 'left-0 top-0' },
+        { song: topSongs[1], className: 'right-[15%] top-[15%]' },
+        { song: topSongs[2], className: 'bottom-0 left-[10%]' },
     ];
 
     return (
@@ -54,10 +29,6 @@ function ChartIntroContainer() {
                         key={index}
                         song={item.song}
                         className={item.className}
-                        onClick={handlePlay(item.song)}
-                        isOnPlaying={
-                            currentSong === item.song.audiourl && isPlaying
-                        }
                     />
                 ))}
             </div>
@@ -65,9 +36,52 @@ function ChartIntroContainer() {
     );
 }
 
-function ChartItem({ className, song, onClick, isOnPlaying }) {
-    const { title, artist, image, audiourl } = song;
+ChartItem.propTypes = {
+    className: PropTypes.string,
+    song: PropTypes.shape({
+        _id: PropTypes.string,
+        title: PropTypes.string,
+        artist: PropTypes.string,
+        image: PropTypes.shape({
+            url: PropTypes.string,
+        }),
+    }),
+};
+
+function ChartItem({ className, song }) {
+    const { title, artist, image, _id } = song;
     const { url } = image;
+
+    const dispatch = useDispatch();
+    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
+    const currentSong = currentTrack.id;
+    const [playSong] = usePlaySongMutation();
+
+    const handlePlay = async (_id, title, artist, image) => {
+        if (currentSong !== _id) {
+            try {
+                const res = await playSong(_id).unwrap();
+                dispatch(
+                    setCurrentTrack({
+                        id: _id,
+                        title,
+                        artist,
+                        url: res.audiourl,
+                        thumbnail: image.url,
+                    }),
+                );
+                dispatch(play());
+            } catch (error) {
+                toast.error('Failed to play song');
+            }
+        } else {
+            if (!isPlaying) {
+                dispatch(play());
+            } else {
+                dispatch(pause());
+            }
+        }
+    };
 
     return (
         <div className={`absolute ${className}`}>
@@ -79,11 +93,15 @@ function ChartItem({ className, song, onClick, isOnPlaying }) {
                             className="aspect-square w-full hover:cursor-pointer"
                             src={url}
                             alt={title}
-                            onClick={onClick}
+                            onClick={() =>
+                                handlePlay(_id, title, artist, image)
+                            }
                         />
                         <PlayButton
-                            onClick={onClick}
-                            isOnPlaying={isOnPlaying}
+                            onClick={() =>
+                                handlePlay(_id, title, artist, image)
+                            }
+                            isOnPlaying={currentSong === _id && isPlaying}
                             position="bottom-1 right-1"
                         />
                     </div>
