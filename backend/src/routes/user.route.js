@@ -20,6 +20,12 @@ router.post(
     userController.follow_profile_by_id,
 );
 
+router.post(
+    '/unfollow-profile-by-id/:profileId',
+    authMiddleware.check_user,
+    userController.unfollow_profile_by_id,
+);
+
 router.get(
     '/get-my-profile',
     authMiddleware.check_user,

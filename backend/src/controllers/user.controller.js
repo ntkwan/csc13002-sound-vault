@@ -129,8 +129,45 @@ const follow_profile_by_id = async (req, res) => {
     }
 };
 
+const unfollow_profile_by_id = async (req, res) => {
+    const profileId = req.params.profileId;
+    const refreshToken =
+        req.cookies?.refreshToken ||
+        req.header('Authorization')?.replace('Bearer ', '');
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_KEY);
+    const userId = decoded?._id;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        if (!User.followers.includes(userId)) {
+            return res.status(400).json({
+                message: 'Not followed yet',
+            });
+        }
+
+        User.followers = User.followers.filter((id) => id !== userId);
+        await User.save();
+
+        return res.status(200).json({
+            message: 'Unfollowed successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     follow_profile_by_id,
+    unfollow_profile_by_id,
     get_profile_by_id,
     get_my_profile,
     get_profile_all_songs,
