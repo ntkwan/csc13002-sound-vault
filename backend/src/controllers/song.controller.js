@@ -134,7 +134,9 @@ const get_top_songs = async (req, res) => {
         const songs = await SongModel.find({ region: region })
             .sort({ view: -1 })
             .limit(1);
-        topSongs.push(songs);
+        const [song] = songs;
+        const { audiourl, ...songWithoutAudio } = song.toObject();
+        topSongs.push(songWithoutAudio);
     }
 
     return res.status(200).json({
