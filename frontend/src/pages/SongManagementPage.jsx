@@ -17,36 +17,42 @@ const sampleSongs = [
         date: '23-05-2024',
         artist: 'Chillies',
         status: 'Verified',
+        audioUrl: 'https://example.com/song1.mp3',
     },
     {
         name: 'Waffle Fries',
         date: '21-04-2022',
         artist: 'Billie Eilish',
         status: 'Unverified',
+        audioUrl: 'https://example.com/song2.mp3',
     },
     {
         name: 'Chalupa Supreme',
         date: '19-01-2020',
         artist: 'Post Malone',
         status: 'Pending',
+        audioUrl: 'https://example.com/song3.mp3',
     },
     {
         name: 'Checkers Seasoned Fries',
         date: '02-10-2024',
         artist: 'Adam Levine',
         status: 'Verified',
+        audioUrl: 'https://example.com/song4.mp3',
     },
     {
         name: 'French Fries',
         date: '03-12-2019',
         artist: 'Joji',
         status: 'Unverified',
+        audioUrl: 'https://example.com/song5.mp3',
     },
     {
         name: 'Taquito with Cheese',
         date: '23-04-2024',
         artist: 'Hozier',
         status: 'Pending',
+        audioUrl: 'https://example.com/song6.mp3',
     },
 ];
 
@@ -54,7 +60,7 @@ const generateSongs = (samples, counts) => {
     let songs = [];
     samples.forEach((sample, index) => {
         for (let i = 0; i < counts[index]; i++) {
-            songs.push({ ...sample });
+            songs.push({ ...sample, audioUrl: `${sample.audioUrl}?${i}` });
         }
     });
     return songs;
@@ -78,6 +84,8 @@ function AdminSongPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
+    const [confirmAction, setConfirmAction] = useState(null);
+    const [selectedSongUrl, setSelectedSongUrl] = useState(null);
 
     useEffect(() => {
         dispatch(setSongList(initialSongs));
@@ -131,13 +139,6 @@ function AdminSongPage() {
         { name: 'Pending', status: 'Pending' },
     ];
 
-    const actionsButton = [
-        { name: 'View', background: 'bg-[#195FF0]' },
-        { name: 'Edit', background: 'bg-[#34AAA3]' },
-        { name: 'Remove', background: 'bg-[#B63D65]' },
-        { name: 'Disable', background: 'bg-[#CACD6D]' },
-    ];
-
     const sortMethods = [
         'Name song',
         'Artist',
@@ -148,6 +149,36 @@ function AdminSongPage() {
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
         setCurrentPage(1);
+    };
+
+    const handleVerify = (audioUrl) => {
+        setConfirmAction('Verify');
+        setSelectedSongUrl(audioUrl);
+    };
+
+    const handleUnverify = (audioUrl) => {
+        setConfirmAction('Unverify');
+        setSelectedSongUrl(audioUrl);
+    };
+
+    const confirmActionHandler = () => {
+        if (confirmAction === 'Verify') {
+            const updatedSongs = songs.map((song) =>
+                song.audioUrl === selectedSongUrl
+                    ? { ...song, status: 'Verified' }
+                    : song,
+            );
+            dispatch(setSongList(updatedSongs));
+        } else if (confirmAction === 'Unverify') {
+            const updatedSongs = songs.map((song) =>
+                song.audioUrl === selectedSongUrl
+                    ? { ...song, status: 'Unverified' }
+                    : song,
+            );
+            dispatch(setSongList(updatedSongs));
+        }
+        setConfirmAction(null);
+        setSelectedSongUrl(null);
     };
 
     return (
@@ -176,7 +207,7 @@ function AdminSongPage() {
                     }}
                 />
                 <button
-                    className="admin-page__filter h-11 rounded-xl bg-black px-4"
+                    className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                     onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
@@ -233,13 +264,37 @@ function AdminSongPage() {
                                 </span>
                             </td>
                             <td className="flex justify-evenly p-2 py-5">
-                                {actionsButton.map((action, index) => (
+                                {song.status === 'Verified' ? (
                                     <ManagementButtons
-                                        key={index}
-                                        background={action.background}
-                                        children={action.name}
+                                        background="bg-[#FE964A]"
+                                        children="Unverify"
+                                        disable={true}
                                     />
-                                ))}
+                                ) : (
+                                    <ManagementButtons
+                                        background="bg-[#9F68B2]"
+                                        children="Verify"
+                                        onClick={() =>
+                                            handleVerify(song.audioUrl)
+                                        }
+                                    />
+                                )}
+                                <ManagementButtons
+                                    background="bg-[#195FF0]"
+                                    children="View"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#34AAA3]"
+                                    children="Edit"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#B63D65]"
+                                    children="Remove"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#CACD6D]"
+                                    children="Disable"
+                                />
                             </td>
                         </tr>
                     ))}
@@ -256,6 +311,35 @@ function AdminSongPage() {
                     totalPages={totalPages}
                 />
             </div>
+
+            {/* Modal confirmation */}
+            {confirmAction && (
+                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
+                        <p className="mb-4">
+                            Are you sure you want to {confirmAction} this song?
+                        </p>
+                        <div className="flex justify-end">
+                            <button
+                                className="mr-2 rounded-md bg-gray-300 px-4 py-2"
+                                onClick={() => setConfirmAction(null)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className={`${
+                                    confirmAction === 'Verify'
+                                        ? 'bg-green-500'
+                                        : 'bg-red-500'
+                                } rounded-md px-4 py-2 text-white`}
+                                onClick={confirmActionHandler}
+                            >
+                                {confirmAction}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

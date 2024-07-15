@@ -23,9 +23,9 @@ const router = createBrowserRouter([
             { path: 'profile', Component: ProfilePage },
             { path: 'profile/editing', Component: ProfilePageEditing },
             { path: 'artist', Component: ArtistPage },
-            { path: 'adminsong', Component: AdminSongPage },
-            { path: 'adminaccount', Component: AdminAccountPage },
-            { path: 'reviewreport', Component: ReviewReportPage },
+            { path: 'admin/song', Component: AdminSongPage },
+            { path: 'admin/user', Component: AdminAccountPage },
+            { path: 'admin/report', Component: ReviewReportPage },
         ],
     },
     {

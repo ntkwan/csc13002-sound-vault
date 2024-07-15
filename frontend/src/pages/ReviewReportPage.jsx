@@ -201,7 +201,7 @@ function ReviewReportPage() {
                     }}
                 />
                 <button
-                    className="admin-page__filter h-11 rounded-xl bg-black px-4"
+                    className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                     onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
@@ -245,7 +245,10 @@ function ReviewReportPage() {
                 </thead>
                 <tbody>
                     {paginatedReports.map((report, index) => (
-                        <tr key={index} className="border-b-2">
+                        <tr
+                            key={index}
+                            className="cursor-pointer border-b-2 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25"
+                        >
                             <td className="px-2 py-5">{report.username}</td>
                             <td className="px-2 py-5">{report.date}</td>
                             <td className="px-2 py-5">{report.category}</td>

@@ -13,39 +13,39 @@ import { setAccountList } from '@features/admindashboard/slices';
 
 const sampleAccounts = [
     {
+        id: '1',
         name: 'John Doe',
         date: '23-05-2024',
-        gmail: 'john_doe@gmail.com',
         status: 'Verified',
     },
     {
+        id: '2',
         name: 'Jane Smith',
         date: '21-04-2022',
-        gmail: 'janesmith@gmail.com',
         status: 'Unverified',
     },
     {
+        id: '3',
         name: 'Alice Johnson',
         date: '19-01-2020',
-        gmail: 'fkalicejohnson@gmail.com',
         status: 'Pending',
     },
     {
+        id: '4',
         name: 'Bob Brown',
         date: '02-10-2024',
-        gmail: 'lulbob_brown@gmail.com',
         status: 'Verified',
     },
     {
+        id: '5',
         name: 'Charlie Davis',
         date: '03-12-2019',
-        gmail: 'charliedavis@gmail.com',
         status: 'Unverified',
     },
     {
+        id: '6',
         name: 'Eve Martinez',
         date: '23-04-2024',
-        gmail: 'evemartinez@gmail.com',
         status: 'Pending',
     },
 ];
@@ -56,7 +56,7 @@ const generateAccounts = (samples, counts) => {
         for (let i = 0; i < counts[index]; i++) {
             accounts.push({
                 ...sample,
-                gmail: `${sample.gmail}${i}@gmail.com`,
+                id: `${sample.id}-${i}`,
             });
         }
     });
@@ -81,6 +81,8 @@ function AdminAccountPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
+    const [confirmAction, setConfirmAction] = useState(null);
+    const [selectedAccountId, setSelectedAccountId] = useState(null);
 
     useEffect(() => {
         dispatch(setAccountList(initialAccounts));
@@ -111,8 +113,6 @@ function AdminAccountPage() {
 
         if (filterSortOption === 'Name') {
             return a.name.localeCompare(b.name);
-        } else if (filterSortOption === 'Gmail') {
-            return a.gmail.localeCompare(b.gmail);
         } else if (filterSortOption === 'Date (oldest first)') {
             return compareAsc(parseDate(a.date), parseDate(b.date));
         } else if (filterSortOption === 'Date (newest first)') {
@@ -133,24 +133,41 @@ function AdminAccountPage() {
         { name: 'Unverified', status: 'Unverified' },
         { name: 'Pending', status: 'Pending' },
     ];
-
-    const actionsButton = [
-        { name: 'View', background: 'bg-[#195FF0]' },
-        { name: 'Edit', background: 'bg-[#34AAA3]' },
-        { name: 'Remove', background: 'bg-[#B63D65]' },
-        { name: 'Disable', background: 'bg-[#CACD6D]' },
-    ];
-
-    const sortMethods = [
-        'Name',
-        'Gmail',
-        'Date (oldest first)',
-        'Date (newest first)',
-    ];
+    const sortMethods = ['Name', 'Date (oldest first)', 'Date (newest first)'];
 
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
         setCurrentPage(1);
+    };
+
+    const handleVerify = (accountId) => {
+        setConfirmAction('Verify');
+        setSelectedAccountId(accountId);
+    };
+
+    const handleUnverify = (accountId) => {
+        setConfirmAction('Unverify');
+        setSelectedAccountId(accountId);
+    };
+
+    const confirmActionHandler = () => {
+        if (confirmAction === 'Verify') {
+            const updatedAccounts = accounts.map((acc) =>
+                acc.id === selectedAccountId
+                    ? { ...acc, status: 'Verified' }
+                    : acc,
+            );
+            dispatch(setAccountList(updatedAccounts));
+        } else if (confirmAction === 'Unverify') {
+            const updatedAccounts = accounts.map((acc) =>
+                acc.id === selectedAccountId
+                    ? { ...acc, status: 'Unverified' }
+                    : acc,
+            );
+            dispatch(setAccountList(updatedAccounts));
+        }
+        setConfirmAction(null);
+        setSelectedAccountId(null);
     };
 
     return (
@@ -179,12 +196,11 @@ function AdminAccountPage() {
                     }}
                 />
                 <button
-                    className="admin-page__filter h-11 rounded-xl bg-black px-4"
+                    className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                     onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
                     Filters
-                    {console.log(showFilters)}
                 </button>
             </div>
 
@@ -202,14 +218,12 @@ function AdminAccountPage() {
             <table className="w-full overflow-hidden">
                 <thead>
                     <tr className="border-b-2 text-[#718096]">
+                        <th className="px-2 py-5 text-left font-normal">ID</th>
                         <th className="px-2 py-5 text-left font-normal">
                             Name
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Date
-                        </th>
-                        <th className="px-2 py-5 text-left font-normal">
-                            Gmail
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Status
@@ -220,9 +234,9 @@ function AdminAccountPage() {
                 <tbody>
                     {paginatedAccounts.map((account, index) => (
                         <tr key={index} className="border-b-2">
+                            <td className="px-2 py-5">{account.id}</td>
                             <td className="px-2 py-5">{account.name}</td>
                             <td className="px-2 py-5">{account.date}</td>
-                            <td className="px-2 py-5">{account.gmail}</td>
                             <td className="px-2 py-5">
                                 <span
                                     className={`rounded-lg px-2 py-1 ${
@@ -237,13 +251,37 @@ function AdminAccountPage() {
                                 </span>
                             </td>
                             <td className="flex justify-evenly p-2 py-5">
-                                {actionsButton.map((action, index) => (
+                                {account.status === 'Verified' ? (
                                     <ManagementButtons
-                                        key={index}
-                                        background={action.background}
-                                        children={action.name}
+                                        background="bg-[#FE964A]"
+                                        children="Unverify"
+                                        onClick={() =>
+                                            handleUnverify(account.id)
+                                        }
                                     />
-                                ))}
+                                ) : (
+                                    <ManagementButtons
+                                        background="bg-[#9F68B2]"
+                                        children="Verify"
+                                        onClick={() => handleVerify(account.id)}
+                                    />
+                                )}
+                                <ManagementButtons
+                                    background="bg-[#195FF0]"
+                                    children="View"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#34AAA3]"
+                                    children="Edit"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#B63D65]"
+                                    children="Remove"
+                                />
+                                <ManagementButtons
+                                    background="bg-[#CACD6D]"
+                                    children="Disable"
+                                />
                             </td>
                         </tr>
                     ))}
@@ -260,6 +298,36 @@ function AdminAccountPage() {
                     totalPages={totalPages}
                 />
             </div>
+
+            {/* Modal confirmation */}
+            {confirmAction && (
+                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
+                        <p className="mb-4">
+                            Are you sure you want to {confirmAction} this
+                            account?
+                        </p>
+                        <div className="flex justify-end">
+                            <button
+                                className="mr-2 rounded-md bg-gray-300 px-4 py-2"
+                                onClick={() => setConfirmAction(null)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className={`${
+                                    confirmAction === 'Verify'
+                                        ? 'bg-green-500'
+                                        : 'bg-red-500'
+                                } rounded-md px-4 py-2 text-white`}
+                                onClick={confirmActionHandler}
+                            >
+                                {confirmAction}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
