@@ -1,7 +1,6 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
-const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
 
@@ -53,14 +52,7 @@ const get_profile_by_id = async (req, res) => {
 };
 
 const get_my_profile = async (req, res) => {
-    const refreshToken =
-        req.cookies?.refreshToken ||
-        req.header('Authorization')?.replace('Bearer ', '');
-
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_KEY);
-    const profileId = decoded?._id;
-
-    req.params.profileId = profileId;
+    req.params.profileId = req.user._id;
     get_profile_by_id(req, res);
 };
 
@@ -93,14 +85,39 @@ const get_profile_all_songs = async (req, res) => {
     }
 };
 
+const get_follow_button_by_id = async (req, res) => {
+    const profileId = req.params.profileId;
+    const userId = req.user._id;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const isFollowing = User.followers.includes(userId);
+
+        return res.status(200).json({
+            button_state: isFollowing,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const follow_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
-    const refreshToken =
-        req.cookies?.refreshToken ||
-        req.header('Authorization')?.replace('Bearer ', '');
+    const userId = req.user._id;
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_KEY);
-    const userId = decoded?._id;
+    if (profileId === userId) {
+        return res.status(400).json({
+            message: 'You cannot perfor such action on yourself',
+        });
+    }
 
     try {
         const User = await UserModel.findById(profileId);
@@ -125,12 +142,13 @@ const follow_profile_by_id = async (req, res) => {
 
 const unfollow_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
-    const refreshToken =
-        req.cookies?.refreshToken ||
-        req.header('Authorization')?.replace('Bearer ', '');
+    const userId = req.user._id;
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_KEY);
-    const userId = decoded?._id;
+    if (profileId === userId) {
+        return res.status(400).json({
+            message: 'You cannot perform such action on yourself',
+        });
+    }
 
     try {
         const User = await UserModel.findById(profileId);
@@ -154,6 +172,7 @@ const unfollow_profile_by_id = async (req, res) => {
 };
 
 module.exports = {
+    get_follow_button_by_id,
     follow_profile_by_id,
     unfollow_profile_by_id,
     get_profile_by_id,

@@ -27,6 +27,12 @@ router.post(
 );
 
 router.get(
+    '/get-follow-button-by-id/:profileId',
+    authMiddleware.check_user,
+    userController.get_follow_button_by_id,
+);
+
+router.get(
     '/get-my-profile',
     authMiddleware.check_user,
     userController.get_my_profile,
@@ -36,6 +42,6 @@ router.get(
     '/get-profile-all-songs/:profileId',
     userController.get_profile_all_songs,
 );
-router.get('/get-featured-artists', userController.get_featured_artists);
 
+router.get('/get-featured-artists', userController.get_featured_artists);
 module.exports = router;
