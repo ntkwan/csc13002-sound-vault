@@ -172,8 +172,7 @@ const unfollow_profile_by_id = async (req, res) => {
             });
         }
 
-        User.followers = User.followers.filter((id) => id == _id);
-        console.log(User.followers);
+        User.followers = User.followers.filter((id) => id == userId);
         await User.save();
 
         return res.status(200).json({

@@ -78,7 +78,7 @@ Authorization: Bearer [TOKEN]
 GET {{host}}/get-profile-by-id/{{profileId}}
 
 ### [USER] get popular songs of the profile
-@profileId = 668d51ca6dad72a3f2d093f9
+@profileId = 
 GET {{host}}/get-profile-popular-songs/{{profileId}}
 Content-Type: application/json
 Authorization: Bearer [TOKEN]
