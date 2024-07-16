@@ -97,6 +97,7 @@ const signin = async (req, res) => {
             .json({
                 accessToken,
                 refreshToken,
+                is_admin: User.isAdmin,
                 message: 'Sign in successfully',
             });
     } catch (error) {

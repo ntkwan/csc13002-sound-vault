@@ -43,7 +43,6 @@ const get_profile_by_id = async (req, res) => {
             image: User.image,
             coverimg: User.coverimage,
             isVerified: User.isVerified,
-            isAdmin: User.isAdmin,
             followers: User.followers.length,
             following: User.following.length,
             id: User._id,
@@ -149,9 +148,9 @@ const follow_profile_by_id = async (req, res) => {
         }
 
         targetProfile.followers.push(userId);
-        await targetProfile.save();
+        await targetProfile.save({ validateBeforeSave: false });
         thisProfile.following.push(profileId);
-        await thisProfile.save();
+        await thisProfile.save({ validateBeforeSave: false });
 
         return res.status(200).json({
             message: 'Followed successfully',
@@ -202,11 +201,11 @@ const unfollow_profile_by_id = async (req, res) => {
         targetProfile.followers = targetProfile.followers.filter(
             (id) => id == userId,
         );
-        await targetProfile.save();
+        await targetProfile.save({ validateBeforeSave: false });
         thisProfile.following = thisProfile.following.filter(
             (id) => id == profileId,
         );
-        await thisProfile.save();
+        await thisProfile.save({ validateBeforeSave: false });
 
         return res.status(200).json({
             message: 'Unfollowed successfully',
