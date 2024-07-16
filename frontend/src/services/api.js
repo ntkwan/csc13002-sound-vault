@@ -119,6 +119,23 @@ export const api = createApi({
         getProfileById: builder.query({
             query: (id) => `/get-profile-by-id/${id}`,
         }),
+        getFollowButtonById: builder.query({
+            query: (id) => `/get-follow-button-by-id/${id}`,
+        }),
+        followProfileById: builder.mutation({
+            query: (id) => ({
+                url: `/follow-profile-by-id/${id}`,
+                method: 'POST',
+                body: id,
+            }),
+        }),
+        unfollowProfileById: builder.mutation({
+            query: (id) => ({
+                url: `/unfollow-profile-by-id/${id}`,
+                method: 'POST',
+                body: id,
+            }),
+        }),
         getProfilePopularSongs: builder.query({
             query: (id) => `/get-profile-popular-songs/${id}`,
         }),
@@ -160,6 +177,9 @@ export const {
     useGetTopSongsQuery,
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
+    useGetFollowButtonByIdQuery,
+    useFollowProfileByIdMutation,
+    useUnfollowProfileByIdMutation,
     useGetProfilePopularSongsQuery,
     useGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,

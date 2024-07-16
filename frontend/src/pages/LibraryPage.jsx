@@ -12,19 +12,19 @@ function LibraryPage() {
             displayItems: '2',
             data: [
                 {
-                    artist: 'Sơn Tùng MTP',
+                    name: 'Sơn Tùng MTP',
                     imageurl: {
                         url: IMGURL,
                     },
                 },
                 {
-                    artist: 'Sơn Tùng MTP',
+                    name: 'Sơn Tùng MTP',
                     imageurl: {
                         url: IMGURL,
                     },
                 },
                 {
-                    artist: 'Sơn Tùng MTP',
+                    name: 'Sơn Tùng MTP',
                     imageurl: {
                         url: IMGURL,
                     },

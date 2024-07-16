@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
@@ -6,6 +6,9 @@ import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
     useGetProfileByIdQuery,
+    useGetFollowButtonByIdQuery,
+    useFollowProfileByIdMutation,
+    useUnfollowProfileByIdMutation,
     useGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,
 } from '@services/api';
@@ -16,31 +19,74 @@ function ProfilePage() {
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
 
-    const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
-        skip: !profileId,
-    });
+    // Fetch profile data by id
+    const { data: profileByIdData, isLoading: profileByIdLoading } =
+        useGetProfileByIdQuery(profileId, {
+            skip: !profileId,
+        });
 
-    const { data: profileAllSongsData } = useGetProfileAllSongsQuery(
-        profileId || id,
-        {
+    // Fetch follow button state by id
+    const { data: followButtonData, isLoading: followButtonLoading } =
+        useGetFollowButtonByIdQuery(profileId, {
+            skip: !profileId,
+        });
+
+    // Fetch all songs by profile id
+    const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
+        useGetProfileAllSongsQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
 
-    const { data: profileAlbumsData } = useGetProfileAlbumsQuery(
-        profileId || id,
-        {
+    // Fetch albums by profile id
+    const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
+        useGetProfileAlbumsQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
 
-    const { following } = myProfileData;
-    const [isFollowing, setFollowing] = useState(following.includes(profileId));
+    // Follow/Unfollow profile
+    const [followProfile] = useFollowProfileByIdMutation();
+    const [unfollowProfile] = useUnfollowProfileByIdMutation();
 
-    if (!profileByIdData || !profileAllSongsData || !profileAlbumsData) {
-        return;
-    }
+    const [isFollowing, setFollowing] = useState(false);
+    const [countFollower, setCountFollower] = useState(0);
+    const [isLoading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (followButtonData) {
+            setFollowing(followButtonData.button_state);
+        }
+    }, [followButtonData]);
+
+    const handleFollowToggle = async () => {
+        if (isFollowing === undefined || isLoading) return;
+        setLoading(true);
+        setFollowing(!isFollowing);
+        try {
+            if (isFollowing) {
+                setCountFollower(countFollower - 1);
+                await unfollowProfile(profileId).unwrap();
+            } else {
+                setCountFollower(countFollower + 1);
+                await followProfile(profileId).unwrap();
+            }
+        } catch (error) {
+            console.error('Error following/unfollowing profile:', error);
+            setFollowing(isFollowing);
+            if (isFollowing) {
+                setCountFollower(countFollower + 1);
+            } else {
+                setCountFollower(countFollower - 1);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Loading state
+    if (profileByIdLoading || followButtonLoading || profileAllSongsLoading)
+        return null;
+
+    // Check if profile is mine than show profile data
     const isMyProfile = id === profileId || !profileId;
     const userProfile = isMyProfile ? myProfileData : profileByIdData;
     const {
@@ -70,11 +116,6 @@ function ProfilePage() {
     //     link: '',
     //     data: profileAlbumsData || [],
     // };
-
-    const handleFollowToggle = () => {
-        dispatch(toggleFollow(profileId));
-        setFollowing(!isFollowing);
-    };
 
     return (
         <div className="profile__page space-y-10 caret-transparent">
@@ -115,14 +156,16 @@ function ProfilePage() {
                     </div>
                     {/* profile info */}
                     <div className="relative ml-5 content-center">
-                        <p className="text-shadow-1">Profile</p>
+                        <p className="text-shadow-1 text-xl font-medium">
+                            Profile
+                        </p>
                         <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
                             {name}
                         </p>
-                        <p className="text-shadow-1">
-                            {followers > 999
-                                ? followers.toLocaleString()
-                                : followers}{' '}
+                        <p className="text-shadow-1 text-xl font-medium">
+                            {followers + countFollower > 999
+                                ? (followers + countFollower).toLocaleString()
+                                : followers + countFollower}{' '}
                             followers
                         </p>
                     </div>
@@ -139,7 +182,7 @@ function ProfilePage() {
                     <>
                         <Link
                             className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                            // to="/"
+                            to="/"
                         >
                             Upload Music
                             <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
