@@ -51,6 +51,10 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         }
     };
 
+    const handlePlaylist = (id) => {
+        navigate(`/playlist/${id}`);
+    };
+
     const { type, title, visibility, link, data } = media;
     if (!data || !data.length) return;
 
@@ -72,7 +76,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 {/* media link */}
                 {link && (
                     <Link
-                        className="media__link text-sm text-[#808080] hover:text-white hover:underline hover:underline-offset-2"
+                        className="media__link text-sm text-[#999] hover:text-white hover:underline hover:underline-offset-2"
                         to={link}
                     >
                         <span className="media__link-desc font-medium">
@@ -110,6 +114,9 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
                     } else if (type == 'Artist') {
                         onClickImage = () => handleProfile(mediaData.id);
+                        isOnPlaying = false;
+                    } else if (type == 'Album') {
+                        onClickImage = () => handlePlaylist(mediaData.id);
                         isOnPlaying = false;
                     }
                     return (
@@ -159,21 +166,35 @@ prevent.prototype = {
 
 const MediaItems = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
-        const { title, artist, image, name, imageurl } = mediaData;
+        // Song
+        const { title, artist, image } = mediaData;
+        // Artist
+        const { name, imageurl } = mediaData;
+        // Album: name, image
         const { url } = image || imageurl;
-        const isArtist = type === 'Artist';
-        const imageClass = isArtist
-            ? 'w-[150px] rounded-full'
-            : 'w-[120px] rounded-[30px]';
+
+        let imageClass = 'w-[130px] rounded-[30px]';
+        let cart_title, card_desc;
+        if (type == 'Artist') {
+            imageClass = 'w-[160px] rounded-full';
+            cart_title = name;
+            card_desc = '';
+        } else if (type == 'Song') {
+            cart_title = title;
+            card_desc = artist;
+        } else if (type == 'Album') {
+            cart_title = name;
+            card_desc = '';
+        }
 
         return (
-            <div className="media-item group grid grid-cols-[170px] grid-rows-[150px_auto_max-content] items-center justify-items-center gap-2">
-                <div className="relative h-full">
+            <div className="media-item group w-full flex-col space-y-2">
+                <div className="relative m-auto w-[160px]">
                     {url ? (
                         <img
-                            className={`media-item__image h-full border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
+                            className={`media-item__image m-auto h-[160px] border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
                             src={url}
-                            alt={isArtist ? name : title}
+                            alt={cart_title}
                             onClick={onClickImage}
                         />
                     ) : (
@@ -186,13 +207,13 @@ const MediaItems = memo(
                         isOnPlaying={isOnPlaying}
                     />
                 </div>
-                <span className="media-item__name text-center">
-                    {isArtist ? name : title}
-                </span>
-                {!isArtist && (
-                    <span className="media-item__desc text-center text-sm text-[#808080]">
-                        {artist}
-                    </span>
+                <p className="media-item__name overflow-hidden text-ellipsis text-nowrap text-center">
+                    {cart_title}
+                </p>
+                {card_desc && (
+                    <p className="media-item__desc overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080]">
+                        {card_desc}
+                    </p>
                 )}
             </div>
         );
@@ -218,10 +239,24 @@ MediaItems.propTypes = {
 
 const MediaItems2 = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
-        const { title, image, name, imageurl } = mediaData;
+        // Song
+        const { title, image } = mediaData;
+        // Artist
+        const { name, imageurl } = mediaData;
+        // Album: name, image
         const { url } = image || imageurl;
-        const isArtist = type === 'Artist';
-        const imageClass = isArtist ? 'rounded-full' : 'rounded-lg';
+
+        let imageClass = 'rounded-lg';
+        let cart_title,
+            card_desc = type;
+        if (type == 'Artist') {
+            imageClass = 'rounded-full';
+            cart_title = name;
+        } else if (type == 'Song') {
+            cart_title = title;
+        } else if (type == 'Album') {
+            cart_title = name;
+        }
 
         return (
             <div
@@ -231,9 +266,9 @@ const MediaItems2 = memo(
                 <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
                     <div className="media-item__image relative">
                         <img
-                            className={`media-item__img aspect-square w-full object-cover hover:cursor-pointer ${imageClass} pointer-events-none`}
+                            className={`${imageClass} media-item__img pointer-events-none aspect-square w-full object-cover hover:cursor-pointer`}
                             src={url}
-                            alt={isArtist ? name : title}
+                            alt={cart_title}
                         />
                         <PlayButton
                             onClick={prevent(onClickButton)}
@@ -241,10 +276,10 @@ const MediaItems2 = memo(
                         />
                     </div>
                     <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
-                        {isArtist ? name : title}
+                        {cart_title}
                     </span>
                     <span className="media-item__desc mt-1 overflow-hidden text-ellipsis text-nowrap text-[13px] text-[#b2b2b2]">
-                        {type}
+                        {card_desc}
                     </span>
                 </div>
             </div>
@@ -304,7 +339,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             document.removeEventListener('mousedown', handleOutsideClick);
     }, [menuVisible]);
 
-    const { title, view, imageurl, audiourl } = mediaData;
+    const { title, artist, view, imageurl, audiourl } = mediaData;
     const { url } = imageurl;
 
     useEffect(() => {
@@ -324,7 +359,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                 <ReportFrame setShowReportFrame={setShowReportFrame} />
             )}
             <div
-                className="group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+                className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
                 onClick={onClickButton}
             >
                 {/* index - img - name */}
@@ -340,7 +375,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                         </span>
                     </div>
                     <img
-                        className="aspect-square w-14 object-cover"
+                        className="h-14 w-14 object-cover"
                         src={url}
                         alt={title}
                     />
@@ -350,14 +385,18 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                 <span>{duration}</span>
                 <div className="flex items-center justify-end">
                     <i
-                        className="bx bxs-dollar-circle pr-6 text-end text-2xl"
-                        onClick={prevent()}
+                        className="bx bxs-dollar-circle relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
+                        // onClick={prevent()}
+                        data-title={`Donate for ${title} by ${artist}`}
                     ></i>
                     <button
-                        className="relative"
+                        className="relative flex-[1]"
                         onClick={prevent(() => toggleMenu(index))}
                     >
-                        <i className="ri-more-fill text-2xl"></i>
+                        <i
+                            className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
+                            data-title={`More options for ${title} by ${artist}`}
+                        ></i>
                         {menuVisible === index && (
                             <div className="menu absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
@@ -391,3 +430,97 @@ MediaItems4.propTypes = {
 };
 
 export { MediaItems, MediaItems2, MediaItems3, MediaItems4 };
+
+const MediaItems4s = memo(
+    ({ mediaData, onClickButton, isOnPlaying, index }) => {
+        const [duration, setDuration] = useState('0:00');
+        const [menuVisible, setMenuVisible] = useState(null);
+
+        const toggleMenu = (index) => {
+            setMenuVisible(menuVisible === index ? null : index);
+        };
+
+        useEffect(() => {
+            if (menuVisible !== null) {
+                document.addEventListener('mousedown', toggleMenu);
+                return () =>
+                    document.removeEventListener('mousedown', toggleMenu);
+            }
+        }, [menuVisible]);
+
+        const { title, artist, view, imageurl, audiourl } = mediaData;
+        const { url } = imageurl;
+
+        useEffect(() => {
+            if (audiourl) {
+                const audio = new Audio(audiourl);
+                audio.addEventListener('loadedmetadata', () => {
+                    const minutes = Math.floor(audio.duration / 60);
+                    const seconds = Math.floor(audio.duration % 60);
+                    setDuration(
+                        `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`,
+                    );
+                });
+            }
+        }, [audiourl]);
+
+        return (
+            <div
+                className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+                onClick={onClickButton}
+            >
+                {/* index - img - name */}
+                <div className="flex items-center space-x-8">
+                    <div className="">
+                        <PlayButton
+                            onClick={onClickButton}
+                            isOnPlaying={isOnPlaying}
+                            position="left-6 z-index-[5]"
+                        />
+                        <span className="block w-3 group-hover:cursor-pointer">
+                            {index + 1}
+                        </span>
+                    </div>
+                    <img
+                        className="aspect-square w-14 object-cover"
+                        src={url}
+                        alt={title}
+                    />
+                    <p className="block w-full">{title}</p>
+                </div>
+                <span>{view}</span>
+                <span>{duration}</span>
+                <div className="flex items-center justify-end">
+                    <i
+                        className="bx bxs-dollar-circle relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
+                        // onClick={prevent()}
+                        data-title={`Donate for ${title} by ${artist}`}
+                    ></i>
+                    <button
+                        className="relative flex-[1]"
+                        onClick={prevent(() => toggleMenu(index))}
+                    >
+                        <i
+                            className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
+                            data-title={`More options for ${title} by ${artist}`}
+                        ></i>
+                        {menuVisible === index && (
+                            <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                <ul>
+                                    <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-share-line text-xl leading-none"></i>
+                                        <span>Share</span>
+                                    </li>
+                                    <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-error-warning-line text-xl leading-none"></i>
+                                        <span>Report</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </button>
+                </div>
+            </div>
+        );
+    },
+);

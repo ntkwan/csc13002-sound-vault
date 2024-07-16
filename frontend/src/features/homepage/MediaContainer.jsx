@@ -3,27 +3,31 @@ import {
     useGetFeaturedArtistsQuery,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
+    useGetPopularAlbumsQuery,
 } from '@services/api';
 
 function MediaContainer() {
-    const { data: Artists } = useGetFeaturedArtistsQuery();
+    const { data: artist } = useGetFeaturedArtistsQuery();
     const { data: trendingSongs } = useGetTrendingSongsQuery();
     const { data: newSongs } = useGetNewSongsQuery();
+    const { data: topAlbums } = useGetPopularAlbumsQuery();
+    const { albums } = topAlbums || {};
 
-    if (!Artists | !trendingSongs | !newSongs) return;
+    if (!artist | !trendingSongs | !newSongs | !albums) return;
+    console.log(albums);
 
-    const isSliceArtist = Artists && Artists.length > 6;
+    const isSliceArtist = artist && artist.length > 6;
     const isSliceTrending = trendingSongs && trendingSongs.length > 6;
     const isSliceNew = newSongs && newSongs.length > 6;
-    const isSliceAlbum = trendingSongs && trendingSongs.length > 6;
+    const isSliceAlbum = albums && albums.length > 6;
 
     const mediaData = [
         {
             type: 'Artist',
-            title: 'Featured Artists',
+            title: 'Featured artist',
             visibility: '',
             link: isSliceArtist ? 'artist' : '',
-            data: isSliceArtist ? Artists.slice(0, 5) : Artists,
+            data: isSliceArtist ? artist.slice(0, 5) : artist,
         },
         {
             type: 'Song',
@@ -41,10 +45,10 @@ function MediaContainer() {
         },
         {
             type: 'Album',
-            title: 'Top Album',
+            title: 'Popular Album',
             visibility: '',
             link: isSliceAlbum ? 'album' : '',
-            data: isSliceAlbum ? trendingSongs.slice(0, 6) : trendingSongs,
+            data: isSliceAlbum ? albums.slice(0, 6) : albums,
         },
     ];
 
@@ -58,7 +62,7 @@ function MediaContainer() {
                     displayType={
                         media.type === 'Artist'
                             ? 'grid grid-cols-5'
-                            : 'grid grid-cols-6'
+                            : 'grid grid-cols-[repeat(6,170px)] justify-between'
                     }
                 />
             ))}

@@ -75,6 +75,43 @@
         display: none;
     }
 
+    [data-title]:hover::after {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 1s cubic-bezier(0, 0.5, 0, 1) 1s;
+    }
+
+    [data-title]::after {
+        content: attr(data-title);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        visibility: hidden;
+        transform: translate(30%, -120%);
+        transition:
+            opacity 0.4s ease,
+            visibility 0s ease;
+        z-index: 5;
+        box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.4);
+        position: absolute;
+        right: 0;
+        @apply opacity-0;
+        @apply w-max;
+        @apply max-w-60;
+        @apply px-2;
+        @apply py-1;
+        @apply text-xs;
+        @apply font-bold;
+        @apply font-kodchasan;
+        @apply leading-tight;
+        @apply rounded-lg;
+        @apply bg-[#222];
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
     /* 
         webkit: Chrome, Safari, Edge, Opera
         moz: Firefox

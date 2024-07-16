@@ -6,10 +6,10 @@ ReportFrame.propTypes = {
 
 function ReportFrame({ setShowReportFrame }) {
     return (
-        <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="relative z-20 rounded-3xl border bg-black px-10 py-5 text-center font-kodchasan shadow-lg">
+        <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">
+            <div className="scrollbar-custom relative z-20 m-auto h-[70%] w-[750px] overflow-auto rounded-3xl border bg-black px-10 py-5 text-center font-kodchasan shadow-lg">
                 <div
-                    className="absolute right-3 top-3 hover:opacity-25"
+                    className="absolute right-3 top-3 hover:text-[#999]"
                     onClick={() => setShowReportFrame(false)}
                 >
                     <i className="ri-close-fill text-4xl"></i>

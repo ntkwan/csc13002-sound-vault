@@ -30,7 +30,7 @@ function DefaultLayout() {
         <>
             <Header />
             <Sidebar />
-            <main className="relative mb-[70px] ml-[175px] mt-[70px] px-28 pb-8">
+            <main className="relative mb-[70px] ml-[175px] mt-[70px] px-20 pb-8">
                 {isLocalLoading ? <Loading /> : <Outlet />}
             </main>
             {currentTrack.id !== -1 && <Player />}

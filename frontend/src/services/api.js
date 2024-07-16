@@ -131,6 +131,39 @@ export const api = createApi({
         getTopSongs: builder.query({
             query: () => '/get-top-songs',
         }),
+        getPopularAlbums: builder.query({
+            query: () => '/get-popular-albums',
+        }),
+        createPlaylist: builder.mutation({
+            query: (body) => ({
+                url: '/create-playlist',
+                method: 'POST',
+                body,
+            }),
+        }),
+        deletePlaylistById: builder.mutation({
+            query: (id) => ({
+                url: `/delete-playlist-by-id/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        addSongToPlaylist: builder.mutation({
+            query: (body) => ({
+                url: '/add-song-to-playlist',
+                method: 'POST',
+                body,
+            }),
+        }),
+        removeSongFromPlaylist: builder.mutation({
+            query: (body) => ({
+                url: '/remove-song-from-playlist',
+                method: 'POST',
+                body,
+            }),
+        }),
+        getPlaylistById: builder.query({
+            query: (id) => `/get-playlist-by-id/${id}`,
+        }),
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
         }),
@@ -200,6 +233,12 @@ export const {
     useGetNewSongsQuery,
     useGetChartSongsQuery,
     useGetTopSongsQuery,
+    useGetPopularAlbumsQuery,
+    useCreatePlaylistMutation,
+    useDeletePlaylistByIdMutation,
+    useAddSongToPlaylistMutation,
+    useRemoveSongFromPlaylistMutation,
+    useGetPlaylistByIdQuery,
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,

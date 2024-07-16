@@ -80,6 +80,12 @@ function ProfilePage() {
         }
     };
 
+    // See more songs state
+    const [seeMoreSongs, setSeeMoreSongs] = useState(false);
+    const handleSeeMoreSongs = () => {
+        setSeeMoreSongs(!seeMoreSongs);
+    };
+
     // Loading state
     if (
         profileByIdLoading ||
@@ -108,9 +114,10 @@ function ProfilePage() {
         title: 'All Releases',
         visibility: '',
         link: isSliceAllReleases ? '' : '',
-        data: isSliceAllReleases
-            ? profileAllSongsData.slice(0, 5)
-            : profileAllSongsData,
+        data:
+            isSliceAllReleases && !seeMoreSongs
+                ? profileAllSongsData.slice(0, 5)
+                : profileAllSongsData,
     };
 
     // const albums = {
@@ -135,7 +142,7 @@ function ProfilePage() {
             <div className="profile__header h-96 w-full content-center">
                 {/* profile cover */}
                 {cover ? (
-                    <div className="absolute left-28 right-0 top-0 h-96">
+                    <div className="absolute left-20 right-0 top-0 h-96">
                         <img
                             className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
                             src={cover}
@@ -143,7 +150,7 @@ function ProfilePage() {
                         />
                     </div>
                 ) : (
-                    <div className="profile__cover absolute left-28 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
+                    <div className="profile__cover absolute left-20 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
                 )}
                 <div className="profile__container ml-[5%] flex items-center">
                     <div className="relative h-40 min-w-40 max-w-40">
@@ -168,13 +175,11 @@ function ProfilePage() {
                     </div>
                     {/* profile info */}
                     <div className="relative ml-5 content-center">
-                        <p className="text-shadow-1 text-[18px] font-medium">
-                            Profile
-                        </p>
+                        <p className="text-shadow-1 font-medium">Profile</p>
                         <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-7xl">
                             {name}
                         </p>
-                        <p className="text-shadow-1 text-[18px] font-medium">
+                        <p className="text-shadow-1 font-medium">
                             {!profileAllSongsData
                                 ? '0 Song'
                                 : profileAllSongsData.length <= 1
@@ -233,11 +238,22 @@ function ProfilePage() {
             </div>
 
             {profileAllSongsData && (
-                <MediaDisplay
-                    media={allReleases}
-                    displayItems="4"
-                    displayType="grid auto-rows-auto gap-2"
-                />
+                <>
+                    <MediaDisplay
+                        media={allReleases}
+                        displayItems="4"
+                        displayType="grid auto-rows-auto gap-2"
+                    />
+
+                    {isSliceAllReleases && (
+                        <span
+                            className="ml-5 cursor-pointer p-1 font-bold leading-loose text-[#999] hover:text-white"
+                            onClick={handleSeeMoreSongs}
+                        >
+                            {seeMoreSongs ? 'Show less' : 'See more'}
+                        </span>
+                    )}
+                </>
             )}
 
             {/* {profileAlbumsData && (
