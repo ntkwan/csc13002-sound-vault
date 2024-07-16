@@ -168,11 +168,6 @@ const signout = async (req, res) => {
         { new: true },
     );
 
-    const options = {
-        httpOnly: true,
-        secure: true, // Enable in a production environment with HTTPS
-    };
-
     res.clearCookie('refreshToken');
     return res
         .status(200)
@@ -207,7 +202,6 @@ const reset_password = async (req, res) => {
             }
 
             await User.setPassword(confirm_password);
-            await User.save();
 
             const accessToken = User.generateToken();
             const refreshToken = User.generateRefreshToken();
@@ -228,6 +222,72 @@ const reset_password = async (req, res) => {
                     message: 'Password updated successfully',
                 });
         }
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const change_password = async (req, res) => {
+    const userId = req.user._id;
+    const { current_password, attempt_password, confirm_password } = req.body;
+
+    console.log(current_password, attempt_password, confirm_password);
+    if (!current_password || !attempt_password || !confirm_password) {
+        return res.status(400).json({
+            message: 'Required fields are missing',
+        });
+    }
+
+    if (current_password == attempt_password) {
+        return res.status(400).json({
+            message: 'New password must be different from the current password',
+        });
+    }
+
+    if (attempt_password !== confirm_password) {
+        return res.status(400).json({
+            message: 'Passwords do not match',
+        });
+    }
+
+    try {
+        const User = await UserModel.findById(userId);
+        if (!User) {
+            return res.status(400).json({
+                message: 'User not found',
+            });
+        }
+
+        const isValid = await User.validatePassword(current_password);
+        if (!isValid) {
+            return res.status(400).json({
+                message: 'Current password is incorrect',
+            });
+        }
+
+        await User.setPassword(confirm_password);
+
+        const accessToken = User.generateToken();
+        const refreshToken = User.generateRefreshToken();
+        User.refreshToken = refreshToken;
+        await User.save({ validateBeforeSave: false });
+
+        const options = {
+            httpOnly: true,
+            secure: true, // Enable in a production environment with HTTPS
+        };
+
+        res.clearCookie('refreshToken');
+        return res
+            .status(200)
+            .cookie('refreshToken', refreshToken, options)
+            .json({
+                accessToken,
+                refreshToken,
+                message: 'Password updated successfully',
+            });
     } catch (error) {
         return res.status(500).json({
             message: error.message,
@@ -313,4 +373,5 @@ module.exports = {
     reset_password,
     forgot_password,
     refresh_token,
+    change_password,
 };
