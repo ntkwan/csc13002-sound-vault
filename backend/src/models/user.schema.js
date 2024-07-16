@@ -54,6 +54,9 @@ const UserSchema = new Schema(
         followers: {
             type: Array,
         },
+        following: {
+            type: Array,
+        },
     },
     {
         timestamps: true,

@@ -43,6 +43,7 @@ const get_profile_by_id = async (req, res) => {
             image: User.image,
             coverimg: User.coverimage,
             followers: User.followers.length,
+            following: User.following.length,
             id: User._id,
         });
     } catch (error) {
@@ -111,32 +112,44 @@ const get_follow_button_by_id = async (req, res) => {
 };
 
 const follow_profile_by_id = async (req, res) => {
-    const profileId = req.params.profileId;
-    const userId = new mongoose.Types.ObjectId(req.user._id);
+    let profileId = req.params.profileId;
+    let userId = req.user._id;
 
     if (profileId === userId) {
         return res.status(400).json({
-            message: 'You cannot perfor such action on yourself',
+            message: 'You cannot perform such action on yourself',
         });
     }
 
     try {
-        const User = await UserModel.findById(profileId);
-        if (!User) {
+        const targetProfile = await UserModel.findById(profileId);
+        const thisProfile = await UserModel.findById(userId);
+        if (!targetProfile || !thisProfile) {
             return res.status(404).json({
                 message: 'User not found',
             });
         }
 
-        console.log(User.followers);
-        if (User.followers.includes(userId)) {
-            return res.status(400).json({
-                message: 'You are already following this user',
-            });
+        profileId = new mongoose.Types.ObjectId(profileId);
+        userId = new mongoose.Types.ObjectId(userId);
+        if (targetProfile.followers.length < thisProfile.following.length) {
+            if (targetProfile.followers.includes(userId)) {
+                return res.status(400).json({
+                    message: 'You are already following this user',
+                });
+            }
+        } else {
+            if (thisProfile.following.includes(profileId)) {
+                return res.status(400).json({
+                    message: 'You are already following this user',
+                });
+            }
         }
 
-        User.followers.push(userId);
-        await User.save();
+        targetProfile.followers.push(userId);
+        await targetProfile.save();
+        thisProfile.following.push(profileId);
+        await thisProfile.save();
 
         return res.status(200).json({
             message: 'Followed successfully',
@@ -149,8 +162,8 @@ const follow_profile_by_id = async (req, res) => {
 };
 
 const unfollow_profile_by_id = async (req, res) => {
-    const profileId = req.params.profileId;
-    const userId = new mongoose.Types.ObjectId(req.user._id);
+    let profileId = req.params.profileId;
+    let userId = req.user._id;
 
     if (profileId === userId) {
         return res.status(400).json({
@@ -159,21 +172,39 @@ const unfollow_profile_by_id = async (req, res) => {
     }
 
     try {
-        const User = await UserModel.findById(profileId);
-        if (!User) {
+        const targetProfile = await UserModel.findById(profileId);
+        const thisProfile = await UserModel.findById(userId);
+        if (!targetProfile || !thisProfile) {
             return res.status(404).json({
                 message: 'User not found',
             });
         }
 
-        if (!User.followers.includes(userId)) {
-            return res.status(400).json({
-                message: 'You are not following this user',
-            });
+        profileId = new mongoose.Types.ObjectId(profileId);
+        userId = new mongoose.Types.ObjectId(userId);
+
+        if (targetProfile.followers.length < thisProfile.following.length) {
+            if (!targetProfile.followers.includes(userId)) {
+                return res.status(400).json({
+                    message: 'You are not following this user',
+                });
+            }
+        } else {
+            if (!thisProfile.following.includes(profileId)) {
+                return res.status(400).json({
+                    message: 'You are not following this user',
+                });
+            }
         }
 
-        User.followers = User.followers.filter((id) => id == userId);
-        await User.save();
+        targetProfile.followers = targetProfile.followers.filter(
+            (id) => id == userId,
+        );
+        await targetProfile.save();
+        thisProfile.following = thisProfile.following.filter(
+            (id) => id == profileId,
+        );
+        await thisProfile.save();
 
         return res.status(200).json({
             message: 'Unfollowed successfully',
@@ -185,7 +216,39 @@ const unfollow_profile_by_id = async (req, res) => {
     }
 };
 
+const get_following_list_by_id = async (req, res) => {
+    const profileId = req.params.profileId;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const following = await UserModel.find({
+            _id: { $in: User.following },
+        });
+
+        return res.status(200).json({
+            following: following.map((user) => {
+                return {
+                    name: user.name,
+                    image: user.image,
+                    id: user._id,
+                };
+            }),
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
+    get_following_list_by_id,
     get_follow_button_by_id,
     follow_profile_by_id,
     unfollow_profile_by_id,

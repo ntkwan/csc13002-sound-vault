@@ -33,6 +33,11 @@ router.get(
 );
 
 router.get(
+    '/get-following-list-by-id/:profileId',
+    userController.get_following_list_by_id,
+);
+
+router.get(
     '/get-my-profile',
     authMiddleware.check_user,
     userController.get_my_profile,
