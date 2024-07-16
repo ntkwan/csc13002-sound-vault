@@ -42,6 +42,7 @@ const get_profile_by_id = async (req, res) => {
             name: User.name,
             image: User.image,
             coverimg: User.coverimage,
+            isVerified: User.isVerified,
             followers: User.followers.length,
             following: User.following.length,
             id: User._id,
