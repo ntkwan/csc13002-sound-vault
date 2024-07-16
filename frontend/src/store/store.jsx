@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import { api } from '@services/api';
 import { authReducer } from '@features/authentication/slices';
 import { profileReducer } from '@features/profilepage/slices';
+import { adminDashboardReducer } from '@features/admindashboard/slices';
 import { playerReducer } from '@features/player/slices';
 import { loadingReducer } from '@features/loading/slices';
 import playerTransform from '@features/player/transform';
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
     profile: profileReducer,
+    admindashboard: adminDashboardReducer,
     player: playerReducer,
     loading: loadingReducer,
 });

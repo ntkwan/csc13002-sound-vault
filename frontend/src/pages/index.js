@@ -14,3 +14,6 @@ export { default as ChartPage } from './ChartPage';
 export { default as TermAndPolicyPage } from './TermAndPolicyPage';
 export { default as LibraryPage } from './LibraryPage';
 export { default as NotFoundPage } from './NotFoundPage';
+export { default as AdminSongPage } from './SongManagementPage';
+export { default as AdminAccountPage } from './AccountManagementPage';
+export { default as ReviewReportPage } from './ReviewReportPage';
