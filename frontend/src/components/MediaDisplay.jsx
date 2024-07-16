@@ -2,7 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import { PlayButton } from '.';
+import { PlayButton, ReportFrame } from '.';
 import { selectCurrentPlayer, selectCurrentProfile } from '@services/selectors';
 import { play, pause, setCurrentTrack } from '../features/player/slices';
 import { usePlaySongMutation } from '@services/api';
@@ -286,16 +286,22 @@ MediaItems3.propTypes = MediaItems.propTypes;
 const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     const [duration, setDuration] = useState('0:00');
     const [menuVisible, setMenuVisible] = useState(null);
+    const [showReportFrame, setShowReportFrame] = useState(false);
 
     const toggleMenu = (index) => {
         setMenuVisible(menuVisible === index ? null : index);
     };
 
     useEffect(() => {
-        if (menuVisible !== null) {
-            document.addEventListener('mousedown', toggleMenu);
-            return () => document.removeEventListener('mousedown', toggleMenu);
-        }
+        const handleOutsideClick = (e) => {
+            if (menuVisible !== null && !e.target.closest('.menu')) {
+                setMenuVisible(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
     }, [menuVisible]);
 
     const { title, view, imageurl, audiourl } = mediaData;
@@ -313,58 +319,68 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     }, [audiourl]);
 
     return (
-        <div
-            className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
-            onClick={onClickButton}
-        >
-            {/* index - img - name */}
-            <div className="flex items-center space-x-8">
-                <div className="">
-                    <PlayButton
-                        onClick={onClickButton}
-                        isOnPlaying={isOnPlaying}
-                        position="left-6 z-index-[5]"
+        <>
+            {showReportFrame && (
+                <ReportFrame setShowReportFrame={setShowReportFrame} />
+            )}
+            <div
+                className="group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+                onClick={onClickButton}
+            >
+                {/* index - img - name */}
+                <div className="flex items-center space-x-8">
+                    <div className="">
+                        <PlayButton
+                            onClick={onClickButton}
+                            isOnPlaying={isOnPlaying}
+                            position="left-6 z-index-[5]"
+                        />
+                        <span className="block w-3 group-hover:cursor-pointer">
+                            {index + 1}
+                        </span>
+                    </div>
+                    <img
+                        className="aspect-square w-14 object-cover"
+                        src={url}
+                        alt={title}
                     />
-                    <span className="block w-3 group-hover:cursor-pointer">
-                        {index + 1}
-                    </span>
+                    <p className="block w-full">{title}</p>
                 </div>
-                <img
-                    className="aspect-square w-14 object-cover"
-                    src={url}
-                    alt={title}
-                />
-                <p className="block w-full">{title}</p>
+                <span>{view}</span>
+                <span>{duration}</span>
+                <div className="flex items-center justify-end">
+                    <i
+                        className="bx bxs-dollar-circle pr-6 text-end text-2xl"
+                        onClick={prevent()}
+                    ></i>
+                    <button
+                        className="relative"
+                        onClick={prevent(() => toggleMenu(index))}
+                    >
+                        <i className="ri-more-fill text-2xl"></i>
+                        {menuVisible === index && (
+                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                <ul>
+                                    <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-share-line text-xl leading-none"></i>
+                                        <span>Share</span>
+                                    </li>
+                                    <li
+                                        className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        onClick={prevent(() =>
+                                            setShowReportFrame(true),
+                                        )}
+                                    >
+                                        <i className="ri-error-warning-line text-xl leading-none"></i>
+                                        <span>Report</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </button>
+                </div>
             </div>
-            <span>{view}</span>
-            <span>{duration}</span>
-            <div className="flex items-center justify-end">
-                <i
-                    className="bx bxs-dollar-circle pr-6 text-end text-2xl"
-                    onClick={prevent()}
-                ></i>
-                <button
-                    className="relative"
-                    onClick={prevent(() => toggleMenu(index))}
-                >
-                    <i className="ri-more-fill text-2xl"></i>
-                    {menuVisible === index && (
-                        <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                            <ul>
-                                <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                    <i className="ri-share-line text-xl leading-none"></i>
-                                    <span>Share</span>
-                                </li>
-                                <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                    <i className="ri-error-warning-line text-xl leading-none"></i>
-                                    <span>Report</span>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                </button>
-            </div>
-        </div>
+        </>
     );
 });
 
