@@ -14,7 +14,7 @@ const SongSchema = new Schema(
         uploader: {
             type: objectId,
             ref: 'users',
-            // required: true,
+            required: true,
         },
         artist: {
             type: String,
@@ -27,11 +27,9 @@ const SongSchema = new Schema(
         */
         genre: {
             type: String,
-            required: true,
         },
         region: {
             type: String,
-            required: true,
         },
         image: {
             publicId: {

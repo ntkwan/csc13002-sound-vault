@@ -1,5 +1,4 @@
 const multer = require('multer');
-const { updateMany } = require('../models/user.schema');
 
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {

@@ -11,5 +11,10 @@ router.post('/refresh-token', authorize.refresh_token);
 
 router.post('/reset-password/:email/:token', authorize.reset_password);
 router.post('/forgot-password', authorize.forgot_password);
+router.post(
+    '/change-password',
+    authMiddleware.check_user,
+    authorize.change_password,
+);
 
 module.exports = router;

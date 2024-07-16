@@ -6,7 +6,7 @@ const SongModel = require('../models/song.schema');
 
 const get_trending_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find().sort({ view: -1 }).limit(10);
+        const songs = await SongModel.find().sort({ view: -1 });
 
         res.status(200).send(
             songs.map((song) => {
@@ -30,7 +30,9 @@ const get_trending_songs = async (req, res) => {
 
 const get_new_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find().sort({ createdAt: -1 }).limit(10);
+        const songs = await SongModel.find({ view: { $gt: '0' } }).sort({
+            createdAt: -1,
+        });
 
         res.status(200).send(
             songs.map((song) => {

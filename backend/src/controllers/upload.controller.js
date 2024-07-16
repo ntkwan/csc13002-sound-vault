@@ -21,8 +21,8 @@ const upload_song = async (req, res) => {
 
     let song_data = {
         title: req.body.title,
-        artist: req.body.artist,
-        //album: req.body.album,
+        artist: req.user.name,
+        uploader: req.user._id,
         genre: req.body.genre,
         audiourl: audioResponse.secure_url,
     };

@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
+const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
 
 const get_featured_artists = async (req, res) => {
@@ -248,6 +249,34 @@ const get_following_list_by_id = async (req, res) => {
     }
 };
 
+const get_popular_albums = async (req, res) => {
+    try {
+        const users = await UserModel.find({ isVerified: true });
+        albums = [];
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].playlist.length > 0) {
+                albums.push(await PlaylistModel.findById(users[i].playlist));
+            }
+        }
+
+        return res.status(200).json({
+            albums: albums.map((album) => {
+                return {
+                    id: album._id,
+                    name: album.name,
+                    description: album.desc,
+                    playlist_owner: album.uploader,
+                    image: album.image,
+                };
+            }),
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     get_following_list_by_id,
     get_follow_button_by_id,
@@ -257,4 +286,5 @@ module.exports = {
     get_my_profile,
     get_profile_all_songs,
     get_featured_artists,
+    get_popular_albums,
 };

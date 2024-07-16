@@ -2,17 +2,6 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const userController = require('../controllers/user.controller');
-/*
-router.get('/profile', authMiddleware.check_user, (req, res) => {
-    delete req.user.isAdmin;
-    return res.status(200).json(req.user.name);
-});
-
-router.get('/getall', authMiddleware.check_admin, async (req, res) => {
-    const users = await User.find().select('-password -__v');
-    res.status(200).send({ data: users });
-});
-*/
 
 router.post(
     '/follow-profile-by-id/:profileId',
@@ -49,4 +38,6 @@ router.get(
 );
 
 router.get('/get-featured-artists', userController.get_featured_artists);
+
+router.get('/get-popular-albums', userController.get_popular_albums);
 module.exports = router;
