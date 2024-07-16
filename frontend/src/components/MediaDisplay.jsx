@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { PlayButton, ReportFrame } from '.';
 import { selectCurrentPlayer, selectCurrentProfile } from '@services/selectors';
@@ -42,17 +42,16 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
-    const navigate = useNavigate();
     const handleProfile = (id) => {
         if (myProfileID === id) {
-            navigate('/profile');
+            window.location.href = '/profile';
         } else {
-            navigate(`/${id}`);
+            window.location.href = `/${id}`;
         }
     };
 
     const handlePlaylist = (id) => {
-        navigate(`/playlist/${id}`);
+        window.location.href = `/playlist/${id}`;
     };
 
     const { type, title, visibility, link, data } = media;
