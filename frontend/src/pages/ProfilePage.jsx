@@ -6,6 +6,7 @@ import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
     useGetProfileByIdQuery,
+    useGetFollowingListByIdQuery,
     useGetFollowButtonByIdQuery,
     useFollowProfileByIdMutation,
     useUnfollowProfileByIdMutation,
@@ -22,6 +23,12 @@ function ProfilePage() {
     const { data: profileByIdData, isLoading: profileByIdLoading } =
         useGetProfileByIdQuery(profileId, {
             skip: !profileId,
+        });
+
+    // Fetch following list by id
+    const { data: followingListData, isLoading: followingListLoading } =
+        useGetFollowingListByIdQuery(profileId || id, {
+            skip: !profileId && !id,
         });
 
     // Fetch follow button state by id
@@ -74,7 +81,12 @@ function ProfilePage() {
     };
 
     // Loading state
-    if (profileByIdLoading || followButtonLoading || profileAllSongsLoading)
+    if (
+        profileByIdLoading ||
+        followButtonLoading ||
+        followingListLoading ||
+        profileAllSongsLoading
+    )
         return null;
 
     // Check if profile is mine than show profile data
@@ -87,6 +99,7 @@ function ProfilePage() {
         followers,
         isVerified,
     } = userProfile || {};
+    const { following } = followingListData || {};
 
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
@@ -108,6 +121,14 @@ function ProfilePage() {
     //     data: profileAlbumsData || [],
     // };
 
+    const followingDisplay = {
+        type: 'Artist',
+        title: 'Following',
+        visibility: '',
+        link: '',
+        data: following || [],
+    };
+
     return (
         <div className="profile__page space-y-10 caret-transparent">
             {/* profile header */}
@@ -116,7 +137,7 @@ function ProfilePage() {
                 {cover ? (
                     <div className="absolute left-28 right-0 top-0 h-96">
                         <img
-                            className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl"
+                            className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
                             src={cover}
                             alt="cover"
                         />
@@ -147,17 +168,28 @@ function ProfilePage() {
                     </div>
                     {/* profile info */}
                     <div className="relative ml-5 content-center">
-                        <p className="text-shadow-1 text-xl font-medium">
+                        <p className="text-shadow-1 text-[18px] font-medium">
                             Profile
                         </p>
-                        <p className="text-shadow-2 text-stroke-1 font-alfaslabone text-7xl">
+                        <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-7xl">
                             {name}
                         </p>
-                        <p className="text-shadow-1 text-xl font-medium">
-                            {followers > 999
-                                ? followers.toLocaleString()
-                                : followers}{' '}
-                            followers
+                        <p className="text-shadow-1 text-[18px] font-medium">
+                            {!profileAllSongsData
+                                ? '0 Song'
+                                : profileAllSongsData.length <= 1
+                                  ? `${profileAllSongsData.length} Song`
+                                  : `${profileAllSongsData.length} Songs`}
+                            {' • '}
+                            {followers <= 1
+                                ? `${followers} Follower`
+                                : followers > 999
+                                  ? `${followers.toLocaleString()} Followers`
+                                  : `${followers} Followers`}
+                            {' • '}
+                            {!following
+                                ? '0 Following'
+                                : `${following.length} Following`}
                         </p>
                     </div>
                 </div>
@@ -215,6 +247,14 @@ function ProfilePage() {
                     displayType="grid grid-cols-6"
                 />
             )} */}
+
+            {following && (
+                <MediaDisplay
+                    media={followingDisplay}
+                    displayItems="2"
+                    displayType="grid grid-cols-6"
+                />
+            )}
         </div>
     );
 }

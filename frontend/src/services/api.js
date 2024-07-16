@@ -122,6 +122,9 @@ export const api = createApi({
             query: (id) => `/get-profile-by-id/${id}`,
             providesTags: ['User'],
         }),
+        getFollowingListById: builder.query({
+            query: (id) => `/get-following-list-by-id/${id}`,
+        }),
         getFollowButtonById: builder.query({
             query: (id) => `/get-follow-button-by-id/${id}`,
             providesTags: ['User'],
@@ -183,6 +186,7 @@ export const {
     useGetTopSongsQuery,
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
+    useGetFollowingListByIdQuery,
     useGetFollowButtonByIdQuery,
     useFollowProfileByIdMutation,
     useUnfollowProfileByIdMutation,

@@ -52,6 +52,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     const { type, title, visibility, link, data } = media;
+    if (!data || !data.length) return;
 
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
