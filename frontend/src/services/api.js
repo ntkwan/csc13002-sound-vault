@@ -80,6 +80,7 @@ export const api = createApi({
                     await queryFulfilled;
                     dispatch(resetPlayer());
                     dispatch(logOut());
+                    window.location.reload();
                 } catch (error) {
                     console.error('Failed to log out', error);
                 }

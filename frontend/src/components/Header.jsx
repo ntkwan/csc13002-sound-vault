@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SearchIcon } from '.';
 import { selectCurrentToken } from '@services/selectors';
 import { useGetMyProfileQuery } from '@services/api';
@@ -8,8 +8,8 @@ import { updateInfo } from '@features/profilepage/slices';
 
 function Header() {
     const dispatch = useDispatch();
+    const nav = useNavigate();
     const token = useSelector(selectCurrentToken);
-
     const [search, setSearch] = useState('');
     const [pingNotice, setPingNotice] = useState(true);
     const [showNotice, setShowNotice] = useState(false);
@@ -38,6 +38,10 @@ function Header() {
         }
     };
 
+    const handleLogoClick = () => {
+        nav('/');
+    };
+
     useEffect(() => {
         if (showNotice) {
             document.addEventListener('mousedown', handleClickOutside);
@@ -64,12 +68,15 @@ function Header() {
     return (
         <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
             {/* Logo */}
-            <span className="header__logo flex-[1] pr-5 font-lilitaone text-4xl">
+            <span
+                className="header__logo pr-5 font-lilitaone text-4xl hover:cursor-pointer"
+                onClick={handleLogoClick}
+            >
                 SoundVault
             </span>
             {/* Search bar */}
             {!(token && isAdmin) && (
-                <div className="header__search-container relative flex flex-[2] items-center justify-center">
+                <div className="header__search-container relative flex w-3/5 items-center justify-center">
                     <div className="header__search-icon absolute left-[27%]">
                         {SearchIcon()}
                     </div>
@@ -78,12 +85,13 @@ function Header() {
                         placeholder="search music, album, artist,..."
                         type="search"
                         onChange={handleSearch}
+                        value={search}
                     ></input>
                 </div>
             )}
             {/* Link */}
             {token ? (
-                <div className="header__section flex h-full flex-[1] items-center justify-end space-x-3 text-sm">
+                <div className="header__section flex h-full items-center justify-end space-x-3 text-sm">
                     {avatar ? (
                         <img
                             className="inline h-10 w-10 rounded-full object-cover"
@@ -132,7 +140,7 @@ function Header() {
                     </div>
                 </div>
             ) : (
-                <div className="flex h-1/2 flex-[1] justify-end space-x-5 pr-5 text-xs">
+                <div className="flex h-1/2 justify-end space-x-5 pr-5 text-xs">
                     <Link
                         to="/signin"
                         className="block h-full w-max content-center rounded-full px-3 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
