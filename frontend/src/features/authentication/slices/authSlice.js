@@ -4,6 +4,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         user: null,
+        isAdmin: false,
         token: null,
         resetPwdToken: null,
     },
@@ -11,10 +12,12 @@ const authSlice = createSlice({
         setCredentials: (state, action) => {
             state.user = action.payload.user;
             state.token = action.payload.token;
+            state.isAdmin = action.payload.isAdmin;
         },
         logOut: (state) => {
             state.user = null;
             state.token = null;
+            state.isAdmin = false;
         },
         resetPwd: (state, action) => {
             state.resetPwdToken = action.payload;

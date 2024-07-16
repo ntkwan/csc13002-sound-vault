@@ -49,6 +49,22 @@ export const api = createApi({
                 method: 'POST',
                 body,
             }),
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    const user = body.email;
+                    dispatch(
+                        setCredentials({
+                            user,
+                            token: data.accessToken,
+                            isAdmin: data.is_admin,
+                        }),
+                    );
+                    dispatch(resetPlayer());
+                } catch (error) {
+                    console.error(error?.error?.data?.message);
+                }
+            },
         }),
         signUp: builder.mutation({
             query: (body) => ({

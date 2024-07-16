@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { SearchIcon } from '.';
-import { selectCurrentToken } from '@services/selectors';
+import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
 import { useGetMyProfileQuery } from '@services/api';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ function Header() {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const token = useSelector(selectCurrentToken);
+    const isAdmin = useSelector(selectCurrentAdmin);
     const [search, setSearch] = useState('');
     const [pingNotice, setPingNotice] = useState(true);
     const [showNotice, setShowNotice] = useState(false);
@@ -63,7 +64,7 @@ function Header() {
     }, [myProfileData, dispatch]);
     if (profileLoading) return null;
 
-    const { name, image: { url: avatar } = {}, isAdmin } = myProfileData || {};
+    const { name, image: { url: avatar } = {} } = myProfileData || {};
 
     return (
         <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
@@ -103,8 +104,8 @@ function Header() {
                     )}
                     {isAdmin ? (
                         <div>
-                            <p>{name}</p>
-                            <p>Admin</p>
+                            <p className="font-bold">{name}</p>
+                            <p className="text-[#B3B3B3]">Admin</p>
                         </div>
                     ) : (
                         <p>Hello, {name}</p>

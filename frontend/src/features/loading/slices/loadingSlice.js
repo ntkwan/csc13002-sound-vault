@@ -17,7 +17,6 @@ const loadingSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addMatcher(api.endpoints.signIn.matchPending, (state) => {
-            console.log(api.endpoints.signIn.matchPending);
             state.isGlobalLoading = true;
         });
         builder.addMatcher(api.endpoints.signIn.matchFulfilled, (state) => {

@@ -1,7 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '@features/authentication/slices';
 import { useSignInMutation } from '@services/api';
 import {
     AuthenTitle,
@@ -11,7 +9,6 @@ import {
 } from '@features/authentication/components';
 import { INPUTS } from '@components';
 import { toast } from 'react-toastify';
-import { resetPlayer } from '@features/player/slices';
 
 function SignInPage() {
     const [values, setValues] = useState({
@@ -20,7 +17,6 @@ function SignInPage() {
     });
     const [signIn] = useSignInMutation();
     const nav = useNavigate();
-    const dispatch = useDispatch();
 
     const handleAction = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
@@ -33,13 +29,13 @@ function SignInPage() {
         }
         try {
             const res = await signIn(values).unwrap();
-            const user = values['email'];
-            const token = res.accessToken;
-            dispatch(setCredentials({ user, token }));
-            dispatch(resetPlayer());
             setValues({ email: '', password: '' });
             toast.success(res.message);
-            nav('/');
+            if (res.is_admin) {
+                nav('/admin/user');
+            } else {
+                nav('/');
+            }
         } catch (error) {
             const errMsg = error.data.message;
             toast.error(errMsg);

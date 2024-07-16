@@ -11,7 +11,6 @@ const initialState = {
     followers: 0,
     following: [],
     isVerified: false,
-    isAdmin: false,
     image: {
         url: '',
     },
