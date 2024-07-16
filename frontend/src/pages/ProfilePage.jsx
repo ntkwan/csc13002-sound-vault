@@ -48,7 +48,6 @@ function ProfilePage() {
     const [unfollowProfile] = useUnfollowProfileByIdMutation();
 
     const [isFollowing, setFollowing] = useState(false);
-    const [countFollower, setCountFollower] = useState(0);
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -63,20 +62,14 @@ function ProfilePage() {
         setFollowing(!isFollowing);
         try {
             if (isFollowing) {
-                setCountFollower(countFollower - 1);
                 await unfollowProfile(profileId).unwrap();
             } else {
-                setCountFollower(countFollower + 1);
                 await followProfile(profileId).unwrap();
             }
+            window.location.reload();
         } catch (error) {
             console.error('Error following/unfollowing profile:', error);
             setFollowing(isFollowing);
-            if (isFollowing) {
-                setCountFollower(countFollower + 1);
-            } else {
-                setCountFollower(countFollower - 1);
-            }
         } finally {
             setLoading(false);
         }
@@ -163,9 +156,9 @@ function ProfilePage() {
                             {name}
                         </p>
                         <p className="text-shadow-1 text-xl font-medium">
-                            {followers + countFollower > 999
-                                ? (followers + countFollower).toLocaleString()
-                                : followers + countFollower}{' '}
+                            {followers > 999
+                                ? followers.toLocaleString()
+                                : followers}{' '}
                             followers
                         </p>
                     </div>
@@ -194,13 +187,6 @@ function ProfilePage() {
                             Edit Profile
                             <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
                         </Link>
-                        <Link
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                            // to="/"
-                        >
-                            Donation
-                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                        </Link>
                     </>
                 ) : (
                     <>
@@ -211,13 +197,6 @@ function ProfilePage() {
                             {isFollowing ? 'Unfollow' : 'Follow'}
                             <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
                         </button>
-                        <Link
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                            to="donate"
-                        >
-                            Donate
-                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                        </Link>
                     </>
                 )}
             </div>

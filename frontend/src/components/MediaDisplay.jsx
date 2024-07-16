@@ -313,7 +313,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
 
     return (
         <div
-            className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_60px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
+            className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
             onClick={onClickButton}
         >
             {/* index - img - name */}
@@ -337,23 +337,32 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             </div>
             <span>{view}</span>
             <span>{duration}</span>
-            <button className="relative" onClick={() => toggleMenu(index)}>
-                <i className="ri-more-fill text-2xl"></i>
-                {menuVisible === index && (
-                    <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                        <ul>
-                            <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                <i className="ri-share-line text-xl leading-none"></i>
-                                <span>Share</span>
-                            </li>
-                            <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                <i className="ri-error-warning-line text-xl leading-none"></i>
-                                <span>Report</span>
-                            </li>
-                        </ul>
-                    </div>
-                )}
-            </button>
+            <div className="flex items-center justify-end">
+                <i
+                    className="bx bxs-dollar-circle pr-6 text-end text-2xl"
+                    onClick={prevent()}
+                ></i>
+                <button
+                    className="relative"
+                    onClick={prevent(() => toggleMenu(index))}
+                >
+                    <i className="ri-more-fill text-2xl"></i>
+                    {menuVisible === index && (
+                        <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                            <ul>
+                                <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    <i className="ri-share-line text-xl leading-none"></i>
+                                    <span>Share</span>
+                                </li>
+                                <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    <i className="ri-error-warning-line text-xl leading-none"></i>
+                                    <span>Report</span>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </button>
+            </div>
         </div>
     );
 });
