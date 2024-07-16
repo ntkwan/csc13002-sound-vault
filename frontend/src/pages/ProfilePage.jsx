@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { selectUserProfile, toggleFollow } from '@features/profilepage/slices';
+import { selectUserProfile } from '@features/profilepage/slices';
 import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
@@ -14,7 +14,6 @@ import {
 } from '@services/api';
 
 function ProfilePage() {
-    const dispatch = useDispatch();
     const { profileId } = useParams();
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
@@ -44,11 +43,12 @@ function ProfilePage() {
         });
 
     // Follow/Unfollow profile
-    const [followProfile] = useFollowProfileByIdMutation();
-    const [unfollowProfile] = useUnfollowProfileByIdMutation();
+    const [followProfile, { isLoading: isLoadingFollow }] =
+        useFollowProfileByIdMutation();
+    const [unfollowProfile, { isLoading: isLoadingUnfollow }] =
+        useUnfollowProfileByIdMutation();
 
     const [isFollowing, setFollowing] = useState(false);
-    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         if (followButtonData) {
@@ -57,8 +57,9 @@ function ProfilePage() {
     }, [followButtonData]);
 
     const handleFollowToggle = async () => {
-        if (isFollowing === undefined || isLoading) return;
-        setLoading(true);
+        if (isFollowing === undefined || isLoadingFollow || isLoadingUnfollow) {
+            return;
+        }
         setFollowing(!isFollowing);
         try {
             if (isFollowing) {
@@ -66,12 +67,9 @@ function ProfilePage() {
             } else {
                 await followProfile(profileId).unwrap();
             }
-            window.location.reload();
         } catch (error) {
             console.error('Error following/unfollowing profile:', error);
             setFollowing(isFollowing);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -191,7 +189,8 @@ function ProfilePage() {
                 ) : (
                     <>
                         <button
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
+                            disabled={isLoadingFollow || isLoadingUnfollow}
                             onClick={handleFollowToggle}
                         >
                             {isFollowing ? 'Unfollow' : 'Follow'}

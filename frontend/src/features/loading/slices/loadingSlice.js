@@ -194,24 +194,6 @@ const loadingSlice = createSlice({
                 state.isLocalLoading = false;
             },
         );
-        builder.addMatcher(
-            api.endpoints.getProfileById.matchPending,
-            (state) => {
-                state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileById.matchFulfilled,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileById.matchRejected,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
     },
 });
 

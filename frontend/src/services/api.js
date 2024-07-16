@@ -41,6 +41,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const api = createApi({
     baseQuery: baseQueryWithReauth,
+    tagTypes: ['User', 'Song', 'Album'],
     endpoints: (builder) => ({
         signIn: builder.mutation({
             query: (body) => ({
@@ -119,9 +120,11 @@ export const api = createApi({
         }),
         getProfileById: builder.query({
             query: (id) => `/get-profile-by-id/${id}`,
+            providesTags: ['User'],
         }),
         getFollowButtonById: builder.query({
             query: (id) => `/get-follow-button-by-id/${id}`,
+            providesTags: ['User'],
         }),
         followProfileById: builder.mutation({
             query: (id) => ({
@@ -129,6 +132,7 @@ export const api = createApi({
                 method: 'POST',
                 body: id,
             }),
+            invalidatesTags: ['User'],
         }),
         unfollowProfileById: builder.mutation({
             query: (id) => ({
@@ -136,6 +140,7 @@ export const api = createApi({
                 method: 'POST',
                 body: id,
             }),
+            invalidatesTags: ['User'],
         }),
         getProfilePopularSongs: builder.query({
             query: (id) => `/get-profile-popular-songs/${id}`,
