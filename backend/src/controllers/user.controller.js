@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
+const mongoose = require('mongoose');
 
 const get_featured_artists = async (req, res) => {
     try {
@@ -111,7 +112,7 @@ const get_follow_button_by_id = async (req, res) => {
 
 const follow_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
-    const userId = req.user._id;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
 
     if (profileId === userId) {
         return res.status(400).json({
@@ -124,6 +125,13 @@ const follow_profile_by_id = async (req, res) => {
         if (!User) {
             return res.status(404).json({
                 message: 'User not found',
+            });
+        }
+
+        console.log(User.followers);
+        if (User.followers.includes(userId)) {
+            return res.status(400).json({
+                message: 'You are already following this user',
             });
         }
 
@@ -142,7 +150,7 @@ const follow_profile_by_id = async (req, res) => {
 
 const unfollow_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
-    const userId = req.user._id;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
 
     if (profileId === userId) {
         return res.status(400).json({
@@ -158,7 +166,14 @@ const unfollow_profile_by_id = async (req, res) => {
             });
         }
 
-        User.followers = User.followers.filter((id) => id !== userId);
+        if (!User.followers.includes(userId)) {
+            return res.status(400).json({
+                message: 'You are not following this user',
+            });
+        }
+
+        User.followers = User.followers.filter((id) => id == _id);
+        console.log(User.followers);
         await User.save();
 
         return res.status(200).json({
