@@ -1,14 +1,7 @@
-import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
-import {
-    play,
-    pause,
-    setCurrentTrack,
-} from '@features/player/slices/playerSlice';
-import { useGetTopSongsQuery, usePlaySongMutation } from '@services/api';
-import { selectCurrentPlayer } from '@services/selectors';
+import { useGetTopSongsQuery } from '@services/api';
 import { PlayButton } from '@components/index';
+import { useSong } from '@hooks';
 
 function ChartIntroContainer() {
     const { data: topSongsData } = useGetTopSongsQuery();
@@ -49,39 +42,10 @@ ChartItem.propTypes = {
 };
 
 function ChartItem({ className, song }) {
-    const { title, artist, image, _id } = song;
-    const { url } = image;
+    const { title, artist, image: imageurl, _id: id } = song;
+    const { url } = imageurl;
 
-    const dispatch = useDispatch();
-    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
-    const currentSong = currentTrack.id;
-    const [playSong] = usePlaySongMutation();
-
-    const handlePlay = async (_id, title, artist, image) => {
-        if (currentSong !== _id) {
-            try {
-                const res = await playSong(_id).unwrap();
-                dispatch(
-                    setCurrentTrack({
-                        id: _id,
-                        title,
-                        artist,
-                        url: res.audiourl,
-                        thumbnail: image.url,
-                    }),
-                );
-                dispatch(play());
-            } catch (error) {
-                toast.error('Failed to play song');
-            }
-        } else {
-            if (!isPlaying) {
-                dispatch(play());
-            } else {
-                dispatch(pause());
-            }
-        }
-    };
+    const [currentSong, isPlaying, activateSong] = useSong();
 
     return (
         <div className={`absolute ${className}`}>
@@ -94,14 +58,24 @@ function ChartItem({ className, song }) {
                             src={url}
                             alt={title}
                             onClick={() =>
-                                handlePlay(_id, title, artist, image)
+                                activateSong({
+                                    id,
+                                    title,
+                                    artist,
+                                    imageurl,
+                                })
                             }
                         />
                         <PlayButton
                             onClick={() =>
-                                handlePlay(_id, title, artist, image)
+                                activateSong({
+                                    id,
+                                    title,
+                                    artist,
+                                    imageurl,
+                                })
                             }
-                            isOnPlaying={currentSong === _id && isPlaying}
+                            isOnPlaying={currentSong === id && isPlaying}
                             position="bottom-1 right-1"
                         />
                     </div>

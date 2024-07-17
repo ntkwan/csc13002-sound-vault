@@ -1,45 +1,14 @@
 import { useState, useEffect, memo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
+import { useGetProfileByIdQuery } from '@services/api';
+import { selectCurrentProfile } from '@services/selectors';
 import { PlayButton, ReportFrame } from '.';
-import { selectCurrentPlayer, selectCurrentProfile } from '@services/selectors';
-import { play, pause, setCurrentTrack } from '../features/player/slices';
-import { usePlaySongMutation, useGetProfileByIdQuery } from '@services/api';
-import { toast } from 'react-toastify';
+import { useSong } from '@hooks';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
-    const dispatch = useDispatch();
-    const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
-    const currentSong = currentTrack.id;
-    const [playSong] = usePlaySongMutation();
-
-    const handlePlay = async ({ id, title, artist, imageurl }) => {
-        if (currentSong !== id) {
-            try {
-                const res = await playSong(id).unwrap();
-                dispatch(
-                    setCurrentTrack({
-                        id,
-                        title,
-                        artist,
-                        url: res.audiourl,
-                        thumbnail: imageurl.url,
-                    }),
-                );
-                dispatch(play());
-            } catch (error) {
-                toast.error('Failed to play song');
-            }
-        } else {
-            if (!isPlaying) {
-                dispatch(play());
-            } else {
-                dispatch(pause());
-            }
-        }
-    };
-
+    const [currentSong, isPlaying, activateSong] = useSong();
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
     const navigate = useNavigate();
@@ -109,7 +78,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
                     let onClickImage, onClickButton, isOnPlaying;
                     if (type == 'Song') {
-                        onClickImage = () => handlePlay(mediaData);
+                        onClickImage = () => activateSong(mediaData);
                         onClickButton = onClickImage;
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
                     } else if (type == 'Artist') {
