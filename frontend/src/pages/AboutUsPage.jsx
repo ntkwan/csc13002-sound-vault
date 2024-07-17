@@ -33,7 +33,7 @@ function AboutUsPage() {
                             htmlFor="firstName"
                             className="block text-xl italic"
                         >
-                            First Name
+                            <span className="block">First Name</span>
                             <input
                                 id="firstName"
                                 type="text"
@@ -45,7 +45,7 @@ function AboutUsPage() {
                             htmlFor="lastName"
                             className="block text-xl italic"
                         >
-                            Last Name
+                            <span className="block">Last Name</span>
                             <input
                                 id="lastName"
                                 type="text"
@@ -54,7 +54,7 @@ function AboutUsPage() {
                         </label>
 
                         <label htmlFor="email" className="block text-xl italic">
-                            Email
+                            <span className="block">Email</span>
                             <input
                                 id="email"
                                 type="email"
@@ -63,7 +63,7 @@ function AboutUsPage() {
                         </label>
 
                         <label htmlFor="phone" className="block text-xl italic">
-                            Phone Number
+                            <span className="block">Phone Number</span>
                             <input
                                 id="phone"
                                 type="tel"
@@ -75,7 +75,7 @@ function AboutUsPage() {
                             htmlFor="message"
                             className="col-span-2 block flex-col text-xl italic"
                         >
-                            Message
+                            <span className="block">Message</span>
                             <textarea
                                 id="message"
                                 className="w-full border-b bg-transparent focus-visible:outline-none"

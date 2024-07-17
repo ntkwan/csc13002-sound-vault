@@ -51,7 +51,7 @@ const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
             <ToastContainer />
             <form
                 ref={formRef}
-                className={`upload__form w-full space-y-2 ${className}`}
+                className={`upload__form space-y-2 ${className}`}
                 onSubmit={handleSubmit}
             >
                 <label htmlFor="file-upload" className="upload__label">
@@ -81,20 +81,20 @@ const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
                             aria-label="File upload"
                         />
                     </div>
-                    {preview ? (
-                        <button
-                            className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
-                            type="submit"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Uploading...' : 'Submit'}
-                        </button>
-                    ) : (
-                        <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                            {desc}
-                        </span>
-                    )}
                 </div>
+                {preview ? (
+                    <button
+                        className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Uploading...' : 'Submit'}
+                    </button>
+                ) : (
+                    <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
+                        {desc}
+                    </span>
+                )}
             </form>
         </>
     );

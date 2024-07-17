@@ -1,11 +1,11 @@
 import { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { PlayButton, ReportFrame } from '.';
 import { selectCurrentPlayer, selectCurrentProfile } from '@services/selectors';
 import { play, pause, setCurrentTrack } from '../features/player/slices';
-import { usePlaySongMutation } from '@services/api';
+import { usePlaySongMutation, useGetProfileByIdQuery } from '@services/api';
 import { toast } from 'react-toastify';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
@@ -42,16 +42,17 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
+    const navigate = useNavigate();
     const handleProfile = (id) => {
         if (myProfileID === id) {
-            window.location.href = '/profile';
+            navigate('/profile');
         } else {
-            window.location.href = `/${id}`;
+            navigate(`/profile/${id}`);
         }
     };
 
     const handlePlaylist = (id) => {
-        window.location.href = `/playlist/${id}`;
+        navigate(`/playlist/${id}`);
     };
 
     const { type, title, visibility, link, data } = media;
@@ -169,8 +170,13 @@ const MediaItems = memo(
         const { title, artist, image } = mediaData;
         // Artist
         const { name, imageurl } = mediaData;
-        // Album: name, image
+        // Album
+        const { playlist_owner } = mediaData;
+        const { data: owner } = useGetProfileByIdQuery(playlist_owner);
+        // image
         const { url } = image || imageurl;
+
+        if (type == 'Album' && !owner) return null;
 
         let imageClass = 'w-[130px] rounded-[30px]';
         let cart_title, card_desc;
@@ -183,7 +189,7 @@ const MediaItems = memo(
             card_desc = artist;
         } else if (type == 'Album') {
             cart_title = name;
-            card_desc = '';
+            card_desc = owner.name;
         }
 
         return (
@@ -429,97 +435,3 @@ MediaItems4.propTypes = {
 };
 
 export { MediaItems, MediaItems2, MediaItems3, MediaItems4 };
-
-const MediaItems4s = memo(
-    ({ mediaData, onClickButton, isOnPlaying, index }) => {
-        const [duration, setDuration] = useState('0:00');
-        const [menuVisible, setMenuVisible] = useState(null);
-
-        const toggleMenu = (index) => {
-            setMenuVisible(menuVisible === index ? null : index);
-        };
-
-        useEffect(() => {
-            if (menuVisible !== null) {
-                document.addEventListener('mousedown', toggleMenu);
-                return () =>
-                    document.removeEventListener('mousedown', toggleMenu);
-            }
-        }, [menuVisible]);
-
-        const { title, artist, view, imageurl, audiourl } = mediaData;
-        const { url } = imageurl;
-
-        useEffect(() => {
-            if (audiourl) {
-                const audio = new Audio(audiourl);
-                audio.addEventListener('loadedmetadata', () => {
-                    const minutes = Math.floor(audio.duration / 60);
-                    const seconds = Math.floor(audio.duration % 60);
-                    setDuration(
-                        `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`,
-                    );
-                });
-            }
-        }, [audiourl]);
-
-        return (
-            <div
-                className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
-                onClick={onClickButton}
-            >
-                {/* index - img - name */}
-                <div className="flex items-center space-x-8">
-                    <div className="">
-                        <PlayButton
-                            onClick={onClickButton}
-                            isOnPlaying={isOnPlaying}
-                            position="left-6 z-index-[5]"
-                        />
-                        <span className="block w-3 group-hover:cursor-pointer">
-                            {index + 1}
-                        </span>
-                    </div>
-                    <img
-                        className="aspect-square w-14 object-cover"
-                        src={url}
-                        alt={title}
-                    />
-                    <p className="block w-full">{title}</p>
-                </div>
-                <span>{view}</span>
-                <span>{duration}</span>
-                <div className="flex items-center justify-end">
-                    <i
-                        className="bx bxs-dollar-circle relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
-                        // onClick={prevent()}
-                        data-title={`Donate for ${title} by ${artist}`}
-                    ></i>
-                    <button
-                        className="relative flex-[1]"
-                        onClick={prevent(() => toggleMenu(index))}
-                    >
-                        <i
-                            className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
-                            data-title={`More options for ${title} by ${artist}`}
-                        ></i>
-                        {menuVisible === index && (
-                            <div className="absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                <ul>
-                                    <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-share-line text-xl leading-none"></i>
-                                        <span>Share</span>
-                                    </li>
-                                    <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                        <span>Report</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </button>
-                </div>
-            </div>
-        );
-    },
-);

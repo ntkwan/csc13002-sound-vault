@@ -14,7 +14,6 @@ function MediaContainer() {
     const { albums } = topAlbums || {};
 
     if (!artist | !trendingSongs | !newSongs | !albums) return;
-    console.log(albums);
 
     const isSliceArtist = artist && artist.length > 6;
     const isSliceTrending = trendingSongs && trendingSongs.length > 6;

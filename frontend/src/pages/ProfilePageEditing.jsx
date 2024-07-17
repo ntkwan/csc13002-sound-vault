@@ -55,26 +55,26 @@ function ProfilePageEditing() {
             />
 
             {/* Upload profile images */}
-            <div className="editing__upload flex items-center space-x-8">
+            <div className="editing__upload flex items-center">
                 <UploadImage
-                    className="flex-[0.85]"
+                    className=""
                     label="To upload an avatar click on box or drop file here!"
                     desc="File size is less than 800 KB"
                     useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
-                    className="flex-[0.85]"
+                    className="ml-12"
                     label="To upload a cover click on box or drop file here!"
                     desc="File size is less than 800 KB"
                     useUploadMutation={useUploadProfileCoverMutation}
                 />
-                <PageTitle
+                {/* <PageTitle
                     className="flex-[1.8] text-center"
                     title="Upload Profile"
-                />
+                /> */}
             </div>
 
-            <div className="editing__container mt-8 flex text-sm">
+            <div className="editing__container mt-16 flex text-sm">
                 {/* Information editing form */}
                 <form
                     className="editing__infomation relative flex-1 space-y-4"

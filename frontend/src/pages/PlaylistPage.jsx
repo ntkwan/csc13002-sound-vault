@@ -8,14 +8,32 @@ import {
     useAddSongToPlaylistMutation,
     useRemoveSongFromPlaylistMutation,
     useGetPlaylistByIdQuery,
+    useGetProfileByIdQuery,
 } from '@services/api';
 
 function PlaylistPage() {
     const { playlistId } = useParams();
     const { data: playlist } = useGetPlaylistByIdQuery(playlistId);
-    if (!playlist) return <Loading />;
+    const { playlist_owner } = playlist || {};
+    const { data: owner } = useGetProfileByIdQuery(playlist_owner);
+
+    if (!playlist || !owner) return <Loading />;
 
     const { name, avatar, cover, songs } = playlist;
+
+    function getSongDuration(audiourl) {
+        const audio = new Audio(audiourl);
+        let duration = 0;
+        audio.addEventListener('loadedmetadata', () => {
+            duration = audio.duration;
+        });
+        return duration;
+    }
+    const totalTime = songs.reduce(
+        (acc, song) => acc + getSongDuration(song.audiourl),
+        0,
+    );
+
     const songsDisplay = {
         type: 'Song',
         title: '',
@@ -62,6 +80,21 @@ function PlaylistPage() {
                             {songs && songs.length <= 1
                                 ? `${songs.length} song`
                                 : `${songs.length} songs`}
+                            {' • '}
+                            {owner && owner.name}
+                            {' • '}
+                            {totalTime}
+                            {' • '}
+                            2023
+                            {/* {followers <= 1
+                                ? `${followers} Follower`
+                                : followers > 999
+                                  ? `${followers.toLocaleString()} Followers`
+                                  : `${followers} Followers`}
+                            {' • '}
+                            {!following
+                                ? '0 Following'
+                                : `${following.length} Following`} */}
                         </p>
                     </div>
                 </div>
