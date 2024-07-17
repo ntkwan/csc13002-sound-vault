@@ -9,5 +9,5 @@ router.get('/get-top-songs', songController.get_top_songs);
 
 router.post('/play-song/:id', songController.play_song);
 router.get('/get-song-view/:id', songController.get_song_view);
-
+router.get('/get-song-by-id/:id', songController.get_song_by_id);
 module.exports = router;

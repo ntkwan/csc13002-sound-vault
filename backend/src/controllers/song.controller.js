@@ -4,6 +4,31 @@ if (process.env.NODE_ENV !== 'production') {
 
 const SongModel = require('../models/song.schema');
 
+const get_song_by_id = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        return res.status(200).json({
+            title: song.title,
+            artist: song.artist,
+            genre: song.genre,
+            imageurl: song.image,
+            view: song.view,
+            region: song.region,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_trending_songs = async (req, res) => {
     try {
         const songs = await SongModel.find().sort({ view: -1 });
@@ -60,7 +85,7 @@ const play_song = async (req, res) => {
         const Song = await SongModel.findById(songId);
         if (!Song) {
             return res.status(404).json({
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
 
@@ -83,7 +108,7 @@ const get_song_view = async (req, res) => {
         const Song = await SongModel.findById(songId);
         if (!Song) {
             return res.status(404).json({
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
 
@@ -147,6 +172,7 @@ const get_top_songs = async (req, res) => {
 };
 
 module.exports = {
+    get_song_by_id,
     get_trending_songs,
     get_new_songs,
     play_song,
