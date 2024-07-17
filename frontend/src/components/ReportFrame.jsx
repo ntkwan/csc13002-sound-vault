@@ -86,29 +86,67 @@ function ReportFrame({ setShowReportFrame }) {
                     </div>
                     <div className="m-5 flex flex-col">
                         <label
-                            htmlFor="Describle"
+                            htmlFor="ReportType"
                             className="py-2 text-left text-xl italic"
                         >
-                            Describe
+                            Report type
                         </label>
                         <select
-                            id="Describle"
-                            className="w-full border py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                            id="ReportType"
+                            className="w-full border-b py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
-                            <option value="inappropriate_lyrics">
-                                Inappropriate Lyrics
-                            </option>
+                            <option value="brand_abuse">Brand Abuse</option>
                             <option value="copyright_infringement">
                                 Copyright Infringement
                             </option>
-                            <option value="spam">Spam</option>
-                            <option value="hate_speech">Hate Speech</option>
+                            <option value="impersonation">Impersonation</option>
+                            <option value="18_plus">18+</option>
                             <option value="violence">Violence</option>
-                            <option value="misleading">
-                                Misleading Information
+                            <option value="music_related">Music Related</option>
+                        </select>
+                    </div>
+
+                    <div className="m-5 flex flex-col">
+                        <label
+                            htmlFor="Category"
+                            className="py-2 text-left text-xl italic"
+                        >
+                            Category
+                        </label>
+                        <select
+                            id="Category"
+                            className="w-full border-b py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                        >
+                            <option value="music">Music</option>
+                            <option value="user">User</option>
+                            <option value="album_artwork">Album Artwork</option>
+                            <option value="user_image">User Image</option>
+                            <option value="playlist_image">
+                                Playlist Image
+                            </option>
+                            <option value="playlist_title">
+                                Playlist Title
+                            </option>
+                            <option value="artist_ava">Artist’s Avatar</option>
+                            <option value="artist_banner">
+                                Artist’s Banner
                             </option>
                         </select>
                     </div>
+                    <div className="m-5 flex flex-col">
+                        <label
+                            htmlFor="Describle"
+                            className="py-2 text-left text-xl italic"
+                        >
+                            Describle
+                        </label>
+                        <input
+                            id="Describle"
+                            type="text"
+                            className="input border-b bg-transparent focus:border-slate-500 focus-visible:outline-none"
+                        />
+                    </div>
+
                     <div className="m-5 flex">
                         <div className="w-[300px] text-left text-sm">
                             <p>

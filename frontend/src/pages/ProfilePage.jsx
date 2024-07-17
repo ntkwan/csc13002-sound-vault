@@ -268,7 +268,7 @@ function ProfilePage() {
                 <MediaDisplay
                     media={followingDisplay}
                     displayItems="2"
-                    displayType="grid grid-cols-6"
+                    displayType="grid grid-cols-6 gap-8"
                 />
             )}
         </div>

@@ -37,7 +37,7 @@ const router = createBrowserRouter([
                     { path: 'newrelease', Component: NewReleasePage },
                     { path: 'album', Component: AlbumPage },
                     { path: 'playlist/:playlistId', Component: PlaylistPage },
-                    { path: ':profileId', Component: ProfilePage },
+                    { path: 'profile/:profileId', Component: ProfilePage },
                     { path: 'artist', Component: ArtistPage },
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
