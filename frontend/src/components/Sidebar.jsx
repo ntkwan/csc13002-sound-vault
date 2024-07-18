@@ -1,6 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import { HomeIcon, ProfileIcon, MusicIcon, HeadphoneIcon } from '.';
-import { SettingIcon, EmailIcon, InfoIcon } from '.';
+import {
+    SettingIcon,
+    EmailIcon,
+    InfoIcon,
+    TopicsGenreIcon,
+    WalletIcon,
+} from '.';
 import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
 import { useSelector } from 'react-redux';
 import Logout from './Logout';
@@ -11,7 +17,7 @@ function Sidebar() {
     const isAdmin = useSelector(selectCurrentAdmin);
 
     return (
-        <aside className="sidebar fixed bottom-[70px] top-[70px] z-10 w-max select-none space-y-10 pt-10 text-xs uppercase backdrop-blur-md">
+        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 max-w-[185px] select-none flex-col space-y-6 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <div>
@@ -55,6 +61,18 @@ function Sidebar() {
                                 icon={HeadphoneIcon}
                                 label="artists"
                             />
+                            <SidebarLink
+                                to="topicsgenre"
+                                icon={TopicsGenreIcon}
+                                label="Topics & Genre"
+                            />
+                            {token ? (
+                                <SidebarLink
+                                    to="wallet"
+                                    icon={WalletIcon}
+                                    label="wallet"
+                                />
+                            ) : null}
                         </>
                     )}
                 </div>

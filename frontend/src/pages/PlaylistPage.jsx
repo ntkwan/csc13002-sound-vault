@@ -43,7 +43,7 @@ function PlaylistPage() {
     };
 
     return (
-        <div className="space-y-10 caret-transparent">
+        <div className="caret-transparent">
             {/* playlist header */}
             <div className="h-96 w-full content-center">
                 {/* playlist cover */}
@@ -102,7 +102,7 @@ function PlaylistPage() {
             {/* playlist header end */}
 
             {/* Actions Section */}
-            <div className="relative flex space-x-6">
+            <div className="relative mt-8 flex space-x-6">
                 <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
                     <i className="ri-play-fill ml-1 text-[42px]"></i>
                 </button>
@@ -113,11 +113,13 @@ function PlaylistPage() {
 
             {/* Content Section */}
             {songs && (
-                <MediaDisplay
-                    media={songsDisplay}
-                    displayItems="4"
-                    displayType="grid auto-rows-auto gap-2"
-                />
+                <>
+                    <MediaDisplay
+                        media={songsDisplay}
+                        displayItems="4"
+                        displayType="grid auto-rows-auto gap-2"
+                    />
+                </>
             )}
         </div>
     );

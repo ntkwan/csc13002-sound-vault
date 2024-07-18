@@ -39,6 +39,11 @@
     ::-webkit-scrollbar-corner {
         background-color: #000;
     }
+
+    .sidebar::-webkit-scrollbar-track {
+        background-color: transparent;
+        border-radius: 5px;
+    }
 }
 
 @layer utilities {

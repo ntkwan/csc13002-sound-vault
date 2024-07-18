@@ -6,6 +6,7 @@ import { useGetProfileByIdQuery } from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
 import { PlayButton, ReportFrame } from '.';
 import { useSong } from '@hooks';
+import verifiedIcon from '@assets/img/verified-icon-white.svg';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const [currentSong, isPlaying, activateSong] = useSong();
@@ -313,7 +314,8 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             document.removeEventListener('mousedown', handleOutsideClick);
     }, [menuVisible]);
 
-    const { title, artist, view, imageurl, audiourl } = mediaData;
+    const { id, title, artist, view, imageurl, audiourl, isVerified } =
+        mediaData;
     const { url } = imageurl;
 
     useEffect(() => {
@@ -326,6 +328,12 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             });
         }
     }, [audiourl]);
+
+    const [currentSong] = useSong();
+    const titleClassName =
+        currentSong === id ? 'text-purple-400 font-bold' : '';
+
+    console.log(artist);
 
     return (
         <>
@@ -349,11 +357,22 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                         </span>
                     </div>
                     <img
-                        className="h-14 w-14 object-cover"
+                        className="h-14 min-w-14 max-w-14 object-cover"
                         src={url}
                         alt={title}
                     />
-                    <p className="block w-full">{title}</p>
+                    <p
+                        className={`flex w-full items-center space-x-3 ${titleClassName}`}
+                    >
+                        {title}
+                        {isVerified && (
+                            <img
+                                className="profile__verified-icon ml-4 h-5 w-5"
+                                src={verifiedIcon}
+                                alt="vrf-icon"
+                            />
+                        )}
+                    </p>
                 </div>
                 <span>{view}</span>
                 <span>{duration}</span>
