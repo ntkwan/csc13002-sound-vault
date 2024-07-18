@@ -93,7 +93,7 @@ function ReportFrame({ setShowReportFrame }) {
                         </label>
                         <select
                             id="ReportType"
-                            className="w-full border-b py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                            className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
                             <option value="brand_abuse">Brand Abuse</option>
                             <option value="copyright_infringement">
@@ -115,7 +115,7 @@ function ReportFrame({ setShowReportFrame }) {
                         </label>
                         <select
                             id="Category"
-                            className="w-full border-b py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                            className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
                             <option value="music">Music</option>
                             <option value="user">User</option>
@@ -140,11 +140,10 @@ function ReportFrame({ setShowReportFrame }) {
                         >
                             Describle
                         </label>
-                        <input
-                            id="Describle"
-                            type="text"
-                            className="input border-b bg-transparent focus:border-slate-500 focus-visible:outline-none"
-                        />
+                        <textarea
+                            id="LinkToOffendingContent"
+                            className="h-20 w-full overflow-auto rounded-md border-2 bg-transparent p-2 text-white focus:border-slate-500 focus-visible:outline-none"
+                        ></textarea>
                     </div>
 
                     <div className="m-5 flex">
@@ -177,7 +176,7 @@ function ReportFrame({ setShowReportFrame }) {
                             </div>
                         </div>
                     </div>
-                    <div className="mx-auto w-[200px] rounded-3xl border p-3 duration-200 ease-in-out hover:scale-105 hover:bg-gray-900">
+                    <div className="mx-auto w-[200px] cursor-default rounded-3xl border p-3 duration-200 ease-in-out hover:scale-105 hover:bg-gray-900">
                         Send
                     </div>
                 </div>

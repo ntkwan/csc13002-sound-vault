@@ -187,7 +187,7 @@ function ReviewReportPage() {
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState(null);
-    const [selectedReport, setSelectedReport] = useState(null); // State for selected report
+    const [selectedReport, setSelectedReport] = useState(null);
 
     useEffect(() => {
         dispatch(setReportList(initialReports));
@@ -390,12 +390,12 @@ function ReviewReportPage() {
             <div className="mt-8 flex items-center justify-between">
                 <ItemsPerPageSelector
                     itemsPerPage={itemsPerPage}
-                    onItemsPerPageChange={handleItemsPerPageChange}
+                    handleItemsPerPageChange={handleItemsPerPageChange}
                 />
                 <Pagination
                     currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                     totalPages={totalPages}
-                    onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>
 

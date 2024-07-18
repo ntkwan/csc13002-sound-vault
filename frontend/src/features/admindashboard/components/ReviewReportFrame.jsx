@@ -173,7 +173,7 @@ function ReviewReportFrame({ item, onClose }) {
                             >
                                 Describle
                             </label>
-                            <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1 text-left">
+                            <div className="rounded-lg bg-gray-500 bg-opacity-40 p-2 text-left">
                                 {item.report.describe}
                             </div>
                         </div>
