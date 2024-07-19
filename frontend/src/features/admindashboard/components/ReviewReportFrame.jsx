@@ -60,10 +60,10 @@ function ReviewReportFrame({ item, onClose }) {
         <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">
             <div className="scrollbar-custom relative z-20 m-auto h-[90%] w-[900px] overflow-auto rounded-3xl border bg-home-pattern px-10 py-5 font-kodchasan shadow-lg">
                 <button
-                    className="absolute right-3 top-3 hover:text-[#999]"
+                    className="fixed right-[calc(50%-450px+15px)] top-[calc(5vh+10px)] hover:text-[#999]"
                     onClick={onClose}
                 >
-                    <i className="ri-close-fill text-4xl"></i>
+                    <i className="ri-close-fill text-3xl"></i>
                 </button>
                 <h2 className="relative border-b p-3 text-2xl font-medium">
                     Report from '{item.report.username}' about '

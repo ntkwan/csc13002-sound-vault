@@ -9,10 +9,10 @@ function ReportFrame({ setShowReportFrame }) {
         <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">
             <div className="scrollbar-custom relative z-20 m-auto h-[70%] w-[750px] overflow-auto rounded-3xl border bg-black px-10 py-5 text-center font-kodchasan shadow-lg">
                 <div
-                    className="absolute right-3 top-3 hover:text-[#999]"
+                    className="fixed right-[calc(50%-365px)] top-[calc(50%-(70%/2)+9px)] hover:text-[#999]"
                     onClick={() => setShowReportFrame(false)}
                 >
-                    <i className="ri-close-fill text-4xl"></i>
+                    <i className="ri-close-fill text-3xl"></i>
                 </div>
                 <h3 className="p-5 text-3xl font-semibold">
                     Report copyright infringement
