@@ -274,7 +274,7 @@ const MediaItems3 = memo(({ type, mediaData }) => {
     const propsSpan = type === 'genre' ? 'top-5 text-4xl' : 'top-3 text-2xl';
     return (
         <div
-            className={`media-item-3 relative w-full overflow-hidden bg-pink-500 ${propsDiv}`}
+            className={`media-item-3 relative w-full overflow-hidden rounded-md bg-pink-500 hover:cursor-pointer ${propsDiv}`}
         >
             <img
                 className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[5.5rem] translate-x-3 translate-y-3 rotate-[30deg]`}
@@ -391,20 +391,28 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                             data-title={`More options for ${title} by ${artist}`}
                         ></i>
                         {menuVisible === index && (
-                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-40 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
                                     <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                         <i className="ri-share-line text-xl leading-none"></i>
                                         <span>Share</span>
                                     </li>
                                     <li
-                                        className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onClick={prevent(() =>
                                             setShowReportFrame(true),
                                         )}
                                     >
                                         <i className="ri-error-warning-line text-xl leading-none"></i>
                                         <span>Report</span>
+                                    </li>
+                                    <li className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i class="ri-git-repository-private-line text-xl leading-none"></i>
+                                        <span>Change Privacy</span>
+                                    </li>
+                                    <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i class="ri-close-large-line text-xl leading-none"></i>
+                                        <span>Delete Track</span>
                                     </li>
                                 </ul>
                             </div>

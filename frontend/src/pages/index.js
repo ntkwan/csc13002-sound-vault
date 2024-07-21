@@ -18,3 +18,4 @@ export { default as AdminSongPage } from './SongManagementPage';
 export { default as AdminAccountPage } from './AccountManagementPage';
 export { default as ReviewReportPage } from './ReviewReportPage';
 export { default as NotFoundPage } from './NotFoundPage';
+export { default as TopicsAndGenrePage } from './TopicsAndGenrePage';
