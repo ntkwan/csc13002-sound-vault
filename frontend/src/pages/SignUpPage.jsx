@@ -69,13 +69,13 @@ function SignUpPage() {
                     <AuthenTitle title="Sign up" />
                     <p className="cursor-default select-none font-kodchasan text-[17px] leading-[20px] text-[#a6a6a6]">
                         To upload music and products, you must accept our
-                        <a href="#" className="px-1 font-normal text-[#8774f9]">
+                        <span className="px-1 font-normal text-[#8774f9]">
                             terms
-                        </a>{' '}
+                        </span>{' '}
                         and
-                        <a href="#" className="px-1 font-normal text-[#8774f9]">
+                        <span className="px-1 font-normal text-[#8774f9]">
                             policy
-                        </a>
+                        </span>
                         <span className="text-[#7b7b7b]">
                             {' '}
                             on the registration
@@ -120,7 +120,7 @@ function SignUpPage() {
                         </label>
                         I read and accepted the
                         <p
-                            className="px-[4px] font-normal text-[#8774f9] hover:underline hover:opacity-80"
+                            className="px-[4px] font-normal text-[#8774f9] hover:cursor-pointer hover:underline hover:opacity-80"
                             onClick={handleShowTermsAndPolicy}
                         >
                             term and policy

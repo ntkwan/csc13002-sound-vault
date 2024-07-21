@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import hide from '@assets/img/hide.svg';
-import nohide from '@assets/img/nohide.svg';
+import { HideIcon, NoHideIcon } from '@components/index';
+
 FormInput.propTypes = {
     type: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
@@ -40,12 +40,12 @@ function FormInput({ isHiden = true, haveIcon = false, action, ...props }) {
                     className="font-poppins h-[50px] w-full rounded-[12px] border-none bg-[#383838] p-4 pr-12 text-[13.6px] text-[#fcfcfc] placeholder-[#a5a5a5] shadow-md outline-none"
                 />
                 {type === 'password' && haveIcon && (
-                    <img
-                        src={isHidden ? hide : nohide}
-                        alt={isHidden ? 'Hide' : 'Show'}
+                    <div
                         className="absolute right-4 top-1/2 -translate-y-1/2 scale-75 transform cursor-pointer text-xl"
                         onClick={toggleVisibility}
-                    />
+                    >
+                        {isHidden ? <HideIcon /> : <NoHideIcon />}
+                    </div>
                 )}
             </div>
             {focused && (

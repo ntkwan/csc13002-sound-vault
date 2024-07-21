@@ -4,3 +4,4 @@ export { default as SearchBar } from './SearchBar';
 export { default as Pagination } from './Pagination';
 export { default as FilterSort } from './FilterSort';
 export { default as ItemsPerPageSelector } from './ItemsPerPageSelector';
+export { default as ReviewReportFrame } from './ReviewReportFrame';

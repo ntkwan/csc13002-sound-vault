@@ -30,7 +30,7 @@ function FilterSort({
                     name="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 p-2 text-gray-900 hover:cursor-pointer focus:border-blue-500 focus:ring-0 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    className="w-full rounded-md border p-2 hover:cursor-pointer dark:border-gray-600 dark:bg-black dark:text-white"
                 />
             </div>
 
@@ -43,7 +43,7 @@ function FilterSort({
                     name="sort"
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 p-2 text-gray-900 hover:cursor-pointer focus:border-blue-500 focus:ring-0 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    className="w-full rounded-md border p-2 hover:cursor-pointer dark:border-gray-600 dark:bg-black dark:text-white"
                 >
                     {sortMethods.map((method, index) => (
                         <option key={index} value={method}>
