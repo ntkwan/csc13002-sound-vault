@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const objectId = mongoose.Schema.Types.ObjectId;
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 
@@ -48,6 +49,14 @@ const UserSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        isBanned: {
+            type: Boolean,
+            default: false,
+        },
+        blacklist: {
+            type: objectId,
+            ref: 'blacklist',
+        },
         refreshToken: {
             type: String,
         },
@@ -82,18 +91,6 @@ UserSchema.methods.setProfilePicture = async function (imageurl) {
 UserSchema.methods.setCoverPicture = async function (imageurl) {
     this.coverimage.publicId = imageurl.public_id;
     this.coverimage.url = imageurl.secure_url;
-};
-
-UserSchema.methods.setVerified = async function () {
-    this.isVerified = true;
-};
-
-UserSchema.methods.setUnverified = async function () {
-    this.isVerified = false;
-};
-
-UserSchema.methods.getVerification = async function () {
-    return this.isVerified;
 };
 
 UserSchema.methods.validatePassword = async function (password) {
