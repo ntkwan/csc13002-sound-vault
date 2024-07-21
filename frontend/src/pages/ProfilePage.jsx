@@ -132,8 +132,8 @@ function ProfilePage() {
         type: 'Artist',
         title: 'Following',
         visibility: '',
-        link: '',
-        data: following || [],
+        link: '/library',
+        data: following.slice(0, 6) || [],
     };
 
     return (
@@ -268,7 +268,7 @@ function ProfilePage() {
                 <MediaDisplay
                     media={followingDisplay}
                     displayItems="2"
-                    displayType="grid grid-cols-6 gap-8"
+                    displayType="grid grid-cols-6"
                 />
             )}
         </div>

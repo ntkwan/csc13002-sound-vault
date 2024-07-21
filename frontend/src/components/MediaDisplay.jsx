@@ -274,7 +274,7 @@ const MediaItems3 = memo(({ type, mediaData }) => {
     const propsSpan = type === 'genre' ? 'top-5 text-4xl' : 'top-3 text-2xl';
     return (
         <div
-            className={`media-item-3 relative w-full overflow-hidden bg-pink-500 ${propsDiv}`}
+            className={`media-item-3 relative w-full overflow-hidden rounded-md bg-pink-500 hover:cursor-pointer ${propsDiv}`}
         >
             <img
                 className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[5.5rem] translate-x-3 translate-y-3 rotate-[30deg]`}
