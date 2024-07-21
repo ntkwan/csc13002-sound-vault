@@ -48,7 +48,7 @@ const check_admin = async (req, res, next) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.ACCESS_KEY);
+        const decoded = jwt.verify(token, process.env.REFRESH_KEY);
 
         const user = await UserModel.findById(decoded?._id).select(
             '-password -refreshToken',

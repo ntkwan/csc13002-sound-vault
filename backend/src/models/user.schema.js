@@ -88,6 +88,14 @@ UserSchema.methods.setVerified = async function () {
     this.isVerified = true;
 };
 
+UserSchema.methods.setUnverified = async function () {
+    this.isVerified = false;
+};
+
+UserSchema.methods.getVerification = async function () {
+    return this.isVerified;
+};
+
 UserSchema.methods.validatePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
