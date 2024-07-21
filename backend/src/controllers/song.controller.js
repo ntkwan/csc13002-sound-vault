@@ -19,6 +19,7 @@ const get_song_by_id = async (req, res) => {
             artist: song.artist,
             genre: song.genre,
             imageurl: song.image,
+            audiourl: song.audiourl,
             view: song.view,
             region: song.region,
         });
