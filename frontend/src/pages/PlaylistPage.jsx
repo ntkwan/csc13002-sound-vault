@@ -1,4 +1,4 @@
-import { MediaItems4 } from '@components';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loading, MediaDisplay } from '@components/index';
 import {
@@ -16,23 +16,34 @@ function PlaylistPage() {
     const { data: playlist } = useGetPlaylistByIdQuery(playlistId);
     const { playlist_owner } = playlist || {};
     const { data: owner } = useGetProfileByIdQuery(playlist_owner);
+    const [totalTime, setTotalTime] = useState(0);
+
+    useEffect(() => {
+        if (playlist?.songs) {
+            const getSongDurations = async () => {
+                const durations = await Promise.all(
+                    playlist.songs.map(async (song) => {
+                        const audio = new Audio(song.audiourl);
+                        return new Promise((resolve) => {
+                            audio.addEventListener('loadedmetadata', () => {
+                                resolve(audio.duration);
+                            });
+                        });
+                    }),
+                );
+                const totalDuration = durations.reduce(
+                    (acc, duration) => acc + duration,
+                    0,
+                );
+                setTotalTime(totalDuration);
+            };
+            getSongDurations();
+        }
+    }, [playlist]);
 
     if (!playlist || !owner) return <Loading />;
 
     const { name, avatar, cover, songs } = playlist;
-
-    function getSongDuration(audiourl) {
-        const audio = new Audio(audiourl);
-        let duration = 0;
-        audio.addEventListener('loadedmetadata', () => {
-            duration = audio.duration;
-        });
-        return duration;
-    }
-    const totalTime = songs.reduce(
-        (acc, song) => acc + getSongDuration(song.audiourl),
-        0,
-    );
 
     const songsDisplay = {
         type: 'Song',
@@ -40,6 +51,13 @@ function PlaylistPage() {
         visibility: '',
         link: '',
         data: songs || [],
+    };
+
+    const formatDuration = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secondsLeft = Math.floor(seconds % 60);
+        return `${hours > 0 ? `${hours}hr` : ''}${minutes} min ${secondsLeft} sec`;
     };
 
     return (
@@ -83,7 +101,7 @@ function PlaylistPage() {
                             {' • '}
                             {owner && owner.name}
                             {' • '}
-                            {totalTime}
+                            {formatDuration(totalTime)}
                             {' • '}
                             2023
                             {/* {followers <= 1

@@ -333,8 +333,6 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     const titleClassName =
         currentSong === id ? 'text-purple-400 font-bold' : '';
 
-    console.log(artist);
-
     return (
         <>
             {showReportFrame && (

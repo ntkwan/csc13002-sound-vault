@@ -125,6 +125,9 @@ export const api = createApi({
         getNewSongs: builder.query({
             query: () => '/get-new-songs',
         }),
+        getSongById: builder.query({
+            query: (id) => `/get-song-by-id/${id}`,
+        }),
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
         }),
@@ -231,6 +234,7 @@ export const {
     usePlaySongMutation,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
+    useGetSongByIdQuery,
     useGetChartSongsQuery,
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
