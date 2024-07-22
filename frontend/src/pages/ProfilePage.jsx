@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { selectUserProfile } from '@features/profilepage/slices';
 import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
@@ -18,6 +18,7 @@ function ProfilePage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
+    const navigate = useNavigate();
 
     // Fetch profile data by id
     const { data: profileByIdData, isLoading: profileByIdLoading } =
@@ -104,9 +105,10 @@ function ProfilePage() {
         coverimg: { url: cover } = {},
         followers,
         isVerified,
+        isBanned,
     } = userProfile || {};
-    const { following } = followingListData || {};
 
+    const { following } = followingListData || {};
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
@@ -133,7 +135,7 @@ function ProfilePage() {
         title: 'Following',
         visibility: '',
         link: '/library',
-        data: following.slice(0, 6) || [],
+        data: following ? following.slice(0, 6) : [],
     };
 
     return (
@@ -143,11 +145,15 @@ function ProfilePage() {
                 {/* profile cover */}
                 {cover ? (
                     <div className="absolute left-20 right-0 top-0 h-96">
-                        <img
-                            className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
-                            src={cover}
-                            alt="cover"
-                        />
+                        {!isBanned ? (
+                            <img
+                                className="profile__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
+                                src={cover}
+                                alt="cover"
+                            />
+                        ) : (
+                            <div className="profile__cover h-full w-full rounded-xl bg-transparent object-cover shadow-2xl brightness-75" />
+                        )}
                     </div>
                 ) : (
                     <div className="profile__cover absolute left-20 right-0 top-0 h-96 rounded-xl border-2 border-t-0"></div>
@@ -155,17 +161,17 @@ function ProfilePage() {
                 <div className="profile__container ml-[5%] flex items-center">
                     <div className="relative h-40 min-w-40 max-w-40">
                         {/* profile avatar */}
-                        {avatar ? (
+                        {avatar && !isBanned ? (
                             <img
                                 className="profile__avatar h-full w-full rounded-full object-cover shadow-2xl"
                                 src={avatar}
                                 alt={name}
                             />
                         ) : (
-                            <i className="bx bxs-user-circle h-full w-full text-[180px] leading-none"></i>
+                            <i className="bx bxs-user-circle leading-non bg h-full w-full text-[180px]"></i>
                         )}
                         {/* verified icon */}
-                        {isVerified && (
+                        {isVerified && !isBanned && (
                             <img
                                 className="profile__verified-icon absolute bottom-[6px] right-[10px] h-8 w-8"
                                 src={verifiedIcon}
@@ -179,84 +185,90 @@ function ProfilePage() {
                         <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-7xl">
                             {name}
                         </p>
-                        <p className="text-shadow-1 font-medium">
-                            {!profileAllSongsData
-                                ? '0 Song'
-                                : profileAllSongsData.length <= 1
-                                  ? `${profileAllSongsData.length} Song`
-                                  : `${profileAllSongsData.length} Songs`}
-                            {' • '}
-                            {followers <= 1
-                                ? `${followers} Follower`
-                                : followers > 999
-                                  ? `${followers.toLocaleString()} Followers`
-                                  : `${followers} Followers`}
-                            {' • '}
-                            {!following
-                                ? '0 Following'
-                                : `${following.length} Following`}
-                        </p>
+                        {!isBanned && (
+                            <p className="text-shadow-1 font-medium">
+                                {!profileAllSongsData
+                                    ? '0 Song'
+                                    : profileAllSongsData.length <= 1
+                                      ? `${profileAllSongsData.length} Song`
+                                      : `${profileAllSongsData.length} Songs`}
+                                {' • '}
+                                {followers <= 1
+                                    ? `${followers} Follower`
+                                    : followers > 999
+                                      ? `${followers.toLocaleString()} Followers`
+                                      : `${followers} Followers`}
+                                {' • '}
+                                {!following
+                                    ? '0 Following'
+                                    : `${following.length} Following`}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
             {/* profile header end */}
 
             {/* Actions Section */}
-            <div className="flex space-x-6">
-                <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                    <i className="ri-play-fill ml-1 text-[42px]"></i>
-                </button>
-                {isMyProfile ? (
-                    <>
-                        <Link
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                            to="/"
-                        >
-                            Upload Music
-                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                        </Link>
-                        <Link
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                            to="editing"
-                        >
-                            Edit Profile
-                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                        </Link>
-                    </>
-                ) : (
-                    <>
-                        <button
-                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
-                            disabled={isLoadingFollow || isLoadingUnfollow}
-                            onClick={handleFollowToggle}
-                        >
-                            {isFollowing ? 'Unfollow' : 'Follow'}
-                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                        </button>
-                    </>
-                )}
-            </div>
-
-            {profileAllSongsData && (
+            {!isBanned ? (
                 <>
-                    <MediaDisplay
-                        media={allReleases}
-                        displayItems="4"
-                        displayType="grid auto-rows-auto gap-2"
-                    />
+                    <div className="flex space-x-6">
+                        <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
+                            <i className="ri-play-fill ml-1 text-[42px]"></i>
+                        </button>
+                        {isMyProfile ? (
+                            <>
+                                <Link
+                                    className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                    to="/"
+                                >
+                                    Upload Music
+                                    <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                </Link>
+                                <Link
+                                    className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                    to="editing"
+                                >
+                                    Edit Profile
+                                    <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
+                                    disabled={
+                                        isLoadingFollow || isLoadingUnfollow
+                                    }
+                                    onClick={handleFollowToggle}
+                                >
+                                    {isFollowing ? 'Unfollow' : 'Follow'}
+                                    <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                </button>
+                            </>
+                        )}
+                    </div>
 
-                    {isSliceAllReleases && (
-                        <span
-                            className="ml-5 cursor-pointer p-1 font-bold leading-loose text-[#999] hover:text-white"
-                            onClick={handleSeeMoreSongs}
-                        >
-                            {seeMoreSongs ? 'Show less' : 'See more'}
-                        </span>
+                    {profileAllSongsData && (
+                        <>
+                            <MediaDisplay
+                                media={allReleases}
+                                displayItems="4"
+                                displayType="grid auto-rows-auto gap-2"
+                            />
+
+                            {isSliceAllReleases && (
+                                <span
+                                    className="ml-5 cursor-pointer p-1 font-bold leading-loose text-[#999] hover:text-white"
+                                    onClick={handleSeeMoreSongs}
+                                >
+                                    {seeMoreSongs ? 'Show less' : 'See more'}
+                                </span>
+                            )}
+                        </>
                     )}
-                </>
-            )}
 
-            {/* {profileAlbumsData && (
+                    {/* {profileAlbumsData && (
                 <MediaDisplay
                     media={albums}
                     displayItems="2"
@@ -264,12 +276,25 @@ function ProfilePage() {
                 />
             )} */}
 
-            {following && (
-                <MediaDisplay
-                    media={followingDisplay}
-                    displayItems="2"
-                    displayType="grid grid-cols-6"
-                />
+                    {following && (
+                        <MediaDisplay
+                            media={followingDisplay}
+                            displayItems="2"
+                            displayType="grid grid-cols-6"
+                        />
+                    )}
+                </>
+            ) : (
+                <div className="flex h-64 flex-col items-center justify-center">
+                    <div className="block text-center">
+                        <h3 className="mb-2 text-2xl font-bold">
+                            Account banned
+                        </h3>
+                        <span className="text-lg">
+                            This account {name} is no longer available
+                        </span>
+                    </div>
+                </div>
             )}
         </div>
     );
