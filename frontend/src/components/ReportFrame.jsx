@@ -15,7 +15,7 @@ function ReportFrame({ setShowReportFrame }) {
                     <i className="ri-close-fill text-3xl"></i>
                 </div>
                 <h3 className="p-5 text-3xl font-semibold">
-                    Report copyright infringement
+                    Report illegal content
                 </h3>
                 <div className="flex italic">
                     <div className="m-5 flex w-[300px] flex-col">
@@ -23,7 +23,7 @@ function ReportFrame({ setShowReportFrame }) {
                             htmlFor="fullName"
                             className="py-2 text-left text-xl"
                         >
-                            Full Name
+                            Full name
                         </label>
                         <input
                             id="fullName"
@@ -33,7 +33,7 @@ function ReportFrame({ setShowReportFrame }) {
                     </div>
                     <div className="m-5 flex w-[300px] flex-col">
                         <label htmlFor="ID" className="py-2 text-left text-xl">
-                            ID Card/ Passport number
+                            ID Card/Passport number
                         </label>
                         <input
                             id="ID"
@@ -71,12 +71,13 @@ function ReportFrame({ setShowReportFrame }) {
                     </div>
                 </div>
                 <div>
+                    {/* 
                     <div className="m-5 flex flex-col">
                         <label
                             htmlFor="LinkToOffendingContent"
                             className="py-2 text-left text-xl italic"
                         >
-                            Link to offending content
+                            Link to violated content
                         </label>
                         <input
                             id="LinkToOffendingContent"
@@ -84,6 +85,7 @@ function ReportFrame({ setShowReportFrame }) {
                             className="input border-b bg-transparent focus:border-slate-500 focus-visible:outline-none"
                         />
                     </div>
+                    */}
                     <div className="m-5 flex flex-col">
                         <label
                             htmlFor="ReportType"
@@ -95,14 +97,12 @@ function ReportFrame({ setShowReportFrame }) {
                             id="ReportType"
                             className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
-                            <option value="brand_abuse">Brand Abuse</option>
+                            <option value="brand_infringement">Trademark infringement</option>
                             <option value="copyright_infringement">
-                                Copyright Infringement
+                                Copyright infringement
                             </option>
-                            <option value="impersonation">Impersonation</option>
-                            <option value="18_plus">18+</option>
-                            <option value="violence">Violence</option>
-                            <option value="music_related">Music Related</option>
+                            <option value="18_plus">Sensitive content</option>
+                            <option value="violence">Violence content</option>
                         </select>
                     </div>
 
@@ -118,18 +118,17 @@ function ReportFrame({ setShowReportFrame }) {
                             className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
                             <option value="music">Music</option>
-                            <option value="user">User</option>
-                            <option value="album_artwork">Album Artwork</option>
-                            <option value="user_image">User Image</option>
+                            <option value="album_artwork">Album artwork</option>
+                            <option value="user_image">User image</option>
                             <option value="playlist_image">
-                                Playlist Image
+                                Playlist image
                             </option>
                             <option value="playlist_title">
-                                Playlist Title
+                                Playlist title
                             </option>
-                            <option value="artist_ava">Artist’s Avatar</option>
+                            <option value="artist_ava">Artist profile image</option>
                             <option value="artist_banner">
-                                Artist’s Banner
+                                Artist banner image
                             </option>
                         </select>
                     </div>
@@ -138,8 +137,7 @@ function ReportFrame({ setShowReportFrame }) {
                             htmlFor="Describle"
                             className="py-2 text-left text-xl italic"
                         >
-                            Describle
-                        </label>
+                            Why are you reporting this content?                        </label>
                         <textarea
                             id="LinkToOffendingContent"
                             className="h-20 w-full overflow-auto rounded-md border-2 bg-transparent p-2 text-white focus:border-slate-500 focus-visible:outline-none"
@@ -166,7 +164,7 @@ function ReportFrame({ setShowReportFrame }) {
                         </div>
                         <div className="m-auto ease-in-out hover:scale-105">
                             <div className="relative mx-auto w-[200px] rounded-xl border p-3">
-                                Attack Documents
+                                Attach Documents
                                 <input
                                     id="documentUpload"
                                     type="file"
