@@ -3,7 +3,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const objectId = mongoose.Schema.Types.ObjectId;
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 
@@ -52,10 +51,6 @@ const UserSchema = new Schema(
         isBanned: {
             type: Boolean,
             default: false,
-        },
-        blacklist: {
-            type: objectId,
-            ref: 'blacklist',
         },
         refreshToken: {
             type: String,

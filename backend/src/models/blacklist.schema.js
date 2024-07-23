@@ -7,9 +7,13 @@ const Schema = mongoose.Schema;
 
 const BlacklistSchema = new Schema(
     {
-        account: {
+        type: {
+            type: String,
+            enum: ['user', 'song'],
+            required: true,
+        },
+        ref: {
             type: objectId,
-            ref: 'users',
             required: true,
         },
         expireDate: {

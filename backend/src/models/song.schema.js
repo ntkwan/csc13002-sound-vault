@@ -49,6 +49,14 @@ const SongSchema = new Schema(
             type: Number,
             default: 0,
         },
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+        isBanned: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
