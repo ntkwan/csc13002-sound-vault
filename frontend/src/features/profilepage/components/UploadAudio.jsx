@@ -1,5 +1,5 @@
-import { useState, useRef, memo } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { useState, memo } from 'react';
+import { toast } from 'react-toastify';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
 const UploadAudio = memo(({ className, label, sizeLimit }) => {
@@ -22,7 +22,6 @@ const UploadAudio = memo(({ className, label, sizeLimit }) => {
 
     return (
         <>
-            <ToastContainer />
             <div className={`upload__form relative space-y-2 ${className}`}>
                 <label htmlFor="audio-upload" className="upload__label">
                     {label}

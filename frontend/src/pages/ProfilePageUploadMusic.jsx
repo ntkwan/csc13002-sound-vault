@@ -62,7 +62,7 @@ function ProfilePageUploadMusic() {
                 formData.append('genre', genre);
 
                 // await useUploadSongMutation({ file: formData }).unwrap();
-                // toast.success('Uploaded successfully!');
+                toast.success('Uploaded successfully!');
                 // setTimeout(() => window.location.reload(), 1500);
             } catch (error) {
                 toast.error('Error uploading files.');
