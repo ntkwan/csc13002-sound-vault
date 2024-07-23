@@ -110,6 +110,20 @@ export const api = createApi({
                 body: file,
             }),
         }),
+        uploadSong: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-song',
+                method: 'POST',
+                body: file,
+            }),
+        }),
+        uploadSongThumbnail: builder.mutation({
+            query: ({ file }) => ({
+                url: '/upload-song-thumbnail',
+                method: 'POST',
+                body: file,
+            }),
+        }),
         playSong: builder.mutation({
             query: (id) => ({
                 url: `/play-song/${id}`,
@@ -230,6 +244,8 @@ export const {
     useResetPasswordMutation,
     useLogOutMutation,
     useUploadAudioMutation,
+    useUploadSongMutation,
+    useUploadSongThumbnailMutation,
     useGetFeaturedArtistsQuery,
     usePlaySongMutation,
     useGetTrendingSongsQuery,

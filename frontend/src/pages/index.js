@@ -5,6 +5,7 @@ export { default as NewReleasePage } from './NewReleasePage';
 export { default as AlbumPage } from './AlbumPage';
 export { default as PlaylistPage } from './PlaylistPage';
 export { default as ProfilePage } from './ProfilePage';
+export { default as ProfilePageUploadMusic } from './ProfilePageUploadMusic';
 export { default as ProfilePageEditing } from './ProfilePageEditing';
 export { default as LibraryPage } from './LibraryPage';
 export { default as ArtistPage } from './ArtistPage';

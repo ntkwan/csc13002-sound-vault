@@ -8,6 +8,7 @@ import {
     AlbumPage,
     PlaylistPage,
     ProfilePage,
+    ProfilePageUploadMusic,
     ProfilePageEditing,
     LibraryPage,
     ArtistPage,
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
                 children: [
                     { path: 'library', Component: LibraryPage },
                     { path: 'profile', Component: ProfilePage },
+                    {
+                        path: 'profile/upload-music',
+                        Component: ProfilePageUploadMusic,
+                    },
                     { path: 'profile/editing', Component: ProfilePageEditing },
                 ],
             },

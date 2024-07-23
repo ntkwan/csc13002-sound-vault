@@ -15,7 +15,7 @@ function HomePage() {
             <div className="homepage__container flex items-center text-white">
                 {/* Intro text */}
                 <div className="homepage__text -translate-y-[20%]">
-                    <h2 className="heading-stroke-logo text-nowrap font-lilitaone text-[90px] leading-none">
+                    <h2 className="heading-stroke-logo select-none text-nowrap font-lilitaone text-[90px] leading-none">
                         SoundVault
                     </h2>
                     <h3 className="text-nowrap font-italianno text-[90px] leading-none">

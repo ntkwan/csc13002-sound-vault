@@ -130,12 +130,13 @@ function ProfilePage() {
     //     data: profileAlbumsData || [],
     // };
 
+    const isSliceFollowing = following && following.length > 6;
     const followingDisplay = {
         type: 'Artist',
         title: 'Following',
         visibility: '',
         link: '/library',
-        data: following ? following.slice(0, 6) : [],
+        data: isSliceFollowing ? following.slice(0, 6) : following,
     };
 
     return (
@@ -220,7 +221,7 @@ function ProfilePage() {
                             <>
                                 <Link
                                     className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                                    to="/"
+                                    to="upload-music"
                                 >
                                     Upload Music
                                     <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>

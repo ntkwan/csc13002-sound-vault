@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash';
 import { PageTitle } from '@components';
@@ -59,19 +58,15 @@ function ProfilePageEditing() {
                 <UploadImage
                     className=""
                     label="To upload an avatar click on box or drop file here!"
-                    desc="File size is less than 800 KB"
+                    sizeLimit={800}
                     useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
                     className="ml-12"
                     label="To upload a cover click on box or drop file here!"
-                    desc="File size is less than 800 KB"
+                    sizeLimit={800}
                     useUploadMutation={useUploadProfileCoverMutation}
                 />
-                {/* <PageTitle
-                    className="flex-[1.8] text-center"
-                    title="Upload Profile"
-                /> */}
             </div>
 
             <div className="editing__container mt-16 flex text-sm">
@@ -131,7 +126,7 @@ export default ProfilePageEditing;
 function UpdateInput() {
     return (
         <button
-            className="group relative h-12 w-1/4 rounded-xl bg-[#666] shadow-md transition duration-500 ease-in-out hover:cursor-pointer hover:bg-[#888]"
+            className="group relative h-12 w-1/4 rounded-xl bg-[#666] shadow-md transition duration-300 ease-in-out hover:cursor-pointer hover:bg-[#888]"
             type="submit"
         >
             Submit

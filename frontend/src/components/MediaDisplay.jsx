@@ -180,6 +180,11 @@ const MediaItems = memo(
                     <PlayButton
                         onClick={onClickButton}
                         isOnPlaying={isOnPlaying}
+                        position={
+                            type == 'Artist'
+                                ? 'bottom-1 right-0'
+                                : 'bottom-1 right-5'
+                        }
                     />
                 </div>
                 <p className="media-item__name overflow-hidden text-ellipsis text-nowrap text-center">
