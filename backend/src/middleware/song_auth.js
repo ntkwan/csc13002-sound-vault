@@ -3,7 +3,7 @@ const BlacklistModel = require('../models/blacklist.schema');
 
 const check_disable_song = async (req, res, next) => {
     try {
-        const songId = req.params.songId;
+        const songId = req.params.id;
 
         const song = await SongModel.findById(songId).select('isDisabled');
 
