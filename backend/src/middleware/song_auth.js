@@ -1,6 +1,6 @@
-const SongModel = require('../models/song');
+const SongModel = require('../models/song.schema');
 
-const check_song = async (req, res, next) => {
+const check_disable_song = async (req, res, next) => {
     try {
         const songId = req.params.songId;
 
@@ -8,7 +8,7 @@ const check_song = async (req, res, next) => {
 
         if (!song) {
             return res.status(404).json({
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
 
@@ -27,5 +27,5 @@ const check_song = async (req, res, next) => {
 };
 
 module.exports = {
-    check_song,
+    check_disable_song,
 };
