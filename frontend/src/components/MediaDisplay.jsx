@@ -407,11 +407,11 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                         <span>Report</span>
                                     </li>
                                     <li className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i class="ri-git-repository-private-line text-xl leading-none"></i>
+                                        <i className="ri-git-repository-private-line text-xl leading-none"></i>
                                         <span>Change Privacy</span>
                                     </li>
                                     <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i class="ri-close-large-line text-xl leading-none"></i>
+                                        <i className="ri-close-large-line text-xl leading-none"></i>
                                         <span>Delete Track</span>
                                     </li>
                                 </ul>

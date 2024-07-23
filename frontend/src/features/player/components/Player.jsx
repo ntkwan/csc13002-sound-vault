@@ -258,6 +258,10 @@ function Player() {
             </div>
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
+                {/* donate */}
+                <AudioButton className="text-[1.375rem]">
+                    <i className="bx bxs-dollar-circle"></i>
+                </AudioButton>
                 {/* bookmark */}
                 <AudioButton onClick={handleBookmarkClick}>
                     {isSolidBookmark ? (
@@ -389,6 +393,10 @@ function Player() {
                     </div>
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
+                        {/* donate */}
+                        <AudioButton className="text-[1.625rem]">
+                            <i className="bx bxs-dollar-circle"></i>
+                        </AudioButton>
                         {/* bookmark */}
                         <AudioButton
                             onClick={handleBookmarkClick}

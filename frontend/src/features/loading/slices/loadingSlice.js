@@ -16,183 +16,154 @@ const loadingSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addMatcher(api.endpoints.signIn.matchPending, (state) => {
-            state.isGlobalLoading = true;
-        });
-        builder.addMatcher(api.endpoints.signIn.matchFulfilled, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(api.endpoints.signIn.matchRejected, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(api.endpoints.signUp.matchPending, (state) => {
-            state.isGlobalLoading = true;
-        });
-        builder.addMatcher(api.endpoints.signUp.matchFulfilled, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(api.endpoints.signUp.matchRejected, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(api.endpoints.logOut.matchPending, (state) => {
-            state.isGlobalLoading = true;
-        });
-        builder.addMatcher(api.endpoints.logOut.matchFulfilled, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(api.endpoints.logOut.matchRejected, (state) => {
-            state.isGlobalLoading = false;
-        });
-        builder.addMatcher(
-            api.endpoints.resetPassword.matchPending,
-            (state) => {
+        builder
+            .addMatcher(api.endpoints.signIn.matchPending, (state) => {
                 state.isGlobalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.resetPassword.matchFulfilled,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.signIn.matchFulfilled, (state) => {
                 state.isGlobalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.resetPassword.matchRejected,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.signIn.matchRejected, (state) => {
                 state.isGlobalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.forgotPassword.matchPending,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.signUp.matchPending, (state) => {
                 state.isGlobalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.forgotPassword.matchFulfilled,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.signUp.matchFulfilled, (state) => {
                 state.isGlobalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.forgotPassword.matchRejected,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.signUp.matchRejected, (state) => {
                 state.isGlobalLoading = false;
-            },
-        );
-        builder.addMatcher(api.endpoints.getTopSongs.matchPending, (state) => {
-            state.isLocalLoading = true;
-        });
-        builder.addMatcher(
-            api.endpoints.getTopSongs.matchFulfilled,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(api.endpoints.getTopSongs.matchRejected, (state) => {
-            state.isLocalLoading = false;
-        });
-        builder.addMatcher(
-            api.endpoints.getFeaturedArtists.matchPending,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.logOut.matchPending, (state) => {
+                state.isGlobalLoading = true;
+            })
+            .addMatcher(api.endpoints.logOut.matchFulfilled, (state) => {
+                state.isGlobalLoading = false;
+            })
+            .addMatcher(api.endpoints.logOut.matchRejected, (state) => {
+                state.isGlobalLoading = false;
+            })
+            .addMatcher(api.endpoints.resetPassword.matchPending, (state) => {
+                state.isGlobalLoading = true;
+            })
+            .addMatcher(api.endpoints.resetPassword.matchFulfilled, (state) => {
+                state.isGlobalLoading = false;
+            })
+            .addMatcher(api.endpoints.resetPassword.matchRejected, (state) => {
+                state.isGlobalLoading = false;
+            })
+            .addMatcher(api.endpoints.forgotPassword.matchPending, (state) => {
+                state.isGlobalLoading = true;
+            })
+            .addMatcher(
+                api.endpoints.forgotPassword.matchFulfilled,
+                (state) => {
+                    state.isGlobalLoading = false;
+                },
+            )
+            .addMatcher(api.endpoints.forgotPassword.matchRejected, (state) => {
+                state.isGlobalLoading = false;
+            })
+            .addMatcher(api.endpoints.getTopSongs.matchPending, (state) => {
                 state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getFeaturedArtists.matchFulfilled,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getTopSongs.matchFulfilled, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getFeaturedArtists.matchRejected,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getTopSongs.matchRejected, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(api.endpoints.getNewSongs.matchPending, (state) => {
-            state.isLocalLoading = true;
-        });
-        builder.addMatcher(
-            api.endpoints.getNewSongs.matchFulfilled,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(api.endpoints.getNewSongs.matchRejected, (state) => {
-            state.isLocalLoading = false;
-        });
-        builder.addMatcher(
-            api.endpoints.getTrendingSongs.matchPending,
-            (state) => {
+            })
+            .addMatcher(
+                api.endpoints.getFeaturedArtists.matchPending,
+                (state) => {
+                    state.isLocalLoading = true;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getFeaturedArtists.matchFulfilled,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getFeaturedArtists.matchRejected,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(api.endpoints.getNewSongs.matchPending, (state) => {
                 state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getTrendingSongs.matchFulfilled,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getNewSongs.matchFulfilled, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getTrendingSongs.matchRejected,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getNewSongs.matchRejected, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getChartSongs.matchPending,
-            (state) => {
+            })
+            .addMatcher(
+                api.endpoints.getTrendingSongs.matchPending,
+                (state) => {
+                    state.isLocalLoading = true;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getTrendingSongs.matchFulfilled,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getTrendingSongs.matchRejected,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(api.endpoints.getChartSongs.matchPending, (state) => {
                 state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getChartSongs.matchFulfilled,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getChartSongs.matchFulfilled, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getChartSongs.matchRejected,
-            (state) => {
+            })
+            .addMatcher(api.endpoints.getChartSongs.matchRejected, (state) => {
                 state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAlbums.matchPending,
-            (state) => {
-                state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAlbums.matchFulfilled,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAlbums.matchRejected,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAllSongs.matchPending,
-            (state) => {
-                state.isLocalLoading = true;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAllSongs.matchFulfilled,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
-        builder.addMatcher(
-            api.endpoints.getProfileAllSongs.matchRejected,
-            (state) => {
-                state.isLocalLoading = false;
-            },
-        );
+            })
+            .addMatcher(
+                api.endpoints.getProfileAlbums.matchPending,
+                (state) => {
+                    state.isLocalLoading = true;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getProfileAlbums.matchFulfilled,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getProfileAlbums.matchRejected,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getProfileAllSongs.matchPending,
+                (state) => {
+                    state.isLocalLoading = true;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getProfileAllSongs.matchFulfilled,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            )
+            .addMatcher(
+                api.endpoints.getProfileAllSongs.matchRejected,
+                (state) => {
+                    state.isLocalLoading = false;
+                },
+            );
     },
 });
 
