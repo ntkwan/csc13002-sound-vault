@@ -171,6 +171,52 @@ const get_top_songs = async (req, res) => {
     });
 };
 
+const disable_song = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        song.isDisabled = true;
+        await song.save();
+
+        return res.status(200).json({
+            message: 'Song is disabled',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const enable_song = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        song.isDisabled = false;
+        await song.save();
+
+        return res.status(200).json({
+            message: 'Song is enabled',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     get_song_by_id,
     get_trending_songs,
@@ -179,4 +225,6 @@ module.exports = {
     get_song_view,
     get_songs_by_region,
     get_top_songs,
+    disable_song,
+    enable_song,
 };

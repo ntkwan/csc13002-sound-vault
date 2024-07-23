@@ -15,4 +15,11 @@ router.post(
 );
 router.get('/get-song-view/:id', songController.get_song_view);
 router.get('/get-song-by-id/:id', songController.get_song_by_id);
+
+router.put('/disable-song/:id', songController.disable_song);
+router.put(
+    '/enable-song/:id',
+    songMiddleware.check_deactivate_song,
+    songController.enable_song,
+);
 module.exports = router;

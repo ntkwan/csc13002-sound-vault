@@ -39,24 +39,28 @@ router.get(
     adminController.get_all_songs,
 );
 
-router.post('/ban-song', authMiddleware.check_admin, adminController.ban_song);
-
 router.put(
     '/set-verified-song-by-id/:songId',
     authMiddleware.check_admin,
     adminController.set_verified_song,
 );
 
-router.get(
-    '/get-song-ban-status-by-id/:songId',
-    authMiddleware.check_admin,
-    adminController.get_song_ban_status_by_id,
-);
-
 router.delete(
     '/remove-song-by-id/:songId',
     authMiddleware.check_admin,
     adminController.remove_song_by_id,
+);
+
+router.post(
+    '/deactivate-song/:songId',
+    authMiddleware.check_admin,
+    adminController.deactivate_song,
+);
+
+router.post(
+    '/activate-song/:songId',
+    authMiddleware.check_admin,
+    adminController.activate_song,
 );
 
 module.exports = router;

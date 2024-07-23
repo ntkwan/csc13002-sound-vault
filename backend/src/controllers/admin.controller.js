@@ -52,6 +52,7 @@ const update_ban_status = async () => {
         const now = new Date();
 
         const expiredBans = await BlacklistModel.find({
+            type: 'user',
             expireDate: { $lte: now },
         });
 
@@ -201,6 +202,7 @@ const get_all_songs = async (req, res) => {
                     title: song.title,
                     artist: song.artist,
                     isVerified: song.isVerified,
+                    isDisabled: song.isDisabled,
                     createdAt: song.createdAt,
                 };
             }),
@@ -262,76 +264,7 @@ const remove_song_by_id = async (req, res) => {
     }
 };
 
-const ban_song = async (req, res) => {
-    const { songId, days, reason } = req.body;
-
-    try {
-        const Song = await SongModel.findById(songId);
-        if (!Song) {
-            return res.status(404).json({
-                message: 'Song not found',
-            });
-        }
-
-        let isBanned = Song.isBanned;
-        if (isBanned == true) {
-            Song.isBanned = false;
-            await BlacklistModel.deleteOne({ type: 'song', ref: songId });
-        } else {
-            Song.isBanned = true;
-            const bannedUtil = moment().add(days, 'days').toDate();
-            await BlacklistModel.create({
-                type: 'song',
-                ref: songId,
-                expireDate: bannedUtil,
-                reason: reason,
-            });
-        }
-        await Song.save();
-
-        const message = isBanned
-            ? 'Song unbanned successfully'
-            : 'Song banned successfully';
-
-        return res.status(200).json({
-            message: message,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-        });
-    }
-};
-
-const update_ban_status_song = async () => {
-    try {
-        const now = new Date();
-
-        const expiredBans = await BlacklistModel.find({
-            expireDate: { $lte: now },
-        });
-
-        let hasBanned = false;
-        for (const ban of expiredBans) {
-            const song = await SongModel.findById(ban.ref);
-            song.isBanned = false;
-            await song.save();
-            await BlacklistModel.deleteOne({ _id: ban._id });
-            hasBanned = true;
-        }
-        if (hasBanned) {
-            console.log('Expired bans have been updated successfully');
-        }
-    } catch (error) {
-        console.error('Error occurred while running cron job', error);
-    }
-};
-
-const job_song = schedule.scheduleJob('* * * * * *', async () => {
-    await update_ban_status_song();
-});
-
-const get_song_ban_status_by_id = async (req, res) => {
+const deactivate_song = async (req, res) => {
     const songId = req.params.songId;
 
     try {
@@ -342,22 +275,43 @@ const get_song_ban_status_by_id = async (req, res) => {
             });
         }
 
-        if (!Song.isBanned) {
-            return res.status(200).json({
-                ban_status: Song.isBanned,
-                message: 'Song is not banned',
+        Song.isDisabled = true;
+        await Song.save();
+        const expire_date = moment().add(365, 'days').toDate();
+        await BlacklistModel.create({
+            type: 'song',
+            ref: songId,
+            expireDate: expire_date,
+            reason: 'Song is strictly prohibited',
+        });
+
+        return res.status(200).json({
+            message: 'Song is deactivated successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const activate_song = async (req, res) => {
+    const songId = req.params.songId;
+
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
             });
         }
 
-        const blacklist = await BlacklistModel.findOne({
-            type: 'song',
-            ref: songId,
-        });
+        Song.isDisabled = false;
+        await Song.save();
+        await BlacklistModel.deleteOne({ type: 'song', ref: songId });
+
         return res.status(200).json({
-            ban_status: Song.isBanned,
-            reason: blacklist.reason,
-            expire_date: blacklist.expireDate,
-            banned_at: blacklist.createdAt,
+            message: 'Song is activated successfully',
         });
     } catch (error) {
         return res.status(500).json({
@@ -375,6 +329,6 @@ module.exports = {
     get_all_songs,
     set_verified_song,
     remove_song_by_id,
-    ban_song,
-    get_song_ban_status_by_id,
+    deactivate_song,
+    activate_song,
 };

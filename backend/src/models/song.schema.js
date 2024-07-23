@@ -53,7 +53,7 @@ const SongSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        isBanned: {
+        isDisabled: {
             type: Boolean,
             default: false,
         },
