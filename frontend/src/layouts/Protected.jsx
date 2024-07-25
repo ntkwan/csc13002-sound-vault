@@ -10,7 +10,7 @@ Protected.propTypes = {
 function Protected({ roles }) {
     const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
-    if ((roles === 'guess' || roles === 'user') && isAdmin)
+    if ((roles === 'guest' || roles === 'user') && isAdmin)
         return <Navigate to="/admin/user" from={{ from: location }} replace />;
     if (roles === 'user' && !token)
         return <Navigate to="/" from={{ from: location }} replace />;

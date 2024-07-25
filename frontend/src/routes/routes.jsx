@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         errorElement: NotFoundPage,
         children: [
             {
-                element: <Protected roles={'guess'} />,
+                element: <Protected roles={'guest'} />,
                 children: [
                     { index: true, Component: HomePage },
                     { path: 'chart', Component: ChartPage },

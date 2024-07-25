@@ -38,11 +38,14 @@ ChartItem.propTypes = {
         image: PropTypes.shape({
             url: PropTypes.string,
         }),
+        coverimg: PropTypes.shape({
+            url: PropTypes.string,
+        }),
     }),
 };
 
 function ChartItem({ className, song }) {
-    const { title, artist, image: imageurl, _id: id } = song;
+    const { title, artist, image: imageurl, _id: id, coverimg } = song;
     const { url } = imageurl;
 
     const [currentSong, isPlaying, activateSong] = useSong();
@@ -63,6 +66,7 @@ function ChartItem({ className, song }) {
                                     title,
                                     artist,
                                     imageurl,
+                                    coverimg
                                 })
                             }
                         />
@@ -73,6 +77,7 @@ function ChartItem({ className, song }) {
                                     title,
                                     artist,
                                     imageurl,
+                                    coverimg
                                 })
                             }
                             isOnPlaying={currentSong === id && isPlaying}
