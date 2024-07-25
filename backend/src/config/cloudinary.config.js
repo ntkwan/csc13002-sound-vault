@@ -60,7 +60,7 @@ const songThumbnailUploader = async (req, res) => {
     if (!file) {
         return res.status(400).json({ message: 'File not found' });
     }
-    const fName = songId;
+    const fName = req.isCover ? 'cover_' + songId : songId;
 
     try {
         const uploadImage = await cloudinary.uploader.upload(req.file.path, {

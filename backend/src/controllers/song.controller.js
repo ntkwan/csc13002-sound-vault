@@ -19,6 +19,7 @@ const get_song_by_id = async (req, res) => {
             artist: song.artist,
             genre: song.genre,
             imageurl: song.image,
+            coverimg: song.coverimg,
             view: song.view,
             region: song.region,
         });
@@ -41,6 +42,7 @@ const get_trending_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
+                    coverimg: song.coverimg,
                     view: song.view,
                     region: song.region,
                 };
@@ -67,6 +69,7 @@ const get_new_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
+                    coverimg: song.coverimg,
                     view: song.view,
                     region: song.region,
                 };

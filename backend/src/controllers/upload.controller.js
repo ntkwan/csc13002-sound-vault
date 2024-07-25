@@ -105,18 +105,30 @@ const upload_song_thumbnail = async (req, res) => {
         });
     }
 
-    await Song.setSongThumbnail(imageResponse);
+    if (req.isCover) {
+        await Song.setSongCover(imageResponse);
+    } else {
+        await Song.setSongThumbnail(imageResponse);
+    }
     await Song.save();
 
     return res.status(200).json({
-        message: 'Upload song thumbnail successfully',
+        message: req.isCover
+            ? 'Upload song cover successfully'
+            : 'Upload song thumbnail successfully',
         imageurl: imageResponse.secure_url,
     });
+};
+
+const upload_song_cover = async (req, res) => {
+    req.isCover = true;
+    upload_song_thumbnail(req, res);
 };
 
 module.exports = {
     upload_song,
     upload_profile_pic,
     upload_song_thumbnail,
+    upload_song_cover,
     upload_profile_cover,
 };

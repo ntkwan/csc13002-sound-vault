@@ -41,6 +41,14 @@ const SongSchema = new Schema(
                 default: process.env.DEFAULT_THUMBNAIL,
             },
         },
+        coverimg: {
+            publicId: {
+                type: String,
+            },
+            url: {
+                type: String,
+            },
+        },
         audiourl: {
             type: String,
             required: true,
@@ -66,6 +74,11 @@ const SongSchema = new Schema(
 SongSchema.methods.setSongThumbnail = async function (imageurl) {
     this.image.publicId = imageurl.public_id;
     this.image.url = imageurl.secure_url;
+};
+
+SongSchema.methods.setSongCover = async function (imageurl) {
+    this.coverimg.publicId = imageurl.public_id;
+    this.coverimg.url = imageurl.secure_url;
 };
 
 SongSchema.methods.increaseView = async function () {

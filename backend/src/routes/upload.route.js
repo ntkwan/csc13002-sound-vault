@@ -31,4 +31,10 @@ router.post(
     uploader.upload_song_thumbnail,
 );
 
+router.post(
+    '/upload-song-cover/:id',
+    stage_file.song_thumbnail_upload,
+    uploader.upload_song_cover,
+);
+
 module.exports = router;

@@ -10,7 +10,7 @@ function useSong() {
     const currentSong = currentTrack?.id;
     const [playSong] = usePlaySongMutation();
 
-    const activateSong = async ({ id, title, artist, imageurl }) => {
+    const activateSong = async ({ id, title, artist, imageurl, coverimg }) => {
         if (id) {
             if (currentSong !== id) {
                 try {
@@ -22,6 +22,7 @@ function useSong() {
                             artist,
                             url: res.audiourl,
                             thumbnail: imageurl.url,
+                            screen: coverimg.url,
                         }),
                     );
                     dispatch(play());
