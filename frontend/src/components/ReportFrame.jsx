@@ -71,13 +71,12 @@ function ReportFrame({ setShowReportFrame }) {
                     </div>
                 </div>
                 <div>
-                    {/* 
                     <div className="m-5 flex flex-col">
                         <label
                             htmlFor="LinkToOffendingContent"
                             className="py-2 text-left text-xl italic"
                         >
-                            Link to violated content
+                            Link to offending content
                         </label>
                         <input
                             id="LinkToOffendingContent"
@@ -85,7 +84,7 @@ function ReportFrame({ setShowReportFrame }) {
                             className="input border-b bg-transparent focus:border-slate-500 focus-visible:outline-none"
                         />
                     </div>
-                    */}
+
                     <div className="m-5 flex flex-col">
                         <label
                             htmlFor="ReportType"
@@ -97,7 +96,9 @@ function ReportFrame({ setShowReportFrame }) {
                             id="ReportType"
                             className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
-                            <option value="brand_infringement">Trademark infringement</option>
+                            <option value="brand_infringement">
+                                Trademark infringement
+                            </option>
                             <option value="copyright_infringement">
                                 Copyright infringement
                             </option>
@@ -126,7 +127,9 @@ function ReportFrame({ setShowReportFrame }) {
                             <option value="playlist_title">
                                 Playlist title
                             </option>
-                            <option value="artist_ava">Artist profile image</option>
+                            <option value="artist_ava">
+                                Artist profile image
+                            </option>
                             <option value="artist_banner">
                                 Artist banner image
                             </option>
@@ -137,7 +140,8 @@ function ReportFrame({ setShowReportFrame }) {
                             htmlFor="Describle"
                             className="py-2 text-left text-xl italic"
                         >
-                            Why are you reporting this content?                        </label>
+                            Why are you reporting this content?{' '}
+                        </label>
                         <textarea
                             id="LinkToOffendingContent"
                             className="h-20 w-full overflow-auto rounded-md border-2 bg-transparent p-2 text-white focus:border-slate-500 focus-visible:outline-none"

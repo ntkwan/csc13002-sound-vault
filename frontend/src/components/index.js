@@ -4,6 +4,7 @@ export { default as Loading } from './UI/Loading';
 export { default as PageTitle } from './UI/PageTitle';
 export { default as PlayButton } from './PlayButton';
 export { default as ReportFrame } from './ReportFrame';
+export { default as AlbumFrame } from './AlbumFrame';
 export {
     default as MediaDisplay,
     MediaItems,

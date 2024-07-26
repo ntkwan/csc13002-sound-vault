@@ -1,12 +1,18 @@
 import { useState, useEffect, memo } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import { useGetProfileByIdQuery } from '@services/api';
+import {
+    useGetProfileByIdQuery,
+    useAddSongToPlaylistMutation,
+    useCreatePlaylistMutation,
+    useDeletePlaylistByIdMutation,
+} from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
 import { PlayButton, ReportFrame } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
+import { toast } from 'react-toastify';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const [currentSong, isPlaying, activateSong] = useSong();
@@ -304,9 +310,23 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     const [duration, setDuration] = useState('0:00');
     const [menuVisible, setMenuVisible] = useState(null);
     const [showReportFrame, setShowReportFrame] = useState(false);
+    const [playlistOptionsVisible, setPlaylistOptionsVisible] = useState(false);
+
+    const location = useLocation();
+    const pathSegments = location.pathname.split('/');
+    const pathtype = pathSegments[1];
+    const { profileId: pathId } = useParams();
 
     const toggleMenu = (index) => {
         setMenuVisible(menuVisible === index ? null : index);
+    };
+
+    const handleMouseEnter = () => {
+        setPlaylistOptionsVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+        setPlaylistOptionsVisible(false);
     };
 
     useEffect(() => {
@@ -335,6 +355,20 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             });
         }
     }, [audiourl]);
+
+    // handle share button
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast('Copied link to clipboard!', {
+                className:
+                    'bg-home-pattern text-white font-kodchasan font-bold',
+            });
+        });
+    };
+    const handleShare = () => {
+        const shareURL = `${window.location.origin}/song/${id}`;
+        copyToClipboard(shareURL);
+    };
 
     const [currentSong] = useSong();
     const titleClassName =
@@ -396,11 +430,66 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                             data-title={`More options for ${title} by ${artist}`}
                         ></i>
                         {menuVisible === index && (
-                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                            <div
+                                className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                            >
                                 <ul>
-                                    <li className="flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    {pathtype == 'profile' &&
+                                        pathId == undefined && (
+                                            <li className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                <i className="ri-add-circle-line text-xl leading-none"></i>
+                                                <span>Add to album</span>
+                                            </li>
+                                        )}
+                                    <li
+                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        onMouseEnter={handleMouseEnter}
+                                        onMouseLeave={handleMouseLeave}
+                                    >
+                                        <i className="ri-add-circle-line text-xl leading-none"></i>
+                                        <span>Add to playlist</span>
+                                        <i className="ri-triangle-line rotate-90 text-right"></i>
+                                        {playlistOptionsVisible && (
+                                            <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                <ul>
+                                                    <li className="flex cursor-pointer space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                        <div className="mx-4 w-full border-b border-[#999] py-2 text-left">
+                                                            <i class="ri-add-circle-line" />
+                                                            <span>
+                                                                New playlist
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                    <li className="flex cursor-pointer space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                        <span>Playlist 1</span>
+                                                    </li>
+                                                    <li className="flex cursor-pointer space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                        <span>Playlist 2</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </li>
+                                    {pathtype == 'playlist' && (
+                                        <li className="flex cursor-pointer items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                            <i className="ri-indeterminate-circle-line text-left text-xl"></i>
+                                            <span className="text-left">
+                                                Remove from this playlist
+                                            </span>
+                                        </li>
+                                    )}
+                                    <li className="flex cursor-pointer items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-heart-line text-left text-xl"></i>
+                                        <span className="text-left">
+                                            Save to your Liked Songs
+                                        </span>
+                                    </li>
+                                    <li
+                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        onClick={prevent(() => handleShare())}
+                                    >
                                         <i className="ri-share-line text-xl leading-none"></i>
-                                        <span>Share</span>
+                                        <span>Copy link</span>
                                     </li>
                                     <li
                                         className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
@@ -411,14 +500,13 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                         <i className="ri-error-warning-line text-xl leading-none"></i>
                                         <span>Report</span>
                                     </li>
-                                    <li className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-git-repository-private-line text-xl leading-none"></i>
-                                        <span>Change Privacy</span>
-                                    </li>
-                                    <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-close-large-line text-xl leading-none"></i>
-                                        <span>Delete Track</span>
-                                    </li>
+                                    {pathtype == 'profile' &&
+                                        pathId == undefined && (
+                                            <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                <i className="ri-close-large-line text-xl leading-none"></i>
+                                                <span>Delete Track</span>
+                                            </li>
+                                        )}
                                 </ul>
                             </div>
                         )}

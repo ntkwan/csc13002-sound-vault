@@ -23,6 +23,7 @@ import {
     ReviewReportPage,
     NotFoundPage,
     TopicsAndGenrePage,
+    SongPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
                     { path: 'topicsgenre', Component: TopicsAndGenrePage },
+                    { path: 'song/:songId', Component: SongPage },
                 ],
             },
             {
