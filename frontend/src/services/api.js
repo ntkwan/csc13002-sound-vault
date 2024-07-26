@@ -190,6 +190,7 @@ export const api = createApi({
         }),
         getFollowingListById: builder.query({
             query: (id) => `/get-following-list-by-id/${id}`,
+            providesTags: ['User'],
         }),
         getFollowButtonById: builder.query({
             query: (id) => `/get-follow-button-by-id/${id}`,

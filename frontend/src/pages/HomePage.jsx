@@ -41,7 +41,7 @@ function HomePage() {
                 <ChartIntroContainer />
                 {/* Intro chart text */}
                 <div className="w-min flex-[0.75] content-center">
-                    <h2 className="heading-stroke text-nowrap font-italianno text-[100px]">
+                    <h2 className="heading-stroke select-none text-nowrap font-italianno text-[100px]">
                         SoundVault Charts
                     </h2>
                     <p className="text-xl">

@@ -215,7 +215,7 @@ function ProfilePage() {
                         {/* profile info */}
                         <div className="relative ml-5 content-center">
                             <p className="text-shadow-1 font-medium">Profile</p>
-                            <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-7xl">
+                            <p className="text-shadow-2 text-stroke-1 select-none py-1 font-alfaslabone text-7xl">
                                 {name}
                             </p>
                             {!isBanned && (
