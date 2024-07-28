@@ -144,10 +144,12 @@ const get_songs_by_region = async (req, res) => {
         res.status(200).send(
             songs.map((song) => {
                 return {
+                    id: song._id,
                     title: song.title,
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
+                    coverimg: song.coverimg,
                     view: song.view,
                 };
             }),

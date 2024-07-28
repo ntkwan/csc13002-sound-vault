@@ -454,7 +454,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                                 <ul>
                                                     <li className="flex cursor-pointer space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                         <div className="mx-4 w-full border-b border-[#999] py-2 text-left">
-                                                            <i class="ri-add-circle-line" />
+                                                            <i className="ri-add-circle-line" />
                                                             <span>
                                                                 New playlist
                                                             </span>

@@ -1,4 +1,5 @@
 import propTypes from 'prop-types';
+import ChartRow from './ChartRow';
 
 function ChartTable({ tableData }) {
     const { type, data } = tableData;
@@ -12,7 +13,6 @@ function ChartTable({ tableData }) {
                         <ChartRow
                             key={rank}
                             rank={rank}
-                            img={rowData.imageurl?.url}
                             {...rowData}
                         />
                     );
@@ -26,28 +26,5 @@ ChartTable.propTypes = {
     tableData: propTypes.object.isRequired,
 };
 
+
 export default ChartTable;
-
-function ChartRow({ rank, img, title, artist, view }) {
-    return (
-        <div className="mb-6 ml-3 flex items-center">
-            <p className="mr-7 w-1">{rank}</p>
-            <img
-                src={img}
-                alt="song cover"
-                className="mr-3 aspect-square size-[4.5rem]"
-            />
-            <p className="flex-auto basis-60 font-normal text-white">{title}</p>
-            <p className="flex-auto">{artist}</p>
-            <span className="w-32">{view.toLocaleString()}</span>
-        </div>
-    );
-}
-
-ChartRow.propTypes = {
-    rank: propTypes.number,
-    img: propTypes.string,
-    title: propTypes.string,
-    artist: propTypes.string,
-    view: propTypes.number,
-};
