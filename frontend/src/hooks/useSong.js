@@ -2,13 +2,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { setCurrentTrack, play, pause } from '@features/player/slices';
 import { selectCurrentPlayer } from '@services/selectors';
-import { usePlaySongMutation } from '@services/api';
+import { usePlaySongMutation, useUndoPlaySongMutation } from '@services/api';
 
 function useSong() {
     const dispatch = useDispatch();
     const { isPlaying, currentTrack } = useSelector(selectCurrentPlayer);
     const currentSong = currentTrack?.id;
     const [playSong] = usePlaySongMutation();
+    const [undoPlaySong] = useUndoPlaySongMutation();
 
     const activateSong = async ({ id, title, artist, imageurl, coverimg }) => {
         if (id) {
@@ -27,6 +28,9 @@ function useSong() {
                     );
                     dispatch(play());
                 } catch (error) {
+                    if (!error.data) {
+                        await undoPlaySong(id);
+                    }
                     toast.error('Failed to play song');
                 }
             } else {

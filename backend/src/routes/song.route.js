@@ -13,6 +13,12 @@ router.post(
     songMiddleware.check_disable_song,
     songController.play_song,
 );
+router.put(
+    '/undo-play-song/:id',
+    songMiddleware.check_disable_song,
+    songController.undo_play_song,
+);
+
 router.get('/get-song-view/:id', songController.get_song_view);
 router.get('/get-song-by-id/:id', songController.get_song_by_id);
 

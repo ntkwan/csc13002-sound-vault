@@ -107,6 +107,29 @@ const play_song = async (req, res) => {
     }
 };
 
+const undo_play_song = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        await Song.decreaseView();
+        await Song.save();
+
+        return res.status(200).json({
+            message: 'Undo play song successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_song_view = async (req, res) => {
     const songId = req.params.id;
     try {
@@ -229,6 +252,7 @@ module.exports = {
     get_trending_songs,
     get_new_songs,
     play_song,
+    undo_play_song,
     get_song_view,
     get_songs_by_region,
     get_top_songs,

@@ -129,6 +129,12 @@ export const api = createApi({
                 method: 'POST',
             }),
         }),
+        undoPlaySong: builder.mutation({
+            query: (id) => ({
+                url: `/undo-play-song/${id}`,
+                method: 'PUT',
+            }),
+        }),
         getFeaturedArtists: builder.query({
             query: () => '/get-featured-artists',
         }),
@@ -248,6 +254,7 @@ export const {
     useUploadSongThumbnailMutation,
     useGetFeaturedArtistsQuery,
     usePlaySongMutation,
+    useUndoPlaySongMutation,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
     useGetSongByIdQuery,

@@ -85,6 +85,10 @@ SongSchema.methods.increaseView = async function () {
     this.view += 1;
 };
 
+SongSchema.methods.decreaseView = async function () {
+    this.view -= 1;
+};
+
 SongSchema.methods.setRegion = async function (region) {
     this.region = region;
 };
