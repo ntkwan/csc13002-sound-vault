@@ -22,7 +22,7 @@ function useSong() {
                             artist,
                             url: res.audiourl,
                             thumbnail: imageurl.url,
-                            screen: coverimg.url,
+                            screen: coverimg?.url ?? '',
                         }),
                     );
                     dispatch(play());

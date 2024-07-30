@@ -77,6 +77,7 @@ const get_profile_all_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
+                    coverimg: song.coverimg,
                     audiourl: song.audiourl,
                     view: song.view,
                     region: song.region,
