@@ -11,7 +11,7 @@ import {
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
 } from '@services/api';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function ProfilePageEditing() {
@@ -47,7 +47,6 @@ function ProfilePageEditing() {
 
     return (
         <div className="profilepage__editing pt-8">
-            <ToastContainer />
             <PageTitle
                 className="editing__header inline"
                 title="Edit Profile"

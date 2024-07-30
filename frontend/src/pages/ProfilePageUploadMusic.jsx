@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { PageTitle } from '@components';
 import { TermAndPolicyBox } from '@features/authentication/components';
 import uploadIcon from '@assets/img/upload-icon.svg';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import {
     useUploadSongMutation,
     useUploadSongThumbnailMutation,
@@ -74,7 +74,6 @@ function ProfilePageUploadMusic() {
 
     return (
         <>
-            <ToastContainer />
             <div className="upload-music__page pt-8">
                 {showTermsAndPolicy && (
                     <TermAndPolicyBox
