@@ -43,6 +43,7 @@ export const api = createApi({
     baseQuery: baseQueryWithReauth,
     tagTypes: ['User', 'Song', 'Album'],
     endpoints: (builder) => ({
+        // Authentication -----------------------------------------------------
         signIn: builder.mutation({
             query: (body) => ({
                 url: '/signin',
@@ -102,6 +103,8 @@ export const api = createApi({
                 }
             },
         }),
+
+        // Songs --------------------------------------------------------------
         uploadAudio: builder.mutation({
             query: ({ file }) => ({
                 url: '/upload-audio',
@@ -128,12 +131,14 @@ export const api = createApi({
                 url: `/play-song/${id}`,
                 method: 'POST',
             }),
+            invalidatesTags: ['User'],
         }),
         undoPlaySong: builder.mutation({
             query: (id) => ({
                 url: `/undo-play-song/${id}`,
                 method: 'PUT',
             }),
+            invalidatesTags: ['User'],
         }),
         getFeaturedArtists: builder.query({
             query: () => '/get-featured-artists',
@@ -156,6 +161,8 @@ export const api = createApi({
         getPopularAlbums: builder.query({
             query: () => '/get-popular-albums',
         }),
+
+        // Playlists ----------------------------------------------------------
         createPlaylist: builder.mutation({
             query: (body) => ({
                 url: '/create-playlist',
@@ -186,6 +193,8 @@ export const api = createApi({
         getPlaylistById: builder.query({
             query: (id) => `/get-playlist-by-id/${id}`,
         }),
+
+        // User --------------------------------------------------------------
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
         }),
@@ -240,15 +249,22 @@ export const api = createApi({
                 body: file,
             }),
         }),
+        getRecentlyPlayedSongs: builder.query({
+            query: () => '/get-recently-played-songs',
+            providesTags: ['User'],
+        }),
     }),
 });
 
 export const {
+    // Authentication ---------------------------------------------------------
     useSignInMutation,
     useSignUpMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useLogOutMutation,
+
+    // Songs ------------------------------------------------------------------
     useUploadAudioMutation,
     useUploadSongMutation,
     useUploadSongThumbnailMutation,
@@ -261,11 +277,15 @@ export const {
     useGetChartSongsQuery,
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
+
+    // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,
     useDeletePlaylistByIdMutation,
     useAddSongToPlaylistMutation,
     useRemoveSongFromPlaylistMutation,
     useGetPlaylistByIdQuery,
+
+    // User -------------------------------------------------------------------
     useGetMyProfileQuery,
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
@@ -277,4 +297,5 @@ export const {
     useGetProfileAlbumsQuery,
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
+    useGetRecentlyPlayedSongsQuery,
 } = api;

@@ -3,7 +3,7 @@ import { PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUserProfile } from '@features/profilepage/slices';
-import { useGetFollowingListByIdQuery } from '@services/api';
+import { useGetFollowingListByIdQuery, useGetRecentlyPlayedSongsQuery } from '@services/api';
 
 const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
@@ -16,6 +16,10 @@ function LibraryPage() {
         useGetFollowingListByIdQuery(profileId || id, {
             skip: !profileId && !id,
         });
+    const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
+    
+    const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
+    console.log(recentlyPlayedSongs);
     const { following } = followingListData || {};
     const followingDisplay = {
         type: 'Artist',
@@ -68,41 +72,7 @@ function LibraryPage() {
             type: 'Playlist',
             title: 'Recently Playlist',
             displayItems: '4',
-            data: [
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-                {
-                    title: 'Nếu lúc đó',
-                    artist: 'tlinh',
-                    genre: 'Pop',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    audiourl:
-                        'https://res.cloudinary.com/drnwr3wz8/video/upload/v1719576267/tracks/neulucdo-tlinh.mp3',
-                    view: 0,
-                },
-            ],
+            data: recentlyPlayedSongs || [],
         },
     ];
 
