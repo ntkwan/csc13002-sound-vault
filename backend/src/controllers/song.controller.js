@@ -86,6 +86,7 @@ const get_new_songs = async (req, res) => {
 
 const play_song = async (req, res) => {
     const songId = req.params.id;
+    const user = req.user;
     try {
         const Song = await SongModel.findById(songId);
         if (!Song) {
@@ -96,6 +97,11 @@ const play_song = async (req, res) => {
 
         await Song.increaseView();
         await Song.save();
+
+        if (user) {
+            await user.addToRecentlyPlayed(songId);
+            await user.save();
+        }
 
         return res.status(200).json({
             audiourl: Song.audiourl,
@@ -109,6 +115,7 @@ const play_song = async (req, res) => {
 
 const undo_play_song = async (req, res) => {
     const songId = req.params.id;
+    const user = req.user;
     try {
         const Song = await SongModel.findById(songId);
         if (!Song) {
@@ -119,6 +126,11 @@ const undo_play_song = async (req, res) => {
 
         await Song.decreaseView();
         await Song.save();
+
+        if (user) {
+            await user.removeFromRecentlyPlayed(songId);
+            await user.save();
+        }
 
         return res.status(200).json({
             message: 'Undo play song successfully',

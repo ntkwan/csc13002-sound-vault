@@ -279,6 +279,47 @@ const get_popular_albums = async (req, res) => {
     }
 };
 
+const get_recently_played_songs = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const songs = await SongModel.find({
+            _id: { $in: user.recentlyPlayed },
+        });
+        const orderedSongs = songs.sort((a, b) => {
+            return (
+                user.recentlyPlayed.indexOf(a._id) -
+                user.recentlyPlayed.indexOf(b._id)
+            );
+        });
+
+        return res.status(200).json({
+            songs: orderedSongs.map((song) => {
+                return {
+                    id: song._id,
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    coverimg: song.coverimg,
+                    view: song.view,
+                };
+            }),
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     get_following_list_by_id,
     get_follow_button_by_id,
@@ -289,4 +330,5 @@ module.exports = {
     get_profile_all_songs,
     get_featured_artists,
     get_popular_albums,
+    get_recently_played_songs,
 };

@@ -40,4 +40,11 @@ router.get(
 router.get('/get-featured-artists', userController.get_featured_artists);
 
 router.get('/get-popular-albums', userController.get_popular_albums);
+
+router.get(
+    '/get-recently-played-songs',
+    authMiddleware.check_user,
+    userController.get_recently_played_songs,
+);
+
 module.exports = router;

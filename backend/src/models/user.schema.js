@@ -67,6 +67,10 @@ const UserSchema = new Schema(
             type: Array,
             default: [],
         },
+        recentlyPlayed: {
+            type: Array,
+            default: [],
+        },
     },
     {
         timestamps: true,
@@ -116,6 +120,29 @@ UserSchema.methods.generateRefreshToken = function () {
         {
             expiresIn: process.env.REFRESH_KEY_EXPIRES_IN || '1d',
         },
+    );
+};
+
+UserSchema.methods.addToRecentlyPlayed = async function (songId) {
+    if (this.recentlyPlayed.includes(songId)) {
+        console.log(this.recentlyPlayed);
+        this.recentlyPlayed = this.recentlyPlayed.filter(
+            (id) => id.toString() !== songId,
+        );
+        console.log('---------', this.recentlyPlayed);
+    }
+
+    if (this.recentlyPlayed.length === 10) {
+        this.recentlyPlayed.pop();
+    }
+
+    this.recentlyPlayed.unshift(songId);
+    console.log('++++++++++', this.recentlyPlayed);
+};
+
+UserSchema.methods.removeFromRecentlyPlayed = async function (songId) {
+    this.recentlyPlayed = this.recentlyPlayed.filter(
+        (id) => id.toString() !== songId,
     );
 };
 

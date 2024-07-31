@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const songController = require('../controllers/song.controller');
 const songMiddleware = require('../middleware/song_auth');
+const authMiddleware = require('../middleware/auth');
 
 router.get('/get-trending-songs', songController.get_trending_songs);
 router.get('/get-new-songs', songController.get_new_songs);
@@ -11,11 +12,13 @@ router.get('/get-top-songs', songController.get_top_songs);
 router.post(
     '/play-song/:id',
     songMiddleware.check_disable_song,
+    authMiddleware.check_guest,
     songController.play_song,
 );
 router.put(
     '/undo-play-song/:id',
     songMiddleware.check_disable_song,
+    authMiddleware.check_guest,
     songController.undo_play_song,
 );
 
