@@ -3,31 +3,24 @@ import { PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUserProfile } from '@features/profilepage/slices';
-import { useGetFollowingListByIdQuery, useGetRecentlyPlayedSongsQuery } from '@services/api';
-
-const IMGURL =
-    'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
+import { useGetFollowingListByIdQuery, useGetRecentlyPlayedSongsQuery, useGetMyPlaylistsQuery } from '@services/api';
 
 function LibraryPage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
+
     const { data: followingListData, isLoading: followingListLoading } =
         useGetFollowingListByIdQuery(profileId || id, {
             skip: !profileId && !id,
         });
-    const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
-    
-    const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
-    console.log(recentlyPlayedSongs);
     const { following } = followingListData || {};
-    const followingDisplay = {
-        type: 'Artist',
-        title: 'Following',
-        visibility: '',
-        link: '',
-        data: following || [],
-    };
+
+    const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
+    const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
+    
+    const { data: myPlaylistsData } = useGetMyPlaylistsQuery();
+    const { playlists: myPlaylists } = myPlaylistsData || {};
 
     if (followingListLoading) return null;
 
@@ -44,29 +37,7 @@ function LibraryPage() {
             type: 'Playlist',
             title: 'Playlist',
             displayItems: '2',
-            data: [
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-                {
-                    title: 'Chúng Ta Của Tương Lai',
-                    imageurl: {
-                        url: IMGURL,
-                    },
-                    desc: 'playlist',
-                },
-            ],
+            data: myPlaylists || [],
         },
         {
             type: 'Playlist',

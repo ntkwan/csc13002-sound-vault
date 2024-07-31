@@ -193,6 +193,9 @@ export const api = createApi({
         getPlaylistById: builder.query({
             query: (id) => `/get-playlist-by-id/${id}`,
         }),
+        getMyPlaylists: builder.query({
+            query: () => '/get-my-playlists',
+        }),
 
         // User --------------------------------------------------------------
         getMyProfile: builder.query({
@@ -284,6 +287,7 @@ export const {
     useAddSongToPlaylistMutation,
     useRemoveSongFromPlaylistMutation,
     useGetPlaylistByIdQuery,
+    useGetMyPlaylistsQuery,
 
     // User -------------------------------------------------------------------
     useGetMyProfileQuery,
