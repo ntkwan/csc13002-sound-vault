@@ -29,5 +29,10 @@ router.get(
     '/get-playlist-by-id/:playlistId',
     playlistController.get_playlist_by_id,
 );
+router.get(
+    '/get-my-playlists',
+    authMiddleware.check_user,
+    playlistController.get_my_playlists,
+);
 
 module.exports = router;

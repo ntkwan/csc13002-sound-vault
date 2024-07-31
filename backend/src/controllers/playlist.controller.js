@@ -166,10 +166,37 @@ const get_playlist_by_id = async (req, res) => {
     }
 };
 
+const get_my_playlists = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const User = await UserModel.findById(userId);
+        const playlists = await PlaylistModel.find({
+            _id: { $in: User.playlist },
+        });
+
+        return res.status(200).json({
+            playlists: playlists.map((playlist) => {
+                return {
+                    id: playlist._id,
+                    name: playlist.name,
+                    description: playlist.desc,
+                    image: playlist.image,
+                };
+            }),
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     create_playlist,
     delete_playlist_by_id,
     add_song_to_playlist,
     remove_song_from_playlist,
     get_playlist_by_id,
+    get_my_playlists,
 };
