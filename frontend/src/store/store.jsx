@@ -16,6 +16,7 @@ import { profileReducer } from '@features/profilepage/slices';
 import { adminDashboardReducer } from '@features/admindashboard/slices';
 import { playerReducer } from '@features/player/slices';
 import { loadingReducer } from '@features/loading/slices';
+import { playlistReducer } from '@features/playlist/slices';
 import playerTransform from '@features/player/transform';
 
 const persistConfig = {
@@ -25,14 +26,22 @@ const persistConfig = {
     whitelist: ['auth', 'player'],
 };
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
     profile: profileReducer,
     admindashboard: adminDashboardReducer,
     player: playerReducer,
     loading: loadingReducer,
+    playlist: playlistReducer,
 });
+
+const rootReducer = (state, action) => {
+    if (action.type === 'auth/logOut') {
+        state = undefined;
+    }
+    return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

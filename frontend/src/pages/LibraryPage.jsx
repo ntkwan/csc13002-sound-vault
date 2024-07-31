@@ -3,26 +3,30 @@ import { PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUserProfile } from '@features/profilepage/slices';
-import { useGetFollowingListByIdQuery, useGetRecentlyPlayedSongsQuery, useGetMyPlaylistsQuery } from '@services/api';
+import {
+    useGetFollowingListByIdQuery,
+    useGetRecentlyPlayedSongsQuery,
+    useGetMyPlaylistsQuery,
+} from '@services/api';
 
 function LibraryPage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectUserProfile);
     const { id } = myProfileData;
 
-    const { data: followingListData, isLoading: followingListLoading } =
-        useGetFollowingListByIdQuery(profileId || id, {
+    const { data: followingListData } = useGetFollowingListByIdQuery(
+        profileId || id,
+        {
             skip: !profileId && !id,
-        });
+        },
+    );
     const { following } = followingListData || {};
 
     const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
     const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
-    
+
     const { data: myPlaylistsData } = useGetMyPlaylistsQuery();
     const { playlists: myPlaylists } = myPlaylistsData || {};
-
-    if (followingListLoading) return null;
 
     const mediaData = [
         {

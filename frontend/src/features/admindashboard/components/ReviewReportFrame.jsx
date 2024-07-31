@@ -44,15 +44,13 @@ function ReviewReportFrame({ item, onClose }) {
     };
 
     const dispatch = useDispatch();
-    const { data: myProfileData, isLoading: profileLoading } =
-        useGetMyProfileQuery();
+    const { data: myProfileData } = useGetMyProfileQuery();
 
     useEffect(() => {
         if (myProfileData) {
             dispatch(updateInfo(myProfileData));
         }
     }, [myProfileData, dispatch]);
-    if (profileLoading) return null;
 
     const { name, image: { url: avatar } = {} } = myProfileData || {};
 
@@ -66,8 +64,9 @@ function ReviewReportFrame({ item, onClose }) {
                     <i className="ri-close-fill text-3xl"></i>
                 </button>
                 <h2 className="relative border-b p-3 text-2xl font-medium">
-                    Report from '{item.report.username}' about '
-                    {item.report.reporttype}'
+                    Report from &rsquo;{item.report.username}&rsquo; about
+                    &rsquo;
+                    {item.report.reporttype}&rsquo;
                     <i className="bx bx-label absolute top-5 px-2" />
                 </h2>
 

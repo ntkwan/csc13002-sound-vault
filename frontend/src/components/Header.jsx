@@ -54,15 +54,13 @@ function Header() {
         };
     }, [showNotice]);
 
-    const { data: myProfileData, isLoading: profileLoading } =
-        useGetMyProfileQuery();
+    const { data: myProfileData } = useGetMyProfileQuery();
 
     useEffect(() => {
         if (myProfileData) {
             dispatch(updateInfo(myProfileData));
         }
     }, [myProfileData, dispatch]);
-    if (profileLoading) return null;
 
     const { name, image: { url: avatar } = {} } = myProfileData || {};
 

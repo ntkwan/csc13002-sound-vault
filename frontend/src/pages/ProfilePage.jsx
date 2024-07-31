@@ -56,28 +56,33 @@ function ProfilePage() {
         });
 
     // Fetch following list by id
-    const { data: followingListData, isLoading: followingListLoading } =
-        useGetFollowingListByIdQuery(profileId || id, {
+    const { data: followingListData } = useGetFollowingListByIdQuery(
+        profileId || id,
+        {
             skip: !profileId && !id,
-        });
+        },
+    );
 
     // Fetch follow button state by id
-    const { data: followButtonData, isLoading: followButtonLoading } =
-        useGetFollowButtonByIdQuery(profileId, {
-            skip: !profileId,
-        });
+    const { data: followButtonData } = useGetFollowButtonByIdQuery(profileId, {
+        skip: !profileId,
+    });
 
     // Fetch all songs by profile id
-    const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
-        useGetProfileAllSongsQuery(profileId || id, {
+    const { data: profileAllSongsData } = useGetProfileAllSongsQuery(
+        profileId || id,
+        {
             skip: !profileId && !id,
-        });
+        },
+    );
 
     // Fetch albums by profile id
-    const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
-        useGetProfileAlbumsQuery(profileId || id, {
+    const { data: profileAlbumsData } = useGetProfileAlbumsQuery(
+        profileId || id,
+        {
             skip: !profileId && !id,
-        });
+        },
+    );
 
     // Follow/Unfollow profile
     const [followProfile, { isLoading: isLoadingFollow }] =
@@ -115,15 +120,6 @@ function ProfilePage() {
     const handleSeeMoreSongs = () => {
         setSeeMoreSongs(!seeMoreSongs);
     };
-
-    // Loading state
-    if (
-        profileByIdLoading ||
-        followButtonLoading ||
-        followingListLoading ||
-        profileAllSongsLoading
-    )
-        return null;
 
     // Check if profile is mine than show profile data
     const isMyProfile = id === profileId || !profileId;
