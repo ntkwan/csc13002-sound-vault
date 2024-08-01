@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useGetMyProfileQuery } from '@services/api';
-import { updateInfo } from '@features/profilepage/slices';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCurrentProfile } from '@services/selectors';
 
 ReviewReportFrame.propTypes = {
     item: PropTypes.shape({
@@ -43,16 +42,9 @@ function ReviewReportFrame({ item, onClose }) {
         setIsReplying(false);
     };
 
-    const dispatch = useDispatch();
-    const { data: myProfileData } = useGetMyProfileQuery();
+    const profile = useSelector(selectCurrentProfile);
 
-    useEffect(() => {
-        if (myProfileData) {
-            dispatch(updateInfo(myProfileData));
-        }
-    }, [myProfileData, dispatch]);
-
-    const { name, image: { url: avatar } = {} } = myProfileData || {};
+    const { name, image: { url: avatar } = {} } = profile || {};
 
     return (
         <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">

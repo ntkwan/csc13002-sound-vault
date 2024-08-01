@@ -2,16 +2,16 @@ import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectUserProfile } from '@features/profilepage/slices';
 import {
     useGetFollowingListByIdQuery,
     useGetRecentlyPlayedSongsQuery,
     useGetMyPlaylistsQuery,
 } from '@services/api';
+import { selectCurrentProfile } from '@services/selectors';
 
 function LibraryPage() {
     const { profileId } = useParams();
-    const myProfileData = useSelector(selectUserProfile);
+    const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
 
     const { data: followingListData } = useGetFollowingListByIdQuery(

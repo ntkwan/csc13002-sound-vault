@@ -51,8 +51,6 @@ const profileSlice = createSlice({
     },
 });
 
-export const selectUserProfile = (state) => state.profile;
-
 export const {
     toggleFollow,
     uploadMusic,

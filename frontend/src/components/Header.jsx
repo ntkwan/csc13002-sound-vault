@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { SearchIcon } from '.';
-import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
-import { useGetMyProfileQuery } from '@services/api';
+import {
+    selectCurrentAdmin,
+    selectCurrentProfile,
+    selectCurrentToken,
+} from '@services/selectors';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateInfo } from '@features/profilepage/slices';
 
 function Header() {
     const dispatch = useDispatch();
@@ -54,15 +56,9 @@ function Header() {
         };
     }, [showNotice]);
 
-    const { data: myProfileData } = useGetMyProfileQuery();
+    const profile = useSelector(selectCurrentProfile);
 
-    useEffect(() => {
-        if (myProfileData) {
-            dispatch(updateInfo(myProfileData));
-        }
-    }, [myProfileData, dispatch]);
-
-    const { name, image: { url: avatar } = {} } = myProfileData || {};
+    const { name, image: { url: avatar } = {} } = profile || {};
 
     return (
         <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">

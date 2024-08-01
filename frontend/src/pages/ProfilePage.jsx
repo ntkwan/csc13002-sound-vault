@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { selectUserProfile } from '@features/profilepage/slices';
 import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
+import { selectCurrentProfile } from '@services/selectors';
 import {
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
@@ -18,7 +18,7 @@ import { ReportFrame } from '@components/index';
 
 function ProfilePage() {
     const { profileId } = useParams();
-    const myProfileData = useSelector(selectUserProfile);
+    const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
 
     // hanlde menu option

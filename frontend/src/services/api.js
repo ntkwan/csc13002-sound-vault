@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logOut, setCredentials } from '@features/authentication/slices';
 import { resetPlayer } from '@features/player/slices';
+import { updateInfo } from '@features/profilepage/slices';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
@@ -62,6 +63,11 @@ export const api = createApi({
                         }),
                     );
                     dispatch(resetPlayer());
+
+                    const profile = await dispatch(
+                        api.endpoints.getMyProfile.initiate(),
+                    ).unwrap();
+                    dispatch(updateInfo(profile));
                 } catch (error) {
                     console.error(error?.error?.data?.message);
                 }

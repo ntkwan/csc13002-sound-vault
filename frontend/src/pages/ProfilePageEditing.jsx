@@ -3,10 +3,10 @@ import { map } from 'lodash';
 import { PageTitle } from '@components';
 import { UploadImage, InputForm } from '@features/profilepage/components';
 import {
-    selectUserProfile,
     updateInfo,
     updatePassword,
 } from '@features/profilepage/slices';
+import { selectCurrentProfile } from '@services/selectors';
 import {
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function ProfilePageEditing() {
-    const userProfile = useSelector(selectUserProfile);
+    const userProfile = useSelector(selectCurrentProfile);
     const dispatch = useDispatch();
     const [uploadProfilePic] = useUploadProfilePicMutation();
 

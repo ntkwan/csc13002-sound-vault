@@ -1,6 +1,5 @@
 export {
     default as profileReducer,
-    selectUserProfile,
     toggleFollow,
     uploadMusic,
     updateAvatar,
