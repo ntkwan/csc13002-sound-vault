@@ -24,6 +24,8 @@ const get_song_by_id = async (req, res) => {
             region: song.region,
             uploader: song.uploader,
             audiourl: song.audiourl,
+            isverified: song.isVerified,
+            isdisabled: song.isDisabled,
         });
     } catch (error) {
         return res.status(500).json({

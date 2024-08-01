@@ -5,7 +5,7 @@ import homeintroImage from '@assets/img/homeintro.svg';
 function HomePage() {
     useEffect(() => {
         const reloadKey = Date.now();
-        console.log('reloadKey', reloadKey);
+        // console.log('reloadKey', reloadKey);
         document.querySelector('.homepage').setAttribute('key', reloadKey);
     }, []);
 

@@ -158,6 +158,7 @@ const get_all_accounts = async (req, res) => {
                     id: user._id,
                     name: user.name,
                     isVerified: user.isVerified,
+                    isBanned: user.isBanned,
                     createdAt: user.createdAt,
                 };
             }),

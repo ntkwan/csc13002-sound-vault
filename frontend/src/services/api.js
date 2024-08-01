@@ -42,7 +42,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const api = createApi({
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User', 'Song', 'Album'],
+    tagTypes: ['User', 'Song', 'Album', 'AdminAccount', 'AdminSong'],
     endpoints: (builder) => ({
         // Authentication -----------------------------------------------------
         signIn: builder.mutation({
@@ -262,6 +262,70 @@ export const api = createApi({
             query: () => '/get-recently-played-songs',
             providesTags: ['User'],
         }),
+
+        // Admin -------------------------------------------------------------
+        setVerifiedArtistById: builder.mutation({
+            query: (id) => ({
+                url: `/set-verified-artist-by-id/${id}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['AdminAccount'],
+        }),
+        getAllAccounts: builder.query({
+            query: () => '/get-all-accounts',
+            providesTags: ['AdminAccount'],
+        }),
+        removeAccountById: builder.mutation({
+            query: (id) => ({
+                url: `/remove-account-by-id/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['AdminAccount'],
+        }),
+        banAccount: builder.mutation({
+            query: ({ profileId, days, reason }) => ({
+                url: '/ban-account',
+                method: 'POST',
+                body: { profileId, days, reason },
+            }),
+            invalidatesTags: ['AdminAccount'],
+        }),
+        getAccountBanStatusById: builder.query({
+            query: (id) => `/get-account-ban-status-by-id/${id}`,
+            providesTags: ['AdminAccount'],
+        }),
+        getAllSongs: builder.query({
+            query: () => '/get-all-songs',
+            providesTags: ['AdminSong'],
+        }),
+        setVerifiedSongById: builder.mutation({
+            query: (id) => ({
+                url: `/set-verified-song-by-id/${id}`,
+                method: 'PUT',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
+        removeSongById: builder.mutation({
+            query: (id) => ({
+                url: `/remove-song-by-id/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
+        deactivateSong: builder.mutation({
+            query: (id) => ({
+                url: `/deactivate-song/${id}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
+        activateSong: builder.mutation({
+            query: (id) => ({
+                url: `/activate-song/${id}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
     }),
 });
 
@@ -308,4 +372,16 @@ export const {
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
     useGetRecentlyPlayedSongsQuery,
+
+    // Admin ------------------------------------------------------------------
+    useSetVerifiedArtistByIdMutation,
+    useGetAllAccountsQuery,
+    useRemoveAccountByIdMutation,
+    useBanAccountMutation,
+    useGetAccountBanStatusByIdQuery,
+    useGetAllSongsQuery,
+    useSetVerifiedSongByIdMutation,
+    useRemoveSongByIdMutation,
+    useDeactivateSongMutation,
+    useActivateSongMutation,
 } = api;

@@ -16,7 +16,7 @@ import { profileReducer } from '@features/profilepage/slices';
 import { adminDashboardReducer } from '@features/admindashboard/slices';
 import { playerReducer } from '@features/player/slices';
 import { loadingReducer } from '@features/loading/slices';
-import { playlistReducer } from '@features/playlist/slices';
+// import { playlistReducer } from '@features/playlist/slices';
 import playerTransform from '@features/player/transform';
 
 const persistConfig = {
@@ -33,7 +33,7 @@ const appReducer = combineReducers({
     admindashboard: adminDashboardReducer,
     player: playerReducer,
     loading: loadingReducer,
-    playlist: playlistReducer,
+    // playlist: playlistReducer,
 });
 
 const rootReducer = (state, action) => {

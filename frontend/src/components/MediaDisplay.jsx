@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
@@ -307,9 +307,12 @@ MediaItems3.displayName = 'MediaItems3';
 MediaItems3.propTypes = MediaItems.propTypes;
 
 const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
+    const navigate = useNavigate();
     const [duration, setDuration] = useState('0:00');
     const [menuVisible, setMenuVisible] = useState(null);
     const [showReportFrame, setShowReportFrame] = useState(false);
+    const [showPlaylistForm, setShowPlaylistForm] = useState(false);
+    const playlistFormRef = useRef(null);
     const [playlistOptionsVisible, setPlaylistOptionsVisible] = useState(false);
 
     const location = useLocation();
@@ -321,13 +324,23 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
         setMenuVisible(menuVisible === index ? null : index);
     };
 
-    const handleMouseEnter = () => {
-        setPlaylistOptionsVisible(true);
+    const handleCreatePlaylist = () => {
+        setShowPlaylistForm(false);
     };
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (
+                playlistFormRef.current &&
+                !playlistFormRef.current.contains(e.target)
+            ) {
+                setShowPlaylistForm(false);
+            }
+        };
 
-    const handleMouseLeave = () => {
-        setPlaylistOptionsVisible(false);
-    };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
+    }, []);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -341,7 +354,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             document.removeEventListener('mousedown', handleOutsideClick);
     }, [menuVisible]);
 
-    const { id, title, artist, view, imageurl, audiourl, isVerified } =
+    const { id, title, artist, view, imageurl, audiourl, isverified } =
         mediaData;
     const { url } = imageurl;
 
@@ -379,6 +392,31 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
             {showReportFrame && (
                 <ReportFrame setShowReportFrame={setShowReportFrame} />
             )}
+            {showPlaylistForm && (
+                <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div
+                        ref={playlistFormRef}
+                        className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
+                    >
+                        <label
+                            htmlFor="playlistName"
+                            className="block pb-2 text-left text-xl"
+                        >
+                            Create a name for your playlist
+                        </label>
+                        <input
+                            id="playlistName"
+                            type="text"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleCreatePlaylist();
+                                }
+                            }}
+                            className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                        />
+                    </div>
+                </div>
+            )}
             <div
                 className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
                 onClick={onClickButton}
@@ -401,10 +439,11 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                         alt={title}
                     />
                     <p
-                        className={`flex w-full items-center space-x-3 ${titleClassName}`}
+                        className={`flex w-full items-center space-x-3 ${titleClassName} hover:underline`}
+                        onClick={prevent(() => navigate(`/song/${id}`))}
                     >
                         {title}
-                        {isVerified && (
+                        {isverified && (
                             <img
                                 className="profile__verified-icon ml-4 h-5 w-5"
                                 src={verifiedIcon}
@@ -443,8 +482,12 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                         )}
                                     <li
                                         className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onMouseEnter={handleMouseEnter}
-                                        onMouseLeave={handleMouseLeave}
+                                        onMouseEnter={() =>
+                                            setPlaylistOptionsVisible(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setPlaylistOptionsVisible(false)
+                                        }
                                     >
                                         <i className="ri-add-circle-line text-xl leading-none"></i>
                                         <span>Add to playlist</span>
@@ -453,7 +496,17 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                             <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                                 <ul>
                                                     <li className="flex cursor-pointer space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <div className="mx-4 w-full border-b border-[#999] py-2 text-left">
+                                                        <div
+                                                            className="mx-4 w-full border-b border-[#999] py-2 text-left"
+                                                            onClick={() => {
+                                                                setShowPlaylistForm(
+                                                                    true,
+                                                                );
+                                                                setPlaylistOptionsVisible(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                        >
                                                             <i className="ri-add-circle-line" />
                                                             <span>
                                                                 New playlist

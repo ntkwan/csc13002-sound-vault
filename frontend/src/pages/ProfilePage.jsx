@@ -15,8 +15,10 @@ import {
 } from '@services/api';
 import { toast } from 'react-toastify';
 import { ReportFrame } from '@components/index';
+import { selectCurrentAdmin } from '@services/selectors';
 
 function ProfilePage() {
+    const isAdmin = useSelector(selectCurrentAdmin);
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
@@ -164,7 +166,7 @@ function ProfilePage() {
     };
 
     return (
-        <>
+        <div className={isAdmin ? 'pointer-events-none' : ''}>
             {showReportFrame && (
                 <ReportFrame setShowReportFrame={setShowReportFrame} />
             )}
@@ -360,7 +362,7 @@ function ProfilePage() {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }
 

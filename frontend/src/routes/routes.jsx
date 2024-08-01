@@ -32,6 +32,13 @@ const router = createBrowserRouter([
         errorElement: NotFoundPage,
         children: [
             {
+                element: <Protected roles={'common'} />,
+                children: [
+                    { path: 'song/:songId', Component: SongPage },
+                    { path: 'profile/:profileId', Component: ProfilePage },
+                ],
+            },
+            {
                 element: <Protected roles={'guest'} />,
                 children: [
                     { index: true, Component: HomePage },
@@ -40,12 +47,10 @@ const router = createBrowserRouter([
                     { path: 'newrelease', Component: NewReleasePage },
                     { path: 'album', Component: AlbumPage },
                     { path: 'playlist/:playlistId', Component: PlaylistPage },
-                    { path: 'profile/:profileId', Component: ProfilePage },
                     { path: 'artist', Component: ArtistPage },
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
                     { path: 'topicsgenre', Component: TopicsAndGenrePage },
-                    { path: 'song/:songId', Component: SongPage },
                 ],
             },
             {

@@ -81,6 +81,7 @@ const get_profile_all_songs = async (req, res) => {
                     audiourl: song.audiourl,
                     view: song.view,
                     region: song.region,
+                    isverified: song.isVerified,
                 };
             }),
         );
