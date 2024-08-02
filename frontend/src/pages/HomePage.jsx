@@ -10,7 +10,7 @@ function HomePage() {
     }, []);
 
     return (
-        <div className="homepage grid auto-rows-auto gap-y-16 caret-transparent">
+        <div className="homepage grid select-none auto-rows-auto gap-y-16 caret-transparent">
             {/* Intro SoundVault */}
             <div className="homepage__container flex items-center text-white">
                 {/* Intro text */}

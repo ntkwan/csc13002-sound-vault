@@ -41,7 +41,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 {/* media tile */}
                 {title && (
                     <h2 className="media__title space-x-3 text-3xl">
-                        <span className="media__title-name font-bold">
+                        <span className="media__title-name select-none font-bold">
                             {title}
                         </span>
                         <span className="media__title-visibility italic">

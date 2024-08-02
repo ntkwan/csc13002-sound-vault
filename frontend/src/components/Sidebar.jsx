@@ -94,11 +94,13 @@ function Sidebar() {
                             />
                         </>
                     )}
-                    <SidebarLink
-                        to="setting"
-                        icon={SettingIcon}
-                        label="setting"
-                    />
+                    {token && (
+                        <SidebarLink
+                            to={isAdmin ? 'admin/setting' : 'user/setting'}
+                            icon={SettingIcon}
+                            label="setting"
+                        />
+                    )}
                     {token && <Logout />}
                 </div>
             </section>

@@ -24,6 +24,7 @@ import {
     NotFoundPage,
     TopicsAndGenrePage,
     SongPage,
+    UserSettingPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
                         Component: ProfilePageUploadMusic,
                     },
                     { path: 'profile/editing', Component: ProfilePageEditing },
+                    { path: 'user/setting', Component: UserSettingPage },
                 ],
             },
             {

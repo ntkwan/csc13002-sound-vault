@@ -26,6 +26,7 @@ const get_song_by_id = async (req, res) => {
             audiourl: song.audiourl,
             isverified: song.isVerified,
             isdisabled: song.isDisabled,
+            createdAt: song.createdAt,
         });
     } catch (error) {
         return res.status(500).json({

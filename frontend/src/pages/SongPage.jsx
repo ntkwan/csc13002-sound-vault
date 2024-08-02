@@ -31,7 +31,11 @@ function SongPage() {
         audiourl: songAudiourl,
         isverified: songIsVerified,
         isdisabled: songIsDisabled,
+        createdAt: songCreatedAt,
     } = songByIdData || {};
+    const formattedSongCreatedAt = songCreatedAt
+        ? new Date(songCreatedAt).toLocaleDateString()
+        : '';
 
     const { data: profileByIdData, isLoading: profileByIdDataLoading } =
         useGetProfileByIdQuery(songUploader, {
@@ -71,6 +75,7 @@ function SongPage() {
 
     return (
         <div className={isAdmin ? 'pointer-events-none' : ''}>
+            {console.log(songByIdData)}
             <div className="caret-transparent">
                 <div className="h-96 w-full content-center">
                     {songCoverimg ? (
@@ -135,6 +140,8 @@ function SongPage() {
                                     {songTitle}
                                     {' • '}
                                     {songRegion}
+                                    {' • '}
+                                    {formattedSongCreatedAt}
                                     {' • '}
                                     {duration}
                                     {' • '}

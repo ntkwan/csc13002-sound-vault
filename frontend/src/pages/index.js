@@ -21,3 +21,4 @@ export { default as ReviewReportPage } from './ReviewReportPage';
 export { default as NotFoundPage } from './NotFoundPage';
 export { default as TopicsAndGenrePage } from './TopicsAndGenrePage';
 export { default as SongPage } from './SongPage';
+export { default as UserSettingPage } from './UserSettingPage';
