@@ -42,7 +42,14 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const api = createApi({
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User', 'Song', 'Album', 'AdminAccount', 'AdminSong'],
+    tagTypes: [
+        'User',
+        'Song',
+        'Album',
+        'Playlist',
+        'AdminAccount',
+        'AdminSong',
+    ],
     endpoints: (builder) => ({
         // Authentication -----------------------------------------------------
         signIn: builder.mutation({
@@ -68,6 +75,10 @@ export const api = createApi({
                         api.endpoints.getMyProfile.initiate(),
                     ).unwrap();
                     dispatch(updateInfo(profile));
+
+                    await dispatch(
+                        api.endpoints.getMyPlaylists.initiate(),
+                    ).unwrap();
                 } catch (error) {
                     console.error(error?.error?.data?.message);
                 }
@@ -196,11 +207,27 @@ export const api = createApi({
                 body,
             }),
         }),
+        addSongToLikedPlaylist: builder.mutation({
+            query: (id) => ({
+                url: `/add-song-to-liked-playlist/${id}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
+        removeSongFromLikedPlaylist: builder.mutation({
+            query: (id) => ({
+                url: `/remove-song-from-liked-playlist/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
         getPlaylistById: builder.query({
             query: (id) => `/get-playlist-by-id/${id}`,
+            providesTags: ['Playlist'],
         }),
         getMyPlaylists: builder.query({
             query: () => '/get-my-playlists',
+            providesTags: ['Playlist'],
         }),
 
         // User --------------------------------------------------------------
@@ -356,11 +383,12 @@ export const {
     useDeletePlaylistByIdMutation,
     useAddSongToPlaylistMutation,
     useRemoveSongFromPlaylistMutation,
+    useAddSongToLikedPlaylistMutation,
+    useRemoveSongFromLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
     useGetMyPlaylistsQuery,
 
     // User -------------------------------------------------------------------
-    useGetMyProfileQuery,
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
     useGetFollowButtonByIdQuery,

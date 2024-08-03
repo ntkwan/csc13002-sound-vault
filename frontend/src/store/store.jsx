@@ -16,14 +16,14 @@ import { profileReducer } from '@features/profilepage/slices';
 import { adminDashboardReducer } from '@features/admindashboard/slices';
 import { playerReducer } from '@features/player/slices';
 import { loadingReducer } from '@features/loading/slices';
-// import { playlistReducer } from '@features/playlist/slices';
+import { playlistsReducer } from '@features/playlists/slices';
 import playerTransform from '@features/player/transform';
 
 const persistConfig = {
     key: 'root',
     storage,
     transforms: [playerTransform],
-    whitelist: ['auth', 'player'],
+    whitelist: ['auth', 'player', 'playlists', 'profile'],
 };
 
 const appReducer = combineReducers({
@@ -33,7 +33,7 @@ const appReducer = combineReducers({
     admindashboard: adminDashboardReducer,
     player: playerReducer,
     loading: loadingReducer,
-    // playlist: playlistReducer,
+    playlists: playlistsReducer,
 });
 
 const rootReducer = (state, action) => {

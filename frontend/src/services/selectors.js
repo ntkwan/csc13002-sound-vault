@@ -8,3 +8,5 @@ export const selectCurrentGlobalLoading = (state) =>
     state.loading.isGlobalLoading;
 export const selectCurrentLocalLoading = (state) =>
     state.loading.isLocalLoading;
+export const selectMyPlaylists = (state) => state.playlists.playlists;
+export const selectCurrentPlaylist = (state) => state.playlists.currentPlaylist;
