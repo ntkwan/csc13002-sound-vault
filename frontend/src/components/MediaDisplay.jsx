@@ -2,12 +2,7 @@ import { useState, useEffect, memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import {
-    useGetProfileByIdQuery,
-    useAddSongToPlaylistMutation,
-    useCreatePlaylistMutation,
-    useDeletePlaylistByIdMutation,
-} from '@services/api';
+import { useGetProfileByIdQuery } from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
 import { PlayButton, ReportFrame } from '.';
 import { useSong } from '@hooks';
@@ -29,6 +24,10 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     const handlePlaylist = (id) => {
         navigate(`/playlist/${id}`);
+    };
+
+    const handleSong = (id) => {
+        navigate(`/song/${id}`);
     };
 
     const { type, title, visibility, link, data } = media;
@@ -68,32 +67,35 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     let MediaComponent;
                     switch (displayItems) {
                         case '1':
-                            MediaComponent = MediaItems;
+                            MediaComponent = HomeCard;
                             break;
                         case '2':
-                            MediaComponent = MediaItems2;
+                            MediaComponent = DetailCard;
                             break;
                         case '3':
-                            MediaComponent = MediaItems3;
+                            MediaComponent = BrowseCard;
                             break;
                         case '4':
-                            MediaComponent = MediaItems4;
+                            MediaComponent = SongBar;
                             break;
                         default:
-                            MediaComponent = MediaItems;
+                            MediaComponent = HomeCard;
                     }
 
                     let onClickImage, onClickButton, isOnPlaying;
                     if (type == 'Song') {
-                        onClickImage = () => activateSong(mediaData);
-                        onClickButton = onClickImage;
+                        onClickImage = () => handleSong(mediaData.id);
+                        onClickButton = () => activateSong(mediaData);
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
                     } else if (type == 'Artist') {
                         onClickImage = () => handleProfile(mediaData.id);
                         isOnPlaying = false;
-                    } else if (type == 'Album' || type == 'Playlist') {
+                    } else if (type == 'Album') {
                         onClickImage = () => handlePlaylist(mediaData.id);
                         isOnPlaying = false;
+                    } else if (type == 'SongBar') {
+                        onClickButton = () => activateSong(mediaData);
+                        isOnPlaying = currentSong == mediaData.id && isPlaying;
                     }
                     return (
                         <MediaComponent
@@ -140,7 +142,7 @@ prevent.prototype = {
     defaultOnly: PropTypes.bool,
 };
 
-const MediaItems = memo(
+const HomeCard = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
         // Song
         const { title, artist, image } = mediaData;
@@ -169,11 +171,11 @@ const MediaItems = memo(
         }
 
         return (
-            <div className="media-item group w-full flex-col space-y-2">
+            <div className="media-item group w-full flex-col space-y-2 hover:cursor-pointer">
                 <div className="relative m-auto w-[160px]">
                     {url ? (
                         <img
-                            className={`media-item__image m-auto h-[160px] border-[3px] object-cover hover:cursor-pointer ${imageClass}`}
+                            className={`media-item__image hover: m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
                             src={url}
                             alt={cart_title}
                             onClick={onClickImage}
@@ -206,8 +208,8 @@ const MediaItems = memo(
     },
 );
 
-MediaItems.displayName = 'MediaItems';
-MediaItems.propTypes = {
+HomeCard.displayName = 'ArtistCard';
+HomeCard.propTypes = {
     type: PropTypes.string,
     mediaData: PropTypes.shape({
         id: PropTypes.string,
@@ -223,7 +225,7 @@ MediaItems.propTypes = {
     isOnPlaying: PropTypes.bool,
 };
 
-const MediaItems2 = memo(
+const DetailCard = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
         // Song
         const { title, image } = mediaData;
@@ -246,13 +248,13 @@ const MediaItems2 = memo(
 
         return (
             <div
-                className="media-item z-1 group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-opacity-20"
+                className="media-item z-1 hover: group relative aspect-[1/1.3] w-[170px] rounded-lg bg-white bg-opacity-10 transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-opacity-20"
                 onClick={onClickImage}
             >
                 <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
                     <div className="media-item__image relative">
                         <img
-                            className={`${imageClass} media-item__img pointer-events-none aspect-square w-full object-cover hover:cursor-pointer`}
+                            className={`${imageClass} media-item__img hover: pointer-events-none aspect-square w-full object-cover`}
                             src={url}
                             alt={cart_title}
                         />
@@ -273,10 +275,10 @@ const MediaItems2 = memo(
     },
 );
 
-MediaItems2.displayName = 'MediaItems2';
-MediaItems2.propTypes = MediaItems.propTypes;
+DetailCard.displayName = 'DetailCard';
+DetailCard.propTypes = HomeCard.propTypes;
 
-const MediaItems3 = memo(({ type, mediaData }) => {
+const BrowseCard = memo(({ type, mediaData }) => {
     const { title, imageurl, bgColor } = mediaData;
     const propsDiv =
         type === 'genre'
@@ -286,7 +288,7 @@ const MediaItems3 = memo(({ type, mediaData }) => {
     const bgClass = bgColor ? `bg-[${bgColor}]` : 'bg-pink-500';
     return (
         <div
-            className={`media-item-3 relative w-full overflow-hidden rounded-md ${bgClass} shadow-md hover:cursor-pointer ${propsDiv}`}
+            className={`media-item-3 relative w-full overflow-hidden rounded-md ${bgClass} hover:cursor-pointer hover:shadow-md ${propsDiv}`}
             style={{ backgroundColor: bgColor }}
         >
             <img
@@ -303,10 +305,10 @@ const MediaItems3 = memo(({ type, mediaData }) => {
     );
 });
 
-MediaItems3.displayName = 'MediaItems3';
-MediaItems3.propTypes = MediaItems.propTypes;
+BrowseCard.displayName = 'BrowseCard';
+BrowseCard.propTypes = HomeCard.propTypes;
 
-const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
+const SongBar = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     const navigate = useNavigate();
     const [duration, setDuration] = useState('0:00');
     const [menuVisible, setMenuVisible] = useState(null);
@@ -417,19 +419,16 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                     </div>
                 </div>
             )}
-            <div
-                className="rounded-ful hover:bg group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:cursor-pointer hover:bg-white hover:bg-opacity-25"
-                onClick={onClickButton}
-            >
+            <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
                 {/* index - img - name */}
                 <div className="flex items-center space-x-8">
                     <div className="">
                         <PlayButton
                             onClick={onClickButton}
                             isOnPlaying={isOnPlaying}
-                            position="left-6 z-index-[5]"
+                            position="left-6"
                         />
-                        <span className="block w-3 group-hover:cursor-pointer">
+                        <span className="group-hover: block w-3">
                             {index + 1}
                         </span>
                     </div>
@@ -439,7 +438,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                         alt={title}
                     />
                     <p
-                        className={`flex w-full items-center space-x-3 ${titleClassName} hover:underline`}
+                        className={`flex w-full items-center space-x-3 ${titleClassName} hover:cursor-pointer hover:underline`}
                         onClick={prevent(() => navigate(`/song/${id}`))}
                     >
                         {title}
@@ -452,11 +451,11 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                         )}
                     </p>
                 </div>
-                <span>{view}</span>
-                <span>{duration}</span>
+                <span className="hover:cursor-default">{view}</span>
+                <span className="hover:cursor-default">{duration}</span>
                 <div className="flex items-center justify-end">
                     <i
-                        className="bx bxs-dollar-circle relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
+                        className="bx bxs-dollar-circle hover: relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
                         // onClick={prevent()}
                         data-title={`Donate for ${title} by ${artist}`}
                     ></i>
@@ -475,13 +474,13 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                 <ul>
                                     {pathtype == 'profile' &&
                                         pathId == undefined && (
-                                            <li className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                            <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                 <i className="ri-add-circle-line text-xl leading-none"></i>
                                                 <span>Add to album</span>
                                             </li>
                                         )}
                                     <li
-                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onMouseEnter={() =>
                                             setPlaylistOptionsVisible(true)
                                         }
@@ -495,7 +494,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                         {playlistOptionsVisible && (
                                             <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                                 <ul>
-                                                    <li className="flex cursor-pointer space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                         <div
                                                             className="mx-4 w-full border-b border-[#999] py-2 text-left"
                                                             onClick={() => {
@@ -513,10 +512,10 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                                             </span>
                                                         </div>
                                                     </li>
-                                                    <li className="flex cursor-pointer space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                         <span>Playlist 1</span>
                                                     </li>
-                                                    <li className="flex cursor-pointer space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                         <span>Playlist 2</span>
                                                     </li>
                                                 </ul>
@@ -524,28 +523,28 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                         )}
                                     </li>
                                     {pathtype == 'playlist' && (
-                                        <li className="flex cursor-pointer items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                             <i className="ri-indeterminate-circle-line text-left text-xl"></i>
                                             <span className="text-left">
                                                 Remove from this playlist
                                             </span>
                                         </li>
                                     )}
-                                    <li className="flex cursor-pointer items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                    <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                         <i className="ri-heart-line text-left text-xl"></i>
                                         <span className="text-left">
                                             Save to your Liked Songs
                                         </span>
                                     </li>
                                     <li
-                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onClick={prevent(() => handleShare())}
                                     >
                                         <i className="ri-share-line text-xl leading-none"></i>
                                         <span>Copy link</span>
                                     </li>
                                     <li
-                                        className="flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onClick={prevent(() =>
                                             setShowReportFrame(true),
                                         )}
@@ -555,7 +554,7 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
                                     </li>
                                     {pathtype == 'profile' &&
                                         pathId == undefined && (
-                                            <li className="flex cursor-pointer space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                            <li className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                 <i className="ri-close-large-line text-xl leading-none"></i>
                                                 <span>Delete Track</span>
                                             </li>
@@ -570,10 +569,10 @@ const MediaItems4 = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
     );
 });
 
-MediaItems4.displayName = 'MediaItems4';
-MediaItems4.propTypes = {
-    ...MediaItems.propTypes,
+SongBar.displayName = 'SongBar';
+SongBar.propTypes = {
+    ...HomeCard.propTypes,
     index: PropTypes.number,
 };
 
-export { MediaItems, MediaItems2, MediaItems3, MediaItems4 };
+export { HomeCard, DetailCard, BrowseCard, SongBar };

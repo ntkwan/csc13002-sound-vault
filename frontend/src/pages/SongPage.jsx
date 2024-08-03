@@ -51,7 +51,7 @@ function SongPage() {
         });
 
     const allReleases = {
-        type: 'Song',
+        type: 'SongBar',
         title: songArtist,
         visibility: '',
         data: profileAllSongsData ? profileAllSongsData.slice(0, 6) : [],

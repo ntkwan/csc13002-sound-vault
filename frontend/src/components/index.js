@@ -7,10 +7,10 @@ export { default as ReportFrame } from './ReportFrame';
 export { default as AlbumFrame } from './AlbumFrame';
 export {
     default as MediaDisplay,
-    MediaItems,
-    MediaItems2,
-    MediaItems3,
-    MediaItems4,
+    HomeCard,
+    DetailCard,
+    BrowseCard,
+    SongBar,
 } from './MediaDisplay';
 /* eslint-disable react-refresh/only-export-components */
 export * from './UI/Icons';

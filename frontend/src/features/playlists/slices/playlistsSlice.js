@@ -13,7 +13,7 @@ const initialState = {
     },
 };
 
-const playlistSlice = createSlice({
+const playlistsSlice = createSlice({
     name: 'playlists',
     initialState,
     reducers: {
@@ -52,6 +52,6 @@ const playlistSlice = createSlice({
     },
 });
 
-export default playlistSlice.reducer;
+export default playlistsSlice.reducer;
 
-export const { addPlaylist, removePlaylist } = playlistSlice.actions;
+export const { addPlaylist, removePlaylist } = playlistsSlice.actions;

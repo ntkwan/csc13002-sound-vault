@@ -44,7 +44,7 @@ function LibraryPage() {
             data: myPlaylists || [],
         },
         {
-            type: 'Playlist',
+            type: 'SongBar',
             title: 'Recently Playlist',
             displayItems: '4',
             data: recentlyPlayedSongs || [],

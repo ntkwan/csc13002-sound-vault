@@ -139,7 +139,7 @@ function ProfilePage() {
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
-        type: 'Song',
+        type: 'SongBar',
         title: 'All Releases',
         visibility: '',
         link: isSliceAllReleases ? '' : '',

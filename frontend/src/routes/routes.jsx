@@ -53,7 +53,6 @@ const router = createBrowserRouter([
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
                     { path: 'topicsgenre', Component: TopicsAndGenrePage },
-                    { path: 'wallet', Component: WalletPage },
                 ],
             },
             {
@@ -67,6 +66,7 @@ const router = createBrowserRouter([
                     },
                     { path: 'profile/editing', Component: ProfilePageEditing },
                     { path: 'user/setting', Component: UserSettingPage },
+                    { path: 'wallet', Component: WalletPage },
                 ],
             },
             {

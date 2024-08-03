@@ -10,14 +10,16 @@ function ChartRow({ id, rank, imageurl, coverimg, title, artist, view }) {
     useEffect(() => {
         const image = document.querySelector('.aspect-square');
         image.classList.toggle('opacity-50', isOnPlaying);
-    } , [isOnPlaying]);
+    }, [isOnPlaying]);
 
     return (
         <div className="group relative mb-6 ml-3 flex items-center rounded-full">
             <PlayButton
-                position="z-100 bottom-2 left-14 hover:scale-110 hover:brightness-125" 
+                position="bottom-2 left-14"
                 isOnPlaying={isOnPlaying}
-                onClick={() => activateSong({ id, title, artist, imageurl, coverimg })}
+                onClick={() =>
+                    activateSong({ id, title, artist, imageurl, coverimg })
+                }
             />
             <p className="mr-7 w-1">{rank}</p>
             <img

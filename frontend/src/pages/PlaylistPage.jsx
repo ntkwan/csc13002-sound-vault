@@ -76,7 +76,7 @@ function PlaylistPage() {
     const { name, avatar, cover, songs } = playlist;
 
     const songsDisplay = {
-        type: 'Playlist',
+        type: 'SongBar',
         title: '',
         visibility: '',
         link: '',

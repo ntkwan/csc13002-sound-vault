@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useGetTopSongsQuery } from '@services/api';
 import { PlayButton } from '@components/index';
 import { useSong } from '@hooks';
+import { useNavigate } from 'react-router-dom';
 
 function ChartIntroContainer() {
     const { data: topSongsData } = useGetTopSongsQuery();
@@ -49,6 +50,7 @@ function ChartItem({ className, song }) {
     const { url } = imageurl;
 
     const [currentSong, isPlaying, activateSong] = useSong();
+    const nav = useNavigate();
 
     return (
         <div className={`absolute ${className}`}>
@@ -60,15 +62,9 @@ function ChartItem({ className, song }) {
                             className="aspect-square w-full hover:cursor-pointer"
                             src={url}
                             alt={title}
-                            onClick={() =>
-                                activateSong({
-                                    id,
-                                    title,
-                                    artist,
-                                    imageurl,
-                                    coverimg
-                                })
-                            }
+                            onClick={() => {
+                                nav(`/song/${id}`);
+                            }}
                         />
                         <PlayButton
                             onClick={() =>
@@ -77,7 +73,7 @@ function ChartItem({ className, song }) {
                                     title,
                                     artist,
                                     imageurl,
-                                    coverimg
+                                    coverimg,
                                 })
                             }
                             isOnPlaying={currentSong === id && isPlaying}

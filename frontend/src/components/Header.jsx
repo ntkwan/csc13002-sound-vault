@@ -6,10 +6,9 @@ import {
     selectCurrentToken,
 } from '@services/selectors';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 function Header() {
-    const dispatch = useDispatch();
     const nav = useNavigate();
     const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
@@ -61,7 +60,7 @@ function Header() {
     const { name, image: { url: avatar } = {} } = profile || {};
 
     return (
-        <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-10 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
+        <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-40 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
             {/* Logo */}
             <span
                 className="header__logo pr-5 font-lilitaone text-4xl hover:cursor-pointer"
