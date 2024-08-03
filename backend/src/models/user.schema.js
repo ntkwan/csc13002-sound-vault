@@ -125,11 +125,9 @@ UserSchema.methods.generateRefreshToken = function () {
 
 UserSchema.methods.addToRecentlyPlayed = async function (songId) {
     if (this.recentlyPlayed.includes(songId)) {
-        console.log(this.recentlyPlayed);
         this.recentlyPlayed = this.recentlyPlayed.filter(
             (id) => id.toString() !== songId,
         );
-        console.log('---------', this.recentlyPlayed);
     }
 
     if (this.recentlyPlayed.length === 10) {
@@ -137,13 +135,37 @@ UserSchema.methods.addToRecentlyPlayed = async function (songId) {
     }
 
     this.recentlyPlayed.unshift(songId);
-    console.log('++++++++++', this.recentlyPlayed);
 };
 
 UserSchema.methods.removeFromRecentlyPlayed = async function (songId) {
     this.recentlyPlayed = this.recentlyPlayed.filter(
         (id) => id.toString() !== songId,
     );
+};
+
+UserSchema.methods.createLikedPlaylist = async function () {
+    const Playlist = mongoose.model('Playlist');
+    const playlist = new Playlist({
+        name: 'Liked Songs',
+        desc: 'All your liked songs',
+        uploader: this._id,
+    });
+    await playlist.save();
+    this.playlist.push(playlist._id);
+};
+
+UserSchema.methods.addToLikedSongs = async function (songId) {
+    const Playlist = mongoose.model('Playlist');
+    const playlist = await Playlist.findById(this.playlist[0]);
+    playlist.songs.push(songId);
+    await playlist.save();
+};
+
+UserSchema.methods.removeFromLikedSongs = async function (songId) {
+    const Playlist = mongoose.model('Playlist');
+    const playlist = await Playlist.findById(this.playlist[0]);
+    playlist.songs = playlist.songs.filter((id) => id.toString() !== songId);
+    await playlist.save();
 };
 
 module.exports = mongoose.model('User', UserSchema);

@@ -91,7 +91,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     } else if (type == 'Artist') {
                         onClickImage = () => handleProfile(mediaData.id);
                         isOnPlaying = false;
-                    } else if (type == 'Album') {
+                    } else if (type == 'Album' || type == 'Playlist') {
                         onClickImage = () => handlePlaylist(mediaData.id);
                         isOnPlaying = false;
                     }

@@ -112,11 +112,59 @@ const remove_song_from_playlist = async (req, res) => {
             });
         }
 
-        Playlist.songs = Playlist.songs.filter((song) => song == songId);
+        Playlist.songs = Playlist.songs.filter(
+            (id) => id.toString() !== songId,
+        );
         await Playlist.save({ validateBeforeSave: false });
 
         return res.status(200).json({
             message: 'Song removed from playlist successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const add_song_to_liked_playlist = async (req, res) => {
+    const user = req.user;
+    const songId = req.params.songId;
+    try {
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song not found',
+            });
+        }
+
+        await user.addToLikedSongs(songId);
+
+        return res.status(200).json({
+            message: 'Song added to liked playlist successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const remove_song_from_liked_playlist = async (req, res) => {
+    const user = req.user;
+    const songId = req.params.songId;
+    try {
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song not found',
+            });
+        }
+
+        await user.removeFromLikedSongs(songId);
+
+        return res.status(200).json({
+            message: 'Song removed from liked playlist successfully',
         });
     } catch (error) {
         return res.status(500).json({
@@ -181,7 +229,9 @@ const get_my_playlists = async (req, res) => {
                     id: playlist._id,
                     name: playlist.name,
                     description: playlist.desc,
+                    playlistOwner: playlist.uploader,
                     image: playlist.image,
+                    songs: playlist.songs,
                 };
             }),
         });
@@ -197,6 +247,8 @@ module.exports = {
     delete_playlist_by_id,
     add_song_to_playlist,
     remove_song_from_playlist,
+    add_song_to_liked_playlist,
+    remove_song_from_liked_playlist,
     get_playlist_by_id,
     get_my_playlists,
 };

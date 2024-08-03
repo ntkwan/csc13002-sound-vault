@@ -38,6 +38,7 @@ const signup = async (req, res, next) => {
 
         const User = await new UserModel({ name, email });
         await User.setPassword(password);
+        await User.createLikedPlaylist();
         await User.save();
         User.__v = undefined;
 

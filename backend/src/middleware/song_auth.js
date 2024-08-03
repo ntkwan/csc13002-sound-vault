@@ -30,7 +30,6 @@ const check_disable_song = async (req, res, next) => {
 const check_deactivate_song = async (req, res, next) => {
     try {
         const songId = req.params.id;
-        console.log(songId);
 
         const isInBlacklist = await BlacklistModel.exists({
             type: 'song',

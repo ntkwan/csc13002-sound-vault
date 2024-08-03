@@ -13,20 +13,13 @@ import { useLoading, useSpacebar, useMouseMove } from '../hooks';
 import Slider from './Slider';
 import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
+import LikeButton from './LikeButton';
 
 function Player() {
-    const [isSolidHeart, setIsSolidHeart] = useState(false);
     const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
-
-    const handleHeartClick = () => {
-        setIsSolidHeart(!isSolidHeart);
-        const heartIcon = document.querySelector('.heart-icon');
-        heartIcon.classList.toggle('ri-heart-line');
-        heartIcon.classList.toggle('ri-heart-fill');
-    };
 
     const handleBookmarkClick = () => {
         setIsSolidBookmark(!isSolidBookmark);
@@ -198,9 +191,7 @@ function Player() {
                     <span className="opacity-60">{currentTrack.artist}</span>
                 </div>
                 {/* heart-icon */}
-                <AudioButton onClick={handleHeartClick}>
-                    <i className="heart-icon ri-heart-line text-2xl"></i>
-                </AudioButton>
+                <LikeButton songId={currentTrack.id} />
             </div>
             {/* between */}
             <div className="flex flex-[2] flex-col items-center justify-between">
@@ -342,9 +333,7 @@ function Player() {
                     {/* bottom */}
                     {/* left */}
                     <div className="flex flex-[1]">
-                        <AudioButton onClick={handleHeartClick}>
-                            <i className="heart-icon ri-heart-line text-2xl"></i>
-                        </AudioButton>
+                        <LikeButton songId={currentTrack.id} />
                     </div>
                     {/* between */}
                     {/* top */}
