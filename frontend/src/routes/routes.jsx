@@ -25,6 +25,7 @@ import {
     TopicsAndGenrePage,
     SongPage,
     UserSettingPage,
+    WalletPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
                     { path: 'topicsgenre', Component: TopicsAndGenrePage },
+                    { path: 'wallet', Component: WalletPage },
                 ],
             },
             {
