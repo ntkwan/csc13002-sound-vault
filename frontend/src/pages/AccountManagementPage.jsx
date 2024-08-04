@@ -161,7 +161,7 @@ function AdminAccountPage() {
     return (
         <>
             <div className="admin-page">
-                <h1 className="admin-page__title inline-block px-4 py-8 text-7xl">
+                <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
                     Accounts
                 </h1>
 
@@ -206,7 +206,7 @@ function AdminAccountPage() {
 
                 <table className="w-full overflow-hidden">
                     <thead>
-                        <tr className="border-b-2 text-[#718096]">
+                        <tr className="cursor-default border-b-2 text-[#718096]">
                             <th className="px-2 py-5 text-left font-normal">
                                 ID
                             </th>

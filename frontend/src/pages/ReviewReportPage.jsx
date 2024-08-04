@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     FilterStatus,
     SearchBar,
@@ -8,8 +8,6 @@ import {
     ReviewReportFrame,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import { setReportList } from '@features/admindashboard/slices';
-import { useDispatch, useSelector } from 'react-redux';
 
 const sampleReports = [
     {
@@ -173,8 +171,7 @@ const counts = [10, 10, 10, 10, 5, 5];
 const initialReports = generateReports(sampleReports, counts);
 
 function ReviewReportPage() {
-    const dispatch = useDispatch();
-    const reports = useSelector((state) => state.admindashboard.reportList);
+    const [reports, setReports] = useState(initialReports);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -188,10 +185,6 @@ function ReviewReportPage() {
     const [showFilters, setShowFilters] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [selectedReport, setSelectedReport] = useState(null);
-
-    useEffect(() => {
-        dispatch(setReportList(initialReports));
-    }, [dispatch]);
 
     const applyFilter = () => {
         setCurrentPage(1);
@@ -266,7 +259,7 @@ function ReviewReportPage() {
 
     return (
         <div className="admin-page">
-            <h1 className="admin-page__title inline-block px-4 py-8 text-7xl">
+            <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
                 Review Reports
             </h1>
 
@@ -312,7 +305,7 @@ function ReviewReportPage() {
 
             <table className="w-full overflow-hidden">
                 <thead>
-                    <tr className="border-b-2 text-[#718096]">
+                    <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">
                             User name
                         </th>

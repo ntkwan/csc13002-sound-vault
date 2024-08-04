@@ -25,3 +25,5 @@ export { default as SongPage } from './SongPage';
 export { default as UserSettingPage } from './UserSettingPage';
 export { default as AudienceTransactionPage } from './AudienceTransactionPage';
 export { default as ArtistTransactionPage } from './ArtistTransactionPage';
+export { default as AdminWithdrawPage } from './AdminWithdrawPage';
+export { default as AdminTransactionPage } from './AdminTransactionPage';

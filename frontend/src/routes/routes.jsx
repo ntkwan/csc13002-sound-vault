@@ -28,6 +28,8 @@ import {
     WalletPage,
     AudienceTransactionPage,
     ArtistTransactionPage,
+    AdminTransactionPage,
+    AdminWithdrawPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -85,6 +87,11 @@ const router = createBrowserRouter([
                     { path: 'admin/song', Component: AdminSongPage },
                     { path: 'admin/user', Component: AdminAccountPage },
                     { path: 'admin/report', Component: ReviewReportPage },
+                    { path: 'admin/withdraw', Component: AdminWithdrawPage },
+                    {
+                        path: 'admin/transaction',
+                        Component: AdminTransactionPage,
+                    },
                 ],
             },
         ],

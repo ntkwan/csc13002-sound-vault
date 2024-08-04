@@ -19,7 +19,7 @@ function FilterSort({
     applyFilter,
 }) {
     return (
-        <form id="filter-sort-form" className="mb-8">
+        <form id="filter-sort-form" className="mb-8 select-none">
             <div className="mb-4">
                 <label htmlFor="date" className="mb-2 block">
                     Date:

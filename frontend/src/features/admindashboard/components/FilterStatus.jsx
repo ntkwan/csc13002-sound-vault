@@ -14,7 +14,7 @@ FilterStatus.propTypes = {
 
 function FilterStatus({ filterList, tabStatus, onFilterClick, isReviewPage }) {
     return (
-        <div className="admin-page__filter flex space-x-4 px-2">
+        <div className="admin-page__filter flex select-none space-x-4 px-2">
             {filterList.map((button, index) => (
                 <button
                     key={index}

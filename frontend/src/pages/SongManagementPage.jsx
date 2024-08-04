@@ -175,7 +175,7 @@ function AdminSongPage() {
 
     return (
         <div className="admin-page">
-            <h1 className="admin-page__title inline-block px-4 py-8 text-7xl">
+            <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
                 Songs
             </h1>
 
@@ -220,7 +220,7 @@ function AdminSongPage() {
 
             <table className="w-full overflow-hidden">
                 <thead>
-                    <tr className="border-b-2 text-[#718096]">
+                    <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">ID</th>
                         <th className="px-2 py-5 text-left font-normal">
                             Name song
@@ -248,9 +248,9 @@ function AdminSongPage() {
                                 <span
                                     className={`rounded-lg px-2 py-1 ${
                                         song.status === 'Verified'
-                                            ? 'bg-[#FFF0F0] text-[#FD6A6A]'
+                                            ? 'bg-[#FFF0F0] text-[#3663c2]'
                                             : song.status === 'Unverified'
-                                              ? 'bg-[#FFF0E6] text-[#FE964A]'
+                                              ? 'bg-[#FFF0E6] text-[#eb4141]'
                                               : 'bg-[#E7F7EF] text-[#0CAF60]'
                                     }`}
                                 >

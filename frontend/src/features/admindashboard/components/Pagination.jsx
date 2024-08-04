@@ -158,7 +158,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
     };
 
     return (
-        <div className="flex items-center justify-between">
+        <div className="flex select-none items-center justify-between">
             <button
                 className="p-2 pb-3 font-bold hover:text-indigo-300"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

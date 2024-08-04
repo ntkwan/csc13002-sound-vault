@@ -6,6 +6,7 @@ import {
     InfoIcon,
     TopicsGenreIcon,
     WalletIcon,
+    WithdrawIcon,
 } from '.';
 import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
 import { useSelector } from 'react-redux';
@@ -37,6 +38,16 @@ function Sidebar() {
                                 to="admin/report"
                                 icon={EmailIcon}
                                 label="review report"
+                            />
+                            <SidebarLink
+                                to="admin/transaction"
+                                icon={WalletIcon}
+                                label="transaction"
+                            />
+                            <SidebarLink
+                                to="admin/withdraw"
+                                icon={WithdrawIcon}
+                                label="withdraw request"
                             />
                         </>
                     ) : (
