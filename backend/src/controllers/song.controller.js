@@ -201,19 +201,35 @@ const get_songs_by_region = async (req, res) => {
 
 const get_top_songs = async (req, res) => {
     const regions = ['VPop', 'KPop', 'US-UK'];
-    const topSongs = [];
-    for (let region of regions) {
-        const songs = await SongModel.find({ region: region })
-            .sort({ view: -1 })
-            .limit(1);
-        const [song] = songs;
-        const { audiourl, ...songWithoutAudio } = song.toObject();
-        topSongs.push(songWithoutAudio);
-    }
+    try {
+        const topSongs = [];
+        for (let region of regions) {
+            const songs = await SongModel.find({ region: region })
+                .sort({ view: -1 })
+                .limit(1);
+            const [song] = songs;
+            const { audiourl, ...songWithoutAudio } = song.toObject();
+            topSongs.push(songWithoutAudio);
+        }
 
-    return res.status(200).json({
-        topSongs,
-    });
+        res.status(200).send(
+            topSongs.map((song) => {
+                return {
+                    id: song._id,
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    coverimg: song.coverimg,
+                    region: song.region,
+                };
+            }),
+        );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
 };
 
 const disable_song = async (req, res) => {
@@ -254,6 +270,26 @@ const enable_song = async (req, res) => {
 
         return res.status(200).json({
             message: 'Song is enabled',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const get_next_song = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const song = await SongModel.findById(songId).populate('next').exec();
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        return res.status(200).json({
+            nextSong: song.next,
         });
     } catch (error) {
         return res.status(500).json({
