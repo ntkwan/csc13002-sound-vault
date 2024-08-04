@@ -23,3 +23,5 @@ export { default as TopicsAndGenrePage } from './TopicsAndGenrePage';
 export { default as WalletPage } from './WalletPage';
 export { default as SongPage } from './SongPage';
 export { default as UserSettingPage } from './UserSettingPage';
+export { default as AudienceTransactionPage } from './AudienceTransactionPage';
+export { default as ArtistTransactionPage } from './ArtistTransactionPage';

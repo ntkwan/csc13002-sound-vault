@@ -26,6 +26,8 @@ import {
     SongPage,
     UserSettingPage,
     WalletPage,
+    AudienceTransactionPage,
+    ArtistTransactionPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -67,6 +69,14 @@ const router = createBrowserRouter([
                     { path: 'profile/editing', Component: ProfilePageEditing },
                     { path: 'user/setting', Component: UserSettingPage },
                     { path: 'wallet', Component: WalletPage },
+                    {
+                        path: 'wallet/history',
+                        Component: AudienceTransactionPage,
+                    },
+                    {
+                        path: 'artist/wallet/history',
+                        Component: ArtistTransactionPage,
+                    },
                 ],
             },
             {
