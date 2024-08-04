@@ -1,18 +1,31 @@
 import { useState, useEffect, memo, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import { useGetProfileByIdQuery } from '@services/api';
-import { selectCurrentProfile } from '@services/selectors';
+import {
+    useGetProfileByIdQuery,
+    useLazyGetPlaylistByIdQuery,
+    useLazyGetProfileAllSongsQuery,
+} from '@services/api';
+import {
+    selectCurrentPlaylist,
+    selectCurrentProfile,
+    selectCurrentTrack,
+} from '@services/selectors';
 import { PlayButton, ReportFrame } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 import { toast } from 'react-toastify';
+import { setCurrentPlaylist } from '@features/playlists/slices';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
-    const [currentSong, isPlaying, activateSong] = useSong();
+    const dispatch = useDispatch();
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
+    const { currentSong, isPlaying, activateSong } = useSong();
+
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
+
     const navigate = useNavigate();
     const handleProfile = (id) => {
         if (myProfileID === id) {
@@ -30,7 +43,70 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         navigate(`/song/${id}`);
     };
 
-    const { type, title, visibility, link, data } = media;
+    const { id, type, title, visibility, link, data } = media;
+    let showedData = data.slice(0, 6);
+    if (type === 'Artist') {
+        showedData = data.slice(0, 5);
+    }
+
+    const handlePlayClick = (mediaData) => {
+        if (
+            !currentPlaylist.id ||
+            (currentPlaylist.id !== id &&
+                currentPlaylist.id !== title + data.length)
+        ) {
+            dispatch(
+                setCurrentPlaylist({
+                    id: id ?? title + data.length,
+                    songs: data,
+                }),
+            );
+        }
+        activateSong(mediaData);
+    };
+
+    const [triggerGetArtistSongs] = useLazyGetProfileAllSongsQuery();
+    const currentTrack = useSelector(selectCurrentTrack);
+
+    const handleArtistPlayClick = async (artistId) => {
+        if (!currentPlaylist.id || currentPlaylist.id !== artistId) {
+            try {
+                const { data: artistSongs } =
+                    await triggerGetArtistSongs(artistId);
+                dispatch(
+                    setCurrentPlaylist({
+                        id: artistId,
+                        songs: artistSongs,
+                    }),
+                );
+                activateSong(artistSongs[0]);
+            } catch (error) {
+                console.log('Error fetching artist songs:', error);
+            }
+        } else activateSong(currentTrack);
+    };
+
+    const [triggerGetPlaylistSongs] = useLazyGetPlaylistByIdQuery();
+
+    const handlePlaylistPlayClick = async (playlistId) => {
+        if (!currentPlaylist.id || currentPlaylist.id !== playlistId) {
+            try {
+                const { data: playlist } =
+                    await triggerGetPlaylistSongs(playlistId);
+                const playlistSongs = playlist.songs;
+                dispatch(
+                    setCurrentPlaylist({
+                        id: playlistId,
+                        songs: playlistSongs,
+                    }),
+                );
+                activateSong(playlistSongs[0]);
+            } catch (error) {
+                console.log('Error fetching playlist songs:', error);
+            }
+        } else activateSong(currentTrack);
+    };
+
     if (!data || !data.length) return;
 
     return media ? (
@@ -63,7 +139,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             </title>
             {/* Media content */}
             <div className={`${displayType} mt-4 justify-items-center`}>
-                {data.map((mediaData, index) => {
+                {showedData.map((mediaData, index) => {
                     let MediaComponent;
                     switch (displayItems) {
                         case '1':
@@ -85,17 +161,20 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     let onClickImage, onClickButton, isOnPlaying;
                     if (type == 'Song') {
                         onClickImage = () => handleSong(mediaData.id);
-                        onClickButton = () => activateSong(mediaData);
+                        onClickButton = () => handlePlayClick(mediaData);
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
                     } else if (type == 'Artist') {
                         onClickImage = () => handleProfile(mediaData.id);
-                        isOnPlaying = false;
+                        onClickButton = () =>
+                            handleArtistPlayClick(mediaData.id);
+                        isOnPlaying =
+                            currentPlaylist.id == mediaData.id && isPlaying;
                     } else if (type == 'Album') {
                         onClickImage = () => handlePlaylist(mediaData.id);
-                        isOnPlaying = false;
-                    } else if (type == 'SongBar') {
-                        onClickButton = () => activateSong(mediaData);
-                        isOnPlaying = currentSong == mediaData.id && isPlaying;
+                        onClickButton = () =>
+                            handlePlaylistPlayClick(mediaData.id);
+                        isOnPlaying =
+                            currentPlaylist.id == mediaData.id && isPlaying;
                     }
                     return (
                         <MediaComponent
@@ -117,6 +196,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 MediaDisplay.displayName = 'MediaDisplay';
 MediaDisplay.propTypes = {
     media: PropTypes.shape({
+        id: PropTypes.string,
         type: PropTypes.string,
         title: PropTypes.string,
         visibility: PropTypes.string,
@@ -221,7 +301,8 @@ HomeCard.propTypes = {
             url: PropTypes.string,
         }),
     }),
-    onClick: PropTypes.func,
+    onClickImage: PropTypes.func,
+    onClickButton: PropTypes.func,
     isOnPlaying: PropTypes.bool,
 };
 
@@ -308,266 +389,276 @@ const BrowseCard = memo(({ type, mediaData }) => {
 BrowseCard.displayName = 'BrowseCard';
 BrowseCard.propTypes = HomeCard.propTypes;
 
-const SongBar = memo(({ mediaData, onClickButton, isOnPlaying, index }) => {
-    const navigate = useNavigate();
-    const [duration, setDuration] = useState('0:00');
-    const [menuVisible, setMenuVisible] = useState(null);
-    const [showReportFrame, setShowReportFrame] = useState(false);
-    const [showPlaylistForm, setShowPlaylistForm] = useState(false);
-    const playlistFormRef = useRef(null);
-    const [playlistOptionsVisible, setPlaylistOptionsVisible] = useState(false);
+const SongBar = memo(
+    ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
+        const [duration, setDuration] = useState('0:00');
+        const [menuVisible, setMenuVisible] = useState(null);
+        const [showReportFrame, setShowReportFrame] = useState(false);
+        const [showPlaylistForm, setShowPlaylistForm] = useState(false);
+        const playlistFormRef = useRef(null);
+        const [playlistOptionsVisible, setPlaylistOptionsVisible] =
+            useState(false);
 
-    const location = useLocation();
-    const pathSegments = location.pathname.split('/');
-    const pathtype = pathSegments[1];
-    const { profileId: pathId } = useParams();
+        const location = useLocation();
+        const pathSegments = location.pathname.split('/');
+        const pathtype = pathSegments[1];
+        const { profileId: pathId } = useParams();
 
-    const toggleMenu = (index) => {
-        setMenuVisible(menuVisible === index ? null : index);
-    };
-
-    const handleCreatePlaylist = () => {
-        setShowPlaylistForm(false);
-    };
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (
-                playlistFormRef.current &&
-                !playlistFormRef.current.contains(e.target)
-            ) {
-                setShowPlaylistForm(false);
-            }
+        const toggleMenu = (index) => {
+            setMenuVisible(menuVisible === index ? null : index);
         };
 
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () =>
-            document.removeEventListener('mousedown', handleOutsideClick);
-    }, []);
+        const handleCreatePlaylist = () => {
+            setShowPlaylistForm(false);
+        };
+        useEffect(() => {
+            const handleOutsideClick = (e) => {
+                if (
+                    playlistFormRef.current &&
+                    !playlistFormRef.current.contains(e.target)
+                ) {
+                    setShowPlaylistForm(false);
+                }
+            };
 
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (menuVisible !== null && !e.target.closest('.menu')) {
-                setMenuVisible(null);
+            document.addEventListener('mousedown', handleOutsideClick);
+            return () =>
+                document.removeEventListener('mousedown', handleOutsideClick);
+        }, []);
+
+        useEffect(() => {
+            const handleOutsideClick = (e) => {
+                if (menuVisible !== null && !e.target.closest('.menu')) {
+                    setMenuVisible(null);
+                }
+            };
+
+            document.addEventListener('mousedown', handleOutsideClick);
+            return () =>
+                document.removeEventListener('mousedown', handleOutsideClick);
+        }, [menuVisible]);
+
+        const { id, title, artist, view, imageurl, audiourl, isverified } =
+            mediaData;
+        const { url } = imageurl;
+
+        useEffect(() => {
+            if (audiourl) {
+                const audio = new Audio(audiourl);
+                audio.addEventListener('loadedmetadata', () => {
+                    const minutes = Math.floor(audio.duration / 60);
+                    const seconds = Math.floor(audio.duration % 60);
+                    setDuration(
+                        `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`,
+                    );
+                });
             }
+        }, [audiourl]);
+
+        // handle share button
+        const copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(() => {
+                toast('Copied link to clipboard!', {
+                    className:
+                        'bg-home-pattern text-white font-kodchasan font-bold',
+                });
+            });
+        };
+        const handleShare = () => {
+            const shareURL = `${window.location.origin}/song/${id}`;
+            copyToClipboard(shareURL);
         };
 
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () =>
-            document.removeEventListener('mousedown', handleOutsideClick);
-    }, [menuVisible]);
+        const { currentSong } = useSong();
+        const titleClassName =
+            currentSong === id ? 'text-purple-400 font-bold' : '';
 
-    const { id, title, artist, view, imageurl, audiourl, isverified } =
-        mediaData;
-    const { url } = imageurl;
-
-    useEffect(() => {
-        if (audiourl) {
-            const audio = new Audio(audiourl);
-            audio.addEventListener('loadedmetadata', () => {
-                const minutes = Math.floor(audio.duration / 60);
-                const seconds = Math.floor(audio.duration % 60);
-                setDuration(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
-            });
-        }
-    }, [audiourl]);
-
-    // handle share button
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            toast('Copied link to clipboard!', {
-                className:
-                    'bg-home-pattern text-white font-kodchasan font-bold',
-            });
-        });
-    };
-    const handleShare = () => {
-        const shareURL = `${window.location.origin}/song/${id}`;
-        copyToClipboard(shareURL);
-    };
-
-    const [currentSong] = useSong();
-    const titleClassName =
-        currentSong === id ? 'text-purple-400 font-bold' : '';
-
-    return (
-        <>
-            {showReportFrame && (
-                <ReportFrame setShowReportFrame={setShowReportFrame} />
-            )}
-            {showPlaylistForm && (
-                <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div
-                        ref={playlistFormRef}
-                        className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
-                    >
-                        <label
-                            htmlFor="playlistName"
-                            className="block pb-2 text-left text-xl"
+        return (
+            <>
+                {showReportFrame && (
+                    <ReportFrame setShowReportFrame={setShowReportFrame} />
+                )}
+                {showPlaylistForm && (
+                    <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                        <div
+                            ref={playlistFormRef}
+                            className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
                         >
-                            Create a name for your playlist
-                        </label>
-                        <input
-                            id="playlistName"
-                            type="text"
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleCreatePlaylist();
-                                }
-                            }}
-                            className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                        />
-                    </div>
-                </div>
-            )}
-            <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
-                {/* index - img - name */}
-                <div className="flex items-center space-x-8">
-                    <div className="">
-                        <PlayButton
-                            onClick={onClickButton}
-                            isOnPlaying={isOnPlaying}
-                            position="left-6"
-                        />
-                        <span className="group-hover: block w-3">
-                            {index + 1}
-                        </span>
-                    </div>
-                    <img
-                        className="h-14 min-w-14 max-w-14 object-cover"
-                        src={url}
-                        alt={title}
-                    />
-                    <p
-                        className={`flex w-full items-center space-x-3 ${titleClassName} hover:cursor-pointer hover:underline`}
-                        onClick={prevent(() => navigate(`/song/${id}`))}
-                    >
-                        {title}
-                        {isverified && (
-                            <img
-                                className="profile__verified-icon ml-4 h-5 w-5"
-                                src={verifiedIcon}
-                                alt="vrf-icon"
-                            />
-                        )}
-                    </p>
-                </div>
-                <span className="hover:cursor-default">{view}</span>
-                <span className="hover:cursor-default">{duration}</span>
-                <div className="flex items-center justify-end">
-                    <i
-                        className="bx bxs-dollar-circle hover: relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
-                        // onClick={prevent()}
-                        data-title={`Donate for ${title} by ${artist}`}
-                    ></i>
-                    <button
-                        className="relative flex-[1]"
-                        onClick={prevent(() => toggleMenu(index))}
-                    >
-                        <i
-                            className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
-                            data-title={`More options for ${title} by ${artist}`}
-                        ></i>
-                        {menuVisible === index && (
-                            <div
-                                className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                            <label
+                                htmlFor="playlistName"
+                                className="block pb-2 text-left text-xl"
                             >
-                                <ul>
-                                    {pathtype == 'profile' &&
-                                        pathId == undefined && (
-                                            <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                <i className="ri-add-circle-line text-xl leading-none"></i>
-                                                <span>Add to album</span>
+                                Create a name for your playlist
+                            </label>
+                            <input
+                                id="playlistName"
+                                type="text"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleCreatePlaylist();
+                                    }
+                                }}
+                                className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                            />
+                        </div>
+                    </div>
+                )}
+                <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
+                    {/* index - img - name */}
+                    <div className="flex items-center space-x-8">
+                        <div className="">
+                            <PlayButton
+                                onClick={onClickButton}
+                                isOnPlaying={isOnPlaying}
+                                position="left-6"
+                            />
+                            <span className="group-hover: block w-3">
+                                {index + 1}
+                            </span>
+                        </div>
+                        <img
+                            className="h-14 min-w-14 max-w-14 object-cover"
+                            src={url}
+                            alt={title}
+                        />
+                        <p
+                            className={`flex w-full items-center space-x-3 ${titleClassName} hover:cursor-pointer hover:underline`}
+                            onClick={onClickImage}
+                        >
+                            {title}
+                            {isverified && (
+                                <img
+                                    className="profile__verified-icon ml-4 h-5 w-5"
+                                    src={verifiedIcon}
+                                    alt="vrf-icon"
+                                />
+                            )}
+                        </p>
+                    </div>
+                    <span className="hover:cursor-default">{view}</span>
+                    <span className="hover:cursor-default">{duration}</span>
+                    <div className="flex items-center justify-end">
+                        <i
+                            className="bx bxs-dollar-circle hover: relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
+                            // onClick={prevent()}
+                            data-title={`Donate for ${title} by ${artist}`}
+                        ></i>
+                        <button
+                            className="relative flex-[1]"
+                            onClick={prevent(() => toggleMenu(index))}
+                        >
+                            <i
+                                className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
+                                data-title={`More options for ${title} by ${artist}`}
+                            ></i>
+                            {menuVisible === index && (
+                                <div
+                                    className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                                >
+                                    <ul>
+                                        {pathtype == 'profile' &&
+                                            pathId == undefined && (
+                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <i className="ri-add-circle-line text-xl leading-none"></i>
+                                                    <span>Add to album</span>
+                                                </li>
+                                            )}
+                                        <li
+                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                            onMouseEnter={() =>
+                                                setPlaylistOptionsVisible(true)
+                                            }
+                                            onMouseLeave={() =>
+                                                setPlaylistOptionsVisible(false)
+                                            }
+                                        >
+                                            <i className="ri-add-circle-line text-xl leading-none"></i>
+                                            <span>Add to playlist</span>
+                                            <i className="ri-triangle-line rotate-90 text-right"></i>
+                                            {playlistOptionsVisible && (
+                                                <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                    <ul>
+                                                        <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <div
+                                                                className="mx-4 w-full border-b border-[#999] py-2 text-left"
+                                                                onClick={() => {
+                                                                    setShowPlaylistForm(
+                                                                        true,
+                                                                    );
+                                                                    setPlaylistOptionsVisible(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <i className="ri-add-circle-line" />
+                                                                <span>
+                                                                    New playlist
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <span>
+                                                                Playlist 1
+                                                            </span>
+                                                        </li>
+                                                        <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <span>
+                                                                Playlist 2
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </li>
+                                        {pathtype == 'playlist' && (
+                                            <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                <i className="ri-indeterminate-circle-line text-left text-xl"></i>
+                                                <span className="text-left">
+                                                    Remove from this playlist
+                                                </span>
                                             </li>
                                         )}
-                                    <li
-                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onMouseEnter={() =>
-                                            setPlaylistOptionsVisible(true)
-                                        }
-                                        onMouseLeave={() =>
-                                            setPlaylistOptionsVisible(false)
-                                        }
-                                    >
-                                        <i className="ri-add-circle-line text-xl leading-none"></i>
-                                        <span>Add to playlist</span>
-                                        <i className="ri-triangle-line rotate-90 text-right"></i>
-                                        {playlistOptionsVisible && (
-                                            <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                                <ul>
-                                                    <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <div
-                                                            className="mx-4 w-full border-b border-[#999] py-2 text-left"
-                                                            onClick={() => {
-                                                                setShowPlaylistForm(
-                                                                    true,
-                                                                );
-                                                                setPlaylistOptionsVisible(
-                                                                    false,
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i className="ri-add-circle-line" />
-                                                            <span>
-                                                                New playlist
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <span>Playlist 1</span>
-                                                    </li>
-                                                    <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <span>Playlist 2</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </li>
-                                    {pathtype == 'playlist' && (
                                         <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                            <i className="ri-indeterminate-circle-line text-left text-xl"></i>
+                                            <i className="ri-heart-line text-left text-xl"></i>
                                             <span className="text-left">
-                                                Remove from this playlist
+                                                Save to your Liked Songs
                                             </span>
                                         </li>
-                                    )}
-                                    <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-heart-line text-left text-xl"></i>
-                                        <span className="text-left">
-                                            Save to your Liked Songs
-                                        </span>
-                                    </li>
-                                    <li
-                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onClick={prevent(() => handleShare())}
-                                    >
-                                        <i className="ri-share-line text-xl leading-none"></i>
-                                        <span>Copy link</span>
-                                    </li>
-                                    <li
-                                        className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onClick={prevent(() =>
-                                            setShowReportFrame(true),
-                                        )}
-                                    >
-                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                        <span>Report</span>
-                                    </li>
-                                    {pathtype == 'profile' &&
-                                        pathId == undefined && (
-                                            <li className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                <i className="ri-close-large-line text-xl leading-none"></i>
-                                                <span>Delete Track</span>
-                                            </li>
-                                        )}
-                                </ul>
-                            </div>
-                        )}
-                    </button>
+                                        <li
+                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                            onClick={prevent(() =>
+                                                handleShare(),
+                                            )}
+                                        >
+                                            <i className="ri-share-line text-xl leading-none"></i>
+                                            <span>Copy link</span>
+                                        </li>
+                                        <li
+                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                            onClick={prevent(() =>
+                                                setShowReportFrame(true),
+                                            )}
+                                        >
+                                            <i className="ri-error-warning-line text-xl leading-none"></i>
+                                            <span>Report</span>
+                                        </li>
+                                        {pathtype == 'profile' &&
+                                            pathId == undefined && (
+                                                <li className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <i className="ri-close-large-line text-xl leading-none"></i>
+                                                    <span>Delete Track</span>
+                                                </li>
+                                            )}
+                                    </ul>
+                                </div>
+                            )}
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </>
-    );
-});
+            </>
+        );
+    },
+);
 
 SongBar.displayName = 'SongBar';
 SongBar.propTypes = {

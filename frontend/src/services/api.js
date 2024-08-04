@@ -386,6 +386,7 @@ export const {
     useAddSongToLikedPlaylistMutation,
     useRemoveSongFromLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
+    useLazyGetPlaylistByIdQuery,
     useGetMyPlaylistsQuery,
 
     // User -------------------------------------------------------------------
@@ -396,6 +397,7 @@ export const {
     useUnfollowProfileByIdMutation,
     useGetProfilePopularSongsQuery,
     useGetProfileAllSongsQuery,
+    useLazyGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,

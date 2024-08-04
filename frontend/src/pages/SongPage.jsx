@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { MediaDisplay } from '@components/index';
 import { selectCurrentAdmin } from '@services/selectors';
 import verifiedIcon from '@assets/img/verified-icon.svg';
+import BigPlayButton from '@components/BigPlayButton';
 
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);
@@ -49,9 +50,10 @@ function SongPage() {
         useGetProfileAllSongsQuery(profileId, {
             skip: !profileId,
         });
+    console.log(profileAllSongsData);
 
     const allReleases = {
-        type: 'SongBar',
+        type: 'Song',
         title: songArtist,
         visibility: '',
         data: profileAllSongsData ? profileAllSongsData.slice(0, 6) : [],
@@ -156,9 +158,14 @@ function SongPage() {
                 {!songIsDisabled ? (
                     <>
                         <div className="mt-8 flex space-x-6">
-                            <button className="h-[60px] min-w-[60px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                                <i className="ri-play-fill ml-1 text-[42px]"></i>
-                            </button>
+                            {profileAllSongsData && (
+                                <BigPlayButton
+                                    playlist={{
+                                        id: profileId,
+                                        songs: profileAllSongsData,
+                                    }}
+                                />
+                            )}
                             <button className="h-[70px] min-w-[70px]">
                                 <div className="rotate-90">
                                     <i

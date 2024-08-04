@@ -12,6 +12,7 @@ import {
 } from '@services/api';
 import { toast } from 'react-toastify';
 import { ReportFrame } from '@components/index';
+import BigPlayButton from '@components/BigPlayButton';
 
 function PlaylistPage() {
     const { playlistId } = useParams();
@@ -76,7 +77,7 @@ function PlaylistPage() {
     const { name, avatar, cover, songs } = playlist;
 
     const songsDisplay = {
-        type: 'SongBar',
+        type: 'Song',
         title: '',
         visibility: '',
         link: '',
@@ -158,9 +159,7 @@ function PlaylistPage() {
 
                 {/* Actions Section */}
                 <div className="relative mt-8 flex space-x-6">
-                    <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                        <i className="ri-play-fill ml-1 text-[42px]"></i>
-                    </button>
+                    <BigPlayButton playlist={playlist} />
                     <button className="absolute right-4 h-[70px] min-w-[70px]">
                         <i
                             className="bx bx-menu text-[42px]"

@@ -42,7 +42,7 @@ function useSong() {
             }
         }
     };
-    return [currentSong, isPlaying, activateSong];
+    return { currentSong, isPlaying, activateSong };
 }
 
 export default useSong;

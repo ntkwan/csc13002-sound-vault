@@ -3,17 +3,35 @@ import { useGetTopSongsQuery } from '@services/api';
 import { PlayButton } from '@components/index';
 import { useSong } from '@hooks';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentPlaylist } from '@features/playlists/slices';
+import { selectCurrentPlaylist } from '@services/selectors';
 
 function ChartIntroContainer() {
-    const { data: topSongsData } = useGetTopSongsQuery();
-    if (!topSongsData) return;
+    const { data: topSongs } = useGetTopSongsQuery();
+    const dispatch = useDispatch();
+    const { currentSong, isPlaying, activateSong } = useSong();
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
 
-    const { topSongs } = topSongsData;
+    if (!topSongs) return null;
+
     const data = [
         { song: topSongs[0], className: 'left-0 top-0' },
         { song: topSongs[1], className: 'right-[15%] top-[15%]' },
         { song: topSongs[2], className: 'bottom-0 left-[10%]' },
     ];
+
+    const handlePlayClick = (song) => {
+        if (!currentPlaylist.id || currentPlaylist.id !== 'TopSongs') {
+            dispatch(
+                setCurrentPlaylist({
+                    id: 'TopSongs',
+                    songs: topSongs,
+                }),
+            );
+        }
+        activateSong(song);
+    };
 
     return (
         <div className="flex flex-[1] justify-center text-sm">
@@ -23,6 +41,8 @@ function ChartIntroContainer() {
                         key={index}
                         song={item.song}
                         className={item.className}
+                        handlePlayClick={() => handlePlayClick(item.song)}
+                        isOnPlaying={currentSong === item.song._id && isPlaying}
                     />
                 ))}
             </div>
@@ -33,23 +53,24 @@ function ChartIntroContainer() {
 ChartItem.propTypes = {
     className: PropTypes.string,
     song: PropTypes.shape({
-        _id: PropTypes.string,
+        id: PropTypes.string,
         title: PropTypes.string,
         artist: PropTypes.string,
-        image: PropTypes.shape({
+        imageurl: PropTypes.shape({
             url: PropTypes.string,
         }),
         coverimg: PropTypes.shape({
             url: PropTypes.string,
         }),
     }),
+    handlePlayClick: PropTypes.func.isRequired,
+    isOnPlaying: PropTypes.bool.isRequired,
 };
 
-function ChartItem({ className, song }) {
-    const { title, artist, image: imageurl, _id: id, coverimg } = song;
+function ChartItem({ className, song, handlePlayClick, isOnPlaying }) {
+    const { title, artist, imageurl, id } = song;
     const { url } = imageurl;
 
-    const [currentSong, isPlaying, activateSong] = useSong();
     const nav = useNavigate();
 
     return (
@@ -67,16 +88,8 @@ function ChartItem({ className, song }) {
                             }}
                         />
                         <PlayButton
-                            onClick={() =>
-                                activateSong({
-                                    id,
-                                    title,
-                                    artist,
-                                    imageurl,
-                                    coverimg,
-                                })
-                            }
-                            isOnPlaying={currentSong === id && isPlaying}
+                            onClick={handlePlayClick}
+                            isOnPlaying={isOnPlaying}
                             position="bottom-1 right-1"
                         />
                     </div>

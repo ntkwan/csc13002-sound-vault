@@ -5,10 +5,6 @@ const initialState = {
     playlists: [],
     currentPlaylist: {
         id: '',
-        name: '',
-        description: '',
-        playlistOwner: '',
-        image: '',
         songs: [],
     },
 };
@@ -54,4 +50,5 @@ const playlistsSlice = createSlice({
 
 export default playlistsSlice.reducer;
 
-export const { addPlaylist, removePlaylist } = playlistsSlice.actions;
+export const { addPlaylist, removePlaylist, setCurrentPlaylist } =
+    playlistsSlice.actions;

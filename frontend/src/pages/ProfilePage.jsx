@@ -16,6 +16,7 @@ import {
 import { toast } from 'react-toastify';
 import { ReportFrame } from '@components/index';
 import { selectCurrentAdmin } from '@services/selectors';
+import BigPlayButton from '@components/BigPlayButton';
 
 function ProfilePage() {
     const isAdmin = useSelector(selectCurrentAdmin);
@@ -139,7 +140,7 @@ function ProfilePage() {
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
-        type: 'SongBar',
+        type: 'Song',
         title: 'All Releases',
         visibility: '',
         link: isSliceAllReleases ? '' : '',
@@ -244,9 +245,14 @@ function ProfilePage() {
                 {!isBanned ? (
                     <>
                         <div className="flex space-x-6">
-                            <button className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF]">
-                                <i className="ri-play-fill ml-1 text-[42px]"></i>
-                            </button>
+                            {profileAllSongsData && (
+                                <BigPlayButton
+                                    playlist={{
+                                        id: profileId,
+                                        songs: profileAllSongsData,
+                                    }}
+                                />
+                            )}
                             {isMyProfile ? (
                                 <>
                                     <Link

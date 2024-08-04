@@ -127,43 +127,7 @@ const loadingSlice = createSlice({
             })
             .addMatcher(api.endpoints.getChartSongs.matchRejected, (state) => {
                 state.isLocalLoading = false;
-            })
-            .addMatcher(
-                api.endpoints.getProfileAlbums.matchPending,
-                (state) => {
-                    state.isLocalLoading = true;
-                },
-            )
-            .addMatcher(
-                api.endpoints.getProfileAlbums.matchFulfilled,
-                (state) => {
-                    state.isLocalLoading = false;
-                },
-            )
-            .addMatcher(
-                api.endpoints.getProfileAlbums.matchRejected,
-                (state) => {
-                    state.isLocalLoading = false;
-                },
-            )
-            .addMatcher(
-                api.endpoints.getProfileAllSongs.matchPending,
-                (state) => {
-                    state.isLocalLoading = true;
-                },
-            )
-            .addMatcher(
-                api.endpoints.getProfileAllSongs.matchFulfilled,
-                (state) => {
-                    state.isLocalLoading = false;
-                },
-            )
-            .addMatcher(
-                api.endpoints.getProfileAllSongs.matchRejected,
-                (state) => {
-                    state.isLocalLoading = false;
-                },
-            );
+            });
     },
 });
 

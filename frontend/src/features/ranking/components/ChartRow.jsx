@@ -1,12 +1,16 @@
 import propTypes from 'prop-types';
 import { useEffect } from 'react';
-import { useSong } from '@hooks';
 import { PlayButton } from '@components';
 
-function ChartRow({ id, rank, imageurl, coverimg, title, artist, view }) {
-    const [currentSong, isPlaying, activateSong] = useSong();
-    const isOnPlaying = currentSong === id && isPlaying;
-
+function ChartRow({
+    rank,
+    imageurl,
+    title,
+    artist,
+    view,
+    handlePlayClick,
+    isOnPlaying,
+}) {
     useEffect(() => {
         const image = document.querySelector('.aspect-square');
         image.classList.toggle('opacity-50', isOnPlaying);
@@ -17,9 +21,7 @@ function ChartRow({ id, rank, imageurl, coverimg, title, artist, view }) {
             <PlayButton
                 position="bottom-2 left-14"
                 isOnPlaying={isOnPlaying}
-                onClick={() =>
-                    activateSong({ id, title, artist, imageurl, coverimg })
-                }
+                onClick={handlePlayClick}
             />
             <p className="mr-7 w-1">{rank}</p>
             <img
@@ -35,13 +37,13 @@ function ChartRow({ id, rank, imageurl, coverimg, title, artist, view }) {
 }
 
 ChartRow.propTypes = {
-    id: propTypes.string,
     rank: propTypes.number,
     imageurl: propTypes.object,
-    coverimg: propTypes.object,
     title: propTypes.string,
     artist: propTypes.string,
     view: propTypes.number,
+    handlePlayClick: propTypes.func.isRequired,
+    isOnPlaying: propTypes.bool.isRequired,
 };
 
 export default ChartRow;

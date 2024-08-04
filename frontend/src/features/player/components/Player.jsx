@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectCurrentPlayer } from '@services/selectors';
+import {
+    selectCurrentPlayer,
+    selectCurrentPlaylist,
+} from '@services/selectors';
 import {
     play,
     pause,
@@ -8,12 +11,14 @@ import {
     setIsRepeat,
     setCurrentTime,
     setDuration,
+    resetPlayer,
 } from '../slices';
 import { useLoading, useSpacebar, useMouseMove } from '../hooks';
 import Slider from './Slider';
 import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
 import LikeButton from './LikeButton';
+import useSong from '@hooks/useSong';
 
 function Player() {
     const [isSolidBookmark, setIsSolidBookmark] = useState(false);
@@ -89,6 +94,75 @@ function Player() {
         }
     };
 
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
+    const { activateSong } = useSong();
+
+    const handlePrev = () => {
+        dispatch(pause());
+
+        if (isRepeat) {
+            audioRef.current.currentTime = 0;
+            dispatch(play());
+        } else {
+            const currentIndex = currentPlaylist.songs.findIndex((song) => {
+                return song.id === currentTrack.id;
+            });
+
+            if (currentIndex === 0) {
+                dispatch(resetPlayer());
+            } else {
+                activateSong(currentPlaylist.songs[currentIndex - 1]);
+            }
+        }
+    };
+
+    const handleNext = () => {
+        dispatch(pause());
+
+        if (isRepeat) {
+            audioRef.current.currentTime = 0;
+            dispatch(play());
+        } else {
+            const currentIndex = currentPlaylist.songs.findIndex((song) => {
+                return song.id === currentTrack.id;
+            });
+
+            if (isShuffle) {
+                const previousSongs = currentPlaylist.songs.slice(
+                    0,
+                    currentIndex,
+                );
+                const remainingSongs = currentPlaylist.songs.slice(
+                    currentIndex + 1,
+                );
+                const availableSongs = [...previousSongs, ...remainingSongs];
+
+                const nextSongs =
+                    availableSongs[
+                        Math.floor(Math.random() * availableSongs.length)
+                    ];
+                activateSong(nextSongs);
+            } else {
+                if (currentIndex === currentPlaylist.songs.length - 1) {
+                    dispatch(resetPlayer());
+                } else {
+                    activateSong(currentPlaylist.songs[currentIndex + 1]);
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (!audioRef.current) return;
+        const audio = audioRef.current;
+
+        audio.addEventListener('ended', handleNext);
+
+        return () => {
+            audio.removeEventListener('ended', handleNext);
+        };
+    });
+
     useEffect(() => {
         if (!audioRef.current) return;
         const audio = audioRef.current;
@@ -99,12 +173,12 @@ function Player() {
                 audio.currentTime = currentTime;
             }
         };
+
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement) {
                 setIsExpand(false);
             }
         };
-
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         document.addEventListener('fullscreenchange', handleFullscreenChange);
 
@@ -150,12 +224,6 @@ function Player() {
             audioRef.current.volume = volume / 100;
         }
     }, [volume]);
-
-    useEffect(() => {
-        if (!audioRef.current) return;
-        const audio = audioRef.current;
-        audio.loop = isRepeat;
-    }, [isRepeat, dispatch]);
 
     useEffect(() => {
         if (!audioRef.current) return;
@@ -206,7 +274,7 @@ function Player() {
                         )}
                     </AudioButton>
                     {/* skip back */}
-                    <AudioButton>
+                    <AudioButton onClick={handlePrev}>
                         <i className="ri-skip-back-fill font-bold"></i>
                     </AudioButton>
                     {/* play */}
@@ -221,7 +289,7 @@ function Player() {
                         )}
                     </AudioButton>
                     {/* skip forward */}
-                    <AudioButton>
+                    <AudioButton onClick={handleNext}>
                         <i className="ri-skip-forward-fill font-bold"></i>
                     </AudioButton>
                     {/* repeat */}
@@ -350,7 +418,7 @@ function Player() {
                             )}
                         </AudioButton>
                         {/* skip back */}
-                        <AudioButton className="text-2xl">
+                        <AudioButton className="text-2xl" onClick={handlePrev}>
                             <i className="ri-skip-back-fill font-bold"></i>
                         </AudioButton>
                         {/* play */}
@@ -365,7 +433,7 @@ function Player() {
                             )}
                         </AudioButton>
                         {/* skip forward */}
-                        <AudioButton className="text-2xl">
+                        <AudioButton className="text-2xl" onClick={handleNext}>
                             <i className="ri-skip-forward-fill font-bold"></i>
                         </AudioButton>
                         {/* repeat */}

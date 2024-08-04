@@ -15,39 +15,34 @@ function MediaContainer() {
 
     if (!artist | !trendingSongs | !newSongs | !albums) return;
 
-    const isSliceArtist = artist && artist.length > 6;
-    const isSliceTrending = trendingSongs && trendingSongs.length > 6;
-    const isSliceNew = newSongs && newSongs.length > 6;
-    const isSliceAlbum = albums && albums.length > 6;
-
     const mediaData = [
         {
             type: 'Artist',
             title: 'Featured artist',
             visibility: '',
-            link: isSliceArtist ? 'artist' : '',
-            data: isSliceArtist ? artist.slice(0, 5) : artist,
+            link: 'artist',
+            data: artist,
         },
         {
             type: 'Song',
             title: 'Trending',
             visibility: '',
-            link: isSliceTrending ? 'trending' : '',
-            data: isSliceTrending ? trendingSongs.slice(0, 6) : trendingSongs,
+            link: 'trending',
+            data: trendingSongs,
         },
         {
             type: 'Song',
             title: 'New Releases',
             visibility: '',
-            link: isSliceNew ? 'newrelease' : '',
-            data: isSliceNew ? newSongs.slice(0, 6) : newSongs,
+            link: 'newrelease',
+            data: newSongs,
         },
         {
             type: 'Album',
             title: 'Popular Album',
             visibility: '',
-            link: isSliceAlbum ? 'album' : '',
-            data: isSliceAlbum ? albums.slice(0, 6) : albums,
+            link: 'album',
+            data: albums,
         },
     ];
 

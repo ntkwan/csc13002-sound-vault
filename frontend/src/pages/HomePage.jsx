@@ -1,14 +1,7 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChartIntroContainer, MediaContainer } from '@features/homepage';
 import homeintroImage from '@assets/img/homeintro.svg';
 function HomePage() {
-    useEffect(() => {
-        const reloadKey = Date.now();
-        // console.log('reloadKey', reloadKey);
-        document.querySelector('.homepage').setAttribute('key', reloadKey);
-    }, []);
-
     return (
         <div className="homepage grid select-none auto-rows-auto gap-y-16 caret-transparent">
             {/* Intro SoundVault */}
