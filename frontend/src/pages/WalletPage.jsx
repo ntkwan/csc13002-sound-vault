@@ -14,7 +14,7 @@ function WalletPage() {
         <div className="wallet">
             <PageTitle title="Wallet" className="py-8" />
 
-            <div className="waller__content flex h-80 items-center justify-between">
+            <div className="waller__content flex h-80 items-center justify-center space-x-[10%]">
                 {/* wallet card */}
                 <div className="wallet-card__container relative h-56 w-96 overflow-clip rounded-[38px] bg-wallet-pattern pl-6 pr-4 pt-6">
                     <div className="wallet-card__bg-elip rounded-100% absolute bottom-[55%] left-1/2 h-56 w-96 rounded-[100%] bg-black bg-opacity-10"></div>

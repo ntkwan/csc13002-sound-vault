@@ -13,19 +13,33 @@ import {
     InputForm,
 } from '@features/profilepage/components';
 import 'react-toastify/dist/ReactToastify.css';
+import { MentionsInput, Mention } from 'react-mentions';
+import { useSelector } from 'react-redux';
+import { selectCurrentProfile } from '@services/selectors';
+import { useGetFollowingListByIdQuery } from '@services/api';
 
 function ProfilePageUploadMusic() {
-    const [showTermsAndPolicy, setShowTermsAndPolicy] = useState(false);
-    const handleShowTermsAndPolicy = () =>
-        setShowTermsAndPolicy(!showTermsAndPolicy);
-
-    const [checked, setChecked] = useState(false);
-    const [uploadAudio, setUploadAudio] = useState(null);
-    const [uploadCover, setUploadCover] = useState(null);
+    // handle upload audio, cover, thumbnail
     const [uploadThumbnail, setUploadThumbnail] = useState(null);
+    const [uploadAudio, setUploadAudio] = useState(null);
 
-    const handleCheckboxChange = (e) => setChecked(e.target.checked);
+    // handle suggestion for collaborators
+    const [suggestion, setSuggestion] = useState('');
+    const { id } = useSelector(selectCurrentProfile);
+    const { data: followingListData } = useGetFollowingListByIdQuery(id, {
+        skip: !id,
+    });
 
+    // check box for terms and policy
+    const [checked, setChecked] = useState(false);
+    // show terms and policy
+    const [showTermsAndPolicy, setShowTermsAndPolicy] = useState(false);
+
+    // handle submit
+    const [uploadSong, { isLoading: isLoadingUploadSong }] =
+        useUploadSongMutation();
+    const [uploadSongThumbnail, { isLoading: isLoadingUploadThumnail }] =
+        useUploadSongThumbnailMutation();
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!checked) {
@@ -35,36 +49,39 @@ function ProfilePageUploadMusic() {
 
         const formData = new FormData(e.target);
         const collaborators = formData.get('collaborators');
-        const songTitle = formData.get('songTitle');
+        const songTitle = formData.get('title');
         const releaseDate = formData.get('releaseDate');
-        const region = formData.get('region');
         const genre = formData.get('genre');
+        const region = formData.get('region');
 
         if (
-            uploadAudio &&
-            uploadCover &&
-            uploadThumbnail &&
-            collaborators &&
             songTitle &&
             releaseDate &&
+            genre &&
             region &&
-            genre
+            uploadThumbnail &&
+            uploadAudio
         ) {
             try {
-                const formData = new FormData();
-                formData.append('audio', uploadAudio);
-                formData.append('cover', uploadCover);
-                formData.append('thumbnail', uploadThumbnail);
-                formData.append('collaborators', collaborators);
-                formData.append('songTitle', songTitle);
-                formData.append('releaseDate', releaseDate);
-                formData.append('region', region);
-                formData.append('genre', genre);
+                const uploadForm = new FormData();
+                // formData.append('collaborators', collaborators);
+                uploadForm.append('title', songTitle);
+                // formData.append('releaseDate', releaseDate);
+                uploadForm.append('genre', genre);
+                uploadForm.append('region', region);
+                uploadForm.append('audio', uploadAudio);
 
-                // await useUploadSongMutation({ file: formData }).unwrap();
-                toast.success('Uploaded successfully!');
-                // setTimeout(() => window.location.reload(), 1500);
+                const res1 = await uploadSong({
+                    file: uploadForm,
+                }).unwrap();
+
+                // const res2 = await uploadSongThumbnail({
+                //     file: uploadThumbnail,
+                // }).unwrap();
+
+                toast.success('Uploaded successfully!', res1);
             } catch (error) {
+                console.log('-------------------', error);
                 toast.error('Error uploading files.');
             }
         } else {
@@ -72,13 +89,21 @@ function ProfilePageUploadMusic() {
         }
     };
 
+    if (followingListData) {
+        const { following } = followingListData;
+        var users = following?.map((user) => ({
+            id: user.name,
+            display: user.name,
+        }));
+    }
+
     return (
         <>
             <div className="upload-music__page pt-8">
                 {showTermsAndPolicy && (
                     <TermAndPolicyBox
                         title="Terms and Policy"
-                        onClose={handleShowTermsAndPolicy}
+                        onClose={() => setShowTermsAndPolicy(false)}
                     />
                 )}
                 <PageTitle title="Upload Music " className="mb-8" />
@@ -86,21 +111,17 @@ function ProfilePageUploadMusic() {
                     className="editing__upload grid grid-rows-2"
                     onSubmit={handleSubmit}
                 >
-                    <div className="flex justify-between">
+                    <div className="flex space-x-[10%]">
                         <UploadAudio
                             className=""
+                            id="audio-upload"
                             label="To upload music click on the box or drop file here!"
                             sizeLimit={10}
                             useUploadMutation={setUploadAudio}
                         />
                         <UploadImage2
                             className=""
-                            label="To upload a cover click on the box or drop file here!"
-                            sizeLimit={10}
-                            useUploadMutation={setUploadCover}
-                        />
-                        <UploadImage2
-                            className=""
+                            id="thumbnail-upload"
                             label="To upload a thumbnail click on the box or drop file here!"
                             sizeLimit={10}
                             useUploadMutation={setUploadThumbnail}
@@ -108,58 +129,127 @@ function ProfilePageUploadMusic() {
                     </div>
 
                     <div className="upload-music__infomation relative mt-4 grid w-full grid-cols-2 items-start gap-4">
-                        <div className="w-5/6 space-y-4">
-                            <InputForm2
+                        <fieldset className="w-5/6 space-y-4 overflow-hidden">
+                            <MentionsInput
                                 id="collaborators"
                                 name="collaborators"
-                                placeholder="Collaborators"
-                            />
+                                className="mentions h-[50px] max-w-[550px] content-center text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                placeholder="Mention Collaborators using '@' symbol"
+                                value={suggestion}
+                                onChange={(e) => setSuggestion(e.target.value)}
+                                singleLine
+                                style={{
+                                    '&singleLine': {
+                                        width: '100%',
+                                        display: 'block',
+                                        maxWidth: '550px',
+                                    },
+                                    input: {
+                                        padding: '0 16px',
+                                        height: '50px',
+                                        outline: 'none',
+                                        maxWidth: '100%',
+                                    },
+                                    control: {
+                                        color: '#fff',
+                                        maxWidth: '100%',
+                                    },
+                                    suggestions: {
+                                        list: {
+                                            backgroundColor: 'black',
+                                        },
+                                        item: {
+                                            padding: '5px 15px',
+                                            '&focused': {
+                                                backgroundColor:
+                                                    'rgba(255,255,255,0.3)',
+                                            },
+                                        },
+                                    },
+                                }}
+                            >
+                                <Mention
+                                    data={users}
+                                    appendSpaceOnAdd={true}
+                                    style={{
+                                        backgroundColor: '#0284c7',
+                                        borderRadius: '5px',
+                                    }}
+                                />
+                            </MentionsInput>
                             <InputForm2
-                                id="songTitle"
-                                name="songTitle"
+                                id="title"
+                                name="title"
                                 placeholder="Song Title"
+                                required
                             />
                             <InputForm2
                                 id="releaseDate"
                                 name="releaseDate"
                                 placeholder="Release Date (YYYY-MM-DD)"
                                 type="date"
+                                required
                             />
-                        </div>
-                        <div className="w-5/6 space-y-4">
-                            <InputForm2
+                        </fieldset>
+                        <fieldset className="w-[550px] space-y-4">
+                            <select
                                 id="genre"
                                 name="genre"
-                                placeholder="Genre"
-                            />
-                            <InputForm2
+                                className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                required
+                            >
+                                <option value="" disabled selected>
+                                    (Select Genre)
+                                </option>
+                                <option value="Rap">Rap</option>
+                                <option value="Love">Love</option>
+                                <option value="Pop">Pop</option>
+                                <option value="Jazz">Jazz</option>
+                                <option value="R&B">R&B</option>
+                                <option value="Party">Party</option>
+                            </select>
+                            <select
                                 id="region"
                                 name="region"
-                                placeholder="Region"
-                            />
-                        </div>
+                                className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                required
+                            >
+                                <option value="" disabled selected>
+                                    (Select Region)
+                                </option>
+                                <option value="USUK">USUK</option>
+                                <option value="K-Pop">K-Pop</option>
+                                <option value="V-Pop">V-Pop</option>
+                            </select>
+                        </fieldset>
+
                         <div className="flex items-center">
                             <label htmlFor="audio-upload"></label>
                             <input
                                 id="audio-upload"
                                 type="checkbox"
+                                required
                                 checked={checked}
-                                onChange={handleCheckboxChange}
+                                onChange={() => setChecked(!checked)}
                                 className="mr-3 h-[16px] w-[16px] cursor-pointer rounded-[2px] border border-[#ccc] bg-white font-kodchasan checked:bg-[#383838]"
                             />
-                            <p>I read and accepted the</p>
-                            <p
-                                className="px-[4px] font-normal text-[#8774f9] hover:cursor-pointer hover:underline hover:opacity-80"
-                                onClick={handleShowTermsAndPolicy}
-                            >
-                                term and policy
+                            <p className="text-nowrap">
+                                I read and accepted the
+                                <span
+                                    className="px-[4px] font-normal text-[#8774f9] hover:cursor-pointer hover:underline hover:opacity-80"
+                                    onClick={() => setShowTermsAndPolicy(true)}
+                                >
+                                    term and policy
+                                </span>
                             </p>
                         </div>
                         <button
                             type="submit"
                             className="m-auto select-none rounded-full border px-10 py-3 text-center"
                         >
-                            Upload
+                            {isLoadingUploadSong || isLoadingUploadThumnail
+                                ? 'Uploading...'
+                                : 'Upload'}
                         </button>
                     </div>
                 </form>
@@ -169,19 +259,26 @@ function ProfilePageUploadMusic() {
 }
 export default ProfilePageUploadMusic;
 
-function InputForm2({ placeholder, type = 'text', id, name }) {
+function InputForm2({
+    placeholder,
+    type = 'text',
+    id,
+    name,
+    required = false,
+}) {
     return (
         <input
             id={id}
             name={name}
-            className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+            className="h-[50px] w-[550px] rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
             placeholder={placeholder}
             type={type}
+            required={required}
         />
     );
 }
 
-function UploadImage2({ className, label, sizeLimit, useUploadMutation }) {
+function UploadImage2({ className, id, label, sizeLimit, useUploadMutation }) {
     const [preview, setPreview] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
 
@@ -223,7 +320,7 @@ function UploadImage2({ className, label, sizeLimit, useUploadMutation }) {
                         />
                     )}
                     <input
-                        id="file-upload"
+                        id={id}
                         className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
                         type="file"
                         onChange={handleImageUpload}

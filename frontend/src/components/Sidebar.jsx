@@ -18,7 +18,7 @@ function Sidebar() {
     const isAdmin = useSelector(selectCurrentAdmin);
 
     return (
-        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 max-w-[185px] select-none flex-col space-y-6 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
+        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 max-w-[185px] select-none flex-col space-y-16 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <div>
@@ -135,7 +135,7 @@ function SidebarLink({ to, icon: Icon, label, children }) {
             }
         >
             {Icon && <Icon />}
-            <span className="pl-3">{label}</span>
+            <span className="nowrap pl-3">{label}</span>
             {children}
         </NavLink>
     );

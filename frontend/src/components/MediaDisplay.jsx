@@ -553,7 +553,7 @@ const SongBar = memo(
                             ></i>
                             {menuVisible === index && (
                                 <div
-                                    className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                                    className={`menu absolute z-30 ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
                                 >
                                     <ul>
                                         {pathtype == 'profile' &&
