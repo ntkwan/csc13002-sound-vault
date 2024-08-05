@@ -56,7 +56,6 @@ const upload_at_once = multer({
 }).fields([
     { name: 'audio', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 },
-    { name: 'cover', maxCount: 1 },
 ]);
 
 module.exports = {
