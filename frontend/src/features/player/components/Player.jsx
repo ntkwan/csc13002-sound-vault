@@ -413,6 +413,7 @@ function Player() {
                         {/* shuffle */}
                         <AudioButton
                             onClick={handleShuffleClick}
+                            disabled={isSingle}
                             className="text-2xl"
                         >
                             {!isShuffle ? (
