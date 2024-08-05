@@ -12,6 +12,13 @@ const create_playlist = async (req, res) => {
     const userId = req.user._id;
 
     try {
+        const isPlaylistExist = await PlaylistModel.findOne({ name });
+        if (isPlaylistExist) {
+            return res.status(400).json({
+                message: 'Playlist already exists',
+            });
+        }
+
         const playlist = await PlaylistModel.create({
             name,
             desc,

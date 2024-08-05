@@ -161,6 +161,13 @@ UserSchema.methods.createLikedPlaylist = async function () {
 UserSchema.methods.addToLikedSongs = async function (songId) {
     const Playlist = mongoose.model('Playlist');
     const playlist = await Playlist.findById(this.playlist[0]);
+    if (!playlist) {
+        await this.createLikedPlaylist();
+    }
+    addedSong = playlist.songs.find((id) => id.toString() === songId);
+    if (addedSong) {
+        throw new Error('Song already added to liked songs');
+    }
     playlist.songs.push(songId);
     await playlist.save();
 };
