@@ -77,4 +77,6 @@ const UploadAudio = memo(
     },
 );
 
+UploadAudio.displayName = 'UploadAudio';
+
 export default UploadAudio;

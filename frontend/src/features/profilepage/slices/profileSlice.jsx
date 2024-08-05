@@ -4,6 +4,7 @@ const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
 const initialState = {
+    id: '',
     name: '',
     email: '',
     dob: '',

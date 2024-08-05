@@ -42,7 +42,7 @@ function ChartIntroContainer() {
                         song={item.song}
                         className={item.className}
                         handlePlayClick={() => handlePlayClick(item.song)}
-                        isOnPlaying={currentSong === item.song._id && isPlaying}
+                        isOnPlaying={currentSong === item.song.id && isPlaying}
                     />
                 ))}
             </div>

@@ -14,15 +14,12 @@ function BigPlayButton({ playlist }) {
     const isOnPlaying =
         songs.find((song) => song.id === currentTrack.id) && isPlaying;
 
-    const handdlePlay = () => {
+    const handlePlay = () => {
         if (
             !currentPlaylist.id ||
             (currentPlaylist.id !== id &&
                 currentPlaylist.id !== songs.length.toString())
         ) {
-            console.log('currentPlaylist.id', currentPlaylist.id);
-            console.log('id', id);
-            console.log('songs.length', songs.length);
             dispatch(
                 setCurrentPlaylist({
                     id: id ?? songs.length,
@@ -31,13 +28,14 @@ function BigPlayButton({ playlist }) {
             );
             activateSong(songs[0]);
         } else {
-            activateSong(currentTrack);
+            if (currentTrack.id === -1) activateSong(songs[0]);
+            else activateSong(currentTrack);
         }
     };
     return (
         <button
             className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125"
-            onClick={handdlePlay}
+            onClick={handlePlay}
         >
             {isOnPlaying ? (
                 <i className="ri-pause-line text-[42px]"></i>

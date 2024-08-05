@@ -198,7 +198,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled selected>
+                                <option value="" disabled>
                                     (Select Genre)
                                 </option>
                                 <option value="Rap">Rap</option>
@@ -214,7 +214,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled selected>
+                                <option value="" disabled>
                                     (Select Region)
                                 </option>
                                 <option value="USUK">USUK</option>

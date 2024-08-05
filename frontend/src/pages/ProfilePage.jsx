@@ -68,7 +68,7 @@ function ProfilePage() {
 
     // Fetch follow button state by id
     const { data: followButtonData } = useGetFollowButtonByIdQuery(profileId, {
-        skip: !profileId,
+        skip: !profileId || !id,
     });
 
     // Fetch all songs by profile id
@@ -272,16 +272,21 @@ function ProfilePage() {
                                 </>
                             ) : (
                                 <>
-                                    <button
-                                        className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
-                                        disabled={
-                                            isLoadingFollow || isLoadingUnfollow
-                                        }
-                                        onClick={handleFollowToggle}
-                                    >
-                                        {isFollowing ? 'Unfollow' : 'Follow'}
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
-                                    </button>
+                                    {id && (
+                                        <button
+                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
+                                            disabled={
+                                                isLoadingFollow ||
+                                                isLoadingUnfollow
+                                            }
+                                            onClick={handleFollowToggle}
+                                        >
+                                            {isFollowing
+                                                ? 'Unfollow'
+                                                : 'Follow'}
+                                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                        </button>
+                                    )}
                                     <button className="absolute right-4 h-[70px] min-w-[70px]">
                                         <i
                                             className="bx bx-menu text-[42px]"

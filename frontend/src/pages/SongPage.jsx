@@ -50,7 +50,6 @@ function SongPage() {
         useGetProfileAllSongsQuery(profileId, {
             skip: !profileId,
         });
-    console.log(profileAllSongsData);
 
     const allReleases = {
         type: 'Song',
@@ -77,7 +76,6 @@ function SongPage() {
 
     return (
         <div className={isAdmin ? 'pointer-events-none' : ''}>
-            {console.log(songByIdData)}
             <div className="caret-transparent">
                 <div className="h-96 w-full content-center">
                     {songCoverimg ? (

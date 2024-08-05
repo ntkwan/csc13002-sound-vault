@@ -169,7 +169,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                             handleArtistPlayClick(mediaData.id);
                         isOnPlaying =
                             currentPlaylist.id == mediaData.id && isPlaying;
-                    } else if (type == 'Album') {
+                    } else if (type == 'Album' || type == 'Playlist') {
                         onClickImage = () => handlePlaylist(mediaData.id);
                         onClickButton = () =>
                             handlePlaylistPlayClick(mediaData.id);
@@ -323,7 +323,7 @@ const DetailCard = memo(
             cart_title = name;
         } else if (type == 'Song') {
             cart_title = title;
-        } else if (type == 'Album') {
+        } else if (type == 'Album' || type == 'Playlist') {
             cart_title = name;
         }
 
