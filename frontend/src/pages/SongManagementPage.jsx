@@ -90,12 +90,12 @@ function AdminSongPage() {
         songListIsLoading || !songListData
             ? []
             : songListData.map((song) => ({
-                  id: song.id,
-                  name: song.title,
-                  date: formatDate(new Date(song.createdAt)),
-                  status: song.isVerified ? 'Verified' : 'Unverified',
-                  isDisabled: song.isDisabled,
-              }));
+                id: song.id,
+                name: song.title,
+                date: formatDate(new Date(song.createdAt)),
+                status: song.isVerified ? 'Verified' : 'Unverified',
+                isDisabled: song.isDisabled,
+            }));
 
     const filteredSongs = songs.filter((song) => {
         const parseDate1 = (dateStr) =>
@@ -114,9 +114,9 @@ function AdminSongPage() {
     const sortedSongs = filteredSongs.sort((a, b) => {
         const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
 
-        if (filterSortOption === 'Name song') {
+        if (filterSortOption === 'Song name') {
             return a.name.localeCompare(b.name);
-        } else if (filterSortOption === 'Artist') {
+        } else if (filterSortOption === 'Author') {
             return a.artist.localeCompare(b.artist);
         } else if (filterSortOption === 'Date (oldest first)') {
             return compareAsc(parseDate(a.date), parseDate(b.date));
@@ -140,8 +140,8 @@ function AdminSongPage() {
     ];
 
     const sortMethods = [
-        'Name song',
-        'Artist',
+        'Song name',
+        'Author',
         'Date (oldest first)',
         'Date (newest first)',
     ];
@@ -223,13 +223,13 @@ function AdminSongPage() {
                     <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">ID</th>
                         <th className="px-2 py-5 text-left font-normal">
-                            Name song
+                            Song name
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Date
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
-                            Artist
+                            Author
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Status
@@ -246,13 +246,12 @@ function AdminSongPage() {
                             <td className="px-2 py-5">{song.artist}</td>
                             <td className="px-2 py-5">
                                 <span
-                                    className={`rounded-lg px-2 py-1 ${
-                                        song.status === 'Verified'
-                                            ? 'bg-[#FFF0F0] text-[#3663c2]'
-                                            : song.status === 'Unverified'
-                                              ? 'bg-[#FFF0E6] text-[#eb4141]'
-                                              : 'bg-[#E7F7EF] text-[#0CAF60]'
-                                    }`}
+                                    className={`rounded-lg px-2 py-1 ${song.status === 'Verified'
+                                        ? 'bg-[#FFF0F0] text-[#3663c2]'
+                                        : song.status === 'Unverified'
+                                            ? 'bg-[#FFF0E6] text-[#eb4141]'
+                                            : 'bg-[#E7F7EF] text-[#0CAF60]'
+                                        }`}
                                 >
                                     {song.status}
                                 </span>
@@ -348,11 +347,10 @@ function AdminSongPage() {
                                 Cancel
                             </button>
                             <button
-                                className={`${
-                                    confirmAction === 'Verify'
-                                        ? 'bg-green-500'
-                                        : 'bg-red-500'
-                                } rounded-md px-4 py-2 text-white`}
+                                className={`${confirmAction === 'Verify'
+                                    ? 'bg-green-500'
+                                    : 'bg-red-500'
+                                    } rounded-md px-4 py-2 text-white`}
                                 onClick={confirmActionHandler}
                             >
                                 Confirm

@@ -47,7 +47,7 @@ function Sidebar() {
                             <SidebarLink
                                 to="admin/withdraw"
                                 icon={WithdrawIcon}
-                                label="withdraw request"
+                                label="withdrawal requests"
                             />
                         </>
                     ) : (
