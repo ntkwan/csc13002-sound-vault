@@ -10,8 +10,8 @@ const UploadAudio = memo(({ className, label, sizeLimit }) => {
         const audio = e.target.files[0];
         if (!audio.type.includes('audio')) {
             toast.error('Invalid file type. Please upload an audio file.');
-        } else if (audio.size > sizeLimit * 1024) {
-            toast.error(`File size exceeds the limit of ${sizeLimit}KB.`);
+        } else if (audio.size > sizeLimit * 1000 * 1024) {
+            toast.error(`File size exceeds the limit of ${sizeLimit} MB.`);
         } else if (audio === uploadAudio) {
             toast.error('This audio is already uploaded.');
         } else {
@@ -71,7 +71,7 @@ const UploadAudio = memo(({ className, label, sizeLimit }) => {
                 </div>
                 {!preview && (
                     <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                        {`File size is less than ${sizeLimit}KB`}
+                        {`File size is less than ${sizeLimit} MB`}
                     </span>
                 )}
             </div>

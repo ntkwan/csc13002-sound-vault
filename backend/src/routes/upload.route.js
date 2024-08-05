@@ -33,8 +33,15 @@ router.post(
 
 router.post(
     '/upload-song-cover/:id',
-    stage_file.song_thumbnail_upload,
+    stage_file.song_cover_upload,
     uploader.upload_song_cover,
+);
+
+router.post(
+    '/submit-music',
+    authMiddleware.check_user,
+    stage_file.upload_at_once,
+    uploader.submit_music,
 );
 
 module.exports = router;

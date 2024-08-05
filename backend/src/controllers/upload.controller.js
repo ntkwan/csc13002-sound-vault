@@ -24,6 +24,8 @@ const upload_song = async (req, res) => {
         artist: req.user.name,
         uploader: req.user._id,
         genre: req.body.genre,
+        region: req.body.region,
+        coverimg: req.user.coverimage,
         audiourl: audioResponse.secure_url,
     };
 
@@ -34,11 +36,7 @@ const upload_song = async (req, res) => {
         });
     }
 
-    return res.status(200).json({
-        message: 'Upload song successfully',
-        song: song_data,
-        audioResponse: audioResponse.secure_url,
-    });
+    req._id = result._id;
 };
 
 const upload_profile_pic = async (req, res) => {
@@ -90,7 +88,7 @@ const upload_song_thumbnail = async (req, res) => {
         });
     }
 
-    const songId = req.params.id;
+    const songId = req.params.id || req._id;
     const Song = await SongModel.findById(songId);
     if (!Song) {
         return res.status(500).json({
@@ -111,13 +109,6 @@ const upload_song_thumbnail = async (req, res) => {
         await Song.setSongThumbnail(imageResponse);
     }
     await Song.save();
-
-    return res.status(200).json({
-        message: req.isCover
-            ? 'Upload song cover successfully'
-            : 'Upload song thumbnail successfully',
-        imageurl: imageResponse.secure_url,
-    });
 };
 
 const upload_song_cover = async (req, res) => {
@@ -125,7 +116,32 @@ const upload_song_cover = async (req, res) => {
     upload_song_thumbnail(req, res);
 };
 
+const submit_music = async (req, res) => {
+    upload_song(req, res);
+
+    if (res.status == 500) {
+        return res.status(500).json({
+            message: 'Failed at uploading audio file',
+        });
+    }
+
+    setTimeout(async () => {
+        upload_song_thumbnail(req, res);
+
+        return res.status(200).json({
+            message: 'Submit music successfully',
+        });
+    }, 15000);
+
+    if (res.status == 500) {
+        return res.status(500).json({
+            message: 'Failed at uploading image files',
+        });
+    }
+};
+
 module.exports = {
+    submit_music,
     upload_song,
     upload_profile_pic,
     upload_song_thumbnail,

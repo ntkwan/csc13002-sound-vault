@@ -57,13 +57,13 @@ function ProfilePageEditing() {
                 <UploadImage
                     className=""
                     label="To upload an avatar click on box or drop file here!"
-                    sizeLimit={800}
+                    sizeLimit={10}
                     useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
                     className="ml-12"
                     label="To upload a cover click on box or drop file here!"
-                    sizeLimit={800}
+                    sizeLimit={10}
                     useUploadMutation={useUploadProfileCoverMutation}
                 />
             </div>

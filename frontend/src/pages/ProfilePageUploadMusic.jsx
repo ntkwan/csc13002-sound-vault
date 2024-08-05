@@ -90,19 +90,19 @@ function ProfilePageUploadMusic() {
                         <UploadAudio
                             className=""
                             label="To upload music click on the box or drop file here!"
-                            sizeLimit={800}
+                            sizeLimit={10}
                             useUploadMutation={setUploadAudio}
                         />
                         <UploadImage2
                             className=""
                             label="To upload a cover click on the box or drop file here!"
-                            sizeLimit={800}
+                            sizeLimit={10}
                             useUploadMutation={setUploadCover}
                         />
                         <UploadImage2
                             className=""
                             label="To upload a thumbnail click on the box or drop file here!"
-                            sizeLimit={800}
+                            sizeLimit={10}
                             useUploadMutation={setUploadThumbnail}
                         />
                     </div>
@@ -190,8 +190,8 @@ function UploadImage2({ className, label, sizeLimit, useUploadMutation }) {
         if (image) {
             if (!image.type.includes('image')) {
                 toast.error('Invalid file type. Please upload an image.');
-            } else if (image.size > sizeLimit * 1024) {
-                toast.error(`File size exceeds the limit of ${sizeLimit}KB.`);
+            } else if (image.size > sizeLimit * 1000 * 1024) {
+                toast.error(`File size exceeds the limit of ${sizeLimit} MB.`);
             } else if (image === uploadImage) {
                 toast.error('This image is already uploaded.');
             } else {
@@ -233,7 +233,7 @@ function UploadImage2({ className, label, sizeLimit, useUploadMutation }) {
                 </div>
                 {!preview && (
                     <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                        {`File size is less than ${sizeLimit}KB`}
+                        {`File size is less than ${sizeLimit} MB`}
                     </span>
                 )}
             </div>

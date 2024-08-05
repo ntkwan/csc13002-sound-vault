@@ -42,6 +42,27 @@ const profile_pic_upload = multer({
 const song_thumbnail_upload = multer({
     storage,
     imageFilter,
-}).single('image');
+}).single('thumbnail');
 
-module.exports = { audio_upload, profile_pic_upload, song_thumbnail_upload };
+const song_cover_upload = multer({
+    storage,
+    imageFilter,
+}).single('cover');
+
+const upload_at_once = multer({
+    storage,
+    audioFilter,
+    imageFilter,
+}).fields([
+    { name: 'audio', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'cover', maxCount: 1 },
+]);
+
+module.exports = {
+    audio_upload,
+    profile_pic_upload,
+    song_thumbnail_upload,
+    song_cover_upload,
+    upload_at_once,
+};

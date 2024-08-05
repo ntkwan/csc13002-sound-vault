@@ -25,6 +25,9 @@ const SongSchema = new Schema(
             ref: 'Playlist',
         }
         */
+        releaseDate: {
+            type: Date,
+        },
         genre: {
             type: String,
         },
