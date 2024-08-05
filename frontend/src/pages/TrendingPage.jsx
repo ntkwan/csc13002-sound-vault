@@ -5,7 +5,7 @@ function TrendingBar() {
     const { data: trendingSongs } = useGetTrendingSongsQuery();
     if (!trendingSongs) return;
     const media = {
-        type: 'Song',
+        type: 'Single Song',
         title: '',
         visibility: '',
         link: '',

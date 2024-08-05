@@ -95,6 +95,7 @@ function Player() {
     };
 
     const currentPlaylist = useSelector(selectCurrentPlaylist);
+    const isSingle = currentPlaylist.id.includes('Single');
     const { activateSong } = useSong();
 
     const handlePrev = () => {
@@ -266,7 +267,10 @@ function Player() {
                 {/* top */}
                 <div className="mt-1 flex w-2/6 items-center justify-evenly text-xl [&_:is(i)]:p-1">
                     {/* shuffle */}
-                    <AudioButton onClick={handleShuffleClick}>
+                    <AudioButton
+                        onClick={handleShuffleClick}
+                        disabled={isSingle}
+                    >
                         {!isShuffle ? (
                             <i className="ri-shuffle-line"></i>
                         ) : (

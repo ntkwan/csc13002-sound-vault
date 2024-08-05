@@ -42,7 +42,7 @@ function ProfilePage() {
         navigator.clipboard.writeText(text).then(() => {
             toast('Copied link to clipboard!', {
                 className:
-                    'bg-home-pattern text-white  font-kodchasan font-bold',
+                    'bg-home-pattern text-white font-kodchasan font-bold',
             });
         });
     };

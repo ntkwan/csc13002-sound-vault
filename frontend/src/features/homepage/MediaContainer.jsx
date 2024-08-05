@@ -17,21 +17,21 @@ function MediaContainer() {
 
     const mediaData = [
         {
-            type: 'Artist',
+            type: 'Home Artist',
             title: 'Featured artist',
             visibility: '',
             link: 'artist',
             data: artist,
         },
         {
-            type: 'Song',
+            type: 'Home Single Song',
             title: 'Trending',
             visibility: '',
             link: 'trending',
             data: trendingSongs,
         },
         {
-            type: 'Song',
+            type: 'Home Single Song',
             title: 'New Releases',
             visibility: '',
             link: 'newrelease',
@@ -54,7 +54,7 @@ function MediaContainer() {
                     media={media}
                     displayItems="1"
                     displayType={
-                        media.type === 'Artist'
+                        media.type.includes('Artist')
                             ? 'grid grid-cols-5'
                             : 'grid grid-cols-[repeat(6,170px)] justify-between'
                     }

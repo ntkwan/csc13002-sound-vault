@@ -5,8 +5,8 @@ function NewReleaseBar() {
     const { data: newSongs } = useGetNewSongsQuery();
     if (!newSongs) return;
     const media = {
-        type: 'Song',
-        header: '',
+        type: 'Single Song',
+        title: '',
         visibility: '',
         link: '',
         data: newSongs,

@@ -18,7 +18,7 @@ function BigPlayButton({ playlist }) {
         if (
             !currentPlaylist.id ||
             (currentPlaylist.id !== id &&
-                currentPlaylist.id !== songs.length.toString())
+                !currentPlaylist.id.includes(songs.length.toString()))
         ) {
             dispatch(
                 setCurrentPlaylist({

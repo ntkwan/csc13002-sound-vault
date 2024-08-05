@@ -13,10 +13,13 @@ function ChartTable({ tableData }) {
     const { currentSong, isPlaying, activateSong } = useSong();
 
     const handlePlayClick = (rowData) => {
-        if (!currentPlaylist.id || currentPlaylist.id !== 'chart' + type) {
+        if (
+            !currentPlaylist.id ||
+            currentPlaylist.id !== 'Single Chart' + type
+        ) {
             dispatch(
                 setCurrentPlaylist({
-                    id: 'chart' + type,
+                    id: 'Single Chart' + type,
                     songs: data,
                 }),
             );

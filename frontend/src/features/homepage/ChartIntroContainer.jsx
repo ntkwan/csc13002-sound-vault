@@ -22,10 +22,10 @@ function ChartIntroContainer() {
     ];
 
     const handlePlayClick = (song) => {
-        if (!currentPlaylist.id || currentPlaylist.id !== 'TopSongs') {
+        if (!currentPlaylist.id || currentPlaylist.id !== 'Single TopSongs') {
             dispatch(
                 setCurrentPlaylist({
-                    id: 'TopSongs',
+                    id: 'Single TopSongs',
                     songs: topSongs,
                 }),
             );

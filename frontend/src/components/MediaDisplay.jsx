@@ -44,20 +44,23 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     const { id, type, title, visibility, link, data } = media;
-    let showedData = data.slice(0, 6);
-    if (type === 'Artist') {
-        showedData = data.slice(0, 5);
+    let showedData = data;
+    if (type.includes('Home')) {
+        showedData = data.slice(0, 6);
+        if (type.includes('Artist')) {
+            showedData = data.slice(0, 5);
+        }
     }
 
     const handlePlayClick = (mediaData) => {
         if (
             !currentPlaylist.id ||
             (currentPlaylist.id !== id &&
-                currentPlaylist.id !== title + data.length)
+                currentPlaylist.id !== type + title + data.length)
         ) {
             dispatch(
                 setCurrentPlaylist({
-                    id: id ?? title + data.length,
+                    id: id ?? type + title + data.length,
                     songs: data,
                 }),
             );
@@ -159,17 +162,20 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                     }
 
                     let onClickImage, onClickButton, isOnPlaying;
-                    if (type == 'Song') {
+                    if (type.includes('Song')) {
                         onClickImage = () => handleSong(mediaData.id);
                         onClickButton = () => handlePlayClick(mediaData);
                         isOnPlaying = currentSong == mediaData.id && isPlaying;
-                    } else if (type == 'Artist') {
+                    } else if (type.includes('Artist')) {
                         onClickImage = () => handleProfile(mediaData.id);
                         onClickButton = () =>
                             handleArtistPlayClick(mediaData.id);
                         isOnPlaying =
                             currentPlaylist.id == mediaData.id && isPlaying;
-                    } else if (type == 'Album' || type == 'Playlist') {
+                    } else if (
+                        type.includes('Album') ||
+                        type.includes('Playlist')
+                    ) {
                         onClickImage = () => handlePlaylist(mediaData.id);
                         onClickButton = () =>
                             handlePlaylistPlayClick(mediaData.id);
@@ -234,18 +240,18 @@ const HomeCard = memo(
         // image
         const { url } = image || imageurl;
 
-        if (type == 'Album' && !owner) return null;
+        if (type.includes('Album') && !owner) return null;
 
         let imageClass = 'w-[130px] rounded-[30px]';
         let cart_title, card_desc;
-        if (type == 'Artist') {
+        if (type.includes('Artist')) {
             imageClass = 'w-[160px] rounded-full';
             cart_title = name;
             card_desc = '';
-        } else if (type == 'Song') {
+        } else if (type.includes('Song')) {
             cart_title = title;
             card_desc = artist;
-        } else if (type == 'Album') {
+        } else if (type.includes('Album')) {
             cart_title = name;
             card_desc = owner.name;
         }
@@ -269,7 +275,7 @@ const HomeCard = memo(
                         onClick={onClickButton}
                         isOnPlaying={isOnPlaying}
                         position={
-                            type == 'Artist'
+                            type.includes('Artist')
                                 ? 'bottom-1 right-0'
                                 : 'bottom-1 right-5'
                         }
@@ -318,12 +324,12 @@ const DetailCard = memo(
         let imageClass = 'rounded-lg';
         let cart_title,
             card_desc = type;
-        if (type == 'Artist') {
+        if (type.includes('Artist')) {
             imageClass = 'rounded-full';
             cart_title = name;
-        } else if (type == 'Song') {
+        } else if (type.includes('Song')) {
             cart_title = title;
-        } else if (type == 'Album' || type == 'Playlist') {
+        } else if (type.includes('Album') || type.includes('Playlist')) {
             cart_title = name;
         }
 
