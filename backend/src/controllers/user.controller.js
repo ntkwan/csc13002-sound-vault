@@ -6,6 +6,53 @@ const SongModel = require('../models/song.schema');
 const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
 
+const get_profile_information = async (req, res) => {
+    const profileId = req.user._id;
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User is not found',
+            });
+        }
+
+        return res.status(200).json({
+            name: User.name,
+            email: User.email,
+            shortDesc: User.shortDesc,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const change_profile = async (req, res) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const shortDesc = req.body.shortDesc;
+    const profileId = req.user._id;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User is not found',
+            });
+        }
+
+        User.email = email;
+        User.name = name;
+        User.shortDesc = shortDesc;
+        await User.save({ validateBeforeSave: false });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_featured_artists = async (req, res) => {
     try {
         const Users = await UserModel.find({ isVerified: true }).sort({
@@ -322,6 +369,8 @@ const get_recently_played_songs = async (req, res) => {
 };
 
 module.exports = {
+    get_profile_information,
+    change_profile,
     get_following_list_by_id,
     get_follow_button_by_id,
     follow_profile_by_id,

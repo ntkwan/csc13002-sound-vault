@@ -81,11 +81,6 @@ function ProfilePageEditing() {
                         <InputForm placeholder="Full Name" initValue={name} />
                         <InputForm placeholder="Email" initValue={email} />
                         <InputForm
-                            placeholder="DOB"
-                            initValue={dob}
-                            type="date"
-                        />
-                        <InputForm
                             placeholder="Short Description"
                             initValue={shortDesc}
                         />
@@ -101,7 +96,7 @@ function ProfilePageEditing() {
                     onSubmit={handleUpdatePassword}
                 >
                     <h2 className="inline w-5/6 text-3xl font-bold">
-                        Password Recovery
+                        Change Password
                     </h2>
                     <div className="w-5/6 space-y-4">
                         <InputForm placeholder="Old password" isPassword />

@@ -4,6 +4,18 @@ const authMiddleware = require('../middleware/auth');
 const userController = require('../controllers/user.controller');
 
 router.post(
+    '/change-profile',
+    authMiddleware.check_user,
+    userController.change_profile,
+);
+
+router.get(
+    '/get-profile-information',
+    authMiddleware.check_user,
+    userController.get_profile_information,
+);
+
+router.post(
     '/follow-profile-by-id/:profileId',
     authMiddleware.check_user,
     userController.follow_profile_by_id,

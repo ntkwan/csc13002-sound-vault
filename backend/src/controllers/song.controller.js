@@ -278,26 +278,6 @@ const enable_song = async (req, res) => {
     }
 };
 
-const get_next_song = async (req, res) => {
-    const songId = req.params.id;
-    try {
-        const song = await SongModel.findById(songId).populate('next').exec();
-        if (!song) {
-            return res.status(404).json({
-                message: 'Song is not found',
-            });
-        }
-
-        return res.status(200).json({
-            nextSong: song.next,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-        });
-    }
-};
-
 module.exports = {
     get_song_by_id,
     get_trending_songs,

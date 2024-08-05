@@ -40,6 +40,10 @@ const UserSchema = new Schema(
                 type: String,
             },
         },
+        shortDesc: {
+            type: String,
+            default: '',
+        },
         isAdmin: {
             type: Boolean,
             default: false,
