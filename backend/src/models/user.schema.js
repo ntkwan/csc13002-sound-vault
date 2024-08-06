@@ -68,7 +68,8 @@ const UserSchema = new Schema(
             default: [],
         },
         playlist: {
-            type: Array,
+            type: [Schema.Types.ObjectId],
+            ref: 'Playlist',
             default: [],
         },
         recentlyPlayed: {
@@ -154,17 +155,19 @@ UserSchema.methods.createLikedPlaylist = async function () {
         desc: 'All your liked songs',
         uploader: this._id,
     });
+    this.playlist.unshift(playlist._id);
     await playlist.save();
-    this.playlist.push(playlist._id);
+    await this.save();
 };
 
 UserSchema.methods.addToLikedSongs = async function (songId) {
     const Playlist = mongoose.model('Playlist');
-    const playlist = await Playlist.findById(this.playlist[0]);
+    let playlist = await Playlist.findById(this.playlist[0]);
     if (!playlist) {
         await this.createLikedPlaylist();
+        playlist = await Playlist.findById(this.playlist[0]);
     }
-    addedSong = playlist.songs.find((id) => id.toString() === songId);
+    const addedSong = playlist.songs.find((id) => id.toString() === songId);
     if (addedSong) {
         throw new Error('Song already added to liked songs');
     }

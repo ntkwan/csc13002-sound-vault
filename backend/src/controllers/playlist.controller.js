@@ -9,11 +9,12 @@ const mongoose = require('mongoose');
 
 const create_playlist = async (req, res) => {
     const { name, desc } = req.body;
-    const userId = req.user._id;
 
     try {
-        const isPlaylistExist = await PlaylistModel.findOne({ name });
-        if (isPlaylistExist) {
+        const user = await req.user.populate('playlist');
+        const playlistNames = user.playlist.map((playlist) => playlist.name);
+
+        if (playlistNames.includes(name)) {
             return res.status(400).json({
                 message: 'Playlist already exists',
             });
@@ -22,12 +23,11 @@ const create_playlist = async (req, res) => {
         const playlist = await PlaylistModel.create({
             name,
             desc,
-            uploader: userId,
+            uploader: user._id,
         });
 
-        const User = await UserModel.findById(userId);
-        User.playlist.push(new mongoose.Types.ObjectId(playlist._id));
-        await User.save({ validateBeforeSave: false });
+        user.playlist.push(playlist._id);
+        await user.save({ validateBeforeSave: false });
 
         return res.status(201).json({
             message: 'Playlist created successfully',
@@ -45,7 +45,7 @@ const create_playlist = async (req, res) => {
 
 const delete_playlist_by_id = async (req, res) => {
     const playlistId = req.params.playlistId;
-    const userId = req.user._id;
+    const user = req.user;
 
     try {
         const playlist = await PlaylistModel.findById(playlistId);
@@ -56,11 +56,10 @@ const delete_playlist_by_id = async (req, res) => {
         }
 
         await PlaylistModel.deleteOne({ _id: playlistId });
-        const User = await UserModel.findById(userId);
-        User.playlist = User.playlist.filter(
-            (playlist) => playlist == new mongoose.Types.ObjectId(playlistId),
+        user.playlist = user.playlist.filter(
+            (id) => id.toString() !== playlistId,
         );
-        await User.save({ validateBeforeSave: false });
+        await user.save({ validateBeforeSave: false });
 
         return res.status(200).json({
             message: 'Playlist deleted successfully',
