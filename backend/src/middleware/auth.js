@@ -107,7 +107,7 @@ const check_admin = async (req, res, next) => {
 
 const check_playlist_uploader = async (req, res, next) => {
     try {
-        const playlistId = req.params.id || req.body.playlistId;
+        const playlistId = req.params.playlistId || req.body.playlistId;
         const token =
             req.cookies?.accessToken ||
             req.header('Authorization')?.replace('Bearer ', '');

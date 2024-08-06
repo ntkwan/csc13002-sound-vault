@@ -48,7 +48,7 @@ const delete_playlist_by_id = async (req, res) => {
     const userId = req.user._id;
 
     try {
-        const playlist = await PlaylistModel.findOne(playlistId);
+        const playlist = await PlaylistModel.findById(playlistId);
         if (!playlist) {
             return res.status(404).json({
                 message: 'Playlist not found',
