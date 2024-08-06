@@ -1,9 +1,15 @@
 import { RouterProvider } from 'react-router-dom';
-import router from '@routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import router from '@routes';
+import { useGetMyPlaylistsQuery, useGetMyProfileQuery } from '@services/api';
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '@services/selectors';
 
 function App() {
+    const token = useSelector(selectCurrentToken);
+    useGetMyProfileQuery(undefined, { skip: !token });
+    useGetMyPlaylistsQuery(undefined, { skip: !token });
     return (
         <>
             <ToastContainer

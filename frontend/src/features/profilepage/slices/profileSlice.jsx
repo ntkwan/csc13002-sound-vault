@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { api } from '@services/api';
 
 const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
@@ -49,6 +50,16 @@ const profileSlice = createSlice({
         updatePassword: (state, actions) => {
             state.password = actions.payload.password;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addMatcher(
+            api.endpoints.getMyProfile.matchFulfilled,
+            (state, action) => {
+                console.log(action.payload);
+
+                Object.assign(state, action.payload);
+            },
+        );
     },
 });
 

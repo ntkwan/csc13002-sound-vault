@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logOut, setCredentials } from '@features/authentication/slices';
 import { resetPlayer } from '@features/player/slices';
-import { updateInfo } from '@features/profilepage/slices';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
@@ -70,15 +69,6 @@ export const api = createApi({
                         }),
                     );
                     dispatch(resetPlayer());
-
-                    const profile = await dispatch(
-                        api.endpoints.getMyProfile.initiate(),
-                    ).unwrap();
-                    dispatch(updateInfo(profile));
-
-                    await dispatch(
-                        api.endpoints.getMyPlaylists.initiate(),
-                    ).unwrap();
                 } catch (error) {
                     console.error(error?.error?.data?.message);
                 }
@@ -257,6 +247,7 @@ export const api = createApi({
         }),
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
+            providesTags: ['User'],
         }),
         getProfileById: builder.query({
             query: (id) => `/get-profile-by-id/${id}`,
@@ -301,6 +292,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['User'],
         }),
         uploadProfileCover: builder.mutation({
             query: ({ file }) => ({
@@ -308,6 +300,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['User'],
         }),
         getRecentlyPlayedSongs: builder.query({
             query: () => '/get-recently-played-songs',
@@ -419,6 +412,7 @@ export const {
     useChangeProfileMutation,
     useChangePasswordMutation,
     useGetProfileByIdQuery,
+    useGetMyProfileQuery,
     useGetFollowingListByIdQuery,
     useGetFollowButtonByIdQuery,
     useFollowProfileByIdMutation,

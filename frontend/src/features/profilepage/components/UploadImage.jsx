@@ -34,9 +34,6 @@ const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
                     file: formData,
                 }).unwrap();
                 toast.success('Uploaded successfully!');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
             } catch (error) {
                 toast.error('Error uploading image.');
             }
