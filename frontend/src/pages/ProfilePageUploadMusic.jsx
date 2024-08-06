@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
     useSubmitMusicMutation,
     useGetFollowingListByIdQuery,
+    useUploadProfileCoverMutation,
 } from '@services/api';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
@@ -43,13 +44,11 @@ function ProfilePageUploadMusic() {
         const formData = new FormData(e.target);
         const collaborators = formData.get('collaborators');
         const songTitle = formData.get('title');
-        const releaseDate = formData.get('releaseDate');
         const genre = formData.get('genre');
         const region = formData.get('region');
 
         if (
             songTitle &&
-            releaseDate &&
             genre &&
             region &&
             uploadThumbnail &&
@@ -59,10 +58,10 @@ function ProfilePageUploadMusic() {
                 const uploadForm = new FormData();
                 // formData.append('collaborators', collaborators);
                 uploadForm.append('title', songTitle);
-                // formData.append('releaseDate', releaseDate);
                 uploadForm.append('genre', genre);
                 uploadForm.append('region', region);
                 uploadForm.append('audio', uploadAudio);
+                uploadForm.append('thumbnail', uploadThumbnail);
 
                 const res1 = await submitMusic({
                     file: uploadForm,
@@ -171,13 +170,6 @@ function ProfilePageUploadMusic() {
                                 placeholder="Song Title"
                                 required
                             />
-                            <InputForm
-                                id="releaseDate"
-                                name="releaseDate"
-                                placeholder="Release Date (YYYY-MM-DD)"
-                                type="date"
-                                required
-                            />
                         </fieldset>
                         <fieldset className="w-[550px] space-y-4">
                             <select
@@ -206,8 +198,8 @@ function ProfilePageUploadMusic() {
                                     (Select Region)
                                 </option>
                                 <option value="USUK">USUK</option>
-                                <option value="K-Pop">K-Pop</option>
-                                <option value="V-Pop">V-Pop</option>
+                                <option value="KPop">K-Pop</option>
+                                <option value="VPop">V-Pop</option>
                             </select>
                         </fieldset>
 
@@ -227,7 +219,7 @@ function ProfilePageUploadMusic() {
                                     className="px-[4px] font-normal text-[#8774f9] hover:cursor-pointer hover:underline hover:opacity-80"
                                     onClick={() => setShowTermsAndPolicy(true)}
                                 >
-                                    term and policy
+                                    terms and policy
                                 </span>
                             </p>
                         </div>
@@ -256,7 +248,7 @@ function ProfilePageUploadMusic() {
                                     ></path>
                                 </svg>
                             )}
-                            {!isLoadingSubmitMusic ? 'Uploading...' : 'Upload'}
+                            {!isLoadingSubmitMusic ? 'Upload' : 'Uploading...'}
                         </button>
                     </div>
                 </form>
