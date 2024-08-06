@@ -4,6 +4,12 @@ const authMiddleware = require('../middleware/auth');
 const adminController = require('../controllers/admin.controller');
 
 router.post(
+    '/get-admin-accounts',
+    authMiddleware.check_admin,
+    adminController.get_admin_accounts,
+);
+
+router.post(
     '/set-verified-artist-by-id/:profileId',
     authMiddleware.check_admin,
     adminController.set_verified_artist,

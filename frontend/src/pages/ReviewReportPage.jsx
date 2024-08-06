@@ -307,7 +307,7 @@ function ReviewReportPage() {
                 <thead>
                     <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">
-                            User name
+                            Report ID
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
                             Date
@@ -345,13 +345,12 @@ function ReviewReportPage() {
                             </td>
                             <td className="flex items-end justify-end p-2 py-5">
                                 <div
-                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
-                                        report.status === 'Finished'
-                                            ? 'bg-[#188038]'
-                                            : report.status === 'Pending'
-                                              ? 'bg-[#F6FE00]'
-                                              : 'bg-[#FD0053]'
-                                    }`}
+                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${report.status === 'Finished'
+                                        ? 'bg-[#188038]'
+                                        : report.status === 'Pending'
+                                            ? 'bg-[#F6FE00]'
+                                            : 'bg-[#FD0053]'
+                                        }`}
                                 />
                             </td>
                             <td className="relative">

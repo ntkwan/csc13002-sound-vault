@@ -123,7 +123,7 @@ function SignUpPage() {
                             className="px-[4px] font-normal text-[#8774f9] hover:cursor-pointer hover:underline hover:opacity-80"
                             onClick={handleShowTermsAndPolicy}
                         >
-                            term and policy
+                            terms and policy
                         </p>
                     </div>
 

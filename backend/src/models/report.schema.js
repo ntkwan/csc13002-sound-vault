@@ -17,6 +17,10 @@ const ReportSchema = new Schema(
             type: String,
             required: true,
         },
+        isSong: {
+            type: Boolean,
+            required: true,
+        },
 
         //user input
         email: {

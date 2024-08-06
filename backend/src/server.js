@@ -34,6 +34,7 @@ const file_controller = require('./routes/upload.route');
 const song_controller = require('./routes/song.route');
 const playlist_controller = require('./routes/playlist.route');
 const payment_controller = require('./routes/payment.route');
+const report_controller = require('./routes/report.route');
 
 app.use(authorize);
 app.use(user);
@@ -42,6 +43,7 @@ app.use(file_controller);
 app.use(song_controller);
 app.use(playlist_controller);
 app.use(payment_controller);
+app.use(report_controller);
 
 // Error handling
 app.use((req, res, next) => {

@@ -37,7 +37,7 @@ function Sidebar() {
                             <SidebarLink
                                 to="admin/report"
                                 icon={EmailIcon}
-                                label="review report"
+                                label="review reports"
                             />
                             <SidebarLink
                                 to="admin/transaction"

@@ -8,6 +8,25 @@ const BlacklistModel = require('../models/blacklist.schema');
 const moment = require('moment');
 const schedule = require('node-schedule');
 
+const get_admin_accounts = async (req, res) => {
+    try {
+        const User = await UserModel.find({ isAdmin: true });
+        if (!User) {
+            return res.status(404).json({
+                message: 'Admin account not found',
+            });
+        }
+
+        return res.status(200).json({
+            name: User.name,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const ban_account = async (req, res) => {
     const { profileId, days, reason } = req.body;
     try {
@@ -322,6 +341,7 @@ const activate_song = async (req, res) => {
 };
 
 module.exports = {
+    get_admin_accounts,
     get_account_ban_status_by_id,
     ban_account,
     set_verified_artist,

@@ -26,7 +26,7 @@ POST {{host}}/signin
 Content-Type: application/json
 
 {
-    "email": "npquan2704@gmail.com",
+    "email": "quan@support.soundvault",
     "password": "1234"
 }
 
