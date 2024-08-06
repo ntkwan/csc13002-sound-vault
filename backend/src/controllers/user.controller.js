@@ -46,6 +46,10 @@ const change_profile = async (req, res) => {
         User.name = name;
         User.shortDesc = shortDesc;
         await User.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: 'Profile updated successfully',
+        });
     } catch (error) {
         return res.status(500).json({
             message: error.message,
