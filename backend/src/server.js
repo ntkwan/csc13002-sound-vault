@@ -15,10 +15,11 @@ const app = express();
 databaseModule.connect_database();
 app.use(
     cors({
-        origin: process.env.CLIENT_URI,
+        origin: 'https://aea1-104-28-205-70.ngrok-free.app',
         credentials: true,
     }),
 );
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
