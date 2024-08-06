@@ -143,6 +143,13 @@ export const api = createApi({
                 body: file,
             }),
         }),
+        submitMusic: builder.mutation({
+            query: ({ file }) => ({
+                url: '/submit-music',
+                method: 'POST',
+                body: file,
+            }),
+        }),
         playSong: builder.mutation({
             query: (id) => ({
                 url: `/play-song/${id}`,
@@ -231,6 +238,23 @@ export const api = createApi({
         }),
 
         // User --------------------------------------------------------------
+        getProfileInfomation: builder.query({
+            query: () => '/get-profile-information',
+        }),
+        changeProfile: builder.mutation({
+            query: (body) => ({
+                url: '/change-profile',
+                method: 'POST',
+                body,
+            }),
+        }),
+        changePassword: builder.mutation({
+            query: (body) => ({
+                url: '/change-password',
+                method: 'POST',
+                body,
+            }),
+        }),
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
         }),
@@ -368,6 +392,7 @@ export const {
     useUploadAudioMutation,
     useUploadSongMutation,
     useUploadSongThumbnailMutation,
+    useSubmitMusicMutation,
     useGetFeaturedArtistsQuery,
     usePlaySongMutation,
     useUndoPlaySongMutation,
@@ -390,6 +415,9 @@ export const {
     useGetMyPlaylistsQuery,
 
     // User -------------------------------------------------------------------
+    useGetProfileInfomationQuery,
+    useChangeProfileMutation,
+    useChangePasswordMutation,
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
     useGetFollowButtonByIdQuery,

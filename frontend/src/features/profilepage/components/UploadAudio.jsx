@@ -13,13 +13,17 @@ const UploadAudio = memo(
                 toast.error('Invalid file type. Please upload an audio file.');
             } else if (audio.size > sizeLimit * 1000 * 1024) {
                 toast.error(`File size exceeds the limit of ${sizeLimit} MB.`);
-            } else if (audio === uploadAudio) {
-                toast.error('This audio is already uploaded.');
             } else {
                 setUploadAudio(audio);
                 setPreview(URL.createObjectURL(audio));
                 useUploadMutation(audio);
             }
+        };
+
+        const resetUpload = () => {
+            setUploadAudio(null);
+            setPreview(null);
+            document.getElementById(id).value = null;
         };
 
         return (
@@ -40,7 +44,7 @@ const UploadAudio = memo(
                                     />
                                     <p
                                         className="hover:cursor-pointer hover:underline hover:underline-offset-2"
-                                        onClick={() => setPreview(false)}
+                                        onClick={resetUpload}
                                     >
                                         Click here to upload another file
                                     </p>

@@ -1,22 +1,17 @@
 import { useState } from 'react';
-import { PageTitle } from '@components';
-import { TermAndPolicyBox } from '@features/authentication/components';
-import uploadIcon from '@assets/img/upload-icon.svg';
-import { toast } from 'react-toastify';
 import {
-    useUploadSongMutation,
-    useUploadSongThumbnailMutation,
+    useSubmitMusicMutation,
+    useGetFollowingListByIdQuery,
 } from '@services/api';
-import {
-    UploadImage,
-    UploadAudio,
-    InputForm,
-} from '@features/profilepage/components';
 import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { MentionsInput, Mention } from 'react-mentions';
 import { useSelector } from 'react-redux';
 import { selectCurrentProfile } from '@services/selectors';
-import { useGetFollowingListByIdQuery } from '@services/api';
+import { PageTitle } from '@components';
+import { UploadAudio } from '@features/profilepage/components';
+import { TermAndPolicyBox } from '@features/authentication/components';
+import uploadIcon from '@assets/img/upload-icon.svg';
 
 function ProfilePageUploadMusic() {
     // handle upload audio, cover, thumbnail
@@ -36,10 +31,8 @@ function ProfilePageUploadMusic() {
     const [showTermsAndPolicy, setShowTermsAndPolicy] = useState(false);
 
     // handle submit
-    const [uploadSong, { isLoading: isLoadingUploadSong }] =
-        useUploadSongMutation();
-    const [uploadSongThumbnail, { isLoading: isLoadingUploadThumnail }] =
-        useUploadSongThumbnailMutation();
+    const [submitMusic, { isLoading: isLoadingSubmitMusic }] =
+        useSubmitMusicMutation();
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!checked) {
@@ -71,17 +64,12 @@ function ProfilePageUploadMusic() {
                 uploadForm.append('region', region);
                 uploadForm.append('audio', uploadAudio);
 
-                const res1 = await uploadSong({
+                const res1 = await submitMusic({
                     file: uploadForm,
                 }).unwrap();
 
-                // const res2 = await uploadSongThumbnail({
-                //     file: uploadThumbnail,
-                // }).unwrap();
-
                 toast.success('Uploaded successfully!', res1);
             } catch (error) {
-                console.log('-------------------', error);
                 toast.error('Error uploading files.');
             }
         } else {
@@ -119,7 +107,7 @@ function ProfilePageUploadMusic() {
                             sizeLimit={10}
                             useUploadMutation={setUploadAudio}
                         />
-                        <UploadImage2
+                        <UploadImage
                             className=""
                             id="thumbnail-upload"
                             label="To upload a thumbnail click on the box or drop file here!"
@@ -169,7 +157,7 @@ function ProfilePageUploadMusic() {
                                 }}
                             >
                                 <Mention
-                                    data={users}
+                                    data={users ?? []}
                                     appendSpaceOnAdd={true}
                                     style={{
                                         backgroundColor: '#0284c7',
@@ -177,13 +165,13 @@ function ProfilePageUploadMusic() {
                                     }}
                                 />
                             </MentionsInput>
-                            <InputForm2
+                            <InputForm
                                 id="title"
                                 name="title"
                                 placeholder="Song Title"
                                 required
                             />
-                            <InputForm2
+                            <InputForm
                                 id="releaseDate"
                                 name="releaseDate"
                                 placeholder="Release Date (YYYY-MM-DD)"
@@ -198,7 +186,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled>
+                                <option value="" disabled selected>
                                     (Select Genre)
                                 </option>
                                 <option value="Rap">Rap</option>
@@ -214,7 +202,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled>
+                                <option value="" disabled selected>
                                     (Select Region)
                                 </option>
                                 <option value="USUK">USUK</option>
@@ -245,11 +233,30 @@ function ProfilePageUploadMusic() {
                         </div>
                         <button
                             type="submit"
-                            className="m-auto select-none rounded-full border px-10 py-3 text-center"
+                            className="relative m-auto flex select-none items-center rounded-full border px-10 py-3 text-center"
                         >
-                            {isLoadingUploadSong || isLoadingUploadThumnail
-                                ? 'Uploading...'
-                                : 'Upload'}
+                            {isLoadingSubmitMusic && (
+                                <svg
+                                    className="mr-4 h-6 w-6 animate-spin text-blue-500"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                </svg>
+                            )}
+                            {!isLoadingSubmitMusic ? 'Uploading...' : 'Upload'}
                         </button>
                     </div>
                 </form>
@@ -259,13 +266,7 @@ function ProfilePageUploadMusic() {
 }
 export default ProfilePageUploadMusic;
 
-function InputForm2({
-    placeholder,
-    type = 'text',
-    id,
-    name,
-    required = false,
-}) {
+function InputForm({ placeholder, type = 'text', id, name, required = false }) {
     return (
         <input
             id={id}
@@ -278,7 +279,7 @@ function InputForm2({
     );
 }
 
-function UploadImage2({ className, id, label, sizeLimit, useUploadMutation }) {
+function UploadImage({ className, id, label, sizeLimit, useUploadMutation }) {
     const [preview, setPreview] = useState(null);
     const [uploadImage, setUploadImage] = useState(null);
 
