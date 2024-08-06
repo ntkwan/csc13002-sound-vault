@@ -22,6 +22,13 @@ router.put(
     songController.undo_play_song,
 );
 
+router.delete(
+    '/delete-track/:songId',
+    authMiddleware.check_user,
+    authMiddleware.check_song_uploader,
+    songController.delete_track_by_id,
+);
+
 router.get('/get-song-view/:id', songController.get_song_view);
 router.get('/get-song-by-id/:id', songController.get_song_by_id);
 

@@ -105,6 +105,38 @@ const check_admin = async (req, res, next) => {
     }
 };
 
+const check_song_uploader = async (req, res, next) => {
+    try {
+        const songId = req.params.songId || req.body.songId;
+        const userId = req.user._id;
+        if (!userId) {
+            return res.status(401).json({
+                message: 'Unauthorized',
+            });
+        }
+
+        const song = await SongModel.findById(songId);
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        if (!song.uploader.equals(userId)) {
+            return res.status(401).json({
+                message: 'Unauthorized',
+            });
+        }
+
+        req.song = song;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            message: 'Unauthorized',
+        });
+    }
+};
+
 const check_playlist_uploader = async (req, res, next) => {
     try {
         const playlistId = req.params.playlistId || req.body.playlistId;
@@ -114,7 +146,7 @@ const check_playlist_uploader = async (req, res, next) => {
 
         if (!token) {
             return res.status(401).json({
-                message: 'Token not found',
+                message: 'Token is not found',
             });
         }
 
@@ -130,7 +162,7 @@ const check_playlist_uploader = async (req, res, next) => {
         const playlist = await playlistModel.findById(playlistId);
         if (!playlist) {
             return res.status(404).json({
-                message: 'Playlist not found',
+                message: 'Playlist is not found',
             });
         }
 
@@ -154,4 +186,5 @@ module.exports = {
     check_user,
     check_admin,
     check_playlist_uploader,
+    check_song_uploader,
 };

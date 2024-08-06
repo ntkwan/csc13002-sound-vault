@@ -255,6 +255,28 @@ const disable_song = async (req, res) => {
     }
 };
 
+const delete_track_by_id = async (req, res) => {
+    const song = req.song;
+
+    try {
+        if (!song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        await SongModel.deleteOne({ _id: song._id });
+
+        return res.status(200).json({
+            message: 'Song deleted successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const enable_song = async (req, res) => {
     const songId = req.params.id;
     try {
@@ -279,6 +301,7 @@ const enable_song = async (req, res) => {
 };
 
 module.exports = {
+    delete_track_by_id,
     get_song_by_id,
     get_trending_songs,
     get_new_songs,
