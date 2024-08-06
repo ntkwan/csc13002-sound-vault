@@ -15,7 +15,7 @@ const app = express();
 databaseModule.connect_database();
 app.use(
     cors({
-        origin: 'https://aea1-104-28-205-70.ngrok-free.app',
+        origin: process.env.CLIENT_URI,
         credentials: true,
     }),
 );
