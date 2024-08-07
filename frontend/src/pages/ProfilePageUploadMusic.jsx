@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     useSubmitMusicMutation,
     useGetFollowingListByIdQuery,
@@ -46,23 +46,14 @@ function ProfilePageUploadMusic() {
         const formData = new FormData(e.target);
         // const collaborators = formData.get('collaborators');
         const songTitle = formData.get('title');
-        // const releaseDate = formData.get('releaseDate');
         const genre = formData.get('genre');
         const region = formData.get('region');
 
-        if (
-            songTitle &&
-            releaseDate &&
-            genre &&
-            region &&
-            uploadThumbnail &&
-            uploadAudio
-        ) {
+        if (songTitle && genre && region && uploadThumbnail && uploadAudio) {
             try {
                 const uploadForm = new FormData();
                 // formData.append('collaborators', collaborators);
                 uploadForm.append('title', songTitle);
-                // formData.append('releaseDate', releaseDate);
                 uploadForm.append('genre', genre);
                 uploadForm.append('region', region);
                 uploadForm.append('thumbnail', uploadThumbnail);
@@ -89,6 +80,18 @@ function ProfilePageUploadMusic() {
         }));
     }
 
+    const [maxWidthPx, setMaxWidthPx] = useState(0);
+    const updateMaxWidthPx = () => {
+        const viewportWidth = window.innerWidth;
+        const newMaxWidthPx = ((viewportWidth - 160 - 180) / 2) * (5 / 6);
+        setMaxWidthPx(newMaxWidthPx);
+    };
+    useEffect(() => {
+        updateMaxWidthPx();
+        window.addEventListener('resize', updateMaxWidthPx);
+        return () => window.removeEventListener('resize', updateMaxWidthPx);
+    }, []);
+
     return (
         <>
             <div className="upload-music__page pt-8">
@@ -100,19 +103,19 @@ function ProfilePageUploadMusic() {
                 )}
                 <PageTitle title="Upload Music " className="mb-8" />
                 <form
-                    className="editing__upload grid grid-rows-2"
+                    className="editing__upload grid grid-rows-2 gap-8"
                     onSubmit={handleSubmit}
                 >
-                    <fieldset className="flex space-x-[10%]">
+                    <fieldset className="flex h-60">
                         <UploadAudio
-                            className=""
+                            className="flex-1"
                             id="audio-upload"
                             label="To upload music click on the box or drop file here!"
                             sizeLimit={10}
                             useUploadMutation={setUploadAudio}
                         />
                         <UploadImage
-                            className=""
+                            className="flex-1"
                             id="thumbnail-upload"
                             label="To upload a thumbnail click on the box or drop file here!"
                             sizeLimit={10}
@@ -120,12 +123,12 @@ function ProfilePageUploadMusic() {
                         />
                     </fieldset>
 
-                    <div className="upload-music__infomation relative mt-4 grid w-full grid-cols-2 items-start gap-4">
+                    <div className="upload-music__infomation relative grid w-full grid-cols-2 items-start gap-4">
                         <fieldset className="w-5/6 space-y-4 overflow-hidden">
                             <MentionsInput
                                 id="collaborators"
                                 name="collaborators"
-                                className="mentions h-[50px] max-w-[550px] content-center text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                className="mentions h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 placeholder="Mention Collaborators using '@' symbol"
                                 value={suggestion}
                                 onChange={(e) => setSuggestion(e.target.value)}
@@ -134,17 +137,15 @@ function ProfilePageUploadMusic() {
                                     '&singleLine': {
                                         width: '100%',
                                         display: 'block',
-                                        maxWidth: '550px',
+                                        width: `${maxWidthPx}px`,
                                     },
                                     input: {
                                         padding: '0 16px',
                                         height: '50px',
                                         outline: 'none',
-                                        maxWidth: '100%',
                                     },
                                     control: {
                                         color: '#fff',
-                                        maxWidth: '100%',
                                     },
                                     suggestions: {
                                         list: {
@@ -175,15 +176,8 @@ function ProfilePageUploadMusic() {
                                 placeholder="Song Title"
                                 required
                             />
-                            <InputForm
-                                id="releaseDate"
-                                name="releaseDate"
-                                placeholder="Release Date (YYYY-MM-DD)"
-                                type="date"
-                                required
-                            />
                         </fieldset>
-                        <fieldset className="w-[550px] space-y-4">
+                        <fieldset className="w-5/6 space-y-4">
                             <select
                                 id="genre"
                                 name="genre"
@@ -275,7 +269,7 @@ function InputForm({ placeholder, type = 'text', id, name, required = false }) {
         <input
             id={id}
             name={name}
-            className="h-[50px] w-[550px] rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+            className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
             placeholder={placeholder}
             type={type}
             required={required}
@@ -306,39 +300,39 @@ function UploadImage({ className, id, label, sizeLimit, useUploadMutation }) {
 
     return (
         <div className={`upload__form space-y-2 ${className}`}>
-            <label htmlFor="file-upload" className="upload__label">
+            <label htmlFor="file-upload" className="upload__label inline-block">
                 {label}
-            </label>
-            <div className="upload__container relative w-max">
-                <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
-                    {preview ? (
-                        <img
-                            className="upload__preview h-full w-full rounded-xl object-cover"
-                            src={preview}
-                            alt="previewImage"
+                <div className="upload__container relative m-auto mt-2 w-max">
+                    <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
+                        {preview ? (
+                            <img
+                                className="upload__preview m-auto h-full w-full rounded-xl object-cover"
+                                src={preview}
+                                alt="previewImage"
+                            />
+                        ) : (
+                            <img
+                                className="upload__onclick-icon m-auto w-24"
+                                src={uploadIcon}
+                                alt="uploadIcon"
+                            />
+                        )}
+                        <input
+                            id={id}
+                            className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                            type="file"
+                            onChange={handleImageUpload}
+                            accept="image/*"
+                            aria-label="File upload"
                         />
-                    ) : (
-                        <img
-                            className="upload__onclick-icon m-auto w-24"
-                            src={uploadIcon}
-                            alt="uploadIcon"
-                        />
+                    </div>
+                    {!preview && (
+                        <span className="upload__desc text-[13px] text-[#b2b2b2]">
+                            {`File size is less than ${sizeLimit} MB`}
+                        </span>
                     )}
-                    <input
-                        id={id}
-                        className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
-                        type="file"
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        aria-label="File upload"
-                    />
                 </div>
-                {!preview && (
-                    <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                        {`File size is less than ${sizeLimit} MB`}
-                    </span>
-                )}
-            </div>
+            </label>
         </div>
     );
 }

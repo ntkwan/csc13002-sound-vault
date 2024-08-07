@@ -109,16 +109,16 @@ function ProfilePageEditing() {
             />
 
             {/* Upload profile images */}
-            <div className="editing__upload flex items-center">
+            <div className="editing__upload flex h-52 items-center">
                 <UploadImage
-                    className=""
+                    className="flex-1"
                     id="upload-avatar"
                     label="To upload an avatar click on box or drop file here!"
                     sizeLimit={10}
                     useUploadMutation={useUploadProfilePicMutation}
                 />
                 <UploadImage
-                    className="ml-12"
+                    className="flex-1"
                     id="upload-cover"
                     label="To upload a cover click on box or drop file here!"
                     sizeLimit={10}
@@ -166,7 +166,7 @@ function ProfilePageEditing() {
 
                 {/* Password recovery form */}
                 <form
-                    className="editing__password flex flex-1 flex-col items-center space-y-4"
+                    className="editing__password flex flex-1 flex-col space-y-4"
                     onSubmit={handleUpdatePassword}
                 >
                     <label
