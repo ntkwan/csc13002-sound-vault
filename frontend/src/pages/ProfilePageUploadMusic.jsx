@@ -71,7 +71,7 @@ function ProfilePageUploadMusic() {
                 const response = await submitMusic({
                     file: uploadForm,
                 }).unwrap();
-
+                navigate(`/song/${response.songId}`);
                 toast.success('Uploaded successfully!');
             } catch (error) {
                 toast.error('Error uploading files.');
@@ -190,7 +190,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled defaultValue>
+                                <option value="" defaultValue>
                                     (Select Genre)
                                 </option>
                                 <option value="Rap">Rap</option>
@@ -206,7 +206,7 @@ function ProfilePageUploadMusic() {
                                 className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 required
                             >
-                                <option value="" disabled defaultValue>
+                                <option value="" defaultValue>
                                     (Select Region)
                                 </option>
                                 <option value="USUK">USUK</option>
