@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const playlistModel = require('../models/playlist.schema');
 const UserModel = require('../models/user.schema');
+const SongModel = require('../models/song.schema');
 
 const check_guest = async (req, res, next) => {
     try {
