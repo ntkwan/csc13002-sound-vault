@@ -353,7 +353,7 @@ function ProfilePage() {
                             />
                         )} */}
 
-                        {following && (
+                        {following && isMyProfile && (
                             <MediaDisplay
                                 media={followingDisplay}
                                 displayItems="2"
