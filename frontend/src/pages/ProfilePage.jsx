@@ -213,7 +213,7 @@ function ProfilePage() {
                             )}
                         </div>
                         {/* profile info */}
-                        <div className="relative ml-5 content-center">
+                        <div className="relative ml-5 cursor-default content-center">
                             <p className="text-shadow-1 font-medium">Profile</p>
                             <p className="text-shadow-2 text-stroke-1 select-none py-1 font-alfaslabone text-7xl">
                                 {name}

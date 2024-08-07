@@ -6,13 +6,20 @@ import {
     useGetProfileByIdQuery,
     useLazyGetPlaylistByIdQuery,
     useLazyGetProfileAllSongsQuery,
+    useCreatePlaylistMutation,
+    useAddSongToPlaylistMutation,
+    useRemoveSongFromPlaylistMutation,
+    useAddSongToLikedPlaylistMutation,
+    useGetPlaylistByIdQuery,
+    useGetMyPlaylistsQuery,
+    useDeleteTrackByIdMutation,
 } from '@services/api';
 import {
     selectCurrentPlaylist,
     selectCurrentProfile,
     selectCurrentTrack,
 } from '@services/selectors';
-import { PlayButton, ReportFrame } from '.';
+import { PlayButton, ReportFrame, ConfirmDeletion } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 import { toast } from 'react-toastify';
@@ -236,7 +243,9 @@ const HomeCard = memo(
         const { name, imageurl } = mediaData;
         // Album
         const { playlist_owner } = mediaData;
-        const { data: owner } = useGetProfileByIdQuery(playlist_owner);
+        const { data: owner } = useGetProfileByIdQuery(playlist_owner, {
+            skip: !playlist_owner,
+        });
         // image
         const { url } = image || imageurl;
 
@@ -408,6 +417,7 @@ BrowseCard.propTypes = HomeCard.propTypes;
 
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
+        const { id: myProfileID } = useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
@@ -415,19 +425,20 @@ const SongBar = memo(
         const playlistFormRef = useRef(null);
         const [playlistOptionsVisible, setPlaylistOptionsVisible] =
             useState(false);
+        const [playlistName, setPlaylistName] = useState('');
+        const [playlistDesc, setPlaylistDesc] = useState('');
+        const [confirmDelete, setConfirmDelete] = useState(false);
 
         const location = useLocation();
         const pathSegments = location.pathname.split('/');
         const pathtype = pathSegments[1];
-        const { profileId: pathId } = useParams();
+        const { profileId, playlistId } = useParams();
+        const pathId = profileId || playlistId;
 
         const toggleMenu = (index) => {
             setMenuVisible(menuVisible === index ? null : index);
         };
 
-        const handleCreatePlaylist = () => {
-            setShowPlaylistForm(false);
-        };
         useEffect(() => {
             const handleOutsideClick = (e) => {
                 if (
@@ -486,12 +497,111 @@ const SongBar = memo(
             copyToClipboard(shareURL);
         };
 
+        // handle api playlist
+        const { data: playlistData } = useGetPlaylistByIdQuery(playlistId, {
+            skip: !playlistId,
+        });
+
+        const { data: myPlayListData, isLoading: isLoadingMyPlayListData } =
+            useGetMyPlaylistsQuery(myProfileID, {
+                skip: !myProfileID,
+            });
+
+        const [creatPlayList, { isLoading: createPlaylistLoading }] =
+            useCreatePlaylistMutation();
+        const handleCreatePlaylist = async (name, desc) => {
+            if (createPlaylistLoading) return;
+            try {
+                await creatPlayList({ name, desc }).unwrap();
+                toast.success('Playlist created successfully!');
+            } catch (error) {
+                console.error('Failed to create playlist:', error);
+                toast.error(`${error.data.message}!`);
+            }
+        };
+        const handleSubmitCreatePlaylist = () => {
+            setShowPlaylistForm(false);
+            const name = String(playlistName).trim();
+            const desc = String(playlistDesc).trim();
+            handleCreatePlaylist(name, desc);
+        };
+
+        const [addSongToPlaylist, { isLoading: addSongToPlaylistLoading }] =
+            useAddSongToPlaylistMutation();
+        const handleAddToPlaylist = async (
+            playlistId,
+            songId,
+            songName,
+            playlistName,
+        ) => {
+            if (addSongToPlaylistLoading) return;
+            try {
+                await addSongToPlaylist({ playlistId, songId }).unwrap();
+                toast.success(
+                    `${songName} added to playlist ${playlistName} successfully!`,
+                );
+            } catch (error) {
+                console.error('Failed to add song to playlist:', error);
+                toast.error(`${error.data.message}!`);
+            }
+        };
+
+        const [
+            removeSongFromPlaylist,
+            { isLoading: removeSongFromPlaylistLoading },
+        ] = useRemoveSongFromPlaylistMutation();
+        const handleRemoveFromPlaylist = async (playlistId, songId) => {
+            if (removeSongFromPlaylistLoading) return;
+            try {
+                await removeSongFromPlaylist({ playlistId, songId }).unwrap();
+                toast.success('Song removed from playlist successfully!');
+            } catch (error) {
+                console.error('Failed to remove song from playlist:', error);
+                toast.error(`${error.data.message}!`);
+            }
+        };
+
+        const [
+            addSongToLikedPlaylist,
+            { isLoading: addSongToLikedPlaylistLoading },
+        ] = useAddSongToLikedPlaylistMutation();
+        const handleAddToLikedSongs = async (id, songName) => {
+            if (addSongToLikedPlaylistLoading) return;
+            try {
+                await addSongToLikedPlaylist(id).unwrap();
+                toast.success(`${songName} added to liked songs successfully!`);
+            } catch (error) {
+                console.error('Failed to add song to liked songs:', error);
+                toast.error(`${error.data.message}!`);
+            }
+        };
+        const [removeSongById, { isLoading: removeSongIsLoading }] =
+            useDeleteTrackByIdMutation();
+        const handleRemoveSong = async (id) => {
+            if (removeSongIsLoading) return;
+            try {
+                setConfirmDelete(false);
+                await removeSongById(id).unwrap();
+                toast.success('Song removed successfully!');
+            } catch (error) {
+                console.log('Failed to remove song', error);
+                toast.error(`${error.data.message}!`);
+            }
+        };
+
         const { currentSong } = useSong();
         const titleClassName =
             currentSong === id ? 'text-purple-400 font-bold' : '';
 
         return (
             <>
+                {confirmDelete && (
+                    <ConfirmDeletion
+                        type="song"
+                        setConfirmAction={setConfirmDelete}
+                        confirmActionHandler={() => handleRemoveSong(id)}
+                    />
+                )}
                 {showReportFrame && (
                     <ReportFrame setShowReportFrame={setShowReportFrame} />
                 )}
@@ -501,22 +611,47 @@ const SongBar = memo(
                             ref={playlistFormRef}
                             className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
                         >
-                            <label
-                                htmlFor="playlistName"
-                                className="block pb-2 text-left text-xl"
-                            >
-                                Create a name for your playlist
-                            </label>
-                            <input
-                                id="playlistName"
-                                type="text"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        handleCreatePlaylist();
+                            <div>
+                                <label
+                                    htmlFor="playlistName"
+                                    className="block pb-2 text-left text-base"
+                                >
+                                    Create a name for your playlist:
+                                </label>
+                                <input
+                                    id="playlistName"
+                                    type="text"
+                                    onChange={(e) =>
+                                        setPlaylistName(e.target.value)
                                     }
-                                }}
-                                className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                            />
+                                    className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="playlistName"
+                                    className="block pb-2 text-left text-base"
+                                >
+                                    Description for your playlist:
+                                </label>
+                                <textarea
+                                    id="playlistName"
+                                    rows="4"
+                                    cols="50"
+                                    onChange={(e) =>
+                                        setPlaylistDesc(e.target.value)
+                                    }
+                                    className="h-16 w-80 resize-none border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="m-2 flex justify-end">
+                                <button
+                                    className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+                                    onClick={handleSubmitCreatePlaylist}
+                                >
+                                    Create
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -570,16 +705,9 @@ const SongBar = memo(
                             ></i>
                             {menuVisible === index && (
                                 <div
-                                    className={`menu absolute z-30 ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-[2] mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                                    className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
                                 >
                                     <ul>
-                                        {pathtype == 'profile' &&
-                                            pathId == undefined && (
-                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ri-add-circle-line text-xl leading-none"></i>
-                                                    <span>Add to album</span>
-                                                </li>
-                                            )}
                                         <li
                                             className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                             onMouseEnter={() =>
@@ -597,7 +725,7 @@ const SongBar = memo(
                                                     <ul>
                                                         <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                             <div
-                                                                className="mx-4 w-full border-b border-[#999] py-2 text-left"
+                                                                className={`mx-4 w-full py-2 text-left ${myPlayListData?.playlists?.length > 1 ? 'border-b border-[#999]' : ''}`}
                                                                 onClick={() => {
                                                                     setShowPlaylistForm(
                                                                         true,
@@ -613,34 +741,93 @@ const SongBar = memo(
                                                                 </span>
                                                             </div>
                                                         </li>
-                                                        <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <span>
-                                                                Playlist 1
-                                                            </span>
-                                                        </li>
-                                                        <li className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <span>
-                                                                Playlist 2
-                                                            </span>
-                                                        </li>
+                                                        {myPlayListData?.playlists?.map(
+                                                            (
+                                                                playlist,
+                                                                index,
+                                                            ) => {
+                                                                if (
+                                                                    playlist.name ===
+                                                                    'Liked Songs'
+                                                                ) {
+                                                                    return null;
+                                                                }
+                                                                return (
+                                                                    <li
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                        onClick={() => {
+                                                                            handleAddToPlaylist(
+                                                                                playlist.id,
+                                                                                id,
+                                                                                title,
+                                                                                playlist.name,
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <span>
+                                                                            {
+                                                                                playlist.name
+                                                                            }
+                                                                        </span>
+                                                                    </li>
+                                                                );
+                                                            },
+                                                        )}
                                                     </ul>
                                                 </div>
                                             )}
                                         </li>
-                                        {pathtype == 'playlist' && (
-                                            <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                <i className="ri-indeterminate-circle-line text-left text-xl"></i>
-                                                <span className="text-left">
-                                                    Remove from this playlist
-                                                </span>
-                                            </li>
-                                        )}
-                                        <li className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        {pathtype == 'profile' &&
+                                            pathId == undefined && (
+                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <i className="ri-add-circle-line text-xl leading-none"></i>
+                                                    <span>Add to album</span>
+                                                </li>
+                                            )}
+                                        {pathtype == 'playlist' &&
+                                            playlistData &&
+                                            myProfileID ==
+                                                playlistData?.playlist_owner && (
+                                                <li
+                                                    className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    onClick={prevent(() =>
+                                                        handleRemoveFromPlaylist(
+                                                            pathId,
+                                                            id,
+                                                        ),
+                                                    )}
+                                                >
+                                                    <i className="ri-indeterminate-circle-line text-left text-xl"></i>
+                                                    <span className="text-left">
+                                                        Remove from this
+                                                        playlist
+                                                    </span>
+                                                </li>
+                                            )}
+                                        <li
+                                            className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                            onClick={prevent(() =>
+                                                handleAddToLikedSongs(
+                                                    id,
+                                                    title,
+                                                ),
+                                            )}
+                                        >
                                             <i className="ri-heart-line text-left text-xl"></i>
                                             <span className="text-left">
                                                 Save to your Liked Songs
                                             </span>
                                         </li>
+                                        {pathtype == 'profile' &&
+                                            pathId == undefined && (
+                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                    <i className="ri-exchange-line text-xl leading-none"></i>
+                                                    <span>Change cover</span>
+                                                </li>
+                                            )}
                                         <li
                                             className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                             onClick={prevent(() =>
@@ -660,8 +847,16 @@ const SongBar = memo(
                                             <span>Report</span>
                                         </li>
                                         {pathtype == 'profile' &&
+                                            !isverified &&
                                             pathId == undefined && (
-                                                <li className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                <li
+                                                    className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    onClick={() =>
+                                                        setConfirmDelete(
+                                                            !confirmDelete,
+                                                        )
+                                                    }
+                                                >
                                                     <i className="ri-close-large-line text-xl leading-none"></i>
                                                     <span>Delete Track</span>
                                                 </li>

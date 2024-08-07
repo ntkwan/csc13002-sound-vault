@@ -5,6 +5,7 @@ export { default as PageTitle } from './UI/PageTitle';
 export { default as PlayButton } from './PlayButton';
 export { default as ReportFrame } from './ReportFrame';
 export { default as AlbumFrame } from './AlbumFrame';
+export { default as ConfirmDeletion } from './ConfirmDeletion';
 export {
     default as MediaDisplay,
     HomeCard,

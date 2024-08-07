@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Loading, MediaDisplay } from '@components/index';
 import {
-    useGetPopularAlbumsQuery,
-    useCreatePlaylistMutation,
     useDeletePlaylistByIdMutation,
-    useAddSongToPlaylistMutation,
-    useRemoveSongFromPlaylistMutation,
     useGetPlaylistByIdQuery,
     useGetProfileByIdQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
-import { ReportFrame } from '@components/index';
+import { ReportFrame, ConfirmDeletion } from '@components/index';
 import BigPlayButton from '@components/BigPlayButton';
+import { useSelector } from 'react-redux';
+import { selectCurrentProfile } from '@services/selectors';
 
 function PlaylistPage() {
+    const myProfileData = useSelector(selectCurrentProfile);
     const { playlistId } = useParams();
-    const { data: playlist } = useGetPlaylistByIdQuery(playlistId);
+    const { data: playlist } = useGetPlaylistByIdQuery(playlistId, {
+        skip: !playlistId,
+    });
     const { playlist_owner } = playlist || {};
-    const { data: owner } = useGetProfileByIdQuery(playlist_owner);
+    const { data: owner } = useGetProfileByIdQuery(playlist_owner, {
+        skip: !playlist_owner,
+    });
     const [totalTime, setTotalTime] = useState(0);
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     // hanlde menu option
     const [showProfileOption, setShowProfileOption] = useState(false);
@@ -47,6 +51,21 @@ function PlaylistPage() {
         const currentUrl = window.location.href;
         setShowProfileOption(false);
         copyToClipboard(currentUrl);
+    };
+
+    const navigate = useNavigate();
+    const [removePlayList, { isLoading: isLoadingRemovePlayList }] =
+        useDeletePlaylistByIdMutation();
+    const handleDeletePlaylist = async (playlistId) => {
+        if (isLoadingRemovePlayList) return;
+        try {
+            await removePlayList(playlistId).unwrap();
+            toast.success('Playlist deleted successfully');
+            navigate('/');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to delete playlist');
+        }
     };
 
     useEffect(() => {
@@ -93,6 +112,15 @@ function PlaylistPage() {
 
     return (
         <>
+            {confirmDelete && (
+                <ConfirmDeletion
+                    type="playlist"
+                    setConfirmAction={setConfirmDelete}
+                    confirmActionHandler={() =>
+                        handleDeletePlaylist(playlistId)
+                    }
+                />
+            )}
             {showReportFrame && (
                 <ReportFrame setShowReportFrame={setShowReportFrame} />
             )}
@@ -125,14 +153,25 @@ function PlaylistPage() {
                             )}
                         </div>
                         {/* playlist info */}
-                        <div className="relative ml-5 content-center">
+                        <div className="relative ml-5 w-full cursor-default content-center">
                             <p className="text-shadow-1 font-semibold">
                                 Playlist
                             </p>
                             <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-5xl">
                                 {name}
                             </p>
-                            <p className="text-shadow-1 absolute font-medium">
+                            <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap text-sm font-medium">
+                                {owner && owner?.imageurl?.url ? (
+                                    <img
+                                        className="mr-4 inline h-7 w-7 rounded-full object-cover"
+                                        src={profileImageUrl}
+                                        alt=""
+                                    />
+                                ) : (
+                                    <i className="bx bxs-user-circle mr-4 aspect-square w-7 text-4xl leading-none"></i>
+                                )}
+                                {owner && owner.name}
+                                {' • '}
                                 {songs && songs.length <= 1
                                     ? `${songs.length} song`
                                     : `${songs.length} songs`}
@@ -140,17 +179,6 @@ function PlaylistPage() {
                                 {owner && owner.name}
                                 {' • '}
                                 {formatDuration(totalTime)}
-                                {' • '}
-                                2023
-                                {/* {followers <= 1
-                                ? `${followers} Follower`
-                                : followers > 999
-                                  ? `${followers.toLocaleString()} Followers`
-                                  : `${followers} Followers`}
-                            {' • '}
-                            {!following
-                                ? '0 Following'
-                                : `${following.length} Following`} */}
                             </p>
                         </div>
                     </div>
@@ -182,6 +210,18 @@ function PlaylistPage() {
                                         <i className="ri-error-warning-line text-xl leading-none"></i>
                                         <span>Report</span>
                                     </li>
+                                    {myProfileData?.id == playlist_owner &&
+                                        name != 'Liked Songs' && (
+                                            <li
+                                                className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onClick={() =>
+                                                    setConfirmDelete(true)
+                                                }
+                                            >
+                                                <i className="ri-close-large-line text-xl leading-none"></i>
+                                                <span>Delete playlist</span>
+                                            </li>
+                                        )}
                                 </ul>
                             </div>
                         )}
