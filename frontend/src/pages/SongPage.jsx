@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     useGetSongByIdQuery,
     useGetProfileByIdQuery,
@@ -70,11 +69,15 @@ function SongPage() {
             skip: !profileId,
         });
 
+    const allSongExceptCurrent = profileAllSongsData?.filter(
+        (song) => song.id !== songId,
+    );
+
     const allReleases = {
         type: 'Song',
         title: songArtist,
         visibility: '',
-        data: profileAllSongsData ? profileAllSongsData.slice(0, 6) : [],
+        data: allSongExceptCurrent ? allSongExceptCurrent.slice(0, 6) : [],
     };
 
     useEffect(() => {
@@ -215,12 +218,20 @@ function SongPage() {
                     {/* Actions Section */}
                     {!songIsDisabled ? (
                         <>
-                            <div className="mt-8 flex space-x-6">
-                                {profileAllSongsData && (
+                            <div className="relative mt-8 flex space-x-6">
+                                {allSongExceptCurrent && (
                                     <BigPlayButton
                                         playlist={{
-                                            id: profileId,
-                                            songs: profileAllSongsData,
+                                            id: songUploader,
+                                            songs: allSongExceptCurrent,
+                                        }}
+                                        forSongPage={true}
+                                        thisSong={{
+                                            id: songId,
+                                            title: songTitle,
+                                            artist: songArtist,
+                                            imageurl: songByIdData?.imageurl,
+                                            coverimg: songByIdData?.coverimg,
                                         }}
                                     />
                                 )}

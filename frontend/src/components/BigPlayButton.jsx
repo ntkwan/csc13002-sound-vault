@@ -4,15 +4,16 @@ import { setCurrentPlaylist } from '@features/playlists/slices';
 import { selectCurrentPlaylist, selectCurrentTrack } from '@services/selectors';
 import useSong from '@hooks/useSong';
 
-function BigPlayButton({ playlist }) {
+function BigPlayButton({ playlist, forSongPage = false, thisSong = {} }) {
     const dispatch = useDispatch();
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentTrack = useSelector(selectCurrentTrack);
 
     const { id, songs } = playlist;
-    const { isPlaying, activateSong } = useSong();
-    const isOnPlaying =
-        songs.find((song) => song.id === currentTrack.id) && isPlaying;
+    const { currentSong, isPlaying, activateSong } = useSong();
+    const isOnPlaying = forSongPage
+        ? thisSong.id === currentSong && isPlaying
+        : songs.find((song) => song.id === currentSong) && isPlaying;
 
     const handlePlay = () => {
         if (
@@ -28,14 +29,27 @@ function BigPlayButton({ playlist }) {
             );
             activateSong(songs[0]);
         } else {
-            if (currentTrack.id === -1) activateSong(songs[0]);
+            if (currentSong === -1) activateSong(songs[0]);
             else activateSong(currentTrack);
         }
     };
+
+    const handleSongPageClick = () => {
+        if (!currentPlaylist.id || currentPlaylist.id !== id) {
+            dispatch(
+                setCurrentPlaylist({
+                    id: id,
+                    songs,
+                }),
+            );
+        }
+        activateSong(thisSong);
+    };
+
     return (
         <button
             className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125"
-            onClick={handlePlay}
+            onClick={forSongPage ? handleSongPageClick : handlePlay}
         >
             {isOnPlaying ? (
                 <i className="ri-pause-line text-[42px]"></i>
@@ -48,6 +62,8 @@ function BigPlayButton({ playlist }) {
 
 BigPlayButton.propTypes = {
     playlist: PropTypes.object.isRequired,
+    forSongPage: PropTypes.bool,
+    thisSong: PropTypes.object,
 };
 
 export default BigPlayButton;

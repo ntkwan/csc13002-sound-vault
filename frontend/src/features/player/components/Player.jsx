@@ -343,10 +343,6 @@ function Player() {
                 <AudioButton onClick={handleExpandClick}>
                     <i className="ri-expand-diagonal-line"></i>
                 </AudioButton>
-                {/* more */}
-                <AudioButton>
-                    <i className="ri-more-fill"></i>
-                </AudioButton>
             </div>
         </div>
     );
@@ -478,10 +474,6 @@ function Player() {
                             className="text-2xl"
                         >
                             <i className="ri-collapse-diagonal-line"></i>
-                        </AudioButton>
-                        {/* more */}
-                        <AudioButton className="text-2xl">
-                            <i className="ri-more-fill"></i>
                         </AudioButton>
                     </div>
                 </div>
