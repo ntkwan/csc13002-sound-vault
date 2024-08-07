@@ -4,7 +4,7 @@ import { MediaDisplay } from '@components/index';
 const IMGURL =
     'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
 
-function TopicsAndGenrePage() {
+function TopicsAndGenresPage() {
     const mediaData = [
         {
             type: 'browse',
@@ -13,21 +13,21 @@ function TopicsAndGenrePage() {
             link: '',
             data: [
                 {
-                    title: 'RAP',
+                    title: 'Rap',
                     imageurl: {
                         url: IMGURL,
                     },
                     bgColor: '#AF2896',
                 },
                 {
-                    title: 'LOVE',
+                    title: 'Love',
                     imageurl: {
                         url: IMGURL,
                     },
                     bgColor: '#1D3164',
                 },
                 {
-                    title: 'POP',
+                    title: 'Pop',
                     imageurl: {
                         url: IMGURL,
                     },
@@ -72,26 +72,26 @@ function TopicsAndGenrePage() {
         },
         {
             type: 'Region',
-            title: 'Browse all',
+            title: 'Region',
             visibility: '',
             link: '',
             data: [
                 {
-                    title: 'USUK',
+                    title: 'US-UK',
                     imageurl: {
                         url: IMGURL,
                     },
                     bgColor: '#847E9F',
                 },
                 {
-                    title: 'V-POP',
+                    title: 'V-Pop',
                     imageurl: {
                         url: IMGURL,
                     },
                     bgColor: '#643F1D',
                 },
                 {
-                    title: 'K-POP',
+                    title: 'K-Pop',
                     imageurl: {
                         url: IMGURL,
                     },
@@ -102,7 +102,7 @@ function TopicsAndGenrePage() {
     ];
 
     return (
-        <div className="explorepage relative grid auto-rows-auto gap-y-16">
+        <div className="topicsgenre relative grid auto-rows-auto gap-y-16 pt-8">
             {mediaData.map((media, index) => (
                 <MediaDisplay
                     key={index}
@@ -115,4 +115,4 @@ function TopicsAndGenrePage() {
     );
 }
 
-export default TopicsAndGenrePage;
+export default TopicsAndGenresPage;

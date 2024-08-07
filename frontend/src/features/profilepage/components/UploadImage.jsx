@@ -47,50 +47,50 @@ const UploadImage = memo(
         return (
             <form
                 ref={formRef}
-                className={`upload__form space-y-2 ${className}`}
+                className={`upload__form ${className}`}
                 onSubmit={handleSubmit}
             >
-                <label htmlFor={id} className="upload__label">
+                <label htmlFor={id} className="upload__label inline-block">
                     {label}
-                </label>
-                <div className="upload__container relative w-max">
-                    <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
+                    <div className="upload__container relative m-auto w-max">
+                        <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
+                            {preview ? (
+                                <img
+                                    className="upload__preview h-full w-full rounded-xl object-cover"
+                                    src={preview}
+                                    alt="previewImage"
+                                />
+                            ) : (
+                                <img
+                                    className="upload__onclick-icon m-auto w-24"
+                                    src={uploadIcon}
+                                    alt="uploadIcon"
+                                />
+                            )}
+                            <input
+                                className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                                id={id}
+                                type="file"
+                                accept="image/*"
+                                aria-label="File upload"
+                                onChange={handleImageUpload}
+                            />
+                        </div>
                         {preview ? (
-                            <img
-                                className="upload__preview h-full w-full rounded-xl object-cover"
-                                src={preview}
-                                alt="previewImage"
-                            />
+                            <button
+                                className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
+                                type="submit"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Uploading...' : 'Submit'}
+                            </button>
                         ) : (
-                            <img
-                                className="upload__onclick-icon m-auto w-24"
-                                src={uploadIcon}
-                                alt="uploadIcon"
-                            />
+                            <span className="upload__desc absolute text-[13px] text-[#b2b2b2]">
+                                {`File size is less than ${sizeLimit} MB`}
+                            </span>
                         )}
-                        <input
-                            className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
-                            id={id}
-                            type="file"
-                            accept="image/*"
-                            aria-label="File upload"
-                            onChange={handleImageUpload}
-                        />
                     </div>
-                    {preview ? (
-                        <button
-                            className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
-                            type="submit"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Uploading...' : 'Submit'}
-                        </button>
-                    ) : (
-                        <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                            {`File size is less than ${sizeLimit} MB`}
-                        </span>
-                    )}
-                </div>
+                </label>
             </form>
         );
     },

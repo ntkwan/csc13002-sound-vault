@@ -22,7 +22,8 @@ import {
     AdminSongPage,
     ReviewReportPage,
     NotFoundPage,
-    TopicsAndGenrePage,
+    TopicsAndGenresPage,
+    TopicsAndGenresSubPage,
     SongPage,
     UserSettingPage,
     WalletPage,
@@ -56,7 +57,11 @@ const router = createBrowserRouter([
                     { path: 'artist', Component: ArtistPage },
                     { path: 'aboutus', Component: AboutUsPage },
                     { path: 'termandpolicy', Component: TermAndPolicyPage },
-                    { path: 'topicsgenre', Component: TopicsAndGenrePage },
+                    { path: 'topicsgenre', Component: TopicsAndGenresPage },
+                    {
+                        path: 'topicsgenre/:title',
+                        Component: TopicsAndGenresSubPage,
+                    },
                 ],
             },
             {

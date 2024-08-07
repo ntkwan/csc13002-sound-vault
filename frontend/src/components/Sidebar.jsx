@@ -18,7 +18,7 @@ function Sidebar() {
     const isAdmin = useSelector(selectCurrentAdmin);
 
     return (
-        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 max-w-[185px] select-none flex-col space-y-16 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
+        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 w-max max-w-[190px] select-none flex-col space-y-16 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <div>
@@ -75,7 +75,7 @@ function Sidebar() {
                             <SidebarLink
                                 to="topicsgenre"
                                 icon={TopicsGenreIcon}
-                                label="Topics & Genre"
+                                label="Topics & Genres"
                             />
                             {token ? (
                                 <SidebarLink
