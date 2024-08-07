@@ -211,7 +211,7 @@ function AdminWithdrawPage() {
                     {paginatedRequests.map((request, index) => (
                         <tr
                             key={index}
-                            className="cursor-pointer border-b-2 transition-colors duration-400 ease-in-out"
+                            className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out"
                         >
                             <td className="px-2 py-5">
                                 <div className="flex flex-col">

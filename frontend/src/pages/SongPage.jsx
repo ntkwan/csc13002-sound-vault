@@ -125,10 +125,10 @@ function SongPage() {
                                 {songTitle}
                             </p>
                             {!songIsDisabled && (
-                                <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap text-sm font-medium">
+                                <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap font-medium">
                                     {profileImageUrl ? (
                                         <img
-                                            className="mx-2 inline h-7 w-7 rounded-full object-cover"
+                                            className="mx-2 inline h-7 min-w-7 rounded-full object-cover"
                                             src={profileImageUrl}
                                             alt=""
                                         />
@@ -194,7 +194,7 @@ function SongPage() {
                             </button>
                         </div>
                         <div
-                            className="hover:bg my-5 flex max-w-80 rounded-md px-2 hover:bg-white hover:bg-opacity-25"
+                            className="hover:bg my-5 flex max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                             onClick={() => handleArtist(profileId)}
                         >
                             <div className="relative mx-3 h-20 min-w-20 max-w-20">
@@ -210,11 +210,11 @@ function SongPage() {
                                 )}
                             </div>
 
-                            <div className="flex cursor-default flex-col justify-center">
+                            <div className="flex cursor-pointer flex-col justify-center">
                                 <p className="text-shadow-1 font-semibold">
                                     Artist
                                 </p>
-                                <p className="text-shadow-2 font-bold hover:underline">
+                                <p className="text-shadow-2 font-bold hover:underline hover:underline-offset-2">
                                     {songArtist}
                                 </p>
                             </div>

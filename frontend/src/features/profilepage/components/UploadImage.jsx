@@ -2,56 +2,55 @@ import { useState, useRef, memo } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
-const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
-    const [preview, setPreview] = useState(null);
-    const [uploadImage, setUploadImage] = useState(null);
-    const formRef = useRef(null);
-    const [uploadProfilePic, { isLoading }] = useUploadMutation();
+const UploadImage = memo(
+    ({ className, id, label, sizeLimit, useUploadMutation }) => {
+        const [preview, setPreview] = useState(null);
+        const [uploadImage, setUploadImage] = useState(null);
+        const formRef = useRef(null);
+        const [uploadProfilePic, { isLoading }] = useUploadMutation();
 
-    const handleImageUpload = (e) => {
-        const image = e.target.files[0];
-        if (image) {
-            if (!image.type.includes('image')) {
-                toast.error('Invalid file type. Please upload an image.');
-            } else if (image.size > 10000 * 1024) {
-                toast.error('File size exceeds the limit of 10MB.');
-            } else if (image === uploadImage) {
-                toast.error('This image is already uploaded.');
-            } else {
-                setPreview(URL.createObjectURL(image));
-                setUploadImage(image);
+        const handleImageUpload = (e) => {
+            const image = e.target.files[0];
+            if (image) {
+                if (!image.type.includes('image')) {
+                    toast.error('Invalid file type. Please upload an image.');
+                } else if (image.size > 10000 * 1024) {
+                    toast.error('File size exceeds the limit of 10MB.');
+                } else if (image === uploadImage) {
+                    toast.error('This image is already uploaded.');
+                } else {
+                    setPreview(URL.createObjectURL(image));
+                    setUploadImage(image);
+                }
             }
-        }
-    };
+        };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (uploadImage) {
-            const formData = new FormData();
-            formData.append('image', uploadImage);
-            try {
-                await uploadProfilePic({
-                    file: formData,
-                }).unwrap();
-                toast.success('Uploaded successfully!');
-            } catch (error) {
-                toast.error('Error uploading image.');
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            if (uploadImage) {
+                const formData = new FormData();
+                formData.append('image', uploadImage);
+                try {
+                    await uploadProfilePic({
+                        file: formData,
+                    }).unwrap();
+                    toast.success('Uploaded successfully!');
+                } catch (error) {
+                    toast.error('Error uploading image.');
+                }
             }
-        }
-        formRef.current.reset();
-        setPreview(null);
-        setUploadImage(null);
-    };
+            formRef.current.reset();
+            setPreview(null);
+            setUploadImage(null);
+        };
 
-    return (
-        <>
-            <ToastContainer />
+        return (
             <form
                 ref={formRef}
                 className={`upload__form space-y-2 ${className}`}
                 onSubmit={handleSubmit}
             >
-                <label htmlFor="file-upload" className="upload__label">
+                <label htmlFor={id} className="upload__label">
                     {label}
                 </label>
                 <div className="upload__container relative w-max">
@@ -70,31 +69,31 @@ const UploadImage = memo(({ className, label, desc, useUploadMutation }) => {
                             />
                         )}
                         <input
-                            id="file-upload"
                             className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                            id={id}
                             type="file"
-                            onChange={handleImageUpload}
                             accept="image/*"
                             aria-label="File upload"
+                            onChange={handleImageUpload}
                         />
                     </div>
+                    {preview ? (
+                        <button
+                            className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Uploading...' : 'Submit'}
+                        </button>
+                    ) : (
+                        <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
+                            {`File size is less than ${sizeLimit} MB`}
+                        </span>
+                    )}
                 </div>
-                {preview ? (
-                    <button
-                        className="upload__submit-button absolute left-[20%] right-[20%] mt-2 block rounded-xl bg-[#666] px-3 py-1 text-sm shadow-md transition duration-500 ease-in-out hover:bg-[#888]"
-                        type="submit"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Uploading...' : 'Submit'}
-                    </button>
-                ) : (
-                    <span className="upload__desc absolute inline-block text-[13px] text-[#b2b2b2]">
-                        {desc}
-                    </span>
-                )}
             </form>
-        </>
-    );
-});
+        );
+    },
+);
 
 export default UploadImage;

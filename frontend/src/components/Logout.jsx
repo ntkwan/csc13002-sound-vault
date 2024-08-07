@@ -18,7 +18,7 @@ function Logout() {
     return (
         <NavLink
             onClick={handleAction}
-            className="relative my-1 flex items-center rounded-full px-3 py-3 leading-none transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-20"
+            className="relative my-1 flex items-center rounded-full px-3 py-3 leading-none transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-20"
         >
             {LogoutIcon()}
             <span className="pl-3">LOGOUT</span>

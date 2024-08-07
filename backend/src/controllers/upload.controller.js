@@ -25,7 +25,7 @@ const upload_song = async (req, res) => {
         uploader: req.user._id,
         genre: req.body.genre,
         region: req.body.region,
-        coverimg: req.user.coverimage,
+        thumbnail: req.user.thumbnail,
         audiourl: audioResponse.secure_url,
     };
 

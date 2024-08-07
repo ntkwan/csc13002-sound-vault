@@ -99,6 +99,7 @@ const get_profile_by_id = async (req, res) => {
             following: User.following.length,
             id: User._id,
             isBanned: User.isBanned,
+            shortDesc: User.shortDesc,
         });
     } catch (error) {
         return res.status(500).json({

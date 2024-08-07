@@ -55,8 +55,6 @@ const profileSlice = createSlice({
         builder.addMatcher(
             api.endpoints.getMyProfile.matchFulfilled,
             (state, action) => {
-                console.log(action.payload);
-
                 Object.assign(state, action.payload);
             },
         );

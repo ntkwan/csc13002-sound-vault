@@ -115,17 +115,17 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
             {/* media title container*/}
-            <title className="media__title-container flex items-center justify-between">
+            <h2 className="media__title-container flex items-center justify-between">
                 {/* media tile */}
                 {title && (
-                    <h2 className="media__title space-x-3 text-3xl">
+                    <p className="media__title space-x-3 text-3xl">
                         <span className="media__title-name select-none font-bold">
                             {title}
                         </span>
                         <span className="media__title-visibility italic">
                             {visibility}
                         </span>
-                    </h2>
+                    </p>
                 )}
                 {/* media link */}
                 {link && (
@@ -139,7 +139,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         <i className="media__link-icon ri-arrow-right-line text-base"></i>
                     </Link>
                 )}
-            </title>
+            </h2>
             {/* Media content */}
             <div className={`${displayType} mt-4 justify-items-center`}>
                 {showedData.map((mediaData, index) => {
@@ -243,16 +243,16 @@ const HomeCard = memo(
         if (type.includes('Album') && !owner) return null;
 
         let imageClass = 'w-[130px] rounded-[30px]';
-        let cart_title, card_desc;
+        let card_title, card_desc;
         if (type.includes('Artist')) {
             imageClass = 'w-[160px] rounded-full';
-            cart_title = name;
+            card_title = name;
             card_desc = '';
         } else if (type.includes('Song')) {
-            cart_title = title;
+            card_title = title;
             card_desc = artist;
         } else if (type.includes('Album')) {
-            cart_title = name;
+            card_title = name;
             card_desc = owner.name;
         }
 
@@ -263,7 +263,7 @@ const HomeCard = memo(
                         <img
                             className={`media-item__image hover: m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
                             src={url}
-                            alt={cart_title}
+                            alt={card_title}
                             onClick={onClickImage}
                         />
                     ) : (
@@ -282,7 +282,7 @@ const HomeCard = memo(
                     />
                 </div>
                 <p className="media-item__name overflow-hidden text-ellipsis text-nowrap text-center">
-                    {cart_title}
+                    {card_title}
                 </p>
                 {card_desc && (
                     <p className="media-item__desc overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080]">
@@ -321,16 +321,17 @@ const DetailCard = memo(
         // Album: name, image
         const { url } = image || imageurl;
 
+        // assign data to card
         let imageClass = 'rounded-lg';
-        let cart_title,
+        let card_title,
             card_desc = type;
         if (type.includes('Artist')) {
             imageClass = 'rounded-full';
-            cart_title = name;
+            card_title = name;
         } else if (type.includes('Song')) {
-            cart_title = title;
+            card_title = title;
         } else if (type.includes('Album') || type.includes('Playlist')) {
-            cart_title = name;
+            card_title = name;
         }
 
         return (
@@ -343,7 +344,7 @@ const DetailCard = memo(
                         <img
                             className={`${imageClass} media-item__img hover: pointer-events-none aspect-square w-full object-cover`}
                             src={url}
-                            alt={cart_title}
+                            alt={card_title}
                         />
                         <PlayButton
                             onClick={prevent(onClickButton)}
@@ -351,7 +352,7 @@ const DetailCard = memo(
                         />
                     </div>
                     <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
-                        {cart_title}
+                        {card_title}
                     </span>
                     <span className="media-item__desc mt-1 overflow-hidden text-ellipsis text-nowrap text-[13px] text-[#b2b2b2]">
                         {card_desc}
@@ -366,6 +367,7 @@ DetailCard.displayName = 'DetailCard';
 DetailCard.propTypes = HomeCard.propTypes;
 
 const BrowseCard = memo(({ type, mediaData }) => {
+    // extract data
     const { title, imageurl, bgColor } = mediaData;
     const propsDiv =
         type === 'genre'
@@ -373,10 +375,19 @@ const BrowseCard = memo(({ type, mediaData }) => {
             : 'col-span-1 aspect-[8/7]';
     const propsSpan = type === 'genre' ? 'top-5 text-4xl' : 'top-3 text-2xl';
     const bgClass = bgColor ? `bg-[${bgColor}]` : 'bg-pink-500';
+
+    // nevigate
+    const navigate = useNavigate();
+
     return (
         <div
             className={`media-item-3 relative w-full overflow-hidden rounded-md ${bgClass} hover:cursor-pointer hover:shadow-md ${propsDiv}`}
             style={{ backgroundColor: bgColor }}
+            onClick={() =>
+                navigate(`/topicsgenre/${title}`, {
+                    state: { title },
+                })
+            }
         >
             <img
                 className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[6.5rem] translate-x-3 translate-y-3 rotate-[30deg]`}
@@ -509,7 +520,7 @@ const SongBar = memo(
                         </div>
                     </div>
                 )}
-                <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25">
+                <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
                     {/* index - img - name */}
                     <div className="flex items-center space-x-8">
                         <div className="">

@@ -29,7 +29,7 @@ const UploadAudio = memo(
         return (
             <>
                 <div className={`upload__form relative space-y-2 ${className}`}>
-                    <label htmlFor="audio-upload" className="upload__label">
+                    <label htmlFor={id} className="upload__label">
                         {label}
                     </label>
                     <div className="upload__container relative w-max">
@@ -62,6 +62,7 @@ const UploadAudio = memo(
 
                             <input
                                 id={id}
+                                name={id}
                                 className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
                                 type="file"
                                 onChange={handleAudioUpload}

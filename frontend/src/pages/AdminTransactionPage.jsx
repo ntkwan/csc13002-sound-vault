@@ -249,7 +249,7 @@ function AdminTransactionPage() {
                     {paginatedTransactions.map((transaction, index) => (
                         <tr
                             key={index}
-                            className="cursor-pointer border-b-2 transition-colors duration-400 ease-in-out"
+                            className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out"
                         >
                             <td className="h-[98px] px-2 py-5">
                                 <div className="flex flex-col">

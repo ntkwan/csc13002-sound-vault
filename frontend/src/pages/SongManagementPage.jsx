@@ -90,12 +90,12 @@ function AdminSongPage() {
         songListIsLoading || !songListData
             ? []
             : songListData.map((song) => ({
-                id: song.id,
-                name: song.title,
-                date: formatDate(new Date(song.createdAt)),
-                status: song.isVerified ? 'Verified' : 'Unverified',
-                isDisabled: song.isDisabled,
-            }));
+                  id: song.id,
+                  name: song.title,
+                  date: formatDate(new Date(song.createdAt)),
+                  status: song.isVerified ? 'Verified' : 'Unverified',
+                  isDisabled: song.isDisabled,
+              }));
 
     const filteredSongs = songs.filter((song) => {
         const parseDate1 = (dateStr) =>
@@ -246,12 +246,13 @@ function AdminSongPage() {
                             <td className="px-2 py-5">{song.artist}</td>
                             <td className="px-2 py-5">
                                 <span
-                                    className={`rounded-lg px-2 py-1 ${song.status === 'Verified'
-                                        ? 'bg-[#FFF0F0] text-[#3663c2]'
-                                        : song.status === 'Unverified'
-                                            ? 'bg-[#FFF0E6] text-[#eb4141]'
-                                            : 'bg-[#E7F7EF] text-[#0CAF60]'
-                                        }`}
+                                    className={`rounded-lg px-2 py-1 ${
+                                        song.status === 'Verified'
+                                            ? 'bg-[#FFF0F0] text-[#3663c2]'
+                                            : song.status === 'Unverified'
+                                              ? 'bg-[#FFF0E6] text-[#eb4141]'
+                                              : 'bg-[#E7F7EF] text-[#0CAF60]'
+                                    }`}
                                 >
                                     {song.status}
                                 </span>
@@ -270,7 +271,6 @@ function AdminSongPage() {
                                     }
                                     disable={song.status === 'Verified'}
                                     onClick={() => {
-                                        console.log('cc');
                                         const action =
                                             song.status === 'Verified'
                                                 ? 'unverify'
@@ -347,10 +347,11 @@ function AdminSongPage() {
                                 Cancel
                             </button>
                             <button
-                                className={`${confirmAction === 'Verify'
-                                    ? 'bg-green-500'
-                                    : 'bg-red-500'
-                                    } rounded-md px-4 py-2 text-white`}
+                                className={`${
+                                    confirmAction === 'Verify'
+                                        ? 'bg-green-500'
+                                        : 'bg-red-500'
+                                } rounded-md px-4 py-2 text-white`}
                                 onClick={confirmActionHandler}
                             >
                                 Confirm

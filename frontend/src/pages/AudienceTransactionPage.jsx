@@ -264,7 +264,7 @@ function AudienceTransactionPage() {
                     {paginatedPayments.map((payment, index) => (
                         <tr
                             key={index}
-                            className="cursor-pointer border-b-2 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25"
+                            className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                         >
                             <td className="px-2 py-5">
                                 {payment.status === 'deposite' ? (

@@ -134,6 +134,7 @@ function ProfilePage() {
         followers,
         isVerified,
         isBanned,
+        shortDesc,
     } = userProfile || {};
 
     const { following } = followingListData || {};
@@ -161,7 +162,7 @@ function ProfilePage() {
     const followingDisplay = {
         type: 'Artist',
         title: 'Following',
-        visibility: '',
+        visibility: '(only me)',
         link: '/library',
         data: isSliceFollowing ? following.slice(0, 6) : following,
     };
@@ -260,14 +261,14 @@ function ProfilePage() {
                                         to="upload-music"
                                     >
                                         Upload Music
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
                                     </Link>
                                     <Link
                                         className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
                                         to="editing"
                                     >
                                         Edit Profile
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
                                     </Link>
                                 </>
                             ) : (
@@ -284,7 +285,7 @@ function ProfilePage() {
                                             {isFollowing
                                                 ? 'Unfollow'
                                                 : 'Follow'}
-                                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-400 ease-in-out group-hover:opacity-100"></div>
+                                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
                                         </button>
                                     )}
                                     <button className="absolute right-4 h-[70px] min-w-[70px]">
@@ -345,12 +346,12 @@ function ProfilePage() {
                         )}
 
                         {/* {profileAlbumsData && (
-                <MediaDisplay
-                    media={albums}
-                    displayItems="2"
-                    displayType="grid grid-cols-6"
-                />
-            )} */}
+                            <MediaDisplay
+                                media={albums}
+                                displayItems="2"
+                                displayType="grid grid-cols-6"
+                            />
+                        )} */}
 
                         {following && (
                             <MediaDisplay
@@ -358,6 +359,23 @@ function ProfilePage() {
                                 displayItems="2"
                                 displayType="grid grid-cols-6"
                             />
+                        )}
+                        {shortDesc && (
+                            <section className="">
+                                <h2 className="inline text-3xl font-bold">
+                                    About
+                                </h2>
+                                <div className="relative mt-4 w-[65%] transition-all duration-300 hover:scale-[102%]">
+                                    <img
+                                        src={avatar}
+                                        className="h-[500px] w-full rounded-xl object-cover brightness-[60%]"
+                                    />
+                                    <div className="absolute bottom-[15%] left-[10%] w-5/6 select-none">
+                                        <h2 className="font-bold">{name}</h2>
+                                        <p>{shortDesc}</p>
+                                    </div>
+                                </div>
+                            </section>
                         )}
                     </>
                 ) : (

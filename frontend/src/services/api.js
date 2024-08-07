@@ -230,6 +230,7 @@ export const api = createApi({
         // User --------------------------------------------------------------
         getProfileInfomation: builder.query({
             query: () => '/get-profile-information',
+            providesTags: ['User'],
         }),
         changeProfile: builder.mutation({
             query: (body) => ({
@@ -237,6 +238,7 @@ export const api = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['User'],
         }),
         changePassword: builder.mutation({
             query: (body) => ({

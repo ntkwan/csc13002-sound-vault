@@ -330,7 +330,7 @@ function ReviewReportPage() {
                     {paginatedReports.map((report, index) => (
                         <tr
                             key={index}
-                            className="cursor-pointer border-b-2 transition-colors duration-400 ease-in-out hover:bg-white hover:bg-opacity-25"
+                            className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                             onClick={() => setSelectedReport(report)}
                         >
                             <td className="px-2 py-5">
@@ -345,12 +345,13 @@ function ReviewReportPage() {
                             </td>
                             <td className="flex items-end justify-end p-2 py-5">
                                 <div
-                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${report.status === 'Finished'
-                                        ? 'bg-[#188038]'
-                                        : report.status === 'Pending'
-                                            ? 'bg-[#F6FE00]'
-                                            : 'bg-[#FD0053]'
-                                        }`}
+                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
+                                        report.status === 'Finished'
+                                            ? 'bg-[#188038]'
+                                            : report.status === 'Pending'
+                                              ? 'bg-[#F6FE00]'
+                                              : 'bg-[#FD0053]'
+                                    }`}
                                 />
                             </td>
                             <td className="relative">
