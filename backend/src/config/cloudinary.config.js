@@ -14,7 +14,7 @@ const audioUploader = async (req, res) => {
         return res.status(400).json({ message: 'File not found' });
     }
 
-    const fName = file[0].originalname.split('.')[0];
+    const fName = file[0].originalname;
 
     try {
         const uploadAudio = await cloudinary.uploader.upload(file[0].path, {

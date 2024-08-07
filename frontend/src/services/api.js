@@ -118,6 +118,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['Song'],
         }),
         uploadSong: builder.mutation({
             query: ({ file }) => ({
@@ -125,6 +126,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['Song'],
         }),
         uploadSongThumbnail: builder.mutation({
             query: ({ file }) => ({
@@ -132,6 +134,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['Song'],
         }),
         submitMusic: builder.mutation({
             query: ({ file }) => ({
@@ -139,6 +142,7 @@ export const api = createApi({
                 method: 'POST',
                 body: file,
             }),
+            invalidatesTags: ['Song'],
         }),
         playSong: builder.mutation({
             query: (id) => ({
@@ -165,6 +169,7 @@ export const api = createApi({
         }),
         getSongById: builder.query({
             query: (id) => `/get-song-by-id/${id}`,
+            providesTags: ['Song'],
         }),
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
@@ -175,34 +180,45 @@ export const api = createApi({
         getPopularAlbums: builder.query({
             query: () => '/get-popular-albums',
         }),
+        deleteTrackById: builder.mutation({
+            query: (id) => ({
+                url: `/delete-track/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Song'],
+        }),
 
         // Playlists ----------------------------------------------------------
         createPlaylist: builder.mutation({
-            query: (body) => ({
+            query: ({ name, desc }) => ({
                 url: '/create-playlist',
                 method: 'POST',
-                body,
+                body: { name, desc },
             }),
+            invalidatesTags: ['Playlist'],
         }),
         deletePlaylistById: builder.mutation({
             query: (id) => ({
                 url: `/delete-playlist-by-id/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Playlist'],
         }),
         addSongToPlaylist: builder.mutation({
-            query: (body) => ({
+            query: ({ playlistId, songId }) => ({
                 url: '/add-song-to-playlist',
                 method: 'POST',
-                body,
+                body: { playlistId, songId },
             }),
+            invalidatesTags: ['Playlist'],
         }),
         removeSongFromPlaylist: builder.mutation({
-            query: (body) => ({
+            query: ({ playlistId, songId }) => ({
                 url: '/remove-song-from-playlist',
-                method: 'POST',
-                body,
+                method: 'DELETE',
+                body: { playlistId, songId },
             }),
+            invalidatesTags: ['Playlist'],
         }),
         addSongToLikedPlaylist: builder.mutation({
             query: (id) => ({
@@ -284,6 +300,7 @@ export const api = createApi({
         }),
         getProfileAllSongs: builder.query({
             query: (id) => `/get-profile-all-songs/${id}`,
+            providesTags: ['Song'],
         }),
         getProfileAlbums: builder.query({
             query: (id) => `/get-profile-albums/${id}`,
@@ -397,6 +414,7 @@ export const {
     useGetChartSongsQuery,
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
+    useDeleteTrackByIdMutation,
 
     // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,

@@ -20,7 +20,7 @@ function PlayButton({ onClick, isOnPlaying, position = 'bottom-1 right-1' }) {
 }
 
 PlayButton.propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     isOnPlaying: PropTypes.bool.isRequired,
     position: PropTypes.string,
 };

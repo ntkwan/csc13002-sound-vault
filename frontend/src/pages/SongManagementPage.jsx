@@ -92,6 +92,7 @@ function AdminSongPage() {
             : songListData.map((song) => ({
                   id: song.id,
                   name: song.title,
+                  artist: song.artist,
                   date: formatDate(new Date(song.createdAt)),
                   status: song.isVerified ? 'Verified' : 'Unverified',
                   isDisabled: song.isDisabled,
