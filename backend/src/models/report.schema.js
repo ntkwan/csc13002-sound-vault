@@ -24,7 +24,6 @@ const ReportSchema = new Schema(
         assignee: {
             type: String,
             default: '',
-            required: true,
         },
         status: {
             type: Boolean,
