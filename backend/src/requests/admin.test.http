@@ -1,0 +1,7 @@
+@host = http://localhost:5000
+
+### set verified artist by id
+@profileId = 
+POST  {{host}}/set-verified-artist-by-id/{{profileId}}
+Content-Type: application/json
+Authorization: Bearer [TOKEN]

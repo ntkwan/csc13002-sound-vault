@@ -1,0 +1,102 @@
+@host = http://localhost:5000
+
+### [SUCCESS] server connection
+GET {{host}}
+
+### [FAILED] signin: wrong email 
+POST {{host}}/signin
+Content-Type: application/json
+
+{
+    "email": "admin@gmail.com", 
+    "password": "12345678"
+}
+
+### [FAILED] signin: wrong password
+POST {{host}}/signin
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "1234"
+}
+
+### [SUCCESS] signin: admin
+POST {{host}}/signin
+Content-Type: application/json
+
+{
+    "email": "quan@support.soundvault",
+    "password": "1234"
+}
+
+### [SUCCESS] signin: user
+POST {{host}}/signin
+Content-Type: application/json
+
+{
+    "email": "dummy@sontungmtp.soundvault",
+    "password": "a"
+}
+
+### [SUCCESS] signup: admin
+POST {{host}}/signup
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "email": "a@gmail.com",
+    "password": "12345678"
+}
+
+### [SUCESS] signup: user
+POST {{host}}/signup
+Content-Type: application/json
+
+{
+    "name": "user",
+    "email": "u@gmail.com",
+    "password": "12345678"
+}
+
+### [FAILED] signup: email is invalid
+POST {{host}}/signup
+Content-Type: application/json
+
+{
+    "email": "a@a",
+    "password": "12345678"
+}
+
+### [USER] get my profile
+GET {{host}}/get-my-profile
+Content-Type: application/json
+Authorization: Bearer [TOKEN]
+
+### [USER] get profile by id
+@profileId = 
+GET {{host}}/get-profile-by-id/{{profileId}}
+
+### [USER] get popular songs of the profile
+@profileId = 
+GET {{host}}/get-profile-popular-songs/{{profileId}}
+Content-Type: application/json
+Authorization: Bearer [TOKEN]
+### sign out
+@accessToken = 
+POST {{host}}/signout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "email": "a@gmail.com"
+}
+
+### refresh token
+@refreshToken = 
+POST {{host}}/refresh-token 
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}

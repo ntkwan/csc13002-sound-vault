@@ -1,68 +1,142 @@
-:root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,400;0,500;0,700;1,400&display=swap'); /* Kodchasan font */
+@import url('https://fonts.googleapis.com/css2?family=Italianno&family=Kodchasan:ital@0;1&display=swap'); /* Italianno font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap'); /* Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap'); /* Montserrat 700 font */
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap'); /* Lilita One font */
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap'); /* Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap'); /* Inter 600 font */
+@import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap'); /* Arimo font */
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap'); /* Alfa Slab One font */
+@import url('https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css'); /* Remixicon font */
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'); /* Boxicons font */
 
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-a:hover {
-    color: #535bf2;
-}
-
-body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-}
-
-h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-}
-
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-}
-button:hover {
-    border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
+@layer base {
+    body {
+        @apply bg-home-pattern;
+        @apply bg-cover;
+        @apply text-white;
+        @apply font-kodchasan;
     }
-    a:hover {
-        color: #747bff;
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
     }
-    button {
-        background-color: #f9f9f9;
+    ::-webkit-scrollbar-track {
+        background-color: black;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #444;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #666;
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: #000;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background-color: transparent;
+        border-radius: 5px;
+    }
+}
+
+@layer utilities {
+    .heading-stroke {
+        text-shadow:
+            -2px 0 #b352f3,
+            0 2px #b352f3,
+            2px 0 #b352f3,
+            0 -2px #b352f3;
+    }
+
+    .input-bar:has(input:invalid) + .error-msg {
+        display: flex;
+    }
+
+    .heading-stroke-logo {
+        -webkit-text-stroke: 3px #b352f3;
+    }
+
+    .text-shadow-1 {
+        text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.7);
+    }
+
+    .text-shadow-2 {
+        text-shadow: 4px 4px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .text-stroke-1 {
+        -webkit-text-stroke: 1px #000;
+    }
+
+    input[type='date']::-webkit-calendar-picker-indicator,
+    input[type='search']::-webkit-search-cancel-button {
+        display: none;
+    }
+
+    [data-title]:hover::after {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 1s cubic-bezier(0, 0.5, 0, 1) 1s;
+    }
+
+    [data-title]::after {
+        content: attr(data-title);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        visibility: hidden;
+        transform: translate(30%, -120%);
+        transition:
+            opacity 0.4s ease,
+            visibility 0s ease;
+        z-index: 5;
+        box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.4);
+        position: absolute;
+        right: 0;
+        @apply opacity-0;
+        @apply w-max;
+        @apply max-w-60;
+        @apply px-2;
+        @apply py-1;
+        @apply text-xs;
+        @apply font-bold;
+        @apply font-kodchasan;
+        @apply leading-tight;
+        @apply rounded-lg;
+        @apply bg-[#222];
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* 
+        webkit: Chrome, Safari, Edge, Opera
+        moz: Firefox
+    */
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        @apply appearance-none;
+    }
+    .slider::-moz-range-thumb {
+        @apply bg-transparent;
+        @apply border-none;
+    }
+    .slider:hover::-webkit-slider-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
+    }
+    .slider:hover::-moz-range-thumb {
+        @apply bg-white;
+        @apply size-3;
+        @apply rounded-full;
     }
 }
