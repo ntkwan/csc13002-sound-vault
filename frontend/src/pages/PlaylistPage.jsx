@@ -7,7 +7,7 @@ import {
     useGetProfileByIdQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
-import { ReportFrame, ConfirmDeletion } from '@components/index';
+import { ConfirmDeletion } from '@components/index';
 import BigPlayButton from '@components/BigPlayButton';
 import { useSelector } from 'react-redux';
 import { selectCurrentProfile } from '@services/selectors';
@@ -27,7 +27,6 @@ function PlaylistPage() {
 
     // hanlde menu option
     const [showProfileOption, setShowProfileOption] = useState(false);
-    const [showReportFrame, setShowReportFrame] = useState(false);
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (showProfileOption === true && !e.target.closest('.menu')) {
@@ -121,9 +120,6 @@ function PlaylistPage() {
                     }
                 />
             )}
-            {showReportFrame && (
-                <ReportFrame setShowReportFrame={setShowReportFrame} />
-            )}
             <div className="caret-transparent">
                 {/* playlist header */}
                 <div className="h-96 w-full content-center">
@@ -202,13 +198,6 @@ function PlaylistPage() {
                                     >
                                         <i className="ri-share-line text-xl leading-none"></i>
                                         <span>Copy link</span>
-                                    </li>
-                                    <li
-                                        className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onClick={() => setShowReportFrame(true)}
-                                    >
-                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                        <span>Report</span>
                                     </li>
                                     {myProfileData?.id == playlist_owner &&
                                         name != 'Liked Songs' && (

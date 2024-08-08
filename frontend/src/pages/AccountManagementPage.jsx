@@ -185,7 +185,7 @@ function AdminAccountPage() {
                         }}
                     />
                     <button
-                        className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
+                        className="admin-page__filter h-11 select-none rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                         onClick={() => setShowFilters(!showFilters)}
                     >
                         <i className="ri-equalizer-2-line px-1"></i>
@@ -204,7 +204,7 @@ function AdminAccountPage() {
                     />
                 )}
 
-                <table className="w-full overflow-hidden">
+                <table className="w-full cursor-default overflow-hidden">
                     <thead>
                         <tr className="cursor-default border-b-2 text-[#718096]">
                             <th className="px-2 py-5 text-left font-normal">
@@ -329,7 +329,7 @@ function AdminAccountPage() {
                 {confirmAction && (
                     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
                         <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
-                            <p className="mb-4">
+                            <div className="mb-4">
                                 {confirmAction === 'view'
                                     ? 'Are you sure you want to leave this page?'
                                     : `Are you sure you want to ${confirmAction} this account?`}
@@ -374,7 +374,7 @@ function AdminAccountPage() {
                                         </select>
                                     </div>
                                 )}
-                            </p>
+                            </div>
                             <div className="flex justify-end">
                                 <button
                                     className="mr-2 rounded-md bg-gray-300 px-4 py-2"

@@ -48,6 +48,7 @@ export const api = createApi({
         'Playlist',
         'AdminAccount',
         'AdminSong',
+        'Report',
     ],
     endpoints: (builder) => ({
         // Authentication -----------------------------------------------------
@@ -389,6 +390,70 @@ export const api = createApi({
             }),
             invalidatesTags: ['AdminSong'],
         }),
+
+        // Reports -----------------------------------------------------------
+        replyReport: builder.mutation({
+            query: (body) => ({
+                url: '/reply-report',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        sendReportOnSong: builder.mutation({
+            query: ({
+                songId,
+                fullName,
+                phoneNumber,
+                email,
+                idNumber,
+                rpType,
+                rpCategory,
+                reason,
+            }) => ({
+                url: `/send-report-on-song/${songId}`,
+                method: 'POST',
+                body: {
+                    fullName,
+                    phoneNumber,
+                    email,
+                    idNumber,
+                    rpType,
+                    rpCategory,
+                    reason,
+                },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        sendReportOnProfile: builder.mutation({
+            query: ({
+                profileId,
+                fullName,
+                phoneNumber,
+                email,
+                idNumber,
+                rpType,
+                rpCategory,
+                reason,
+            }) => ({
+                url: `/send-report-on-profile/${profileId}`,
+                method: 'POST',
+                body: {
+                    fullName,
+                    phoneNumber,
+                    email,
+                    idNumber,
+                    rpType,
+                    rpCategory,
+                    reason,
+                },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        getReports: builder.query({
+            query: () => '/get-reports',
+            providesTags: ['Report'],
+        }),
     }),
 });
 
@@ -456,4 +521,10 @@ export const {
     useRemoveSongByIdMutation,
     useDeactivateSongMutation,
     useActivateSongMutation,
+
+    // Reports ----------------------------------------------------------------
+    useReplyReportMutation,
+    useSendReportOnSongMutation,
+    useSendReportOnProfileMutation,
+    useGetReportsQuery,
 } = api;

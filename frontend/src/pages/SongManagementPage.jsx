@@ -200,7 +200,7 @@ function AdminSongPage() {
                     }}
                 />
                 <button
-                    className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
+                    className="admin-page__filter h-11 select-none rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                     onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
@@ -219,7 +219,7 @@ function AdminSongPage() {
                 />
             )}
 
-            <table className="w-full overflow-hidden">
+            <table className="w-full cursor-default overflow-hidden">
                 <thead>
                     <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">ID</th>

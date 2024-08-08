@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { MediaDisplay } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
-import { selectCurrentProfile } from '@services/selectors';
+import { selectCurrentProfile, selectCurrentToken } from '@services/selectors';
 import {
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
@@ -19,6 +19,7 @@ import { selectCurrentAdmin } from '@services/selectors';
 import BigPlayButton from '@components/BigPlayButton';
 
 function ProfilePage() {
+    const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
@@ -305,17 +306,19 @@ function ProfilePage() {
                                                         <i className="ri-share-line text-xl leading-none"></i>
                                                         <span>Copy link</span>
                                                     </li>
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={() =>
-                                                            setShowReportFrame(
-                                                                true,
-                                                            )
-                                                        }
-                                                    >
-                                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                        <span>Report</span>
-                                                    </li>
+                                                    {token && (
+                                                        <li
+                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={() =>
+                                                                setShowReportFrame(
+                                                                    true,
+                                                                )
+                                                            }
+                                                        >
+                                                            <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                            <span>Report</span>
+                                                        </li>
+                                                    )}
                                                 </ul>
                                             </div>
                                         )}

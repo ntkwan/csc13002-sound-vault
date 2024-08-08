@@ -18,6 +18,7 @@ import {
     selectCurrentPlaylist,
     selectCurrentProfile,
     selectCurrentTrack,
+    selectCurrentToken,
 } from '@services/selectors';
 import { PlayButton, ReportFrame, ConfirmDeletion } from '.';
 import { useSong } from '@hooks';
@@ -417,6 +418,7 @@ BrowseCard.propTypes = HomeCard.propTypes;
 
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
+        const token = useSelector(selectCurrentToken);
         const { id: myProfileID } = useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
@@ -603,7 +605,10 @@ const SongBar = memo(
                     />
                 )}
                 {showReportFrame && (
-                    <ReportFrame setShowReportFrame={setShowReportFrame} />
+                    <ReportFrame
+                        setShowReportFrame={setShowReportFrame}
+                        cardSongId={id}
+                    />
                 )}
                 {showPlaylistForm && (
                     <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
@@ -708,78 +713,85 @@ const SongBar = memo(
                                     className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
                                 >
                                     <ul>
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onMouseEnter={() =>
-                                                setPlaylistOptionsVisible(true)
-                                            }
-                                            onMouseLeave={() =>
-                                                setPlaylistOptionsVisible(false)
-                                            }
-                                        >
-                                            <i className="ri-add-circle-line text-xl leading-none"></i>
-                                            <span>Add to playlist</span>
-                                            <i className="ri-triangle-line rotate-90 text-right"></i>
-                                            {playlistOptionsVisible && (
-                                                <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                                    <ul>
-                                                        <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <div
-                                                                className={`mx-4 w-full py-2 text-left ${myPlayListData?.playlists?.length > 1 ? 'border-b border-[#999]' : ''}`}
-                                                                onClick={() => {
-                                                                    setShowPlaylistForm(
-                                                                        true,
-                                                                    );
-                                                                    setPlaylistOptionsVisible(
-                                                                        false,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i className="ri-add-circle-line" />
-                                                                <span>
-                                                                    New playlist
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        {myPlayListData?.playlists?.map(
-                                                            (
-                                                                playlist,
-                                                                index,
-                                                            ) => {
-                                                                if (
-                                                                    playlist.name ===
-                                                                    'Liked Songs'
-                                                                ) {
-                                                                    return null;
-                                                                }
-                                                                return (
-                                                                    <li
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                                        onClick={() => {
-                                                                            handleAddToPlaylist(
-                                                                                playlist.id,
-                                                                                id,
-                                                                                title,
-                                                                                playlist.name,
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <span>
-                                                                            {
-                                                                                playlist.name
+                                        {token && (
+                                            <li
+                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onMouseEnter={() =>
+                                                    setPlaylistOptionsVisible(
+                                                        true,
+                                                    )
+                                                }
+                                                onMouseLeave={() =>
+                                                    setPlaylistOptionsVisible(
+                                                        false,
+                                                    )
+                                                }
+                                            >
+                                                <i className="ri-add-circle-line text-xl leading-none"></i>
+                                                <span>Add to playlist</span>
+                                                <i className="ri-triangle-line rotate-90 text-right"></i>
+                                                {playlistOptionsVisible && (
+                                                    <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                        <ul>
+                                                            <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                                <div
+                                                                    className={`mx-4 w-full py-2 text-left ${myPlayListData?.playlists?.length > 1 ? 'border-b border-[#999]' : ''}`}
+                                                                    onClick={() => {
+                                                                        setShowPlaylistForm(
+                                                                            true,
+                                                                        );
+                                                                        setPlaylistOptionsVisible(
+                                                                            false,
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-add-circle-line" />
+                                                                    <span>
+                                                                        New
+                                                                        playlist
+                                                                    </span>
+                                                                </div>
+                                                            </li>
+                                                            {myPlayListData?.playlists?.map(
+                                                                (
+                                                                    playlist,
+                                                                    index,
+                                                                ) => {
+                                                                    if (
+                                                                        playlist.name ===
+                                                                        'Liked Songs'
+                                                                    ) {
+                                                                        return null;
+                                                                    }
+                                                                    return (
+                                                                        <li
+                                                                            key={
+                                                                                index
                                                                             }
-                                                                        </span>
-                                                                    </li>
-                                                                );
-                                                            },
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </li>
+                                                                            className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                            onClick={() => {
+                                                                                handleAddToPlaylist(
+                                                                                    playlist.id,
+                                                                                    id,
+                                                                                    title,
+                                                                                    playlist.name,
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <span>
+                                                                                {
+                                                                                    playlist.name
+                                                                                }
+                                                                            </span>
+                                                                        </li>
+                                                                    );
+                                                                },
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </li>
+                                        )}
                                         {pathtype == 'profile' &&
                                             pathId == undefined && (
                                                 <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
@@ -807,27 +819,22 @@ const SongBar = memo(
                                                     </span>
                                                 </li>
                                             )}
-                                        <li
-                                            className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onClick={prevent(() =>
-                                                handleAddToLikedSongs(
-                                                    id,
-                                                    title,
-                                                ),
-                                            )}
-                                        >
-                                            <i className="ri-heart-line text-left text-xl"></i>
-                                            <span className="text-left">
-                                                Save to your Liked Songs
-                                            </span>
-                                        </li>
-                                        {pathtype == 'profile' &&
-                                            pathId == undefined && (
-                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ri-exchange-line text-xl leading-none"></i>
-                                                    <span>Change cover</span>
-                                                </li>
-                                            )}
+                                        {token && (
+                                            <li
+                                                className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onClick={prevent(() =>
+                                                    handleAddToLikedSongs(
+                                                        id,
+                                                        title,
+                                                    ),
+                                                )}
+                                            >
+                                                <i className="ri-heart-line text-left text-xl"></i>
+                                                <span className="text-left">
+                                                    Save to your Liked Songs
+                                                </span>
+                                            </li>
+                                        )}
                                         <li
                                             className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                             onClick={prevent(() =>
@@ -837,15 +844,17 @@ const SongBar = memo(
                                             <i className="ri-share-line text-xl leading-none"></i>
                                             <span>Copy link</span>
                                         </li>
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onClick={prevent(() =>
-                                                setShowReportFrame(true),
-                                            )}
-                                        >
-                                            <i className="ri-error-warning-line text-xl leading-none"></i>
-                                            <span>Report</span>
-                                        </li>
+                                        {token && (
+                                            <li
+                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onClick={prevent(() =>
+                                                    setShowReportFrame(true),
+                                                )}
+                                            >
+                                                <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                <span>Report</span>
+                                            </li>
+                                        )}
                                         {pathtype == 'profile' &&
                                             !isverified &&
                                             pathId == undefined && (

@@ -8,7 +8,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { MediaDisplay } from '@components/index';
-import { selectCurrentAdmin, selectCurrentProfile } from '@services/selectors';
+import {
+    selectCurrentAdmin,
+    selectCurrentProfile,
+    selectCurrentToken,
+} from '@services/selectors';
 import { ReportFrame, ConfirmDeletion } from '@components/index';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import BigPlayButton from '@components/BigPlayButton';
@@ -16,6 +20,7 @@ import { toast } from 'react-toastify';
 
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);
+    const token = useSelector(selectCurrentToken);
     const myProfileData = useSelector(selectCurrentProfile);
     const [duration, setDuration] = useState('0:00');
     const [showReportFrame, setShowReportFrame] = useState(false);
@@ -256,15 +261,40 @@ function SongPage() {
                                                     <i className="ri-share-line text-xl leading-none"></i>
                                                     <span>Copy link</span>
                                                 </li>
-                                                <li
-                                                    className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={() =>
-                                                        setShowReportFrame(true)
-                                                    }
-                                                >
-                                                    <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                    <span>Report</span>
-                                                </li>
+                                                {myProfileData?.id ==
+                                                    songUploader && (
+                                                    <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                        <i className="ri-exchange-line text-xl leading-none"></i>
+                                                        <span>
+                                                            Change cover
+                                                        </span>
+                                                    </li>
+                                                )}
+                                                {myProfileData?.id ==
+                                                    songUploader && (
+                                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                        <i className="ri-exchange-fill text-xl leading-none"></i>
+                                                        <span className="text-left text-sm">
+                                                            Change thumbnail
+                                                        </span>
+                                                    </li>
+                                                )}
+                                                {token && (
+                                                    <li
+                                                        className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                        onClick={() => {
+                                                            setShowReportFrame(
+                                                                true,
+                                                            );
+                                                            setShowSongOptions(
+                                                                false,
+                                                            );
+                                                        }}
+                                                    >
+                                                        <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                        <span>Report</span>
+                                                    </li>
+                                                )}
                                                 {myProfileData?.id ==
                                                     songUploader && (
                                                     <li

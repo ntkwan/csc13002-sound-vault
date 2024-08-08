@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     selectCurrentPlayer,
     selectCurrentPlaylist,
+    selectCurrentToken,
 } from '@services/selectors';
 import {
     play,
@@ -21,6 +22,7 @@ import LikeButton from './LikeButton';
 import useSong from '@hooks/useSong';
 
 function Player() {
+    const token = useSelector(selectCurrentToken);
     const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
@@ -260,7 +262,7 @@ function Player() {
                     <span className="opacity-60">{currentTrack.artist}</span>
                 </div>
                 {/* heart-icon */}
-                <LikeButton songId={currentTrack.id} />
+                {token && <LikeButton songId={currentTrack.id} />}
             </div>
             {/* between */}
             <div className="flex flex-[2] flex-col items-center justify-between">
@@ -321,22 +323,22 @@ function Player() {
             </div>
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
-                {/* donate */}
-                <AudioButton className="text-[1.375rem]">
-                    <i className="bx bxs-dollar-circle"></i>
-                </AudioButton>
-                {/* bookmark */}
-                <AudioButton onClick={handleBookmarkClick}>
-                    {isSolidBookmark ? (
-                        <i className="ri-bookmark-fill"></i>
-                    ) : (
-                        <i className="ri-bookmark-line"></i>
-                    )}
-                </AudioButton>
-                {/* playlist */}
-                <AudioButton>
-                    <i className="playlist-icon ri-play-list-2-fill"></i>
-                </AudioButton>
+                {token && (
+                    <>
+                        {/* donate */}
+                        <AudioButton className="text-[1.375rem]">
+                            <i className="bx bxs-dollar-circle"></i>
+                        </AudioButton>
+                        {/* bookmark */}
+                        <AudioButton onClick={handleBookmarkClick}>
+                            {isSolidBookmark ? (
+                                <i className="ri-bookmark-fill"></i>
+                            ) : (
+                                <i className="ri-bookmark-line"></i>
+                            )}
+                        </AudioButton>
+                    </>
+                )}
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
                 {/* expand */}

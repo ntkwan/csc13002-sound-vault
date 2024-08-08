@@ -135,7 +135,6 @@ function ProfilePageUploadMusic() {
                                 singleLine
                                 style={{
                                     '&singleLine': {
-                                        width: '100%',
                                         display: 'block',
                                         width: `${maxWidthPx}px`,
                                     },
