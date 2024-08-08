@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentPlaylist } from '@features/playlists/slices';
 import { selectCurrentPlaylist } from '@services/selectors';
+import ArtistIcon from '@assets/img/artist-icon.svg';
 
 function ChartIntroContainer() {
     const { data: topSongs } = useGetTopSongsQuery();
@@ -98,7 +99,7 @@ function ChartItem({ className, song, handlePlayClick, isOnPlaying }) {
                     </span>
                     <div className="flex items-center space-x-2">
                         <img
-                            src="src/assets/img/artist-icon.svg"
+                            src={ArtistIcon}
                             alt="song icon"
                         />
                         <span className="w-[135px] overflow-hidden text-ellipsis whitespace-nowrap">
