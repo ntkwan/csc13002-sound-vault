@@ -3,9 +3,9 @@ import { ChartTable, ChartHeader } from '@features/ranking';
 import { useGetChartSongsQuery } from '@services/api';
 
 function ChartPage() {
-    const { data: vpopData } = useGetChartSongsQuery('VPop');
-    const { data: kpopData } = useGetChartSongsQuery('KPop');
-    const { data: usukData } = useGetChartSongsQuery('US-UK');
+    const { data: vpopData } = useGetChartSongsQuery('V-Pop');
+    const { data: kpopData } = useGetChartSongsQuery('K-Pop');
+    const { data: usukData } = useGetChartSongsQuery('USUK');
     const [tableDatas, setTableDatas] = useState([]);
     useEffect(() => {
         if (!vpopData || !kpopData || !usukData) return;
