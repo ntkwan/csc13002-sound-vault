@@ -200,7 +200,7 @@ const get_songs_by_region = async (req, res) => {
 };
 
 const get_top_songs = async (req, res) => {
-    const regions = ['VPop', 'KPop', 'US-UK'];
+    const regions = ['V-Pop', 'K-Pop', 'USUK'];
     try {
         const topSongs = [];
         for (let region of regions) {
