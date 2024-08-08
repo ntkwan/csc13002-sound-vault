@@ -1,10 +1,20 @@
-require('dotenv').config();
-const cloudinary = require('cloudinary').v2;
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+const cloudinary = require('cloudinary');
 
+const CLOUD_LIST = JSON.parse(process.env.CLOUD_NAME);
+const CLOUD_KEY = JSON.parse(process.env.API_KEY);
+const CLOUD_SECRET = JSON.parse(process.env.API_SECRET);
+var len = CLOUD_LIST.length;
+
+var cloud_name = CLOUD_LIST[len - 1];
+var api_key = CLOUD_KEY[len - 1];
+var api_secret = CLOUD_SECRET[len - 1];
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
+    cloud_name: cloud_name,
+    api_key: api_key,
+    api_secret: api_secret,
 });
 
 const audioUploader = async (req, res) => {
@@ -53,6 +63,38 @@ const profileUploader = async (req, res) => {
     }
 };
 
+const songThumbnailDestroyer = async (req, res) => {
+    try {
+        const options = {
+            type: 'upload',
+            resource_type: 'image',
+        };
+
+        let destroyer = await cloudinary.uploader.destroy(
+            req.publicId,
+            options,
+        );
+        for (let i = 0; i < len - 1; i++) {
+            if (destroyer.result === 'ok') {
+                return destroyer;
+            }
+            cloudinary.config({
+                cloud_name: CLOUD_LIST[i],
+                api_key: CLOUD_KEY[i],
+                api_secret: CLOUD_SECRET[i],
+            });
+            destroyer = await cloudinary.uploader.destroy(
+                req.publicId,
+                options,
+            );
+        }
+
+        return destroyer;
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
 const songThumbnailUploader = async (req, res) => {
     const file = req.isCover == true ? req.files.cover : req.files.thumbnail;
     const songId = req._id;
@@ -80,4 +122,9 @@ const songThumbnailUploader = async (req, res) => {
     }
 };
 
-module.exports = { audioUploader, profileUploader, songThumbnailUploader };
+module.exports = {
+    songThumbnailDestroyer,
+    audioUploader,
+    profileUploader,
+    songThumbnailUploader,
+};

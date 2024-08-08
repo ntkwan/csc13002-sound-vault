@@ -2,6 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+const uploader = require('../config/cloudinary.config');
 const SongModel = require('../models/song.schema');
 
 const get_song_by_id = async (req, res) => {
@@ -263,6 +264,28 @@ const delete_track_by_id = async (req, res) => {
             return res.status(404).json({
                 message: 'Song is not found',
             });
+        }
+
+        req.publicId = song.image.publicId;
+        let log = await uploader.songThumbnailDestroyer(req, res);
+        if (log.result !== 'ok') {
+            return res.status(500).json({
+                message: 'Error occured while deleting song',
+            });
+        }
+
+        const coverimage = song.coverimg;
+        if (JSON.stringify(coverimage) !== '{}') {
+            const coverprofile = req.user.coverimage.publicId;
+            if (coverimage.publicId !== coverprofile) {
+                req.publicId = coverimage.publicId;
+                log = await uploader.songThumbnailDestroyer(req, res);
+                if (log.result !== 'ok') {
+                    return res.status(500).json({
+                        message: 'Error occured while deleting song',
+                    });
+                }
+            }
         }
 
         await SongModel.deleteOne({ _id: song._id });
