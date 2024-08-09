@@ -23,14 +23,9 @@ import useSong from '@hooks/useSong';
 
 function Player() {
     const token = useSelector(selectCurrentToken);
-    const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
-
-    const handleBookmarkClick = () => {
-        setIsSolidBookmark(!isSolidBookmark);
-    };
 
     const formatTimeDataToRender = (timeData) => {
         const minutes = Math.floor(timeData / 60);
@@ -329,14 +324,6 @@ function Player() {
                         <AudioButton className="text-[1.375rem]">
                             <i className="bx bxs-dollar-circle"></i>
                         </AudioButton>
-                        {/* bookmark */}
-                        <AudioButton onClick={handleBookmarkClick}>
-                            {isSolidBookmark ? (
-                                <i className="ri-bookmark-fill"></i>
-                            ) : (
-                                <i className="ri-bookmark-line"></i>
-                            )}
-                        </AudioButton>
                     </>
                 )}
                 {/* volume */}
@@ -403,7 +390,7 @@ function Player() {
                     {/* bottom */}
                     {/* left */}
                     <div className="flex flex-[1]">
-                        <LikeButton songId={currentTrack.id} />
+                        {token && <LikeButton songId={currentTrack.id} />}
                     </div>
                     {/* between */}
                     {/* top */}
@@ -453,21 +440,14 @@ function Player() {
                     </div>
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
-                        {/* donate */}
-                        <AudioButton className="text-[1.625rem]">
-                            <i className="bx bxs-dollar-circle"></i>
-                        </AudioButton>
-                        {/* bookmark */}
-                        <AudioButton
-                            onClick={handleBookmarkClick}
-                            className="text-2xl"
-                        >
-                            {isSolidBookmark ? (
-                                <i className="ri-bookmark-fill"></i>
-                            ) : (
-                                <i className="ri-bookmark-line"></i>
-                            )}
-                        </AudioButton>
+                        {token && (
+                            <>
+                                {/* donate */}
+                                <AudioButton className="text-[1.625rem]">
+                                    <i className="bx bxs-dollar-circle"></i>
+                                </AudioButton>
+                            </>
+                        )}
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
                         {/* collapse */}
