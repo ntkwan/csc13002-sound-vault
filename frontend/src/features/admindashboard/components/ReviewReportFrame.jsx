@@ -2,52 +2,67 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentProfile } from '@services/selectors';
+import { useReplyReportMutation, useRejectReportMutation } from '@services/api';
+import { toast } from 'react-toastify';
 
 ReviewReportFrame.propTypes = {
     item: PropTypes.shape({
-        report: PropTypes.shape({
-            reportid: PropTypes.string,
-            username: PropTypes.string,
-            idcard: PropTypes.string,
-            email: PropTypes.string,
-            phone: PropTypes.string,
-            linktocontent: PropTypes.string,
-            reporttype: PropTypes.string,
-            category: PropTypes.string,
-            date: PropTypes.string,
-            time: PropTypes.string,
-            describe: PropTypes.string,
-        }),
-        assignee: PropTypes.shape({
-            adminid: PropTypes.string,
-            adminname: PropTypes.string,
-            image: PropTypes.shape({
-                url: PropTypes.string,
-            }),
-        }),
-        status: PropTypes.string,
+        idReport: PropTypes.string,
+        contentLink: PropTypes.string,
+        date: PropTypes.string,
+        time: PropTypes.string,
+        isSong: PropTypes.bool,
+        reason: PropTypes.string,
+        category: PropTypes.string,
+        type: PropTypes.string,
+        status: PropTypes.bool,
+        assignee: PropTypes.string,
+        idUser: PropTypes.string,
+        name: PropTypes.string,
+        email: PropTypes.string,
+        idNumber: PropTypes.string,
+        phone: PropTypes.string,
     }),
     onClose: PropTypes.func,
 };
 
 function ReviewReportFrame({ item, onClose }) {
     const [isReplying, setIsReplying] = useState(false);
+    const [message, setMessage] = useState('');
+    const [replyReport, { isLoading: isLoadingReply }] =
+        useReplyReportMutation();
+    const handleSendClick = async () => {
+        if (isLoadingReply) return;
+        try {
+            toast.success('Reply sent successfully');
+            onClose();
+            await replyReport({ reportID: item.idReport, message }).unwrap();
+        } catch (error) {
+            toast.error('Failed to send reply');
+        }
+    };
+    const [rejectReport, { isLoading: isLoadingReject }] =
+        useRejectReportMutation();
+    const handleRejectClick = async () => {
+        if (isLoadingReject) return;
 
+        try {
+            toast.success('Report rejected successfully');
+            onClose();
+            await rejectReport(item.idReport).unwrap();
+        } catch (error) {
+            toast.error('Failed to reject report');
+        }
+    };
     const handleReplyClick = () => {
         setIsReplying(true);
     };
 
-    const handleSendClick = () => {
-        // Logic to send the reply goes here
-        setIsReplying(false);
-    };
-
     const profile = useSelector(selectCurrentProfile);
-
     const { name, image: { url: avatar } = {} } = profile || {};
 
     return (
-        <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">
+        <div className="fixed left-0 top-0 z-10 h-full w-full cursor-default content-center bg-gray-800 bg-opacity-50">
             <div className="scrollbar-custom relative z-20 m-auto h-[84%] w-[900px] overflow-auto rounded-3xl border bg-home-pattern px-10 py-5 font-kodchasan shadow-lg">
                 <button
                     className="fixed right-[calc(50%-450px+15px)] top-[calc(5vh+28px)] hover:text-[#999]"
@@ -56,9 +71,8 @@ function ReviewReportFrame({ item, onClose }) {
                     <i className="ri-close-fill text-3xl"></i>
                 </button>
                 <h2 className="relative border-b p-3 text-2xl font-medium">
-                    Report from &rsquo;{item.report.username}&rsquo; about
-                    &rsquo;
-                    {item.report.reporttype}&rsquo;
+                    Report from &rsquo;{item.name}&rsquo; about &rsquo;
+                    {item.type}&rsquo;
                     <i className="bx bx-label absolute top-5 px-2" />
                 </h2>
 
@@ -67,15 +81,13 @@ function ReviewReportFrame({ item, onClose }) {
                         <div className="ml-auto flex h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] px-1">
                             <i className="ri-user-3-fill text-xl" />
                         </div>
-                        <p className="px-1 py-[2px] font-medium">
-                            {item.report.username}
-                        </p>
+                        <p className="px-1 py-[2px] font-medium">{item.name}</p>
                         <p className="py-[2px] font-normal">
-                            &lt;{item.report.email}&gt;
+                            &lt;{item.email}&gt;
                         </p>
                     </div>
                     <div className="font-thin">
-                        {item.report.date} {item.report.time}
+                        {item.date} {item.time}
                     </div>
                 </div>
 
@@ -89,7 +101,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Full Name
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.username}
+                                {item.name}
                             </div>
                         </div>
                         <div className="m-5 flex w-[300px] flex-col">
@@ -97,7 +109,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 ID Card/ Passport number
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.idcard}
+                                {item.idNumber}
                             </div>
                         </div>
                     </div>
@@ -107,7 +119,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Email
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.email}
+                                {item.email}
                             </div>
                         </div>
                         <div className="m-5 flex w-[300px] flex-col">
@@ -118,7 +130,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Phone number
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.phone}
+                                {item.phone}
                             </div>
                         </div>
                     </div>
@@ -131,7 +143,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Link to offending content
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.linktocontent}
+                                {item.contentLink}
                             </div>
                         </div>
                         <div className="m-5 flex flex-col">
@@ -142,7 +154,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Report type
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.reporttype}
+                                {item.type}
                             </div>
                         </div>
 
@@ -154,7 +166,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Category
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-1">
-                                {item.report.category}
+                                {item.category}
                             </div>
                         </div>
                         <div className="m-5 flex flex-col">
@@ -165,7 +177,7 @@ function ReviewReportFrame({ item, onClose }) {
                                 Describle
                             </label>
                             <div className="rounded-lg bg-gray-500 bg-opacity-40 p-2 text-left">
-                                {item.report.describe}
+                                {item.reason}
                             </div>
                         </div>
 
@@ -175,68 +187,6 @@ function ReviewReportFrame({ item, onClose }) {
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="m-6 flex justify-between border-b border-t">
-                    <select
-                        id="Status"
-                        className="mx-3 my-10 w-[300px] rounded-lg border p-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-transparent dark:text-white"
-                    >
-                        <option
-                            className="bg-[#41023f] text-white"
-                            value="closed"
-                        >
-                            Pending
-                        </option>
-                        <option
-                            className="bg-[#41023f] text-white"
-                            value="received"
-                        >
-                            Received
-                        </option>
-                        <option
-                            className="bg-[#41023f] text-white"
-                            value="in_progress"
-                        >
-                            In Progress
-                        </option>
-                        <option
-                            className="bg-[#41023f] text-white"
-                            value="completed"
-                        >
-                            Completed
-                        </option>
-                        <option
-                            className="bg-[#41023f] text-white"
-                            value="rejected"
-                        >
-                            Rejected
-                        </option>
-                    </select>
-
-                    <select
-                        id="Asignee"
-                        className="mx-3 my-10 w-[300px] rounded-lg border p-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-transparent dark:text-white"
-                    >
-                        <option className="bg-[#41023f] text-white" value="">
-                            Unassigned
-                        </option>
-                        <option className="bg-[#41023f] text-white" value="">
-                            Toàn
-                        </option>
-                        <option className="bg-[#41023f] text-white" value="">
-                            Khang
-                        </option>
-                        <option className="bg-[#41023f] text-white" value="">
-                            Quân
-                        </option>
-                        <option className="bg-[#41023f] text-white" value="">
-                            Vi
-                        </option>
-                        <option className="bg-[#41023f] text-white" value="">
-                            Hoàng
-                        </option>
-                    </select>
                 </div>
                 {isReplying && (
                     <div className="m-3">
@@ -261,29 +211,46 @@ function ReviewReportFrame({ item, onClose }) {
                         </div>
                         <textarea
                             id="LinkToOffendingContent"
-                            className="h-20 w-full overflow-auto rounded-md border-2 bg-white text-black focus:border-slate-500 focus-visible:outline-none"
-                        ></textarea>
+                            className="h-20 w-full overflow-auto rounded-md border-2 bg-white text-black focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
                     </div>
                 )}
-                <div className="m-3 flex justify-end">
-                    {!isReplying ? (
+                {item.assignee != '' ? (
+                    <div className="m-3 flex justify-end">
+                        <div className="mx-3 rounded-lg border-2 px-3 py-2">
+                            This report has been processed by {name}.
+                        </div>
+                    </div>
+                ) : (
+                    <div className="m-3 flex justify-end">
                         <button
-                            className="w-28 rounded-lg border-2 px-3 py-2"
-                            onClick={handleReplyClick}
+                            className="mx-3 w-28 rounded-lg border-2 px-3 py-2"
+                            onClick={handleRejectClick}
                         >
-                            <i className="ri-reply-fill pr-2" />
-                            Reply
+                            <i className="ri-mail-close-line pr-2" />
+                            Reject
                         </button>
-                    ) : (
-                        <button
-                            className="w-28 rounded-lg border-2 px-3 py-2"
-                            onClick={handleSendClick}
-                        >
-                            <i className="bx bx-send pr-2" />
-                            Send
-                        </button>
-                    )}
-                </div>
+                        {!isReplying ? (
+                            <button
+                                className="w-28 rounded-lg border-2 px-3 py-2"
+                                onClick={handleReplyClick}
+                            >
+                                <i className="ri-reply-fill pr-2" />
+                                Reply
+                            </button>
+                        ) : (
+                            <button
+                                className="w-28 rounded-lg border-2 px-3 py-2"
+                                onClick={handleSendClick}
+                            >
+                                <i className="bx bx-send pr-2" />
+                                Send
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

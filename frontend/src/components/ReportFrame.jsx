@@ -153,14 +153,18 @@ function ReportFrame({ setShowReportFrame, cardSongId }) {
                             name="ReportType"
                             className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
                         >
-                            <option value="brand_infringement">
+                            <option value="Trademark infringement">
                                 Trademark infringement
                             </option>
-                            <option value="copyright_infringement">
+                            <option value="Copyright infringement">
                                 Copyright infringement
                             </option>
-                            <option value="18_plus">Sensitive content</option>
-                            <option value="violence">Violence content</option>
+                            <option value="Sensitive content">
+                                Sensitive content
+                            </option>
+                            <option value="Violence content">
+                                Violence content
+                            </option>
                         </select>
                     </div>
                     <div className="m-5 flex flex-col">
@@ -177,32 +181,32 @@ function ReportFrame({ setShowReportFrame, cardSongId }) {
                         >
                             {type === 'song' && (
                                 <>
-                                    <option value="track_image">
+                                    <option value="Track image">
                                         Track image
                                     </option>
-                                    <option value="track_audio">
+                                    <option value="Track audio">
                                         Track audio
                                     </option>
-                                    <option value="track_title">
+                                    <option value="Track title">
                                         Track title
                                     </option>
-                                    <option value="track_lyrics">
+                                    <option value="Track lyrics">
                                         Track lyrics
                                     </option>
                                 </>
                             )}
                             {type === 'profile' && (
                                 <>
-                                    <option value="artist_photo">
+                                    <option value="Profile photo">
                                         Profile photo
                                     </option>
-                                    <option value="artist_banner">
+                                    <option value="Profile banner">
                                         Profile banner
                                     </option>
-                                    <option value="profile_fraud">
+                                    <option value="Profile fraud">
                                         Profile fraud
                                     </option>
-                                    <option value="profile_username">
+                                    <option value="Profile username">
                                         Profile username
                                     </option>
                                 </>

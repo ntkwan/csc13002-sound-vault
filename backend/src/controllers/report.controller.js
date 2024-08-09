@@ -279,6 +279,8 @@ const get_reports = async (req, res) => {
                     reason: report.reason,
                     createdAt: report.createdAt,
                     isSong: report.isSong,
+                    assignee: report.assignee,
+                    status: report.status,
                 };
             }),
         );

@@ -393,10 +393,18 @@ export const api = createApi({
 
         // Reports -----------------------------------------------------------
         replyReport: builder.mutation({
-            query: (body) => ({
+            query: ({ reportID, message }) => ({
                 url: '/reply-report',
                 method: 'POST',
-                body,
+                body: { reportID, message },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        rejectReport: builder.mutation({
+            query: (reportID) => ({
+                url: '/reject-report',
+                method: 'POST',
+                body: { reportID },
             }),
             invalidatesTags: ['Report'],
         }),
@@ -524,6 +532,7 @@ export const {
 
     // Reports ----------------------------------------------------------------
     useReplyReportMutation,
+    useRejectReportMutation,
     useSendReportOnSongMutation,
     useSendReportOnProfileMutation,
     useGetReportsQuery,
