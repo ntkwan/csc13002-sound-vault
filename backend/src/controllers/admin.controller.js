@@ -265,14 +265,37 @@ const remove_song_by_id = async (req, res) => {
     const songId = req.params.songId;
 
     try {
-        const Song = await SongModel.findById(songId);
-        if (!Song) {
+        const song = await SongModel.findById(songId);
+
+        if (!song) {
             return res.status(404).json({
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
 
-        await SongModel.deleteOne({ _id: songId });
+        req.publicId = song.image.publicId;
+        let log = await uploader.songThumbnailDestroyer(req, res);
+        if (log.result !== 'ok') {
+            return res.status(500).json({
+                message: 'Error occured while deleting song',
+            });
+        }
+
+        const coverimage = song.coverimg;
+        if (JSON.stringify(coverimage) !== '{}') {
+            const coverprofile = req.user.coverimage.publicId;
+            if (coverimage.publicId !== coverprofile) {
+                req.publicId = coverimage.publicId;
+                log = await uploader.songThumbnailDestroyer(req, res);
+                if (log.result !== 'ok') {
+                    return res.status(500).json({
+                        message: 'Error occured while deleting song',
+                    });
+                }
+            }
+        }
+
+        await SongModel.deleteOne({ _id: song._id });
 
         return res.status(200).json({
             message: 'Song deleted successfully',
