@@ -250,7 +250,7 @@ function Player() {
                 <img
                     className="size-14 rounded-lg object-cover"
                     src={currentTrack.thumbnail}
-                    alt=""
+                    alt={currentTrack.title + ' thumbnail'}
                 />
                 <div className="flex flex-col">
                     <span className="">{currentTrack.title}</span>
@@ -342,7 +342,7 @@ function Player() {
             <div className="absolute bottom-0 left-0 right-0 top-0 -z-20">
                 <img
                     src={currentTrack?.screen}
-                    alt="Song Screen Image"
+                    alt={currentTrack.title + ' screen'}
                     className="absolute size-full object-cover"
                 />
                 <div className="absolute size-full bg-black opacity-70"></div>
@@ -357,7 +357,7 @@ function Player() {
                 <img
                     className={`size-44 animate-fade-in rounded-lg object-cover transition-all duration-1000 ${isLoading ? 'size-[30rem]' : ''}`}
                     src={currentTrack.thumbnail}
-                    alt=""
+                    alt={currentTrack.title + ' thumbnail'}
                 />
                 <div
                     className={`-ml-40 flex translate-x-40 flex-col gap-3 self-end ${isLoading ? 'transition-transform duration-1000' : ''}`}

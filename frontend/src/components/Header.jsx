@@ -186,15 +186,20 @@ function Header() {
                 {/* Action */}
                 {token ? (
                     <div className="header__section flex h-full w-1/4 items-center justify-end space-x-3 text-sm">
-                        {avatar ? (
-                            <img
-                                className="inline h-10 w-10 rounded-full object-cover"
-                                src={avatar}
-                                alt={name}
-                            />
-                        ) : (
-                            <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
-                        )}
+                        <div
+                            className="hover:cursor-pointer"
+                            onClick={() => navigate('/profile')}
+                        >
+                            {avatar ? (
+                                <img
+                                    className="inline h-10 w-10 rounded-full object-cover"
+                                    src={avatar}
+                                    alt={name}
+                                />
+                            ) : (
+                                <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
+                            )}
+                        </div>
                         {isAdmin ? (
                             <div>
                                 <p className="font-bold">{name}</p>
@@ -255,12 +260,13 @@ function Header() {
 
             {searchInput && (
                 <div
-                    className="header__search-dropdown fixed bottom-0 left-[175px] right-0 top-[70px] z-10 space-y-8 overflow-y-scroll scroll-auto px-20 pb-28 pt-8 backdrop-blur-2xl"
+                    className="header__search-dropdown fixed bottom-20 left-[180px] right-0 top-[70px] z-30 space-y-8 overflow-y-scroll scroll-auto px-20 pb-28 pt-8 backdrop-blur-2xl"
                     ref={searchRef}
                 >
                     {noResultsFound ? (
                         <div className="break-words text-3xl font-bold">
-                            Nothing matches your input '{searchInput}'
+                            Nothing matches your input &rsquo;{searchInput}
+                            &rsquo;
                         </div>
                     ) : (
                         filteredSearchData.map((item, index) => (
