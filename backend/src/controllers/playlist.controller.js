@@ -24,6 +24,7 @@ const create_playlist = async (req, res) => {
             name,
             desc,
             uploader: user._id,
+            isAlbum: req.isAlbum,
         });
 
         user.playlist.push(playlist._id);
@@ -41,6 +42,11 @@ const create_playlist = async (req, res) => {
             message: error.message,
         });
     }
+};
+
+const create_album = async (req, res) => {
+    req.isAlbum = true;
+    create_playlist(req, res);
 };
 
 const delete_playlist_by_id = async (req, res) => {
@@ -249,6 +255,7 @@ const get_my_playlists = async (req, res) => {
 };
 
 module.exports = {
+    create_album,
     create_playlist,
     delete_playlist_by_id,
     add_song_to_playlist,

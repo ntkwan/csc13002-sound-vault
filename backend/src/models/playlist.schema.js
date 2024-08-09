@@ -27,6 +27,10 @@ const PlaylistSchema = new Schema(
             default: 'Playlist',
             required: true,
         },
+        isAlbum: {
+            type: Boolean,
+            default: false,
+        },
         image: {
             publicId: {
                 type: String,

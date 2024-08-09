@@ -310,7 +310,14 @@ const get_popular_albums = async (req, res) => {
         albums = [];
         for (let i = 0; i < users.length; i++) {
             if (users[i].playlist.length > 0) {
-                albums.push(await PlaylistModel.findById(users[i].playlist));
+                for (let idx = 0; idx < users[i].playlist.length; ++idx) {
+                    const album = await PlaylistModel.findById(
+                        users[i].playlist[idx],
+                    );
+                    if (album.isAlbum == true) {
+                        albums.push(await PlaylistModel.findById(album));
+                    }
+                }
             }
         }
 

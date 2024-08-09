@@ -106,6 +106,45 @@ const check_admin = async (req, res, next) => {
     }
 };
 
+const check_artist = async (req, res, next) => {
+    try {
+        const token =
+            req.cookies?.accessToken ||
+            req.header('Authorization')?.replace('Bearer ', '');
+
+        if (!token) {
+            return res.status(401).json({
+                message: 'Token not found',
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.ACCESS_KEY);
+
+        const user = await UserModel.findById(decoded?._id).select(
+            '-password -refreshToken',
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        if (!user.isVerified) {
+            return res.status(401).json({
+                message: 'Unauthorized',
+            });
+        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            message: 'Unauthorized',
+        });
+    }
+};
+
 const check_song_uploader = async (req, res, next) => {
     try {
         const songId = req.params.songId || req.body.songId;
@@ -183,6 +222,7 @@ const check_playlist_uploader = async (req, res, next) => {
 };
 
 module.exports = {
+    check_artist,
     check_guest,
     check_user,
     check_admin,

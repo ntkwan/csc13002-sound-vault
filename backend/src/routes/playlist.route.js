@@ -8,6 +8,13 @@ router.post(
     authMiddleware.check_user,
     playlistController.create_playlist,
 );
+
+router.post(
+    '/create-album',
+    authMiddleware.check_artist,
+    playlistController.create_album,
+);
+
 router.delete(
     '/delete-playlist-by-id/:playlistId',
     authMiddleware.check_user,
