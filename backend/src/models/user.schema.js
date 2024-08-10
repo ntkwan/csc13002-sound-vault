@@ -76,6 +76,24 @@ const UserSchema = new Schema(
             type: Array,
             default: [],
         },
+        balance: {
+            type: Number,
+            default: 0,
+        },
+        bankInfo: {
+            bankId: {
+                type: String,
+                default: '',
+            },
+            accountNo: {
+                type: String,
+                default: '',
+            },
+            accountName: {
+                type: String,
+                default: '',
+            },
+        },
     },
     {
         timestamps: true,

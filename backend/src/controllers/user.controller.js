@@ -109,8 +109,40 @@ const get_profile_by_id = async (req, res) => {
 };
 
 const get_my_profile = async (req, res) => {
-    req.params.profileId = req.user._id;
-    get_profile_by_id(req, res);
+    const profileId = req.user._id;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+        let response = {
+            name: User.name,
+            image: User.image,
+            coverimg: User.coverimage,
+            isVerified: User.isVerified,
+            followers: User.followers.length,
+            following: User.following.length,
+            id: User._id,
+            isBanned: User.isBanned,
+            shortDesc: User.shortDesc,
+            balance: User.balance,
+        };
+        if (User.isVerified) {
+            response = {
+                ...response,
+                bankInfo: User.bankInfo,
+            };
+        }
+
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
 };
 
 const get_profile_all_songs = async (req, res) => {
@@ -380,6 +412,32 @@ const get_recently_played_songs = async (req, res) => {
     }
 };
 
+const update_bank_info = async (req, res) => {
+    const user = req.user;
+    const { bankId, accountNo, accountName } = req.body;
+    if (!bankId || !accountNo || !accountName) {
+        return res.status(400).json({
+            message: 'Missing required fields',
+        });
+    }
+    try {
+        user.bankInfo = {
+            bankId,
+            accountNo,
+            accountName,
+        };
+        await user.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: 'Bank info updated successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     get_profile_information,
     change_profile,
@@ -393,4 +451,5 @@ module.exports = {
     get_featured_artists,
     get_popular_albums,
     get_recently_played_songs,
+    update_bank_info,
 };

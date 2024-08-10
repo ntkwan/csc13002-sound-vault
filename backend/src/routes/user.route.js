@@ -59,4 +59,9 @@ router.get(
     userController.get_recently_played_songs,
 );
 
+router.post(
+    '/update-bank-info',
+    authMiddleware.check_artist,
+    userController.update_bank_info,
+);
 module.exports = router;
