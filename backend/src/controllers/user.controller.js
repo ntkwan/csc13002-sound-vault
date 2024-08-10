@@ -415,7 +415,7 @@ const get_recently_played_songs = async (req, res) => {
 const update_bank_info = async (req, res) => {
     const user = req.user;
     const { bankId, accountNo, accountName } = req.body;
-    if (!bankId || !accountNo || !accountName) {
+    if (!bankId || !accountNo) {
         return res.status(400).json({
             message: 'Missing required fields',
         });

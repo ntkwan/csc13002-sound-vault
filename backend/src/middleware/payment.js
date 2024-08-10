@@ -72,7 +72,7 @@ const check_pending_payment = async (req, res, next) => {
 
 const check_bank_info = (req, res, next) => {
     let { bankId, accountNo, accountName } = req.user.bankInfo;
-    if (!bankId || !accountNo || !accountName) {
+    if (!bankId || !accountNo) {
         return res.status(400).json({
             message: 'Missing bank information',
         });
