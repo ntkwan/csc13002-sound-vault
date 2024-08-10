@@ -88,8 +88,33 @@ const receive_webhook_payos = async (req, res) => {
     }
 };
 
+const confirm_webhook_casso = async (req, res) => {
+    const { webhookUrl } = req.body;
+    try {
+        const query = { params: { webhook: webhookUrl } };
+        await axios.delete('/webhooks', query);
+
+        const data = {
+            webhook: webhookUrl,
+            secure_token: process.env.CASSO_WEBHOOK_KEY,
+            income_only: false,
+        };
+        const webhook = await axios.post('/webhooks', data);
+
+        return res.status(200).json({
+            code: 1,
+            message: 'Success',
+            webhook,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            code: -1,
+            message: error.message,
+        });
+    }
+};
+
 const receive_webhook_casso = async (req, res) => {
-    console.log('Casso webhook data:', req.body);
     const webhookData = req.body.data;
     if (!webhookData) {
         return res.status(400).json({
@@ -98,14 +123,14 @@ const receive_webhook_casso = async (req, res) => {
             message: 'Invalid webhook data',
         });
     }
-    if (webhookData.description.includes('giao dich thu nghiem')) {
+    const { description } = webhookData[0];
+    if (description.includes('giao dich thu nghiem')) {
         return res.status(200).json({
             success: true,
             code: 1,
             message: 'Success',
         });
     }
-    const { description, amount } = webhookData;
     const regex = /WDSV(\d+)/i;
     const matches = description.match(regex);
     if (!matches) {
@@ -388,6 +413,7 @@ const get_payment_history = async (req, res) => {
 module.exports = {
     confirm_webhook_payos,
     receive_webhook_payos,
+    confirm_webhook_casso,
     receive_webhook_casso,
     deposit,
     process_deposit,

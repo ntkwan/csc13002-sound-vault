@@ -12,6 +12,7 @@ router.get(
 
 router.post('/payos/confirm-webhook', paymentController.confirm_webhook_payos);
 router.post('/payos/receive-webhook', paymentController.receive_webhook_payos);
+router.post('/casso/confirm-webhook', paymentController.confirm_webhook_casso);
 router.post('/casso/receive-webhook', paymentController.receive_webhook_casso);
 
 router.post(
