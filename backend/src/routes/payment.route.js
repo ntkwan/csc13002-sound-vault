@@ -5,14 +5,27 @@ const authMiddleware = require('../middleware/auth');
 const paymentMiddleware = require('../middleware/payment');
 
 router.get(
+    '/get-all-payment-history',
+    authMiddleware.check_admin,
+    paymentController.get_all_payment_history,
+);
+router.get(
     '/get-payment-history',
     authMiddleware.check_user,
     paymentController.get_payment_history,
 );
 
-router.post('/payos/confirm-webhook', paymentController.confirm_webhook_payos);
+router.post(
+    '/payos/confirm-webhook',
+    authMiddleware.check_admin,
+    paymentController.confirm_webhook_payos,
+);
+router.post(
+    '/casso/confirm-webhook',
+    authMiddleware.check_admin,
+    paymentController.confirm_webhook_casso,
+);
 router.post('/payos/receive-webhook', paymentController.receive_webhook_payos);
-router.post('/casso/confirm-webhook', paymentController.confirm_webhook_casso);
 router.post('/casso/receive-webhook', paymentController.receive_webhook_casso);
 
 router.post(

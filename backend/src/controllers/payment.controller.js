@@ -6,6 +6,7 @@ const moment = require('moment');
 const schedule = require('node-schedule');
 const PaymentModel = require('../models/payment.schema');
 const UserModel = require('../models/user.schema');
+const SongModel = require('../models/song.schema');
 const payos = require('../utils/payos');
 const axios = require('../utils/axios');
 
@@ -66,6 +67,12 @@ const receive_webhook_payos = async (req, res) => {
             return res.status(400).json({
                 code: -1,
                 message: 'Payment failed',
+            });
+        }
+        if (payment.amount !== amount) {
+            return res.status(400).json({
+                code: -1,
+                message: 'Invalid amount',
             });
         }
         const user = await UserModel.findById(payment.from);
@@ -272,9 +279,9 @@ const job = schedule.scheduleJob('* * * * * *', async () => {
 
 const donate = async (req, res) => {
     const user = req.user;
-    let { amount, to } = req.body;
+    let { amount, to, song } = req.body;
     amount = Number(amount);
-    if (!to) {
+    if (!to || !song) {
         return res.status(400).json({
             code: -1,
             message: 'Missing required fields',
@@ -282,22 +289,43 @@ const donate = async (req, res) => {
     }
 
     try {
-        const toUser = await UserModel.findById(to);
+        let toUser;
+        if (!mongoose.Types.ObjectId.isValid(to)) {
+            toUser = await UserModel.findOne({ name: to });
+        } else {
+            toUser = await UserModel.findById(to);
+        }
+
         if (!toUser) {
             return res.status(404).json({
                 code: -1,
                 message: 'User not found',
             });
         }
+
+        const songObject = await SongModel.findOne({ title: song });
+        if (!songObject) {
+            return res.status(404).json({
+                code: -1,
+                message: 'Song not found',
+            });
+        }
+        if (!songObject.isVerified) {
+            return res.status(400).json({
+                code: -1,
+                message: 'Song not verified',
+            });
+        }
+
         toUser.balance += amount;
         await toUser.save();
 
         user.balance -= amount;
         await user.save();
-
         const payment = await PaymentModel.create({
             from: user._id,
-            to: mongoose.Types.ObjectId(to),
+            to: toUser._id,
+            song,
             amount,
             orderId: Number(String(new Date().getTime()).slice(1, 11)),
             status: 'PAID',
@@ -394,6 +422,19 @@ const cancel_withdraw = async (req, res) => {
     }
 };
 
+const get_all_payment_history = async (req, res) => {
+    try {
+        const payments = await PaymentModel.find().sort({ createdAt: -1 });
+        return res.status(200).json({
+            payments,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_payment_history = async (req, res) => {
     const user = req.user;
     try {
@@ -421,5 +462,6 @@ module.exports = {
     withdraw,
     process_withdraw,
     cancel_withdraw,
+    get_all_payment_history,
     get_payment_history,
 };

@@ -21,12 +21,12 @@ const check_balance = async (req, res, next) => {
 
 const check_amount = (req, res, next) => {
     let { amount, to } = req.body;
-    amount = Number(amount);
-    if (!amount) {
+    if (isNaN(amount)) {
         return res.status(400).json({
-            message: 'Missing required fields',
+            message: 'Invalid amount',
         });
     }
+    amount = Number(amount);
     if (to) {
         if (amount < 1) {
             return res.status(400).json({

@@ -21,6 +21,10 @@ const PaymentSchema = new Schema(
             type: Number,
             required: true,
         },
+        song: {
+            type: String,
+            default: '',
+        },
         orderId: {
             type: String,
             required: true,
