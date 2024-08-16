@@ -1,22 +1,25 @@
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import {
     useGetSongByIdQuery,
     useGetProfileByIdQuery,
     useGetProfileAllSongsQuery,
     useDeleteTrackByIdMutation,
 } from '@services/api';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { MediaDisplay } from '@components/index';
+import {
+    MediaDisplay,
+    BigPlayButton,
+    ReportFrame,
+    ConfirmDeletion,
+} from '@components';
 import {
     selectCurrentAdmin,
     selectCurrentProfile,
     selectCurrentToken,
 } from '@services/selectors';
-import { ReportFrame, ConfirmDeletion } from '@components/index';
 import verifiedIcon from '@assets/img/verified-icon.svg';
-import BigPlayButton from '@components/BigPlayButton';
-import { toast } from 'react-toastify';
 
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);

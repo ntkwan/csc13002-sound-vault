@@ -8,7 +8,10 @@ import { selectCurrentProfile } from '@services/selectors';
 
 function WalletPage() {
     const balance = 10000;
-    const formattedBalance = balance.toLocaleString('de-DE');
+    const formattedBalance = balance.toLocaleString('vn-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     const { isAdmin } = useSelector(selectCurrentProfile);
     return (
         <div className="wallet">

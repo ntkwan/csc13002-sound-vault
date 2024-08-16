@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     selectCurrentPlayer,
     selectCurrentPlaylist,
+    selectCurrentProfile,
     selectCurrentToken,
 } from '@services/selectors';
 import {
@@ -20,6 +21,7 @@ import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
 import LikeButton from './LikeButton';
 import useSong from '@hooks/useSong';
+import { DonateButton, DonateModal } from '@components';
 
 function Player() {
     const token = useSelector(selectCurrentToken);
@@ -238,10 +240,20 @@ function Player() {
         }
     }, [isPlaying, currentTime]);
 
+    const { balance } = useSelector(selectCurrentProfile);
+    const [modalVisible, setModalVisible] = useState(false);
+    const openDonateModal = () => {
+        if (isExpand) setIsExpand(false);
+        setModalVisible(true);
+    };
+    const closeDonateModal = () => {
+        setModalVisible(false);
+    };
+
     const DefaultPlayer = (
         <div
             ref={playerRef}
-            className="fixed bottom-0 left-0 right-0 z-10 flex h-20 content-center items-center justify-between bg-opacity-10 bg-musicbar px-5 backdrop-blur-lg before:absolute before:left-5 before:right-5 before:top-0 before:h-px before:bg-[#535353]"
+            className="fixed bottom-0 left-0 right-0 z-40 flex h-20 content-center items-center justify-between bg-opacity-10 bg-musicbar px-5 backdrop-blur-lg before:absolute before:left-5 before:right-5 before:top-0 before:h-px before:bg-[#535353]"
         >
             {/* background */}
 
@@ -318,13 +330,13 @@ function Player() {
             </div>
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
+                {/* donate */}
                 {token && (
-                    <>
-                        {/* donate */}
-                        <AudioButton className="text-[1.375rem]">
-                            <i className="bx bxs-dollar-circle"></i>
-                        </AudioButton>
-                    </>
+                    <DonateButton
+                        openDonateModal={openDonateModal}
+                        song={currentTrack.title}
+                        artist={currentTrack.artist}
+                    />
                 )}
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
@@ -440,13 +452,13 @@ function Player() {
                     </div>
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
+                        {/* donate */}
                         {token && (
-                            <>
-                                {/* donate */}
-                                <AudioButton className="text-[1.625rem]">
-                                    <i className="bx bxs-dollar-circle"></i>
-                                </AudioButton>
-                            </>
+                            <DonateButton
+                                openDonateModal={openDonateModal}
+                                song={currentTrack.title}
+                                artist={currentTrack.artist}
+                            />
                         )}
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
@@ -467,6 +479,14 @@ function Player() {
         <>
             <audio ref={audioRef} src={currentTrack?.url} />
             {isExpand ? ExpandPlayer : DefaultPlayer}
+            {modalVisible && (
+                <DonateModal
+                    balance={balance}
+                    closeDonateModal={closeDonateModal}
+                    song={currentTrack.title}
+                    artist={currentTrack.artist}
+                />
+            )}
         </>
     );
 }

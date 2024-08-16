@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loading, MediaDisplay } from '@components/index';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import {
+    Loading,
+    MediaDisplay,
+    ConfirmDeletion,
+    BigPlayButton,
+} from '@components';
 import {
     useDeletePlaylistByIdMutation,
     useGetPlaylistByIdQuery,
     useGetProfileByIdQuery,
 } from '@services/api';
-import { toast } from 'react-toastify';
-import { ConfirmDeletion } from '@components/index';
-import BigPlayButton from '@components/BigPlayButton';
-import { useSelector } from 'react-redux';
 import { selectCurrentProfile } from '@services/selectors';
 
 function PlaylistPage() {

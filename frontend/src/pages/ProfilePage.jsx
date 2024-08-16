@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { MediaDisplay } from '@components';
+import { MediaDisplay, ReportFrame, BigPlayButton } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
-import { selectCurrentProfile, selectCurrentToken } from '@services/selectors';
+import {
+    selectCurrentProfile,
+    selectCurrentToken,
+    selectCurrentAdmin,
+} from '@services/selectors';
 import {
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
@@ -14,9 +18,6 @@ import {
     useGetProfileAlbumsQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
-import { ReportFrame } from '@components/index';
-import { selectCurrentAdmin } from '@services/selectors';
-import BigPlayButton from '@components/BigPlayButton';
 
 function ProfilePage() {
     const token = useSelector(selectCurrentToken);

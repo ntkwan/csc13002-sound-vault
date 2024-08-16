@@ -20,7 +20,13 @@ import {
     selectCurrentTrack,
     selectCurrentToken,
 } from '@services/selectors';
-import { PlayButton, ReportFrame, ConfirmDeletion } from '.';
+import {
+    PlayButton,
+    ReportFrame,
+    ConfirmDeletion,
+    DonateButton,
+    DonateModal,
+} from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 import { toast } from 'react-toastify';
@@ -595,6 +601,15 @@ const SongBar = memo(
         const titleClassName =
             currentSong === id ? 'text-purple-400 font-bold' : '';
 
+        const { balance } = useSelector(selectCurrentProfile);
+        const [modalVisible, setModalVisible] = useState(false);
+        const openDonateModal = () => {
+            setModalVisible(true);
+        };
+        const closeDonateModal = () => {
+            setModalVisible(false);
+        };
+
         return (
             <>
                 {confirmDelete && (
@@ -695,17 +710,18 @@ const SongBar = memo(
                     <span className="hover:cursor-default">{view}</span>
                     <span className="hover:cursor-default">{duration}</span>
                     <div className="flex items-center justify-end">
-                        <i
-                            className="bx bxs-dollar-circle hover: relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
-                            // onClick={prevent()}
-                            data-title={`Donate for ${title} by ${artist}`}
-                        ></i>
+                        <DonateButton
+                            className="text-white"
+                            openDonateModal={openDonateModal}
+                            song={title}
+                            artist={artist}
+                        />
                         <button
                             className="relative flex-[1]"
                             onClick={prevent(() => toggleMenu(index))}
                         >
                             <i
-                                className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
+                                className="bx bx-dots-horizontal-rounded relative text-2xl transition-all duration-75 ease-in-out hover:scale-125"
                                 data-title={`More options for ${title} by ${artist}`}
                             ></i>
                             {menuVisible === index && (
@@ -876,6 +892,14 @@ const SongBar = memo(
                         </button>
                     </div>
                 </div>
+                {modalVisible && (
+                    <DonateModal
+                        balance={balance}
+                        closeDonateModal={closeDonateModal}
+                        song={title}
+                        artist={artist}
+                    />
+                )}
             </>
         );
     },
