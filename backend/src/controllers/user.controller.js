@@ -412,6 +412,114 @@ const get_recently_played_songs = async (req, res) => {
     }
 };
 
+const get_search_results = async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.status(400).json({
+            message: 'Missing query',
+        });
+    }
+    try {
+        const Artists = await UserModel.find({
+            name: { $regex: query, $options: 'i' },
+            isVerified: true,
+        }).limit(5);
+        const Users = await UserModel.find({
+            name: { $regex: query, $options: 'i' },
+            isVerified: false,
+        }).limit(5);
+        const Songs = await SongModel.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } },
+                { artist: { $regex: query, $options: 'i' } },
+            ],
+        }).limit(5);
+        const Playlists = await PlaylistModel.find({
+            name: { $regex: query, $options: 'i' },
+            isAlbum: false,
+        }).limit(5);
+        const Albums = await PlaylistModel.find({
+            name: { $regex: query, $options: 'i' },
+            isAlbum: true,
+        }).limit(5);
+
+        let artists =
+            Artists?.map((artist) => {
+                return {
+                    name: artist.name,
+                    image: artist.image,
+                    id: artist._id,
+                };
+            }) ?? [];
+        let users =
+            Users?.map((user) => {
+                return {
+                    name: user.name,
+                    image: user.image,
+                    id: user._id,
+                };
+            }) ?? [];
+        let songs =
+            Songs?.map((song) => {
+                return {
+                    id: song._id,
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    coverimg: song.coverimg,
+                    view: song.view,
+                };
+            }) ?? [];
+        let playlists =
+            Playlists?.map((playlist) => {
+                return {
+                    id: playlist._id,
+                    name: playlist.name,
+                    description: playlist.desc,
+                    playlist_owner: playlist.uploader,
+                    image: playlist.image,
+                    songs: playlist.songs,
+                };
+            }) ?? [];
+        let albums =
+            Albums?.map((album) => {
+                return {
+                    id: album._id,
+                    name: album.name,
+                    description: album.desc,
+                    image: album.image,
+                    playlist_owner: album.uploader,
+                    songs: album.songs,
+                };
+            }) ?? [];
+
+        if (
+            !artists.length &&
+            !users.length &&
+            !songs.length &&
+            !playlists.length &&
+            !albums.length
+        ) {
+            return res.status(404).json({
+                message: 'No results found',
+            });
+        }
+
+        return res.status(200).json({
+            users,
+            artists,
+            songs,
+            playlists,
+            albums,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const update_bank_info = async (req, res) => {
     const user = req.user;
     const { bankId, accountNo, accountName } = req.body;
@@ -451,5 +559,6 @@ module.exports = {
     get_featured_artists,
     get_popular_albums,
     get_recently_played_songs,
+    get_search_results,
     update_bank_info,
 };

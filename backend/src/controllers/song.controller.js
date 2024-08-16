@@ -200,6 +200,37 @@ const get_songs_by_region = async (req, res) => {
     }
 };
 
+const get_songs_by_genre = async (req, res) => {
+    const genre = req.params.genre;
+    try {
+        const songs = await SongModel.find({ genre: genre }).sort({ view: -1 });
+
+        if (!songs) {
+            return res.status(404).json({
+                message: 'The genre is not found',
+            });
+        }
+
+        res.status(200).send(
+            songs.map((song) => {
+                return {
+                    id: song._id,
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    coverimg: song.coverimg,
+                    view: song.view,
+                };
+            }),
+        );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_top_songs = async (req, res) => {
     const regions = ['V-Pop', 'K-Pop', 'USUK'];
     try {
@@ -332,6 +363,7 @@ module.exports = {
     undo_play_song,
     get_song_view,
     get_songs_by_region,
+    get_songs_by_genre,
     get_top_songs,
     disable_song,
     enable_song,
