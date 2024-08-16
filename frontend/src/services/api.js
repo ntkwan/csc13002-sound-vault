@@ -175,6 +175,9 @@ export const api = createApi({
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
         }),
+        getSongsByGenre: builder.query({
+            query: (genre) => `/get-songs-by-genre/${genre}`,
+        }),
         getTopSongs: builder.query({
             query: () => '/get-top-songs',
         }),
@@ -326,6 +329,9 @@ export const api = createApi({
             query: () => '/get-recently-played-songs',
             providesTags: ['User'],
         }),
+        getSearchResults: builder.query({
+            query: (query) => `/search?q=${encodeURIComponent(query)}`,
+        }),
 
         // Admin -------------------------------------------------------------
         setVerifiedArtistById: builder.mutation({
@@ -462,6 +468,68 @@ export const api = createApi({
             query: () => '/get-reports',
             providesTags: ['Report'],
         }),
+
+        // Payment -----------------------------------------------------------
+        getAllPaymentHistory: builder.query({
+            query: () => '/get-all-payment-history',
+        }),
+        getPaymentHistory: builder.query({
+            query: () => '/get-payment-history',
+        }),
+        confirmWebhookPayos: builder.mutation({
+            query: (body) => ({
+                url: '/payos/confirm-webhook',
+                method: 'POST',
+                body,
+            }),
+        }),
+        confirmWebhookCasso: builder.mutation({
+            query: (body) => ({
+                url: '/casso/confirm-webhook',
+                method: 'POST',
+                body,
+            }),
+        }),
+        deposit: builder.mutation({
+            query: (body) => ({
+                url: '/deposit',
+                method: 'POST',
+                body,
+            }),
+        }),
+        donate: builder.mutation({
+            query: (body) => ({
+                url: '/donate',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User'],
+        }),
+        withdraw: builder.mutation({
+            query: (body) => ({
+                url: '/withdraw',
+                method: 'POST',
+                body,
+            }),
+        }),
+        processDeposit: builder.mutation({
+            query: (paymentId) => ({
+                url: `/process-deposit/${paymentId}`,
+                method: 'PUT',
+            }),
+        }),
+        processWithdraw: builder.mutation({
+            query: (orderId) => ({
+                url: `/process-withdraw/${orderId}`,
+                method: 'PUT',
+            }),
+        }),
+        cancelWithdraw: builder.mutation({
+            query: (orderId) => ({
+                url: `/cancel-withdraw/${orderId}`,
+                method: 'PUT',
+            }),
+        }),
     }),
 });
 
@@ -485,9 +553,11 @@ export const {
     useGetNewSongsQuery,
     useGetSongByIdQuery,
     useGetChartSongsQuery,
+    useGetSongsByGenreQuery,
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
     useDeleteTrackByIdMutation,
+    useLazyGetSearchResultsQuery,
 
     // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,
@@ -536,4 +606,16 @@ export const {
     useSendReportOnSongMutation,
     useSendReportOnProfileMutation,
     useGetReportsQuery,
+
+    // Payment ----------------------------------------------------------------
+    useGetAllPaymentHistoryQuery,
+    useGetPaymentHistoryQuery,
+    useConfirmWebhookPayosMutation,
+    useConfirmWebhookCassoMutation,
+    useDepositMutation,
+    useDonateMutation,
+    useWithdrawMutation,
+    useProcessDepositMutation,
+    useProcessWithdrawMutation,
+    useCancelWithdrawMutation,
 } = api;
