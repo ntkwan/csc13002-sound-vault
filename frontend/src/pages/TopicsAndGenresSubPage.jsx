@@ -1,39 +1,31 @@
 import { useLocation } from 'react-router-dom';
-import { PageTitle, MediaDisplay } from '@components/index';
-import { useGetChartSongsQuery } from '@services/api';
+import { PageTitle, MediaDisplay } from '@components';
+import { useGetChartSongsQuery, useGetSongsByGenreQuery } from '@services/api';
+
+const regions = ['US-UK', 'K-Pop', 'V-Pop'];
+const genres = ['Pop', 'R&B', 'Jazz', 'Rap', 'Indie', 'Chill', 'Party', 'Love'];
 
 function TopicsAndGenresSubPage() {
     // get title from current location
     const location = useLocation();
     const { title } = location.state || { title: '' };
+    const { data: regionData } = useGetChartSongsQuery(
+        title === 'US-UK' ? 'USUK' : title,
+        {
+            skip: !title || !regions.includes(title),
+        },
+    );
 
-    // get data from api
-    const type = {
-        // browse
-        Rap: 'Rap',
-        Love: 'Love',
-        Pop: 'Pop',
-        Jazz: 'Jazz',
-        'R&B': 'R&B',
-        Party: 'Party',
-        Indie: 'Indie',
-        Chill: 'Chill',
-        // region
-        'US-UK': 'US-UK',
-        'K-Pop': 'KPop',
-        'V-Pop': 'VPop',
-    };
-    const { data: regionData } = useGetChartSongsQuery(type[title]);
-
-    if (!regionData) return null;
-    console.log(regionData);
+    const { data: genreSongs } = useGetSongsByGenreQuery(title, {
+        skip: !title || !genres.includes(title),
+    });
 
     const songs = {
         type: 'Song',
         // title: '',
         // visibility: '',
         // link: '',
-        data: regionData || [],
+        data: genreSongs || regionData || [],
     };
 
     return (
