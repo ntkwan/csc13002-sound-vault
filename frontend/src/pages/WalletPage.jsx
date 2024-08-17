@@ -1,25 +1,34 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { DepositButton, DepositModal, PageTitle } from '@components';
+import {
+    DepositButton,
+    DepositModal,
+    PageTitle,
+    WithdrawButton,
+    WithdrawModal,
+} from '@components';
 import historyIcon from '@assets/img/history-icon.svg';
 import { selectCurrentProfile } from '@services/selectors';
 import { toast } from 'react-toastify';
 
 function WalletPage() {
-    const { balance } = useSelector(selectCurrentProfile);
-    const formattedBalance = balance.toLocaleString('vn-VN', {
+    const { balance, isVerified, bankInfo } = useSelector(selectCurrentProfile);
+    const formattedBalance = balance.toLocaleString('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
-    const { isAdmin } = useSelector(selectCurrentProfile);
 
-    const [depositModalVisible, setDepositModalVisible] = useState(false);
-    const openDepositModal = () => {
-        setDepositModalVisible(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const openModal = () => {
+        if (isVerified && balance !== 0) {
+            setModalVisible(true);
+            return;
+        }
+        setModalVisible(true);
     };
-    const closeDepositModal = () => {
-        setDepositModalVisible(false);
+    const closeModal = () => {
+        setModalVisible(false);
     };
 
     const location = useLocation();
@@ -67,11 +76,17 @@ function WalletPage() {
 
                 {/* action container */}
                 <div className="wallet__action-container flex h-full flex-col justify-around">
-                    <DepositButton openDepositModal={openDepositModal} />
-
+                    {isVerified ? (
+                        <WithdrawButton
+                            openWithdrawModal={openModal}
+                            // disabled={balance === 0}
+                        />
+                    ) : (
+                        <DepositButton openDepositModal={openModal} />
+                    )}
                     <Link
                         to="history"
-                        className="wallet__action py-x group relative flex w-52 items-center justify-center rounded-full border py-3"
+                        className="wallet__action group relative flex w-52 items-center justify-center rounded-full border py-3"
                     >
                         <img
                             src={historyIcon}
@@ -83,9 +98,15 @@ function WalletPage() {
                     </Link>
                 </div>
             </div>
-            {depositModalVisible && (
-                <DepositModal closeDepositModal={closeDepositModal} />
-            )}
+            {modalVisible &&
+                (isVerified ? (
+                    <WithdrawModal
+                        bankInfo={bankInfo}
+                        closeWithdrawModal={closeModal}
+                    />
+                ) : (
+                    <DepositModal closeDepositModal={closeModal} />
+                ))}
         </div>
     );
 }

@@ -16,7 +16,7 @@ function DepositModal(props) {
         try {
             const res = await deposit({ amount }).unwrap();
             toast.success(
-                `${amount.toLocaleString('vn-VN', { style: 'currency', currency: 'VND' })} transfer request sent successfully!`,
+                `${amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} transfer request sent successfully!`,
             );
             checkoutUrl = res.checkoutUrl;
             window.location.href = checkoutUrl;

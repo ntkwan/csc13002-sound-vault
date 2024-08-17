@@ -425,7 +425,8 @@ BrowseCard.propTypes = HomeCard.propTypes;
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
         const token = useSelector(selectCurrentToken);
-        const { id: myProfileID } = useSelector(selectCurrentProfile);
+        const { id: myProfileID, isVerified } =
+            useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
@@ -710,12 +711,14 @@ const SongBar = memo(
                     <span className="hover:cursor-default">{view}</span>
                     <span className="hover:cursor-default">{duration}</span>
                     <div className="flex items-center justify-end">
-                        <DonateButton
-                            className="text-white"
-                            openDonateModal={openDonateModal}
-                            song={title}
-                            artist={artist}
-                        />
+                        {token && !isVerified && (
+                            <DonateButton
+                                className="text-white"
+                                openDonateModal={openDonateModal}
+                                song={title}
+                                artist={artist}
+                            />
+                        )}
                         <button
                             className="relative flex-[1]"
                             onClick={prevent(() => toggleMenu(index))}

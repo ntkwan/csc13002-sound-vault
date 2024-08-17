@@ -245,7 +245,7 @@ function Player() {
         }
     }, [isPlaying, currentTime]);
 
-    const { balance } = useSelector(selectCurrentProfile);
+    const { balance, isVerified } = useSelector(selectCurrentProfile);
     const [donateModalVisible, setDonateModalVisible] = useState(false);
     const [depositModalVisible, setDepositModalVisible] = useState(false);
     const openDonateModal = () => {
@@ -347,7 +347,7 @@ function Player() {
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                 {/* donate */}
-                {token && (
+                {token && !isVerified && (
                     <DonateButton
                         openDonateModal={openDonateModal}
                         song={currentTrack.title}
@@ -477,7 +477,7 @@ function Player() {
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                         {/* donate */}
-                        {token && (
+                        {token && !isVerified && (
                             <DonateButton
                                 openDonateModal={openDonateModal}
                                 song={currentTrack.title}

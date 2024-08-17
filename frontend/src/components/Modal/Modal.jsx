@@ -27,7 +27,7 @@ Modal.Donate = (props) => {
             <span
                 className={`font-bold ${props.balance === 0 ? 'text-red-500' : 'text-purple-500'}`}
             >
-                {props.balance.toLocaleString('vn-VN', {
+                {props.balance.toLocaleString('vi-VN', {
                     style: 'currency',
                     currency: 'VND',
                 })}
@@ -54,7 +54,7 @@ Modal.Donate = (props) => {
                         className="w-4/5"
                     />
                     <button
-                        className="group relative min-w-40 rounded-full outline outline-2 transition duration-300 ease-in-out"
+                        className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
                         disabled={props.balance === 0}
                         onClick={props.handleDonate}
                     >
@@ -69,7 +69,7 @@ Modal.Donate = (props) => {
                     </span>
                     <span>Top up now to donate</span>
                     <button
-                        className="group relative min-w-40 rounded-full outline outline-2 transition duration-300 ease-in-out"
+                        className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
                         onClick={props.openDepositModal}
                     >
                         Top up
@@ -94,7 +94,7 @@ Modal.Deposit = (props) => {
                 {[10000, 20000, 50000, 100000, 200000, 500000, 1000000].map(
                     (amount) => (
                         <option key={amount} value={amount}>
-                            {amount.toLocaleString('vn-VN', {
+                            {amount.toLocaleString('vi-VN', {
                                 style: 'currency',
                                 currency: 'VND',
                             })}
@@ -103,7 +103,7 @@ Modal.Deposit = (props) => {
                 )}
             </select>
             <button
-                className="group relative min-w-40 rounded-full outline outline-2 transition duration-300 ease-in-out"
+                className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
                 onClick={props.handleDeposit}
             >
                 Deposit
@@ -122,6 +122,27 @@ Modal.Deposit = (props) => {
                     if you are not redirected.
                 </span>
             )}{' '}
+        </>
+    );
+};
+
+Modal.Withdraw = (props) => {
+    return (
+        <>
+            <span className="font-bold text-red-500">
+                All your balance will be withdrawn!!!
+            </span>
+            <span>Are you sure?</span>
+            <button
+                className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
+                onClick={props.handleWithdraw}
+            >
+                Withdraw
+                <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-500 ease-in-out group-hover:opacity-100"></div>
+            </button>
+            <span className="px-4 text-xl">
+                Your request will be processed within 1 to 3 business days
+            </span>
         </>
     );
 };
@@ -148,6 +169,11 @@ Modal.Deposit.propTypes = {
     handleAmountChange: PropTypes.func,
     handleDeposit: PropTypes.func,
     checkoutUrl: PropTypes.string,
+};
+
+Modal.Withdraw.displayName = 'Withdraw';
+Modal.Withdraw.propTypes = {
+    handleWithdraw: PropTypes.func,
 };
 
 export default Modal;

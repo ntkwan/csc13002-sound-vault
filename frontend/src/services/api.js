@@ -506,10 +506,9 @@ export const api = createApi({
             invalidatesTags: ['User'],
         }),
         withdraw: builder.mutation({
-            query: (body) => ({
+            query: () => ({
                 url: '/withdraw',
                 method: 'POST',
-                body,
             }),
         }),
         processDeposit: builder.mutation({

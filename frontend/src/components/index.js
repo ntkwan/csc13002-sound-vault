@@ -9,8 +9,10 @@ export { default as PlayButton } from './Buttons/PlayButton';
 export { default as BigPlayButton } from './Buttons/BigPlayButton';
 export { default as DonateButton } from './Buttons/DonateButton';
 export { default as DepositButton } from './Buttons/DepositButton';
+export { default as WithdrawButton } from './Buttons/WithdrawButton';
 export { default as DonateModal } from './Modal/DonateModal';
 export { default as DepositModal } from './Modal/DepositModal';
+export { default as WithdrawModal } from './Modal/WithdrawModal';
 export {
     default as MediaDisplay,
     HomeCard,
