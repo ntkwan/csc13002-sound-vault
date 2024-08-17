@@ -54,12 +54,6 @@ router.get(
     playlistController.get_my_playlists,
 );
 
-router.get(
-    '/get-my-albums',
-    authMiddleware.check_user,
-    playlistController.get_my_albums,
-);
-
 router.post(
     '/change-playlist-description/:playlistId',
     authMiddleware.check_user,

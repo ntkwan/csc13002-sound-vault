@@ -26,6 +26,7 @@ import {
     ConfirmDeletion,
     DonateButton,
     DonateModal,
+    AlbumFrame,
 } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
@@ -431,11 +432,11 @@ const SongBar = memo(
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
         const [showPlaylistForm, setShowPlaylistForm] = useState(false);
+        const [showAlbumFrame, setShowAlbumFrame] = useState(false);
         const playlistFormRef = useRef(null);
         const [playlistOptionsVisible, setPlaylistOptionsVisible] =
             useState(false);
         const [playlistName, setPlaylistName] = useState('');
-        const [playlistDesc, setPlaylistDesc] = useState('');
         const [confirmDelete, setConfirmDelete] = useState(false);
 
         const location = useLocation();
@@ -512,16 +513,14 @@ const SongBar = memo(
         });
 
         const { data: myPlayListData, isLoading: isLoadingMyPlayListData } =
-            useGetMyPlaylistsQuery(myProfileID, {
-                skip: !myProfileID,
-            });
+            useGetMyPlaylistsQuery({ isAlbum: false }, { skip: !myProfileID });
 
         const [creatPlayList, { isLoading: createPlaylistLoading }] =
             useCreatePlaylistMutation();
-        const handleCreatePlaylist = async (name, desc) => {
+        const handleCreatePlaylist = async (name, firstSongId) => {
             if (createPlaylistLoading) return;
             try {
-                await creatPlayList({ name, desc }).unwrap();
+                await creatPlayList({ name, firstSongId }).unwrap();
                 toast.success('Playlist created successfully!');
             } catch (error) {
                 console.error('Failed to create playlist:', error);
@@ -531,8 +530,7 @@ const SongBar = memo(
         const handleSubmitCreatePlaylist = () => {
             setShowPlaylistForm(false);
             const name = String(playlistName).trim();
-            const desc = String(playlistDesc).trim();
-            handleCreatePlaylist(name, desc);
+            handleCreatePlaylist(name, id);
         };
 
         const [addSongToPlaylist, { isLoading: addSongToPlaylistLoading }] =
@@ -613,6 +611,14 @@ const SongBar = memo(
 
         return (
             <>
+                {showAlbumFrame && (
+                    <AlbumFrame
+                        idSong={id}
+                        songName={title}
+                        myProfileID={myProfileID}
+                        onClose={() => setShowAlbumFrame(false)}
+                    />
+                )}
                 {confirmDelete && (
                     <ConfirmDeletion
                         type="song"
@@ -648,24 +654,7 @@ const SongBar = memo(
                                     className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
                                 />
                             </div>
-                            <div>
-                                <label
-                                    htmlFor="playlistName"
-                                    className="block pb-2 text-left text-base"
-                                >
-                                    Description for your playlist:
-                                </label>
-                                <textarea
-                                    id="playlistName"
-                                    rows="4"
-                                    cols="50"
-                                    onChange={(e) =>
-                                        setPlaylistDesc(e.target.value)
-                                    }
-                                    className="h-16 w-80 resize-none border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                                />
-                            </div>
-                            <div className="m-2 flex justify-end">
+                            <div className="mt-3 flex justify-end">
                                 <button
                                     className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
                                     onClick={handleSubmitCreatePlaylist}
@@ -813,7 +802,15 @@ const SongBar = memo(
                                         )}
                                         {pathtype == 'profile' &&
                                             pathId == undefined && (
-                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                <li
+                                                    className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    onClick={prevent(() => {
+                                                        setShowAlbumFrame(true),
+                                                            setMenuVisible(
+                                                                null,
+                                                            );
+                                                    })}
+                                                >
                                                     <i className="ri-add-circle-line text-xl leading-none"></i>
                                                     <span>Add to album</span>
                                                 </li>

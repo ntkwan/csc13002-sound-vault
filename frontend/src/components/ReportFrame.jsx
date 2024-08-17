@@ -151,7 +151,7 @@ function ReportFrame({ setShowReportFrame, cardSongId }) {
                         <select
                             id="ReportType"
                             name="ReportType"
-                            className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                            className="w-full border-b bg-black p-2 py-2 text-white hover:cursor-pointer focus:border-slate-500 focus:ring-0"
                         >
                             <option value="Trademark infringement">
                                 Trademark infringement
@@ -177,7 +177,7 @@ function ReportFrame({ setShowReportFrame, cardSongId }) {
                         <select
                             id="Category"
                             name="Category"
-                            className="w-full border-b p-2 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
+                            className="w-full border-b bg-black p-2 py-2 text-white hover:cursor-pointer focus:border-slate-500 focus:ring-0"
                         >
                             {type === 'song' && (
                                 <>

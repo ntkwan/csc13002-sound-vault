@@ -19,13 +19,12 @@ const create_playlist = async (req, res) => {
                 message: 'Playlist already exists',
             });
         }
-        
+
         const playlist = await PlaylistModel.create({
             name,
             uploader: user._id,
             isAlbum: req.isAlbum,
         });
-        
 
         if (firstSongId) {
             const song = await SongModel.findById(firstSongId);
@@ -36,7 +35,7 @@ const create_playlist = async (req, res) => {
             }
 
             playlist.songs.push(new mongoose.Types.ObjectId(firstSongId));
-            await playlist.save({ validateBeforeSave: false });    
+            await playlist.save({ validateBeforeSave: false });
         }
 
         user.playlist.push(playlist._id);
@@ -238,15 +237,15 @@ const get_playlist_by_id = async (req, res) => {
     }
 };
 
-const get_my_playlists = async (req, res, isAlbum = false) => {
+const get_my_playlists = async (req, res) => {
     const userId = req.user._id;
-    req.isAlbum = isAlbum;
+    const isAlbum = req.query.isAlbum === 'true';
 
     try {
         const User = await UserModel.findById(userId);
         const playlists = await PlaylistModel.find({
             _id: { $in: User.playlist },
-            isAlbum: req.isAlbum,
+            isAlbum: isAlbum,
         });
 
         return res.status(200).json({
@@ -266,10 +265,6 @@ const get_my_playlists = async (req, res, isAlbum = false) => {
             message: error.message,
         });
     }
-};
-
-const get_my_albums = async (req, res) => {
-    get_my_playlists(req, res, true);
 };
 
 const change_playlist_description = async (req, res) => {
@@ -307,6 +302,5 @@ module.exports = {
     remove_song_from_liked_playlist,
     get_playlist_by_id,
     get_my_playlists,
-    get_my_albums,
     change_playlist_description,
 };

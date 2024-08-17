@@ -195,6 +195,18 @@ function PlaylistPage() {
                         {showProfileOption === true && (
                             <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
+                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-image-2-fill text-xl leading-none"></i>
+                                        <span className="text-left text-sm">
+                                            Change thumbnail
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                        <i className="ri-draft-line text-xl leading-none"></i>
+                                        <span className="text-left text-sm">
+                                            Change description
+                                        </span>
+                                    </li>
                                     <li
                                         className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onClick={handleCopyLink}
@@ -221,7 +233,7 @@ function PlaylistPage() {
                 </div>
 
                 {/* Content Section */}
-                {songs && (
+                {songs && songsDisplay?.data.length > 0 ? (
                     <>
                         <MediaDisplay
                             media={songsDisplay}
@@ -229,6 +241,22 @@ function PlaylistPage() {
                             displayType="grid auto-rows-auto gap-2"
                         />
                     </>
+                ) : (
+                    <div className="flex h-64 items-center justify-center">
+                        <div className="flex flex-col items-center text-center">
+                            <span className="mb-4 text-lg">
+                                This list is empty! Add some songs to it.
+                            </span>
+                            <button
+                                className="transform rounded border border-white bg-transparent px-4 py-2 text-white transition-transform hover:scale-105 hover:bg-opacity-80 hover:shadow-lg"
+                                onClick={() => navigate('/trending')}
+                            >
+                                <i className="ri-music-fill pr-2" />
+                                Explore songs
+                                <i className="ri-music-fill pl-2" />
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
         </>

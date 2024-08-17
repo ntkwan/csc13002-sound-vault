@@ -44,7 +44,6 @@ export const api = createApi({
     tagTypes: [
         'User',
         'Song',
-        'Album',
         'Playlist',
         'AdminAccount',
         'AdminSong',
@@ -195,10 +194,10 @@ export const api = createApi({
 
         // Playlists ----------------------------------------------------------
         createPlaylist: builder.mutation({
-            query: ({ name, desc }) => ({
+            query: ({ name, firstSongId }) => ({
                 url: '/create-playlist',
                 method: 'POST',
-                body: { name, desc },
+                body: { name, firstSongId },
             }),
             invalidatesTags: ['Playlist'],
         }),
@@ -244,8 +243,36 @@ export const api = createApi({
             providesTags: ['Playlist'],
         }),
         getMyPlaylists: builder.query({
-            query: () => '/get-my-playlists',
+            query: (params) => ({
+                url: '/get-my-playlists',
+                method: 'GET',
+                params: { isAlbum: params?.isAlbum },
+            }),
             providesTags: ['Playlist'],
+        }),
+        changePlaylistDescription: builder.mutation({
+            query: ({ playlistId, desc }) => ({
+                url: `/change-playlist-description/${playlistId}`,
+                method: 'POST',
+                body: { desc },
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
+        changePlaylistThumbnail: builder.mutation({
+            query: ({ id, file }) => ({
+                url: `/change-playlist-thumbnail/${id}`,
+                method: 'POST',
+                body: file,
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
+        createAlbum: builder.mutation({
+            query: ({ name, firstSongId }) => ({
+                url: '/create-album',
+                method: 'POST',
+                body: { name, firstSongId },
+            }),
+            invalidatesTags: ['Playlist'],
         }),
 
         // User --------------------------------------------------------------
@@ -578,6 +605,9 @@ export const {
     useGetPlaylistByIdQuery,
     useLazyGetPlaylistByIdQuery,
     useGetMyPlaylistsQuery,
+    useChangePlaylistDescriptionMutation,
+    useChangePlaylistThumbnailMutation,
+    useCreateAlbumMutation,
 
     // User -------------------------------------------------------------------
     useGetProfileInfomationQuery,

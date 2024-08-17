@@ -189,9 +189,9 @@ function ReviewReportFrame({ item, onClose }) {
                     </div>
                 </div>
                 {isReplying && (
-                    <div className="m-3">
+                    <div className="m-3 border-y py-10">
                         <div className="m-2 flex justify-between p-2">
-                            <div className="flex">
+                            <div className="flex items-center">
                                 {avatar ? (
                                     <img
                                         className="inline h-10 w-10 rounded-full object-cover"
@@ -211,7 +211,7 @@ function ReviewReportFrame({ item, onClose }) {
                         </div>
                         <textarea
                             id="LinkToOffendingContent"
-                            className="h-20 w-full overflow-auto rounded-md border-2 bg-white text-black focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                            className="h-28 w-full overflow-auto rounded-3xl border bg-transparent p-2 text-white focus:border-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-50"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                         />
