@@ -66,10 +66,12 @@ const receive_webhook_payos = async (req, res) => {
             await payment.save();
             return res.status(400).json({
                 code: -1,
-                message: 'Payment failed',
+                message: 'Payment cancelled',
             });
         }
         if (payment.amount !== amount) {
+            payment.status = CANCELLED;
+            await payment.save();
             return res.status(400).json({
                 code: -1,
                 message: 'Invalid amount',
@@ -184,19 +186,20 @@ const deposit = async (req, res) => {
     let { amount } = req.body;
     amount = Number(amount);
     const orderCode = Number(String(new Date().getTime()).slice(1, 11));
+    const expiredAt = moment().add(30, 'minutes').unix();
 
     const body = {
         orderCode,
         amount,
         description: orderCode,
         cancelUrl: `${process.env.CLIENT_URI}/wallet`,
-        returnUrl: `${process.env.CLIENT_URI}/wallet/history`,
+        returnUrl: `${process.env.CLIENT_URI}/wallet`,
+        expiredAt,
     };
 
     try {
         const paymentLink = await payos.createPaymentLink(body);
         const { paymentLinkId, checkoutUrl, status } = paymentLink;
-        const expiredAt = moment().add(30, 'minutes').toDate();
         const payment = await PaymentModel.create({
             from: user._id,
             amount,
@@ -425,9 +428,23 @@ const cancel_withdraw = async (req, res) => {
 const get_all_payment_history = async (req, res) => {
     try {
         const payments = await PaymentModel.find().sort({ createdAt: -1 });
-        return res.status(200).json({
-            payments,
-        });
+        return res.status(200).send(
+            payments.map((payment) => {
+                return {
+                    id: payment._id,
+                    from: payment.from,
+                    to: payment.to,
+                    song: payment.song,
+                    amount: payment.amount,
+                    orderId: payment.orderId,
+                    status: payment.status,
+                    type: payment.type,
+                    availableBalance: payment.balance,
+                    date: payment.createdAt.toDateString(),
+                    time: payment.createdAt.toTimeString(),
+                };
+            }),
+        );
     } catch (error) {
         return res.status(500).json({
             message: error.message,
@@ -441,9 +458,23 @@ const get_payment_history = async (req, res) => {
         const payments = await PaymentModel.find({ from: user._id }).sort({
             createdAt: -1,
         });
-        return res.status(200).json({
-            payments,
-        });
+        return res.status(200).send(
+            payments.map((payment) => {
+                return {
+                    id: payment._id,
+                    from: payment.from,
+                    to: payment.to,
+                    song: payment.song,
+                    amount: payment.amount,
+                    orderId: payment.orderId,
+                    status: payment.status,
+                    type: payment.type,
+                    availableBalance: payment.balance,
+                    date: payment.createdAt.toDateString(),
+                    time: payment.createdAt.toTimeString(),
+                };
+            }),
+        );
     } catch (error) {
         return res.status(500).json({
             message: error.message,
