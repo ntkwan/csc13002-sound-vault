@@ -305,6 +305,12 @@ const donate = async (req, res) => {
                 message: 'User not found',
             });
         }
+        if (!toUser.isVerified) {
+            return res.status(400).json({
+                code: -1,
+                message: 'User not verified',
+            });
+        }
 
         const songObject = await SongModel.findOne({ title: song });
         if (!songObject) {
@@ -440,8 +446,16 @@ const get_all_payment_history = async (req, res) => {
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
-                    date: payment.createdAt.toDateString(),
-                    time: payment.createdAt.toTimeString(),
+                    qrCode: payment.qrCode,
+                    date: payment.createdAt.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    }),
+                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }),
                 };
             }),
         );
@@ -470,8 +484,15 @@ const get_payment_history = async (req, res) => {
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
-                    date: payment.createdAt.toDateString(),
-                    time: payment.createdAt.toTimeString(),
+                    date: payment.createdAt.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    }),
+                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }),
                 };
             }),
         );
