@@ -8,7 +8,7 @@ const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
 
 const create_playlist = async (req, res) => {
-    const { name, desc } = req.body;
+    const { name, firstSongId } = req.body;
 
     try {
         const user = await req.user.populate('playlist');
@@ -19,13 +19,25 @@ const create_playlist = async (req, res) => {
                 message: 'Playlist already exists',
             });
         }
-
+        
         const playlist = await PlaylistModel.create({
             name,
-            desc,
             uploader: user._id,
             isAlbum: req.isAlbum,
         });
+        
+
+        if (firstSongId) {
+            const song = await SongModel.findById(firstSongId);
+            if (!song) {
+                return res.status(404).json({
+                    message: 'Song not found',
+                });
+            }
+
+            playlist.songs.push(new mongoose.Types.ObjectId(firstSongId));
+            await playlist.save({ validateBeforeSave: false });    
+        }
 
         user.playlist.push(playlist._id);
         await user.save({ validateBeforeSave: false });
@@ -226,13 +238,15 @@ const get_playlist_by_id = async (req, res) => {
     }
 };
 
-const get_my_playlists = async (req, res) => {
+const get_my_playlists = async (req, res, isAlbum = false) => {
     const userId = req.user._id;
+    req.isAlbum = isAlbum;
 
     try {
         const User = await UserModel.findById(userId);
         const playlists = await PlaylistModel.find({
             _id: { $in: User.playlist },
+            isAlbum: req.isAlbum,
         });
 
         return res.status(200).json({
@@ -254,6 +268,35 @@ const get_my_playlists = async (req, res) => {
     }
 };
 
+const get_my_albums = async (req, res) => {
+    get_my_playlists(req, res, true);
+};
+
+const change_playlist_description = async (req, res) => {
+    const playlistId = req.params.playlistId;
+    const { description } = req.body;
+
+    try {
+        const Playlist = await PlaylistModel.findById(playlistId);
+        if (!Playlist) {
+            return res.status(404).json({
+                message: 'Playlist is not found',
+            });
+        }
+
+        Playlist.desc = description;
+        await Playlist.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: 'Playlist description updated successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     create_album,
     create_playlist,
@@ -264,4 +307,6 @@ module.exports = {
     remove_song_from_liked_playlist,
     get_playlist_by_id,
     get_my_playlists,
+    get_my_albums,
+    change_playlist_description,
 };
