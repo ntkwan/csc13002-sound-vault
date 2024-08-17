@@ -275,7 +275,7 @@ function ArtistTransactionPage() {
                                     <div className="flex flex-nowrap items-center">
                                         <img
                                             src={WalletIcon}
-                                            alt="deposite-icon"
+                                            alt="deposit-icon"
                                             className="ml-2 mr-3 inline-block h-6 w-6"
                                         />
                                         <p>Withdraw money from Wallet</p>
@@ -285,7 +285,7 @@ function ArtistTransactionPage() {
                                         <img
                                             src={MusicIcon}
                                             alt="music-icon"
-                                            className="ml-2 mr-3 inline-block h-6 w-6"
+                                            className="my-[6px] ml-1 mr-5 inline-block h-6 w-6"
                                         />
                                         <div className="flex items-center space-x-1">
                                             <span>
@@ -308,7 +308,7 @@ function ArtistTransactionPage() {
                                 {formatCurrency(payment.availableBalance)}
                             </td>
                             <td className="px-2 py-5 text-right">
-                                {payment.status === 'deposite' ? '+' : '-'}
+                                {payment.status === 'deposit' ? '+' : '-'}
                                 {formatCurrency(payment.changing)}
                             </td>
                         </tr>

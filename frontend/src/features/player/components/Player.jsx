@@ -21,13 +21,18 @@ import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
 import LikeButton from './LikeButton';
 import useSong from '@hooks/useSong';
-import { DonateButton, DonateModal } from '@components';
+import { DonateButton, DonateModal, DepositModal } from '@components';
 
 function Player() {
     const token = useSelector(selectCurrentToken);
+    const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
+
+    const handleBookmarkClick = () => {
+        setIsSolidBookmark(!isSolidBookmark);
+    };
 
     const formatTimeDataToRender = (timeData) => {
         const minutes = Math.floor(timeData / 60);
@@ -241,13 +246,24 @@ function Player() {
     }, [isPlaying, currentTime]);
 
     const { balance } = useSelector(selectCurrentProfile);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [donateModalVisible, setDonateModalVisible] = useState(false);
+    const [depositModalVisible, setDepositModalVisible] = useState(false);
     const openDonateModal = () => {
         if (isExpand) setIsExpand(false);
-        setModalVisible(true);
+        setDonateModalVisible(true);
     };
     const closeDonateModal = () => {
-        setModalVisible(false);
+        setDonateModalVisible(false);
+    };
+
+    const openDepositModal = () => {
+        if (isExpand) setIsExpand(false);
+        if (donateModalVisible) setDonateModalVisible(false);
+        setDepositModalVisible(true);
+    };
+
+    const closeDepositModal = () => {
+        setDepositModalVisible(false);
     };
 
     const DefaultPlayer = (
@@ -338,6 +354,14 @@ function Player() {
                         artist={currentTrack.artist}
                     />
                 )}
+                {/* bookmark */}
+                <AudioButton onClick={handleBookmarkClick}>
+                    {isSolidBookmark ? (
+                        <i className="ri-bookmark-fill"></i>
+                    ) : (
+                        <i className="ri-bookmark-line"></i>
+                    )}
+                </AudioButton>
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
                 {/* expand */}
@@ -459,7 +483,18 @@ function Player() {
                                 song={currentTrack.title}
                                 artist={currentTrack.artist}
                             />
-                        )}
+                        )}{' '}
+                        {/* bookmark */}
+                        <AudioButton
+                            onClick={handleBookmarkClick}
+                            className="text-2xl"
+                        >
+                            {isSolidBookmark ? (
+                                <i className="ri-bookmark-fill"></i>
+                            ) : (
+                                <i className="ri-bookmark-line"></i>
+                            )}
+                        </AudioButton>
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
                         {/* collapse */}
@@ -479,13 +514,17 @@ function Player() {
         <>
             <audio ref={audioRef} src={currentTrack?.url} />
             {isExpand ? ExpandPlayer : DefaultPlayer}
-            {modalVisible && (
+            {donateModalVisible && (
                 <DonateModal
                     balance={balance}
-                    closeDonateModal={closeDonateModal}
                     song={currentTrack.title}
                     artist={currentTrack.artist}
+                    closeDonateModal={closeDonateModal}
+                    openDepositModal={openDepositModal}
                 />
+            )}
+            {depositModalVisible && (
+                <DepositModal closeDepositModal={closeDepositModal} />
             )}
         </>
     );

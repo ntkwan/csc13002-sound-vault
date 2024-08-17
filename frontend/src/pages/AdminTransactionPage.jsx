@@ -21,7 +21,7 @@ const sampleTransactions = [
         time: '23:59',
         availableBalance: 2000000,
         changing: 50000,
-        status: 'Deposite',
+        status: 'Deposit',
     },
     {
         from: 'Jane Doe',
@@ -32,7 +32,7 @@ const sampleTransactions = [
         time: '15:30',
         availableBalance: 1500000,
         changing: 150000,
-        status: 'Deposite',
+        status: 'Deposit',
     },
     {
         from: 'John Smith',
@@ -65,7 +65,7 @@ const sampleTransactions = [
         time: '14:20',
         availableBalance: 1800000,
         changing: 100000,
-        status: 'Deposite',
+        status: 'Deposit',
     },
 ];
 
@@ -148,7 +148,7 @@ function AdminTransactionPage() {
 
     const buttonFilter = [
         { name: 'All transactions', status: 'all' },
-        { name: 'Deposite money', status: 'Deposite' },
+        { name: 'Deposit money', status: 'Deposit' },
         { name: 'Withdraw Money', status: 'Withdraw' },
         { name: 'Donation', status: 'Donation' },
     ];
@@ -263,17 +263,17 @@ function AdminTransactionPage() {
                             </td>
                             <td className="h-[98px] px-2 py-5">
                                 <div className="flex flex-nowrap items-center">
-                                    {transaction.status === 'Deposite' ? (
+                                    {transaction.status === 'Deposit' ? (
                                         <img
                                             src={DepositeIcon}
-                                            alt="deposite-icon"
+                                            alt="deposit-icon"
                                             className="mr-3 inline-block h-14 w-14"
                                         />
                                     ) : transaction.status === 'Donation' ? (
                                         <img
                                             src={MusicIcon}
-                                            alt="deposite-icon"
-                                            className="ml-2 mr-3 inline-block h-9 w-9"
+                                            alt="deposit-icon"
+                                            className="my-[6px] ml-1 mr-5 inline-block h-9 w-9"
                                         />
                                     ) : (
                                         <div className="ml-[6px] mr-3 flex h-10 w-10 items-center justify-center rounded-full border">
@@ -305,7 +305,7 @@ function AdminTransactionPage() {
                                 {formatCurrency(transaction.availableBalance)}
                             </td>
                             <td className="h-[98px] px-2 py-5 text-right">
-                                {transaction.status === 'Deposite'
+                                {transaction.status === 'Deposit'
                                     ? '+'
                                     : transaction.status === 'Withdraw'
                                       ? '-'

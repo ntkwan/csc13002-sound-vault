@@ -11,7 +11,7 @@ import MusicIcon from '@assets/img/wallet-type-music-icon.svg';
 
 const samplePayments = [
     {
-        status: 'deposite',
+        status: 'deposit',
         date: '23-04-2024',
         time: '12:30',
         availableBalance: 100000,
@@ -26,7 +26,7 @@ const samplePayments = [
         changing: 100000,
     },
     {
-        status: 'deposite',
+        status: 'deposit',
         date: '19-01-2020',
         time: '15:45',
         availableBalance: 500000,
@@ -125,7 +125,7 @@ function AudienceTransactionPage() {
 
     const buttonFilter = [
         { name: 'All Transactions', status: 'all' },
-        { name: 'Deposite money', status: 'deposite' },
+        { name: 'Deposit money', status: 'deposit' },
         { name: 'Donation', status: 'donate' },
     ];
 
@@ -156,7 +156,6 @@ function AudienceTransactionPage() {
     return (
         <div className="admin-page">
             <PageTitle title="History" />
-            {console.log(filterDate)}
             <div className="admin-page__filter flex justify-between space-x-4 border-b-2 px-2">
                 <FilterStatus
                     filterList={buttonFilter}
@@ -267,21 +266,21 @@ function AudienceTransactionPage() {
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                         >
                             <td className="px-2 py-5">
-                                {payment.status === 'deposite' ? (
+                                {payment.status === 'deposit' ? (
                                     <div className="flex flex-nowrap items-center">
                                         <img
                                             src={DepositeIcon}
-                                            alt="deposite-icon"
+                                            alt="deposit-icon"
                                             className="mr-3 inline-block h-9 w-9"
                                         />
-                                        <p>Deposite money into Wallet</p>
+                                        <p>Deposit money into Wallet</p>
                                     </div>
                                 ) : (
                                     <div className="flex flex-nowrap items-center">
                                         <img
                                             src={MusicIcon}
                                             alt="music-icon"
-                                            className="ml-2 mr-3 inline-block h-6 w-6"
+                                            className="my-[6px] ml-1 mr-5 inline-block h-6 w-6"
                                         />
                                         <p>Donate money to </p>
                                         <p className="mx-1">{payment.artist}</p>
@@ -294,7 +293,7 @@ function AudienceTransactionPage() {
                                 {formatCurrency(payment.availableBalance)}
                             </td>
                             <td className="px-2 py-5 text-right">
-                                {payment.status === 'deposite' ? '+' : '-'}
+                                {payment.status === 'deposit' ? '+' : '-'}
                                 {formatCurrency(payment.changing)}
                             </td>
                         </tr>
