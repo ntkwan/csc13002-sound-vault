@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FilterStatus,
     SearchBar,
@@ -9,82 +9,10 @@ import {
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
 import DepositeIcon from '@assets/img/wallet-type-icon.svg';
 import MusicIcon from '@assets/img/wallet-type-music-icon.svg';
-import { WalletIcon } from '@components/index';
-
-const sampleTransactions = [
-    {
-        from: 'Sơn Tùng MTP',
-        fromGmail: 'abc@gmail.com',
-        to: 'System',
-        toGmail: '',
-        date: '23-05-2024',
-        time: '23:59',
-        availableBalance: 2000000,
-        changing: 50000,
-        status: 'Deposit',
-    },
-    {
-        from: 'Jane Doe',
-        fromGmail: 'jane.doe@gmail.com',
-        to: 'John Smith',
-        toGmail: 'john.smith@gmail.com',
-        date: '24-06-2024',
-        time: '15:30',
-        availableBalance: 1500000,
-        changing: 150000,
-        status: 'Deposit',
-    },
-    {
-        from: 'John Smith',
-        fromGmail: 'john.smith@gmail.com',
-        to: 'Alice Johnson',
-        toGmail: 'alice.johnson@gmail.com',
-        date: '12-07-2024',
-        time: '10:00',
-        availableBalance: 500000,
-        changing: 50000,
-        status: 'Withdraw',
-    },
-    {
-        from: 'Alice Johnson',
-        fromGmail: 'alice.johnson@gmail.com',
-        to: 'Bob Brown',
-        toGmail: 'bob.brown@gmail.com',
-        date: '05-08-2024',
-        time: '09:45',
-        availableBalance: 1200000,
-        changing: 200000,
-        status: 'Donation',
-    },
-    {
-        from: 'Bob Brown',
-        fromGmail: 'bob.brown@gmail.com',
-        to: 'Jane Doe',
-        toGmail: 'jane.doe@gmail.com',
-        date: '15-09-2024',
-        time: '14:20',
-        availableBalance: 1800000,
-        changing: 100000,
-        status: 'Deposit',
-    },
-];
-
-const generateTransactions = (samples, counts) => {
-    let transactions = [];
-    samples.forEach((sample, index) => {
-        for (let i = 0; i < counts[index]; i++) {
-            transactions.push({ ...sample });
-        }
-    });
-    return transactions;
-};
-
-const counts = [10, 10, 10, 10, 5, 5];
-
-const initialTransactions = generateTransactions(sampleTransactions, counts);
+import { Loading, WalletIcon } from '@components';
+import { useGetAllPaymentHistoryQuery } from '@services/api';
 
 function AdminTransactionPage() {
-    const [transactions, setTransactions] = useState(initialTransactions);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -103,13 +31,30 @@ function AdminTransactionPage() {
         setFilterSortOption(sortOption);
     };
 
+    const { data: historyData, isLoading } = useGetAllPaymentHistoryQuery();
+
+    if (isLoading) {
+        return <Loading />;
+    }
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    const transactions = historyData.map((transaction) => {
+        const { type, ...rest } = transaction;
+        return {
+            type: capitalizeFirstLetter(type),
+            ...rest,
+        };
+    });
+
     const filteredTransactions = transactions.filter((transaction) => {
         const parseDate1 = (dateStr) =>
-            parse(dateStr, 'dd-MM-yyyy', new Date());
+            parse(dateStr, 'dd/MM/yyyy', new Date());
         const parseDate2 = (dateStr) =>
             parse(dateStr, 'yyyy-MM-dd', new Date());
         return (
-            (tabStatus === 'all' || transaction.status === tabStatus) &&
+            (tabStatus === 'all' || transaction.type === tabStatus) &&
             (!filterDate ||
                 isEqual(
                     parseDate1(transaction.date),
@@ -126,7 +71,7 @@ function AdminTransactionPage() {
     });
 
     const sortedTransactions = filteredTransactions.sort((a, b) => {
-        const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
+        const parseDate = (dateStr) => parse(dateStr, 'dd/MM/yyyy', new Date());
 
         if (filterSortOption === 'Name (sender)') {
             return a.from.localeCompare(b.from);
@@ -150,7 +95,7 @@ function AdminTransactionPage() {
         { name: 'All transactions', status: 'all' },
         { name: 'Deposit money', status: 'Deposit' },
         { name: 'Withdraw Money', status: 'Withdraw' },
-        { name: 'Donation', status: 'Donation' },
+        { name: 'Donation', status: 'Donate' },
     ];
 
     const sortMethods = [
@@ -263,13 +208,13 @@ function AdminTransactionPage() {
                             </td>
                             <td className="h-[98px] px-2 py-5">
                                 <div className="flex flex-nowrap items-center">
-                                    {transaction.status === 'Deposit' ? (
+                                    {transaction.type === 'Deposit' ? (
                                         <img
                                             src={DepositeIcon}
                                             alt="deposit-icon"
                                             className="mr-3 inline-block h-14 w-14"
                                         />
-                                    ) : transaction.status === 'Donation' ? (
+                                    ) : transaction.type === 'Donate' ? (
                                         <img
                                             src={MusicIcon}
                                             alt="deposit-icon"
@@ -280,7 +225,7 @@ function AdminTransactionPage() {
                                             <WalletIcon />
                                         </div>
                                     )}
-                                    <p>{transaction.status} money</p>
+                                    <p>{transaction.type} money</p>
                                 </div>
                             </td>
                             <td className="h-[98px] px-2 py-5">
@@ -305,12 +250,12 @@ function AdminTransactionPage() {
                                 {formatCurrency(transaction.availableBalance)}
                             </td>
                             <td className="h-[98px] px-2 py-5 text-right">
-                                {transaction.status === 'Deposit'
+                                {transaction.type === 'Deposit'
                                     ? '+'
-                                    : transaction.status === 'Withdraw'
+                                    : transaction.type === 'Withdraw'
                                       ? '-'
                                       : ''}{' '}
-                                {formatCurrency(transaction.changing)}
+                                {formatCurrency(transaction.amount)}
                             </td>
                         </tr>
                     ))}

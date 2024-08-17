@@ -13,6 +13,7 @@ export { default as WithdrawButton } from './Buttons/WithdrawButton';
 export { default as DonateModal } from './Modal/DonateModal';
 export { default as DepositModal } from './Modal/DepositModal';
 export { default as WithdrawModal } from './Modal/WithdrawModal';
+export { default as QrCodeModal } from './Modal/QrCodeModal';
 export {
     default as MediaDisplay,
     HomeCard,

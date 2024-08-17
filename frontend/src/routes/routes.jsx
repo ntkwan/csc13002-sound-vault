@@ -76,12 +76,22 @@ const router = createBrowserRouter([
                     { path: 'profile/editing', Component: ProfilePageEditing },
                     { path: 'user/setting', Component: UserSettingPage },
                     { path: 'wallet', Component: WalletPage },
+                ],
+            },
+            {
+                element: <Protected roles={'user only'} />,
+                children: [
                     {
                         path: 'wallet/history',
                         Component: AudienceTransactionPage,
                     },
+                ],
+            },
+            {
+                element: <Protected roles={'artist'} />,
+                children: [
                     {
-                        path: 'artist/wallet/history',
+                        path: 'wallet/artist/history',
                         Component: ArtistTransactionPage,
                     },
                 ],

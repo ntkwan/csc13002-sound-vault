@@ -147,6 +147,28 @@ Modal.Withdraw = (props) => {
     );
 };
 
+Modal.QrCode = (props) => {
+    return (
+        <>
+            <img src={props.qrCode} alt="qr code" className="w-1/3" />
+            <span>
+                Scan this{' '}
+                <a href={props.qrCode} className="text-blue-600">
+                    <i>QR Code</i>
+                </a>{' '}
+                to deposit money
+            </span>
+            <button
+                className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
+                onClick={props.handleCancelWithdraw}
+            >
+                Cancel Withdraw
+                <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-500 ease-in-out group-hover:opacity-100"></div>
+            </button>
+        </>
+    );
+};
+
 Modal.propTypes = {
     children: PropTypes.node,
     closeModal: PropTypes.func,
@@ -174,6 +196,12 @@ Modal.Deposit.propTypes = {
 Modal.Withdraw.displayName = 'Withdraw';
 Modal.Withdraw.propTypes = {
     handleWithdraw: PropTypes.func,
+};
+
+Modal.QrCode.displayName = 'QrCode';
+Modal.QrCode.propTypes = {
+    qrCode: PropTypes.string,
+    handleCancelWithdraw: PropTypes.func,
 };
 
 export default Modal;

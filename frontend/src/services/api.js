@@ -49,6 +49,7 @@ export const api = createApi({
         'AdminAccount',
         'AdminSong',
         'Report',
+        'Payment',
     ],
     endpoints: (builder) => ({
         // Authentication -----------------------------------------------------
@@ -472,9 +473,15 @@ export const api = createApi({
         // Payment -----------------------------------------------------------
         getAllPaymentHistory: builder.query({
             query: () => '/get-all-payment-history',
+            providesTags: ['Payment'],
         }),
         getPaymentHistory: builder.query({
             query: () => '/get-payment-history',
+            providesTags: ['Payment'],
+        }),
+        getWithdrawRequests: builder.query({
+            query: () => '/get-withdraw-requests',
+            providesTags: ['Payment'],
         }),
         confirmWebhookPayos: builder.mutation({
             query: (body) => ({
@@ -496,6 +503,7 @@ export const api = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['User', 'Payment'],
         }),
         donate: builder.mutation({
             query: (body) => ({
@@ -503,13 +511,14 @@ export const api = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['User'],
+            invalidatesTags: ['User', 'Payment'],
         }),
         withdraw: builder.mutation({
             query: () => ({
                 url: '/withdraw',
                 method: 'POST',
             }),
+            invalidatesTags: ['User', 'Payment'],
         }),
         processDeposit: builder.mutation({
             query: (paymentId) => ({
@@ -528,6 +537,7 @@ export const api = createApi({
                 url: `/cancel-withdraw/${orderId}`,
                 method: 'PUT',
             }),
+            invalidatesTags: ['Payment'],
         }),
     }),
 });
@@ -609,6 +619,7 @@ export const {
     // Payment ----------------------------------------------------------------
     useGetAllPaymentHistoryQuery,
     useGetPaymentHistoryQuery,
+    useGetWithdrawRequestsQuery,
     useConfirmWebhookPayosMutation,
     useConfirmWebhookCassoMutation,
     useDepositMutation,

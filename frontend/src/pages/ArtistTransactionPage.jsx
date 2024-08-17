@@ -1,67 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FilterStatus,
     Pagination,
     ItemsPerPageSelector,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import { PageTitle } from '@components/index';
+import { Loading, PageTitle } from '@components';
 import WalletIcon from '@assets/img/wallet-type-wallet-icon.svg';
 import MusicIcon from '@assets/img/wallet-type-music-icon.svg';
-
-const samplePayments = [
-    {
-        status: 'withdraw',
-        date: '23-04-2024',
-        time: '12:30',
-        availableBalance: 100000,
-        changing: 50000,
-    },
-    {
-        status: 'donate',
-        date: '21-01-2024',
-        time: '09:00',
-        artist: 'Đen Vâu',
-        donorEmail: 'abc@gmail.com',
-        songTitle: 'Đi Theo Bóng Mặt Trời',
-        availableBalance: 200000,
-        changing: 100000,
-    },
-    {
-        status: 'withdraw',
-        date: '19-01-2020',
-        time: '15:45',
-        availableBalance: 500000,
-        changing: 300000,
-    },
-    {
-        status: 'donate',
-        date: '02-10-2021',
-        time: '17:30',
-        artist: 'Mỹ Tâm',
-        donorEmail: 'abcd@gmail.com',
-        songTitle: 'Dạ Cổ Hoài Lang',
-        availableBalance: 1000000,
-        changing: 5000000,
-    },
-];
-
-const generatePayments = (samples, counts) => {
-    let payments = [];
-    samples.forEach((sample, index) => {
-        for (let i = 0; i < counts[index]; i++) {
-            payments.push({ ...sample });
-        }
-    });
-    return payments;
-};
-
-const counts = [3, 5, 5, 2];
-
-const initialPayments = generatePayments(samplePayments, counts);
+import { useGetPaymentHistoryQuery } from '@services/api';
 
 function ArtistTransactionPage() {
-    const [payments, setPayments] = useState(initialPayments);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -82,27 +31,33 @@ function ArtistTransactionPage() {
         setFilterChangingRange(changingRange);
     };
 
+    const { data: payments, isLoading } = useGetPaymentHistoryQuery();
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
     const filteredPayments = payments.filter((payment) => {
         const parseDate1 = (dateStr) =>
-            parse(dateStr, 'dd-MM-yyyy', new Date());
+            parse(dateStr, 'dd/MM/yyyy', new Date());
         const parseDate2 = (dateStr) =>
             parse(dateStr, 'yyyy-MM-dd', new Date());
 
         let rangeCondition = true;
 
         if (filterChangingRange === 'Under 100.000đ') {
-            rangeCondition = payment.changing < 100000;
+            rangeCondition = payment.amount < 100000;
         } else if (filterChangingRange === '100.000đ - 500.000đ') {
             rangeCondition =
-                payment.changing >= 100000 && payment.changing <= 500000;
+                payment.amount >= 100000 && payment.amount <= 500000;
         } else if (filterChangingRange === 'Over 1.000.000đ') {
-            rangeCondition = payment.changing > 1000000;
+            rangeCondition = payment.amount > 1000000;
         } else if (filterChangingRange === 'Over 5.000.000đ') {
-            rangeCondition = payment.changing > 5000000;
+            rangeCondition = payment.amount > 5000000;
         }
 
         return (
-            (tabStatus === 'all' || payment.status === tabStatus) &&
+            (tabStatus === 'all' || payment.type === tabStatus) &&
             (!filterDate ||
                 isEqual(parseDate1(payment.date), parseDate2(filterDate))) &&
             rangeCondition
@@ -110,7 +65,7 @@ function ArtistTransactionPage() {
     });
 
     const sortedPayments = filteredPayments.sort((a, b) => {
-        const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
+        const parseDate = (dateStr) => parse(dateStr, 'dd/MM/yyyy', new Date());
 
         if (filterSortOption === 'Date (oldest first)') {
             return compareAsc(parseDate(a.date), parseDate(b.date));
@@ -160,7 +115,6 @@ function ArtistTransactionPage() {
     return (
         <div className="admin-page">
             <PageTitle title="History" />
-            {console.log(filterDate)}
             <div className="admin-page__filter flex justify-between space-x-4 border-b-2 px-2">
                 <FilterStatus
                     filterList={buttonFilter}
@@ -271,7 +225,7 @@ function ArtistTransactionPage() {
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                         >
                             <td className="px-2 py-5">
-                                {payment.status === 'withdraw' ? (
+                                {payment.type === 'withdraw' ? (
                                     <div className="flex flex-nowrap items-center">
                                         <img
                                             src={WalletIcon}
@@ -289,14 +243,17 @@ function ArtistTransactionPage() {
                                         />
                                         <div className="flex items-center space-x-1">
                                             <span>
-                                                Receive donation from {'<'}
-                                            </span>
-                                            <span className="font-bold">
-                                                {payment.donorEmail} {'>'}
+                                                Receive donation from{' '}
+                                                <span className="font-bold">
+                                                    {payment.from}
+                                                </span>
+                                                {'<'}
+                                                {payment.fromGmail}
+                                                {'>'}
                                             </span>
                                             <span>for</span>
                                             <span className="font-bold">
-                                                {payment.songTitle}
+                                                {payment.song}
                                             </span>
                                         </div>
                                     </div>
@@ -308,8 +265,8 @@ function ArtistTransactionPage() {
                                 {formatCurrency(payment.availableBalance)}
                             </td>
                             <td className="px-2 py-5 text-right">
-                                {payment.status === 'deposit' ? '+' : '-'}
-                                {formatCurrency(payment.changing)}
+                                {payment.type === 'deposit' ? '+' : '-'}
+                                {formatCurrency(payment.amount)}
                             </td>
                         </tr>
                     ))}

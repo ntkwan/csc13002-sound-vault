@@ -79,13 +79,13 @@ function WalletPage() {
                     {isVerified ? (
                         <WithdrawButton
                             openWithdrawModal={openModal}
-                            // disabled={balance === 0}
+                            disabled={balance === 0}
                         />
                     ) : (
                         <DepositButton openDepositModal={openModal} />
                     )}
                     <Link
-                        to="history"
+                        to={`${isVerified ? 'artist/history' : 'history'}`}
                         className="wallet__action group relative flex w-52 items-center justify-center rounded-full border py-3"
                     >
                         <img

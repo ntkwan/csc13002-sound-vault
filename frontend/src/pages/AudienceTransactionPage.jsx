@@ -1,63 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FilterStatus,
     Pagination,
     ItemsPerPageSelector,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import { PageTitle } from '@components/index';
+import { Loading, PageTitle } from '@components';
 import DepositeIcon from '@assets/img/wallet-type-icon.svg';
 import MusicIcon from '@assets/img/wallet-type-music-icon.svg';
-
-const samplePayments = [
-    {
-        status: 'deposit',
-        date: '23-04-2024',
-        time: '12:30',
-        availableBalance: 100000,
-        changing: 50000,
-    },
-    {
-        status: 'donate',
-        date: '21-01-2024',
-        time: '09:00',
-        artist: 'Đen Vâu',
-        availableBalance: 200000,
-        changing: 100000,
-    },
-    {
-        status: 'deposit',
-        date: '19-01-2020',
-        time: '15:45',
-        availableBalance: 500000,
-        changing: 300000,
-    },
-    {
-        status: 'donate',
-        date: '02-10-2021',
-        time: '17:30',
-        artist: 'Mỹ Tâm',
-        availableBalance: 1000000,
-        changing: 5000000,
-    },
-];
-
-const generatePayments = (samples, counts) => {
-    let payments = [];
-    samples.forEach((sample, index) => {
-        for (let i = 0; i < counts[index]; i++) {
-            payments.push({ ...sample });
-        }
-    });
-    return payments;
-};
-
-const counts = [3, 5, 5, 2];
-
-const initialPayments = generatePayments(samplePayments, counts);
+import { useGetPaymentHistoryQuery } from '@services/api';
 
 function AudienceTransactionPage() {
-    const [payments, setPayments] = useState(initialPayments);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -78,27 +31,44 @@ function AudienceTransactionPage() {
         setFilterChangingRange(changingRange);
     };
 
+    const { data: payments, isLoading } = useGetPaymentHistoryQuery();
+
+    if (isLoading) {
+        return <Loading />;
+    }
+    // const capitalizeFirstLetter = (string) => {
+    //     return string.charAt(0).toUpperCase() + string.slice(1);
+    // };
+
+    // const payments = historyData.map((transaction) => {
+    //     const { type, ...rest } = transaction;
+    //     return {
+    //         type: capitalizeFirstLetter(type),
+    //         ...rest,
+    //     };
+    // });
+
     const filteredPayments = payments.filter((payment) => {
         const parseDate1 = (dateStr) =>
-            parse(dateStr, 'dd-MM-yyyy', new Date());
+            parse(dateStr, 'dd/MM/yyyy', new Date());
         const parseDate2 = (dateStr) =>
             parse(dateStr, 'yyyy-MM-dd', new Date());
 
         let rangeCondition = true;
 
         if (filterChangingRange === 'Under 100.000đ') {
-            rangeCondition = payment.changing < 100000;
+            rangeCondition = payment.amount < 100000;
         } else if (filterChangingRange === '100.000đ - 500.000đ') {
             rangeCondition =
-                payment.changing >= 100000 && payment.changing <= 500000;
+                payment.amount >= 100000 && payment.amount <= 500000;
         } else if (filterChangingRange === 'Over 1.000.000đ') {
-            rangeCondition = payment.changing > 1000000;
+            rangeCondition = payment.amount > 1000000;
         } else if (filterChangingRange === 'Over 5.000.000đ') {
-            rangeCondition = payment.changing > 5000000;
+            rangeCondition = payment.amount > 5000000;
         }
 
         return (
-            (tabStatus === 'all' || payment.status === tabStatus) &&
+            (tabStatus === 'all' || payment.type === tabStatus) &&
             (!filterDate ||
                 isEqual(parseDate1(payment.date), parseDate2(filterDate))) &&
             rangeCondition
@@ -106,7 +76,7 @@ function AudienceTransactionPage() {
     });
 
     const sortedPayments = filteredPayments.sort((a, b) => {
-        const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
+        const parseDate = (dateStr) => parse(dateStr, 'dd/MM/yyyy', new Date());
 
         if (filterSortOption === 'Date (oldest first)') {
             return compareAsc(parseDate(a.date), parseDate(b.date));
@@ -266,7 +236,7 @@ function AudienceTransactionPage() {
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                         >
                             <td className="px-2 py-5">
-                                {payment.status === 'deposit' ? (
+                                {payment.type === 'deposit' ? (
                                     <div className="flex flex-nowrap items-center">
                                         <img
                                             src={DepositeIcon}
@@ -283,7 +253,7 @@ function AudienceTransactionPage() {
                                             className="my-[6px] ml-1 mr-5 inline-block h-6 w-6"
                                         />
                                         <p>Donate money to </p>
-                                        <p className="mx-1">{payment.artist}</p>
+                                        <p className="mx-1">{payment.to}</p>
                                     </div>
                                 )}
                             </td>
@@ -293,8 +263,8 @@ function AudienceTransactionPage() {
                                 {formatCurrency(payment.availableBalance)}
                             </td>
                             <td className="px-2 py-5 text-right">
-                                {payment.status === 'deposit' ? '+' : '-'}
-                                {formatCurrency(payment.changing)}
+                                {payment.type === 'deposit' ? '+' : '-'}
+                                {formatCurrency(payment.amount)}
                             </td>
                         </tr>
                     ))}
