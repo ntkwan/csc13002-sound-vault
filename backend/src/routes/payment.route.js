@@ -14,6 +14,11 @@ router.get(
     authMiddleware.check_user,
     paymentController.get_payment_history,
 );
+router.get(
+    '/get-withdraw-requests',
+    authMiddleware.check_admin,
+    paymentController.get_withdraw_requests,
+);
 
 router.post(
     '/payos/confirm-webhook',

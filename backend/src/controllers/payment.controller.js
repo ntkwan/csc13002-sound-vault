@@ -433,20 +433,43 @@ const cancel_withdraw = async (req, res) => {
 
 const get_all_payment_history = async (req, res) => {
     try {
-        const payments = await PaymentModel.find().sort({ createdAt: -1 });
+        const payments = await PaymentModel.find()
+            .sort({ createdAt: -1 })
+            .populate('from', 'name email')
+            .populate('to', 'name email')
+            .exec();
+
         return res.status(200).send(
             payments.map((payment) => {
+                let from, to;
+                let fromGmail, toGmail;
+                if (payment.type === DEPOSIT) {
+                    from = payment.from.name;
+                    fromGmail = payment.from.email;
+                    to = 'System';
+                    toGmail = '';
+                } else if (payment.type === DONATE) {
+                    from = payment.from.name;
+                    fromGmail = payment.from.email;
+                    to = payment.to.name;
+                    toGmail = payment.to.email;
+                } else {
+                    from = 'System';
+                    fromGmail = '';
+                    to = payment.from.name;
+                    toGmail = payment.from.email;
+                }
                 return {
                     id: payment._id,
-                    from: payment.from,
-                    to: payment.to,
+                    from,
+                    fromGmail,
+                    to,
+                    toGmail,
                     song: payment.song,
                     amount: payment.amount,
-                    orderId: payment.orderId,
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
-                    qrCode: payment.qrCode,
                     date: payment.createdAt.toLocaleDateString('vi-VN', {
                         day: '2-digit',
                         month: '2-digit',
@@ -469,21 +492,75 @@ const get_all_payment_history = async (req, res) => {
 const get_payment_history = async (req, res) => {
     const user = req.user;
     try {
-        const payments = await PaymentModel.find({ from: user._id }).sort({
-            createdAt: -1,
+        const payments = await PaymentModel.find({
+            $or: [{ from: user._id }, { to: user._id }],
+        })
+            .sort({
+                createdAt: -1,
+            })
+            .populate('from', 'name email')
+            .populate('to', 'name')
+            .exec();
+
+        return res.status(200).send(
+            payments.map((payment) => {
+                let from, to;
+                let fromGmail;
+                if (payment.type === DEPOSIT) {
+                    from = payment.from.name;
+                    to = 'System';
+                } else if (payment.type === DONATE) {
+                    from = payment.from.name;
+                    fromGmail = payment.from.email;
+                    to = payment.to.name;
+                } else {
+                    from = 'System';
+                    to = payment.from.name;
+                }
+                return {
+                    from,
+                    fromGmail,
+                    to,
+                    song: payment.song,
+                    amount: payment.amount,
+                    status: payment.status,
+                    type: payment.type,
+                    availableBalance: payment.balance,
+                    date: payment.createdAt.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    }),
+                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }),
+                };
+            }),
+        );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
         });
+    }
+};
+
+const get_withdraw_requests = async (req, res) => {
+    try {
+        const payments = await PaymentModel.find({ type: WITHDRAW })
+            .sort({ createdAt: -1 })
+            .populate('from', 'name')
+            .exec();
+
         return res.status(200).send(
             payments.map((payment) => {
                 return {
                     id: payment._id,
-                    from: payment.from,
-                    to: payment.to,
-                    song: payment.song,
+                    from: payment.from.name,
                     amount: payment.amount,
                     orderId: payment.orderId,
                     status: payment.status,
-                    type: payment.type,
-                    availableBalance: payment.balance,
+                    qrCode: payment.qrCode,
                     date: payment.createdAt.toLocaleDateString('vi-VN', {
                         day: '2-digit',
                         month: '2-digit',
@@ -516,4 +593,5 @@ module.exports = {
     cancel_withdraw,
     get_all_payment_history,
     get_payment_history,
+    get_withdraw_requests,
 };
