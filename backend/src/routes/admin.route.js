@@ -69,4 +69,10 @@ router.post(
     adminController.activate_song,
 );
 
+router.get(
+    '/get-dashboard-stats',
+    authMiddleware.check_admin,
+    adminController.get_dashboard_stats,
+);
+
 module.exports = router;

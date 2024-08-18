@@ -16,7 +16,9 @@ function Protected({ roles }) {
     const isAdmin = useSelector(selectCurrentAdmin);
     const { isVerified } = useSelector(selectCurrentProfile);
     if ((roles === 'guest' || roles.includes('user')) && isAdmin)
-        return <Navigate to="/admin/user" from={{ from: location }} replace />;
+        return (
+            <Navigate to="/admin/dashboard" from={{ from: location }} replace />
+        );
     if (roles.includes('user') && !token)
         return <Navigate to="/" from={{ from: location }} replace />;
     if (roles === 'admin' && (!token || !isAdmin))

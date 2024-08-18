@@ -237,11 +237,11 @@ function AdminAccountPage() {
                                     <span
                                         className={`rounded-lg px-2 py-1 ${
                                             account.status === 'Verified'
-                                                ? 'bg-[#FFF0F0] text-[#3663c2]'
+                                                ? 'bg-[#FFF0F0] text-[#0CAF60]'
                                                 : account.status ===
                                                     'Unverified'
-                                                  ? 'bg-[#FFF0E6] text-[#0CAF60]'
-                                                  : 'bg-[#E7F7EF] text-[#eb4141]'
+                                                  ? 'bg-[#FFF0E6] text-[#eb4141]'
+                                                  : 'bg-[#E7F7EF] text-[#FE964A]'
                                         }`}
                                     >
                                         {account.status}

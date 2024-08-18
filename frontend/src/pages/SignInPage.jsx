@@ -32,7 +32,7 @@ function SignInPage() {
             setValues({ email: '', password: '' });
             toast.success(res.message);
             if (res.is_admin) {
-                nav('/admin/user');
+                nav('/admin/dashboard');
             } else {
                 nav('/');
             }

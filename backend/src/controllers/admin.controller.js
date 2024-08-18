@@ -5,6 +5,8 @@ if (process.env.NODE_ENV !== 'production') {
 const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
 const BlacklistModel = require('../models/blacklist.schema');
+const PaymentModel = require('../models/payment.schema');
+const ReportModel = require('../models/report.schema');
 const moment = require('moment');
 const schedule = require('node-schedule');
 
@@ -195,6 +197,7 @@ const get_all_accounts = async (req, res) => {
                     isVerified: user.isVerified,
                     isBanned: user.isBanned,
                     createdAt: user.createdAt,
+                    image: user.image,
                 };
             }),
         );
@@ -240,6 +243,7 @@ const get_all_songs = async (req, res) => {
                     isVerified: song.isVerified,
                     isDisabled: song.isDisabled,
                     createdAt: song.createdAt,
+                    image: song.image,
                 };
             }),
         );
@@ -404,6 +408,34 @@ const activate_song = async (req, res) => {
     }
 };
 
+const get_dashboard_stats = async (req, res) => {
+    try {
+        const totalUsers = await UserModel.countDocuments();
+        const totalSongs = await SongModel.countDocuments();
+        const totalVerifiedArtists = await UserModel.countDocuments({
+            isVerified: true,
+        });
+        const totalReports = await ReportModel.countDocuments();
+        const totalTransactions = await PaymentModel.countDocuments();
+        const totalWithdrawalRequests = await PaymentModel.countDocuments({
+            type: 'withdraw',
+        });
+
+        return res.status(200).json({
+            totalUsers,
+            totalSongs,
+            totalVerifiedArtists,
+            totalReports,
+            totalTransactions,
+            totalWithdrawalRequests,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     get_admin_accounts,
     get_account_ban_status_by_id,
@@ -416,4 +448,5 @@ module.exports = {
     remove_song_by_id,
     deactivate_song,
     activate_song,
+    get_dashboard_stats,
 };

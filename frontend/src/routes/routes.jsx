@@ -31,6 +31,7 @@ import {
     ArtistTransactionPage,
     AdminTransactionPage,
     AdminWithdrawPage,
+    AdminDashboardPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -99,6 +100,7 @@ const router = createBrowserRouter([
             {
                 element: <Protected roles={'admin'} />,
                 children: [
+                    { path: 'admin/dashboard', Component: AdminDashboardPage },
                     { path: 'admin/song', Component: AdminSongPage },
                     { path: 'admin/user', Component: AdminAccountPage },
                     { path: 'admin/report', Component: ReviewReportPage },

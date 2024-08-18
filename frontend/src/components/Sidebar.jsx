@@ -25,6 +25,11 @@ function Sidebar() {
                     {isAdmin ? (
                         <>
                             <SidebarLink
+                                to="admin/dashboard"
+                                icon={HomeIcon}
+                                label="dashboard"
+                            />
+                            <SidebarLink
                                 to="admin/user"
                                 icon={ProfileIcon}
                                 label="users"

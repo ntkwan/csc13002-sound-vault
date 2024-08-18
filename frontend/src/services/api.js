@@ -424,6 +424,10 @@ export const api = createApi({
             }),
             invalidatesTags: ['AdminSong'],
         }),
+        getDashboardStats: builder.query({
+            query: () => '/get-dashboard-stats',
+            providesTags: ['Admin'],
+        }),
 
         // Reports -----------------------------------------------------------
         replyReport: builder.mutation({
@@ -638,6 +642,7 @@ export const {
     useRemoveSongByIdMutation,
     useDeactivateSongMutation,
     useActivateSongMutation,
+    useGetDashboardStatsQuery,
 
     // Reports ----------------------------------------------------------------
     useReplyReportMutation,

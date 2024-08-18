@@ -28,3 +28,4 @@ export { default as AudienceTransactionPage } from './AudienceTransactionPage';
 export { default as ArtistTransactionPage } from './ArtistTransactionPage';
 export { default as AdminWithdrawPage } from './AdminWithdrawPage';
 export { default as AdminTransactionPage } from './AdminTransactionPage';
+export { default as AdminDashboardPage } from './AdminDashboardPage';
