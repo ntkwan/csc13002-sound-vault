@@ -15,7 +15,7 @@ import {
     useFollowProfileByIdMutation,
     useUnfollowProfileByIdMutation,
     useGetProfileAllSongsQuery,
-    useGetProfileAlbumsQuery,
+    useGetMyPlaylistsQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
 
@@ -55,10 +55,9 @@ function ProfilePage() {
     };
 
     // Fetch profile data by id
-    const { data: profileByIdData, isLoading: profileByIdLoading } =
-        useGetProfileByIdQuery(profileId, {
-            skip: !profileId,
-        });
+    const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
+        skip: !profileId,
+    });
 
     // Fetch following list by id
     const { data: followingListData } = useGetFollowingListByIdQuery(
@@ -82,11 +81,15 @@ function ProfilePage() {
     );
 
     // Fetch albums by profile id
-    const { data: profileAlbumsData } = useGetProfileAlbumsQuery(
-        profileId || id,
-        {
-            skip: !profileId && !id,
-        },
+    const { data: profileAlbumsData } = useGetMyPlaylistsQuery(
+        { isAlbum: true },
+        { skip: !id },
+    );
+
+    // Fetch playlists by profile id
+    const { data: profilePlaylistData } = useGetMyPlaylistsQuery(
+        { isAlbum: false },
+        { skip: !id },
     );
 
     // Follow/Unfollow profile
@@ -140,6 +143,9 @@ function ProfilePage() {
     } = userProfile || {};
 
     const { following } = followingListData || {};
+    const { playlists } = profilePlaylistData || {};
+    const { playlists: albums } = profileAlbumsData || {};
+
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
@@ -153,19 +159,30 @@ function ProfilePage() {
                 : profileAllSongsData,
     };
 
-    // const albums = {
-    //     type: 'Album',
-    //     title: 'Albums',
-    //     visibility: '',
-    //     link: '',
-    //     data: profileAlbumsData || [],
-    // };
+    const isSliceAlbums = profileAlbumsData && albums.length > 6;
+    const albumsDisplay = {
+        type: 'Album',
+        title: 'Albums',
+        visibility: '',
+        link: isSliceAlbums ? '/library' : '',
+        data: isSliceAlbums ? albums.slice(0, 6) : albums,
+    };
+
+    const isSlicePlaylists = profilePlaylistData && playlists.length > 6;
+    const playlistsDisplay = {
+        type: 'Playlist',
+        title: 'Playlist',
+        visibility: '',
+        link: isSlicePlaylists ? '/library' : '',
+        data: isSlicePlaylists ? playlists.slice(0, 6) : playlists,
+    };
+
     const isSliceFollowing = following && following.length > 6;
     const followingDisplay = {
         type: 'Artist',
         title: 'Following',
         visibility: '(only me)',
-        link: '/library',
+        link: isSliceFollowing ? '/library' : '',
         data: isSliceFollowing ? following.slice(0, 6) : following,
     };
 
@@ -357,13 +374,13 @@ function ProfilePage() {
                             </>
                         )}
 
-                        {/* {profileAlbumsData && (
+                        {albums && (
                             <MediaDisplay
-                                media={albums}
+                                media={albumsDisplay}
                                 displayItems="2"
                                 displayType="grid grid-cols-6"
                             />
-                        )} */}
+                        )}
 
                         {following && isMyProfile && (
                             <MediaDisplay
@@ -372,6 +389,15 @@ function ProfilePage() {
                                 displayType="grid grid-cols-6"
                             />
                         )}
+
+                        {playlists && (
+                            <MediaDisplay
+                                media={playlistsDisplay}
+                                displayItems="2"
+                                displayType="grid grid-cols-6"
+                            />
+                        )}
+
                         {shortDesc && (
                             <section className="">
                                 <h2 className="inline text-3xl font-bold">

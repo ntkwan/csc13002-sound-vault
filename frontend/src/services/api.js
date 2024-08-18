@@ -334,9 +334,6 @@ export const api = createApi({
             query: (id) => `/get-profile-all-songs/${id}`,
             providesTags: ['Song'],
         }),
-        getProfileAlbums: builder.query({
-            query: (id) => `/get-profile-albums/${id}`,
-        }),
         uploadProfilePic: builder.mutation({
             query: ({ file }) => ({
                 url: '/upload-profile-pic',
@@ -626,7 +623,6 @@ export const {
     useGetProfilePopularSongsQuery,
     useGetProfileAllSongsQuery,
     useLazyGetProfileAllSongsQuery,
-    useGetProfileAlbumsQuery,
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
     useGetRecentlyPlayedSongsQuery,

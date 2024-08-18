@@ -19,8 +19,10 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
     const albumFrameRef = useRef(null);
     const [albumName, setAlbumName] = useState('');
     const [showAlbumForm, setShowAlbumForm] = useState(false);
-    const { data: myAlbumData, isLoading: isLoadingMyAlbumData } =
-        useGetMyPlaylistsQuery({ isAlbum: true }, { skip: !myProfileID });
+    const { data: myAlbumData } = useGetMyPlaylistsQuery(
+        { isAlbum: true },
+        { skip: !myProfileID },
+    );
     const [creatAlbum, { isLoading: createAlbumLoading }] =
         useCreateAlbumMutation();
     const handleCreateAlbum = async (name) => {
