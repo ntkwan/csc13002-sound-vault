@@ -110,6 +110,35 @@ function Header() {
         getSearchData(debouncedSearchInput);
     }, [debouncedSearchInput, getSearchData]);
 
+    const headerRef = useRef(null);
+    useEffect(() => {
+        const handleObserver = (entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (entry.target === headerRef.current) {
+                        setTimeout(() => {
+                            headerRef.current.classList.remove(
+                                'opacity-0',
+                                '-translate-y-14',
+                            );
+                        }, 500);
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(handleObserver, {
+            threshold: 0.1,
+        });
+
+        if (headerRef.current) observer.observe(headerRef.current);
+
+        return () => {
+            if (headerRef.current) observer.unobserve(headerRef.current);
+        };
+    }, []);
+
     const { artists, users, songs, albums, playlists } = searchData || {};
     const results = [
         {
@@ -160,7 +189,10 @@ function Header() {
 
     return (
         <>
-            <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-40 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
+            <header
+                className="header after:contents-[''] fixed left-0 right-0 top-0 z-40 flex h-[70px] -translate-y-14 select-none items-center justify-between px-5 text-sm opacity-0 backdrop-blur-md transition duration-700 ease-in-out after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white"
+                ref={headerRef}
+            >
                 {/* Logo */}
                 <p
                     className="header__logo w-1/4 pr-5 font-lilitaone text-4xl hover:cursor-pointer"

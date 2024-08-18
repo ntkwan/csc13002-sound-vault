@@ -9,6 +9,7 @@ import {
     WithdrawIcon,
 } from '.';
 import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Logout from './Logout';
 import PropTypes from 'prop-types';
@@ -17,8 +18,40 @@ function Sidebar() {
     const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
 
+    const sidebar = useRef(null);
+    useEffect(() => {
+        const handleObserver = (entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (entry.target === sidebar.current) {
+                        setTimeout(() => {
+                            sidebar.current.classList.remove(
+                                'opacity-0',
+                                '-translate-x-40',
+                            );
+                        }, 500);
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(handleObserver, {
+            threshold: 0.1,
+        });
+
+        if (sidebar.current) observer.observe(sidebar.current);
+
+        return () => {
+            if (sidebar.current) observer.unobserve(sidebar.current);
+        };
+    }, []);
+
     return (
-        <aside className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 w-max max-w-[190px] select-none flex-col space-y-16 overflow-hidden text-xs uppercase backdrop-blur-md hover:overflow-y-scroll">
+        <aside
+            className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 w-max max-w-[190px] -translate-x-40 select-none flex-col space-y-16 overflow-hidden text-xs uppercase opacity-0 backdrop-blur-xl transition duration-700 ease-in-out hover:overflow-y-scroll"
+            ref={sidebar}
+        >
             <section className="ml-2">
                 <span className="ml-3">Browse</span>
                 <div>
