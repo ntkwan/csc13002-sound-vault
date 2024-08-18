@@ -34,6 +34,11 @@ router.get(
 router.get('/get-profile-by-id/:profileId', userController.get_profile_by_id);
 router.get('/get-featured-artists', userController.get_featured_artists);
 router.get('/get-popular-albums', userController.get_popular_albums);
+router.get('/get-profile-albums/:profileId', userController.get_profile_albums);
+router.get(
+    '/get-profile-playlists/:profileId',
+    userController.get_profile_playlists,
+);
 router.get('/search', userController.get_search_results);
 
 router.post(

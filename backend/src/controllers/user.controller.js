@@ -412,6 +412,75 @@ const get_recently_played_songs = async (req, res) => {
     }
 };
 
+const get_profile_albums = async (req, res) => {
+    const profileId = req.params.profileId;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const albums = await PlaylistModel.find({
+            _id: { $in: User.playlist },
+            isAlbum: true,
+        });
+
+        return res.status(200).json({
+            albums: albums.map((album) => {
+                return {
+                    id: album._id,
+                    name: album.name,
+                    description: album.desc,
+                    playlist_owner: album.uploader,
+                    image: album.image,
+                };
+            }),
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const get_profile_playlists = async (req, res) => {
+    const profileId = req.params.profileId;
+
+    try {
+        const User = await UserModel.findById(profileId);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const playlists = await PlaylistModel.find({
+            _id: { $in: User.playlist },
+            isAlbum: false,
+        });
+
+        return res.status(200).json({
+            playlists: playlists.map((playlist) => {
+                return {
+                    id: playlist._id,
+                    name: playlist.name,
+                    description: playlist.desc,
+                    playlist_owner: playlist.uploader,
+                    image: playlist.image,
+                    songs: playlist.songs,
+                };
+            }),
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_search_results = async (req, res) => {
     const query = req.query.q;
     if (!query) {
@@ -559,6 +628,8 @@ module.exports = {
     get_featured_artists,
     get_popular_albums,
     get_recently_played_songs,
+    get_profile_albums,
+    get_profile_playlists,
     get_search_results,
     update_bank_info,
 };
