@@ -15,9 +15,11 @@ import {
     useFollowProfileByIdMutation,
     useUnfollowProfileByIdMutation,
     useGetProfileAllSongsQuery,
-    useGetMyPlaylistsQuery,
+    useGetProfileAlbumsQuery,
+    useGetProfilePlaylistsQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
+import { Loading } from '@components/index';
 
 function ProfilePage() {
     const token = useSelector(selectCurrentToken);
@@ -60,37 +62,34 @@ function ProfilePage() {
     });
 
     // Fetch following list by id
-    const { data: followingListData } = useGetFollowingListByIdQuery(
-        profileId || id,
-        {
+    const { data: followingListData, isLoading: followingListLoading } =
+        useGetFollowingListByIdQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
 
     // Fetch follow button state by id
-    const { data: followButtonData } = useGetFollowButtonByIdQuery(profileId, {
-        skip: !profileId || !id,
-    });
+    const { data: followButtonData, isLoading: followButtonLoading } =
+        useGetFollowButtonByIdQuery(profileId, {
+            skip: !profileId || !id,
+        });
 
     // Fetch all songs by profile id
-    const { data: profileAllSongsData } = useGetProfileAllSongsQuery(
-        profileId || id,
-        {
+    const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
+        useGetProfileAllSongsQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
 
     // Fetch albums by profile id
-    const { data: profileAlbumsData } = useGetMyPlaylistsQuery(
-        { isAlbum: true },
-        { skip: !id },
-    );
+    const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
+        useGetProfileAlbumsQuery(profileId || id, {
+            skip: !profileId && !id,
+        });
 
     // Fetch playlists by profile id
-    const { data: profilePlaylistData } = useGetMyPlaylistsQuery(
-        { isAlbum: false },
-        { skip: !id },
-    );
+    const { data: profilePlaylistData, isLoading: profilePlaylistLoading } =
+        useGetProfilePlaylistsQuery(profileId || id, {
+            skip: !profileId && !id,
+        });
 
     // Follow/Unfollow profile
     const [followProfile, { isLoading: isLoadingFollow }] =
@@ -144,7 +143,7 @@ function ProfilePage() {
 
     const { following } = followingListData || {};
     const { playlists } = profilePlaylistData || {};
-    const { playlists: albums } = profileAlbumsData || {};
+    const { albums } = profileAlbumsData || {};
 
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
@@ -185,6 +184,16 @@ function ProfilePage() {
         link: isSliceFollowing ? '/library' : '',
         data: isSliceFollowing ? following.slice(0, 6) : following,
     };
+
+    if (
+        profileAllSongsLoading ||
+        profileAlbumsLoading ||
+        profilePlaylistLoading ||
+        followButtonLoading ||
+        followingListLoading
+    ) {
+        return <Loading />;
+    }
 
     return (
         <div className={isAdmin ? 'pointer-events-none' : ''}>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useEffect, useRef, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -413,21 +414,19 @@ const ChartItem = forwardRef(
     },
 );
 
-// ChartItem.propTypes = {
-//     className: PropTypes.string,
-//     song: PropTypes.shape({
-//         id: PropTypes.string.isRequired,
-//         title: PropTypes.string.isRequired,
-//         artist: PropTypes.string.isRequired,
-//         imageurl: PropTypes.shape({
-//             url: PropTypes.string.isRequired,
-//         }).isRequired,
-//     }).isRequired,
-//     handlePlayClick: PropTypes.func.isRequired,
-//     isOnPlaying: PropTypes.bool.isRequired,
-//     ref: PropTypes.oneOfType([
-//         PropTypes.func,
-//         PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-//     ]),
-// };
+ChartItem.displayName = 'ChartItem';
+
+ChartItem.propTypes = {
+    className: PropTypes.string,
+    song: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        artist: PropTypes.string.isRequired,
+        imageurl: PropTypes.shape({
+            url: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired,
+    handlePlayClick: PropTypes.func.isRequired,
+    isOnPlaying: PropTypes.bool.isRequired,
+};
 export default HomePage;

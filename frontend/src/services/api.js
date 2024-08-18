@@ -354,6 +354,12 @@ export const api = createApi({
             query: () => '/get-recently-played-songs',
             providesTags: ['User'],
         }),
+        getProfileAlbums: builder.query({
+            query: (id) => `/get-profile-albums/${id}`,
+        }),
+        getProfilePlaylists: builder.query({
+            query: (id) => `/get-profile-playlists/${id}`,
+        }),
         getSearchResults: builder.query({
             query: (query) => `/search?q=${encodeURIComponent(query)}`,
         }),
@@ -594,7 +600,6 @@ export const {
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
     useDeleteTrackByIdMutation,
-    useLazyGetSearchResultsQuery,
 
     // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,
@@ -626,6 +631,9 @@ export const {
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
     useGetRecentlyPlayedSongsQuery,
+    useGetProfileAlbumsQuery,
+    useGetProfilePlaylistsQuery,
+    useLazyGetSearchResultsQuery,
 
     // Admin ------------------------------------------------------------------
     useSetVerifiedArtistByIdMutation,

@@ -16,10 +16,13 @@ function BigPlayButton({ playlist, forSongPage = false, thisSong = {} }) {
         : songs.find((song) => song.id === currentSong) && isPlaying;
 
     const handlePlay = () => {
+        if (!id && songs.length === 0) return;
+        let number = currentPlaylist?.id.match(/\d+$/);
+        if (number) number = parseInt(number[0]);
+
         if (
             !currentPlaylist.id ||
-            (currentPlaylist.id !== id &&
-                !currentPlaylist.id.includes(songs.length.toString()))
+            (currentPlaylist.id !== id && number !== songs.length)
         ) {
             dispatch(
                 setCurrentPlaylist({
@@ -48,8 +51,9 @@ function BigPlayButton({ playlist, forSongPage = false, thisSong = {} }) {
 
     return (
         <button
-            className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125"
+            className="h-[70px] min-w-[70px] rounded-full bg-gradient-to-b from-[#D0A7D8] to-[#5E44FF] transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 disabled:scale-100 disabled:opacity-50 disabled:brightness-100"
             onClick={forSongPage ? handleSongPageClick : handlePlay}
+            disabled={songs.length === 0 && !id}
         >
             {isOnPlaying ? (
                 <i className="ri-pause-line text-[42px]"></i>

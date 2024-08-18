@@ -36,17 +36,6 @@ function AudienceTransactionPage() {
     if (isLoading) {
         return <Loading />;
     }
-    // const capitalizeFirstLetter = (string) => {
-    //     return string.charAt(0).toUpperCase() + string.slice(1);
-    // };
-
-    // const payments = historyData.map((transaction) => {
-    //     const { type, ...rest } = transaction;
-    //     return {
-    //         type: capitalizeFirstLetter(type),
-    //         ...rest,
-    //     };
-    // });
 
     const filteredPayments = payments.filter((payment) => {
         const parseDate1 = (dateStr) =>

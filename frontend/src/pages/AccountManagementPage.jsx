@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ManagementButtons,
@@ -14,6 +14,7 @@ import {
     useGetAllAccountsQuery,
     useBanAccountMutation,
 } from '@services/api';
+import { Loading } from '@components';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -44,7 +45,7 @@ function AdminAccountPage() {
         useSetVerifiedArtistByIdMutation();
 
     const handleVerify = async (id) => {
-        if (isLoadingVerify) return;
+        if (isLoadingVerify) return <Loading />;
         try {
             await setVerifiedArtistById(id).unwrap();
         } catch (error) {
@@ -53,7 +54,7 @@ function AdminAccountPage() {
     };
     const [banAccount, { isLoading: isLoadingban }] = useBanAccountMutation();
     const handleBan = async (id) => {
-        if (isLoadingban) return;
+        if (isLoadingban) return <Loading />;
         try {
             const profileId = id;
             const days = parseInt(banDays, 10);
@@ -70,20 +71,19 @@ function AdminAccountPage() {
 
     const { data: accountListData, isLoading: accountListIsLoading } =
         useGetAllAccountsQuery();
-    const accounts =
-        accountListIsLoading || !accountListData
-            ? []
-            : accountListData.map((account) => ({
-                  id: account.id,
-                  name: account.name,
-                  date: formatDate(new Date(account.createdAt)),
-                  status: account.isBanned
-                      ? 'Banned'
-                      : account.isVerified
-                        ? 'Verified'
-                        : 'Unverified',
-                  isBanned: account.isBanned,
-              }));
+    if (accountListIsLoading) return <Loading />;
+
+    const accounts = accountListData.map((account) => ({
+        id: account.id,
+        name: account.name,
+        date: formatDate(new Date(account.createdAt)),
+        status: account.isBanned
+            ? 'Banned'
+            : account.isVerified
+              ? 'Verified'
+              : 'Unverified',
+        isBanned: account.isBanned,
+    }));
 
     const applyFilter = () => {
         setCurrentPage(1);
@@ -140,8 +140,6 @@ function AdminAccountPage() {
     const confirmActionHandler = () => {
         if (confirmAction === 'verify' || confirmAction === 'unverify') {
             handleVerify(selectedAccountId);
-        } else if (confirmAction === 'remove') {
-            handleRemove(selectedAccountId);
         } else if (confirmAction === 'ban' || confirmAction === 'unban') {
             handleBan(selectedAccountId);
         } else if (confirmAction === 'view') {
@@ -254,11 +252,6 @@ function AdminAccountPage() {
                                                 ? 'bg-[#FE964A]'
                                                 : 'bg-[#9F68B2]'
                                         }
-                                        children={
-                                            account.status === 'Verified'
-                                                ? 'Unverify'
-                                                : 'Verify'
-                                        }
                                         onClick={() => {
                                             const action =
                                                 account.status === 'Verified'
@@ -267,23 +260,25 @@ function AdminAccountPage() {
                                             setConfirmAction(action);
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
+                                    >
+                                        {account.status === 'Verified'
+                                            ? 'Unverify'
+                                            : 'Verify'}
+                                    </ManagementButtons>
                                     <ManagementButtons
                                         background="bg-[#195FF0]"
-                                        children="View"
                                         onClick={() => {
                                             setConfirmAction('view');
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
+                                    >
+                                        View
+                                    </ManagementButtons>
                                     <ManagementButtons
                                         background={
                                             account.isBanned
                                                 ? 'bg-[#0CAF60]'
                                                 : 'bg-[#CACD6D]'
-                                        }
-                                        children={
-                                            account.isBanned ? 'Unban' : 'Ban'
                                         }
                                         onClick={() => {
                                             const action = account.isBanned
@@ -292,7 +287,9 @@ function AdminAccountPage() {
                                             setConfirmAction(action);
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
+                                    >
+                                        {account.isBanned ? 'Unban' : 'Ban'}
+                                    </ManagementButtons>
                                 </td>
                             </tr>
                         ))}

@@ -2,9 +2,6 @@ import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
 import { useGetFeaturedArtistsQuery } from '@services/api';
 
-const IMGURL =
-    'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
-
 function ArtistPage() {
     const { data: Artists } = useGetFeaturedArtistsQuery();
     if (!Artists) return;

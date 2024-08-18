@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PageTitle } from '@components/index';
 
-function UserSettingPage(props) {
+function UserSettingPage() {
     const [followerOn, setFollowerOn] = useState(false);
     const [followingOn, setFollowingOn] = useState(false);
     const [recentlyPlaylistOn, setRecentlyPlaylistOn] = useState(false);

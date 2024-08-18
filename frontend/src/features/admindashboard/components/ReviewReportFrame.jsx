@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProfile } from '@services/selectors';
 import { useReplyReportMutation, useRejectReportMutation } from '@services/api';
 import { toast } from 'react-toastify';
+import { Loading } from '@components';
 
 ReviewReportFrame.propTypes = {
     item: PropTypes.shape({
@@ -32,7 +33,7 @@ function ReviewReportFrame({ item, onClose }) {
     const [replyReport, { isLoading: isLoadingReply }] =
         useReplyReportMutation();
     const handleSendClick = async () => {
-        if (isLoadingReply) return;
+        if (isLoadingReply) return <Loading />;
         try {
             toast.success('Reply sent successfully');
             onClose();
@@ -44,7 +45,7 @@ function ReviewReportFrame({ item, onClose }) {
     const [rejectReport, { isLoading: isLoadingReject }] =
         useRejectReportMutation();
     const handleRejectClick = async () => {
-        if (isLoadingReject) return;
+        if (isLoadingReject) return <Loading />;
 
         try {
             toast.success('Report rejected successfully');

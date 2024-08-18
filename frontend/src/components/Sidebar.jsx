@@ -141,11 +141,17 @@ function Sidebar() {
                                 icon={InfoIcon}
                                 label="Terms & Policy"
                             />
-                            <SidebarLink
-                                to={isAdmin ? 'admin/setting' : 'user/setting'}
-                                icon={SettingIcon}
-                                label="setting"
-                            />
+                            {token && (
+                                <SidebarLink
+                                    to={
+                                        isAdmin
+                                            ? 'admin/setting'
+                                            : 'user/setting'
+                                    }
+                                    icon={SettingIcon}
+                                    label="setting"
+                                />
+                            )}
                         </>
                     )}
                     {token && <Logout />}

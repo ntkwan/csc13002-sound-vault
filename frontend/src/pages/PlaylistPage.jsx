@@ -59,7 +59,7 @@ function PlaylistPage() {
     const [removePlayList, { isLoading: isLoadingRemovePlayList }] =
         useDeletePlaylistByIdMutation();
     const handleDeletePlaylist = async (playlistId) => {
-        if (isLoadingRemovePlayList) return;
+        if (isLoadingRemovePlayList) return <Loading />;
         try {
             await removePlayList(playlistId).unwrap();
             toast.success('Playlist deleted successfully');
@@ -163,7 +163,7 @@ function PlaylistPage() {
                                 {owner && owner?.imageurl?.url ? (
                                     <img
                                         className="mr-4 inline h-7 w-7 rounded-full object-cover"
-                                        src={profileImageUrl}
+                                        src={owner.imageurl.url}
                                         alt=""
                                     />
                                 ) : (

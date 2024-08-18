@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ManagementButtons,
@@ -16,6 +16,7 @@ import {
     useDeactivateSongMutation,
     useActivateSongMutation,
 } from '@services/api';
+import { Loading } from '@components';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -86,17 +87,15 @@ function AdminSongPage() {
 
     const { data: songListData, isLoading: songListIsLoading } =
         useGetAllSongsQuery();
-    const songs =
-        songListIsLoading || !songListData
-            ? []
-            : songListData.map((song) => ({
-                  id: song.id,
-                  name: song.title,
-                  artist: song.artist,
-                  date: formatDate(new Date(song.createdAt)),
-                  status: song.isVerified ? 'Verified' : 'Unverified',
-                  isDisabled: song.isDisabled,
-              }));
+    if (songListIsLoading) return <Loading />;
+    const songs = songListData.map((song) => ({
+        id: song.id,
+        name: song.title,
+        artist: song.artist,
+        date: formatDate(new Date(song.createdAt)),
+        status: song.isVerified ? 'Verified' : 'Unverified',
+        isDisabled: song.isDisabled,
+    }));
 
     const filteredSongs = songs.filter((song) => {
         const parseDate1 = (dateStr) =>
@@ -265,11 +264,6 @@ function AdminSongPage() {
                                             ? 'bg-[#FE964A]'
                                             : 'bg-[#9F68B2]'
                                     }
-                                    children={
-                                        song.status === 'Verified'
-                                            ? 'Unverify'
-                                            : 'Verify'
-                                    }
                                     disable={song.status === 'Verified'}
                                     onClick={() => {
                                         const action =
@@ -279,32 +273,35 @@ function AdminSongPage() {
                                         setConfirmAction(action);
                                         setSelectSong(song.id);
                                     }}
-                                />
+                                >
+                                    {song.status === 'Verified'
+                                        ? 'Unverify'
+                                        : 'Verify'}
+                                </ManagementButtons>
                                 <ManagementButtons
                                     background="bg-[#195FF0]"
-                                    children="View"
                                     onClick={() => {
                                         setConfirmAction('view');
                                         setSelectSong(song.id);
                                     }}
-                                />
+                                >
+                                    View
+                                </ManagementButtons>
                                 <ManagementButtons
                                     background="bg-[#B63D65]"
-                                    children="Remove"
                                     disable={song.status === 'Verified'}
                                     onClick={() => {
                                         setConfirmAction('remove');
                                         setSelectSong(song.id);
                                     }}
-                                />
+                                >
+                                    Remove
+                                </ManagementButtons>
                                 <ManagementButtons
                                     background={
                                         song.isBanned
                                             ? 'bg-[#0CAF60]'
                                             : 'bg-[#CACD6D]'
-                                    }
-                                    children={
-                                        song.isDisabled ? 'Active' : 'Disable'
                                     }
                                     onClick={() => {
                                         const action = song.isDisabled
@@ -313,7 +310,9 @@ function AdminSongPage() {
                                         setConfirmAction(action);
                                         setSelectSong(song.id);
                                     }}
-                                />
+                                >
+                                    {song.isDisabled ? 'Active' : 'Disable'}
+                                </ManagementButtons>
                             </td>
                         </tr>
                     ))}

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import {
     useSubmitMusicMutation,
@@ -335,3 +336,19 @@ function UploadImage({ className, id, label, sizeLimit, useUploadMutation }) {
         </div>
     );
 }
+
+UploadImage.propTypes = {
+    className: PropTypes.string,
+    id: PropTypes.string,
+    label: PropTypes.string,
+    sizeLimit: PropTypes.number,
+    useUploadMutation: PropTypes.func,
+};
+
+InputForm.propTypes = {
+    placeholder: PropTypes.string,
+    type: PropTypes.string,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    required: PropTypes.bool,
+};

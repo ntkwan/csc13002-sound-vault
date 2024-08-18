@@ -1,4 +1,3 @@
-import React from 'react';
 import { MediaDisplay } from '@components/index';
 
 const IMGURL =

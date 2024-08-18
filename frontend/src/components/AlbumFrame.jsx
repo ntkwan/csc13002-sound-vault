@@ -6,6 +6,7 @@ import {
 } from '@services/api';
 import { PropTypes } from 'prop-types';
 import { toast } from 'react-toastify';
+import { Loading } from '.';
 
 AlbumFrame.propTypes = {
     idSong: PropTypes.string,
@@ -19,14 +20,12 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
     const albumFrameRef = useRef(null);
     const [albumName, setAlbumName] = useState('');
     const [showAlbumForm, setShowAlbumForm] = useState(false);
-    const { data: myAlbumData } = useGetMyPlaylistsQuery(
-        { isAlbum: true },
-        { skip: !myProfileID },
-    );
+    const { data: myAlbumData, isLoading: isLoadingMyAlbumData } =
+        useGetMyPlaylistsQuery({ isAlbum: true }, { skip: !myProfileID });
     const [creatAlbum, { isLoading: createAlbumLoading }] =
         useCreateAlbumMutation();
     const handleCreateAlbum = async (name) => {
-        if (createAlbumLoading) return;
+        if (createAlbumLoading) return <Loading />;
         try {
             await creatAlbum({ name }).unwrap();
             toast.success('Album created successfully!');
@@ -48,7 +47,7 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
         songName,
         playlistName,
     ) => {
-        if (addSongToPlaylistLoading) return;
+        if (addSongToPlaylistLoading) return <Loading />;
         try {
             onClose();
             await addSongToPlaylist({ playlistId, songId }).unwrap();
@@ -78,7 +77,10 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
         document.addEventListener('mousedown', handleOutsideClick);
         return () =>
             document.removeEventListener('mousedown', handleOutsideClick);
-    }, []);
+    }, [onClose]);
+    if (isLoadingMyAlbumData) {
+        return <Loading />;
+    }
     return (
         <div className="fixed left-0 top-0 z-10 h-full w-full content-center bg-gray-800 bg-opacity-50">
             <div

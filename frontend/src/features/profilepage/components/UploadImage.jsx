@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import { useState, useRef, memo } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
 const UploadImage = memo(
@@ -95,5 +96,15 @@ const UploadImage = memo(
         );
     },
 );
+
+UploadImage.displayName = 'UploadImage';
+
+UploadImage.propTypes = {
+    className: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    sizeLimit: PropTypes.number.isRequired,
+    useUploadMutation: PropTypes.func.isRequired,
+};
 
 export default UploadImage;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FilterStatus,
     SearchBar,
@@ -8,7 +8,8 @@ import {
     ReviewReportFrame,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
-import { useGetProfileByIdQuery, useGetReportsQuery } from '@services/api';
+import { useGetReportsQuery } from '@services/api';
+import { Loading } from '@components';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -37,6 +38,7 @@ function ReviewReportPage() {
 
     const { data: reportListData, isLoading: reportListIsLoading } =
         useGetReportsQuery();
+    if (reportListIsLoading) return <Loading />;
     const reports =
         reportListIsLoading || !reportListData
             ? []

@@ -11,7 +11,6 @@ import {
     useRemoveSongFromPlaylistMutation,
     useAddSongToLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
-    useGetMyPlaylistsQuery,
     useDeleteTrackByIdMutation,
 } from '@services/api';
 import {
@@ -19,6 +18,7 @@ import {
     selectCurrentProfile,
     selectCurrentTrack,
     selectCurrentToken,
+    selectMyPlaylists,
 } from '@services/selectors';
 import {
     PlayButton,
@@ -512,8 +512,7 @@ const SongBar = memo(
             skip: !playlistId,
         });
 
-        const { data: myPlayListData, isLoading: isLoadingMyPlayListData } =
-            useGetMyPlaylistsQuery({ isAlbum: false }, { skip: !myProfileID });
+        const myPlaylists = useSelector(selectMyPlaylists);
 
         const [creatPlayList, { isLoading: createPlaylistLoading }] =
             useCreatePlaylistMutation();
@@ -743,7 +742,7 @@ const SongBar = memo(
                                                         <ul>
                                                             <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
                                                                 <div
-                                                                    className={`mx-4 w-full py-2 text-left ${myPlayListData?.playlists?.length > 1 ? 'border-b border-[#999]' : ''}`}
+                                                                    className={`mx-4 w-full py-2 text-left ${myPlaylists.length > 1 ? 'border-b border-[#999]' : ''}`}
                                                                     onClick={() => {
                                                                         setShowPlaylistForm(
                                                                             true,
@@ -760,7 +759,7 @@ const SongBar = memo(
                                                                     </span>
                                                                 </div>
                                                             </li>
-                                                            {myPlayListData?.playlists?.map(
+                                                            {myPlaylists.map(
                                                                 (
                                                                     playlist,
                                                                     index,

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,6 +5,7 @@ import {
     useGetAllAccountsQuery,
     useGetAllSongsQuery,
 } from '@services/api';
+import { Loading } from '@components';
 
 const StatCard = ({ title, value, bgColor, iconClass }) => {
     return (
@@ -35,7 +35,17 @@ StatCard.propTypes = {
 };
 
 function AdminDashboardPage() {
-    const { data: statsData } = useGetDashboardStatsQuery();
+    const navigate = useNavigate();
+    const { data: statsData, isLoading: statsIsLoading } =
+        useGetDashboardStatsQuery();
+    const { data: accountListData, isLoading: accountListIsLoading } =
+        useGetAllAccountsQuery();
+    const { data: songListData, isLoading: songListIsLoading } =
+        useGetAllSongsQuery();
+
+    if (accountListIsLoading || songListIsLoading || statsIsLoading) {
+        return <Loading />;
+    }
     const statItems = [
         {
             title: 'Total Users',
@@ -74,35 +84,25 @@ function AdminDashboardPage() {
             iconClass: 'ri-article-line',
         },
     ];
-    const { data: accountListData, isLoading: accountListIsLoading } =
-        useGetAllAccountsQuery();
-    const { data: songListData, isLoading: songListIsLoading } =
-        useGetAllSongsQuery();
-    const accounts =
-        accountListIsLoading || !accountListData
-            ? []
-            : accountListData.slice(0, 10).map((account) => ({
-                  id: account.id,
-                  name: account.name,
-                  status: account.isBanned
-                      ? 'Banned'
-                      : account.isVerified
-                        ? 'Verified'
-                        : 'Unverified',
-                  image: account?.image?.url ? account.image.url : '',
-              }));
-    const songs =
-        songListIsLoading || !songListData
-            ? []
-            : songListData.slice(0, 10).map((song) => ({
-                  id: song.id,
-                  name: song.title,
-                  artist: song.artist,
-                  status: song.isVerified ? 'Verified' : 'Unverified',
-                  image: song?.image?.url ? song.image.url : '',
-                  isDisabled: song.isDisabled,
-              }));
-    const navigate = useNavigate();
+    const accounts = accountListData.slice(0, 10).map((account) => ({
+        id: account.id,
+        name: account.name,
+        status: account.isBanned
+            ? 'Banned'
+            : account.isVerified
+              ? 'Verified'
+              : 'Unverified',
+        image: account?.image?.url ? account.image.url : '',
+    }));
+    const songs = songListData.slice(0, 10).map((song) => ({
+        id: song.id,
+        name: song.title,
+        artist: song.artist,
+        status: song.isVerified ? 'Verified' : 'Unverified',
+        image: song?.image?.url ? song.image.url : '',
+        isDisabled: song.isDisabled,
+    }));
+
     const handleUserSeeAll = () => {
         navigate('/admin/user');
     };

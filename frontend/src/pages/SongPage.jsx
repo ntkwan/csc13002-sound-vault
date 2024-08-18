@@ -13,6 +13,7 @@ import {
     BigPlayButton,
     ReportFrame,
     ConfirmDeletion,
+    Loading,
 } from '@components';
 import {
     selectCurrentAdmin,
@@ -131,6 +132,14 @@ function SongPage() {
     const handleArtist = (id) => {
         navigate(`/profile/${id}`);
     };
+
+    if (
+        songByIdDataLoading ||
+        profileByIdDataLoading ||
+        profileAllSongsLoading
+    ) {
+        return <Loading />;
+    }
 
     return (
         <>
