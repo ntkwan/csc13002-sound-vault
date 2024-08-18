@@ -103,14 +103,25 @@ const play_song = async (req, res) => {
         await Song.save();
 
         if (user) {
-            await user.addToRecentlyPlayed(songId);
-            await user.save();
+            if (user.recentlyPlayed.includes(songId)) {
+                user.recentlyPlayed = this.recentlyPlayed.filter(
+                    (id) => id.toString() !== songId,
+                );
+            }
+
+            if (user.recentlyPlayed.length === 10) {
+                user.recentlyPlayed.pop();
+            }
+
+            user.recentlyPlayed.unshift(songId);
+            await user.updateOne({ recentlyPlayed: user.recentlyPlayed });
         }
 
         return res.status(200).json({
             audiourl: Song.audiourl,
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: error.message,
         });

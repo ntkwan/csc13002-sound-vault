@@ -150,20 +150,6 @@ UserSchema.methods.generateRefreshToken = function () {
     );
 };
 
-UserSchema.methods.addToRecentlyPlayed = async function (songId) {
-    if (this.recentlyPlayed.includes(songId)) {
-        this.recentlyPlayed = this.recentlyPlayed.filter(
-            (id) => id.toString() !== songId,
-        );
-    }
-
-    if (this.recentlyPlayed.length === 10) {
-        this.recentlyPlayed.pop();
-    }
-
-    this.recentlyPlayed.unshift(songId);
-};
-
 UserSchema.methods.removeFromRecentlyPlayed = async function (songId) {
     this.recentlyPlayed = this.recentlyPlayed.filter(
         (id) => id.toString() !== songId,

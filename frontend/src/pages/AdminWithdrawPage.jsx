@@ -110,7 +110,7 @@ function AdminWithdrawPage() {
     return (
         <div className="admin-page">
             <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
-                Withdrawal Request
+                Withdrawal Requests
             </h1>
 
             <div className="admin-page__filter flex space-x-4 border-b-2 px-2">
