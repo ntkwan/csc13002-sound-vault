@@ -25,8 +25,18 @@ function LibraryPage() {
     const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
     const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
 
-    const { data: myPlaylistsData } = useGetMyPlaylistsQuery();
+    const { data: myPlaylistsData } = useGetMyPlaylistsQuery(
+        { isAlbum: false },
+        { skip: !id },
+    );
+
+    const { data: myAlbumData } = useGetMyPlaylistsQuery(
+        { isAlbum: true },
+        { skip: !id },
+    );
+
     const { playlists: myPlaylists } = myPlaylistsData || {};
+    const { playlists: myAlbums } = myAlbumData || {};
 
     const mediaData = [
         {
@@ -36,6 +46,12 @@ function LibraryPage() {
             visibility: '',
             link: '',
             data: following || [],
+        },
+        {
+            type: 'Album',
+            title: 'Albums',
+            displayItems: '2',
+            data: myAlbums || [],
         },
         {
             type: 'Playlist',
