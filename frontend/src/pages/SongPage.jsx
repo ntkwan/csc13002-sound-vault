@@ -19,7 +19,7 @@ import {
     selectCurrentProfile,
     selectCurrentToken,
 } from '@services/selectors';
-import verifiedIcon from '@assets/img/verified-icon.svg';
+import verifiedIcon from '@assets/img/verified-icon-white.svg';
 
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);
@@ -192,7 +192,7 @@ function SongPage() {
                                 <p className="text-shadow-1 font-semibold">
                                     Song
                                 </p>
-                                <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-5xl">
+                                <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-6xl">
                                     {songTitle}
                                 </p>
                                 {!songIsDisabled && (
@@ -216,7 +216,7 @@ function SongPage() {
                                         {' • '}
                                         {duration}
                                         {' • '}
-                                        {songView}
+                                        {songView} plays
                                     </p>
                                 )}
                             </div>
@@ -226,99 +226,103 @@ function SongPage() {
                     {/* Actions Section */}
                     {!songIsDisabled ? (
                         <>
-                            <div className="relative mt-8 flex space-x-6">
-                                {allSongExceptCurrent && (
-                                    <BigPlayButton
-                                        playlist={{
-                                            id: songUploader,
-                                            songs: allSongExceptCurrent,
-                                        }}
-                                        forSongPage={true}
-                                        thisSong={{
-                                            id: songId,
-                                            title: songTitle,
-                                            artist: songArtist,
-                                            imageurl: songByIdData?.imageurl,
-                                            coverimg: songByIdData?.coverimg,
-                                        }}
-                                    />
-                                )}
-                                <button className="relative h-[70px] min-w-[70px]">
-                                    <div className="rotate-90">
-                                        <i
-                                            className="ri-more-2-line text-[42px]"
-                                            onClick={() =>
-                                                setShowSongOptions(
-                                                    !showSongOptions,
-                                                )
-                                            }
+                            {!isAdmin && (
+                                <div className="relative mt-8 flex space-x-6">
+                                    {allSongExceptCurrent && (
+                                        <BigPlayButton
+                                            playlist={{
+                                                id: songUploader,
+                                                songs: allSongExceptCurrent,
+                                            }}
+                                            forSongPage={true}
+                                            thisSong={{
+                                                id: songId,
+                                                title: songTitle,
+                                                artist: songArtist,
+                                                imageurl:
+                                                    songByIdData?.imageurl,
+                                                coverimg:
+                                                    songByIdData?.coverimg,
+                                            }}
                                         />
-                                    </div>
-                                    {showSongOptions === true && (
-                                        <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                            <ul>
-                                                <li
-                                                    className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={handleCopyLink}
-                                                >
-                                                    <i className="ri-share-line text-xl leading-none"></i>
-                                                    <span>Copy link</span>
-                                                </li>
-                                                {myProfileData?.id ==
-                                                    songUploader && (
-                                                    <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <i className="ri-exchange-line text-xl leading-none"></i>
-                                                        <span>
-                                                            Change cover
-                                                        </span>
-                                                    </li>
-                                                )}
-                                                {myProfileData?.id ==
-                                                    songUploader && (
-                                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                        <i className="ri-exchange-fill text-xl leading-none"></i>
-                                                        <span className="text-left text-sm">
-                                                            Change thumbnail
-                                                        </span>
-                                                    </li>
-                                                )}
-                                                {token && (
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={() => {
-                                                            setShowReportFrame(
-                                                                true,
-                                                            );
-                                                            setShowSongOptions(
-                                                                false,
-                                                            );
-                                                        }}
-                                                    >
-                                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                        <span>Report</span>
-                                                    </li>
-                                                )}
-                                                {myProfileData?.id ==
-                                                    songUploader && (
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={() =>
-                                                            setConfirmDelete(
-                                                                true,
-                                                            )
-                                                        }
-                                                    >
-                                                        <i className="ri-close-large-line text-xl leading-none"></i>
-                                                        <span>
-                                                            Delete track
-                                                        </span>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </div>
                                     )}
-                                </button>
-                            </div>
+                                    <button className="relative h-[70px] min-w-[70px]">
+                                        <div className="rotate-90">
+                                            <i
+                                                className="ri-more-2-line text-[42px]"
+                                                onClick={() =>
+                                                    setShowSongOptions(
+                                                        !showSongOptions,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                        {showSongOptions === true && (
+                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                <ul>
+                                                    <li
+                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                        onClick={handleCopyLink}
+                                                    >
+                                                        <i className="ri-share-line text-xl leading-none"></i>
+                                                        <span>Copy link</span>
+                                                    </li>
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <i className="ri-exchange-line text-xl leading-none"></i>
+                                                            <span>
+                                                                Change cover
+                                                            </span>
+                                                        </li>
+                                                    )}
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <i className="ri-exchange-fill text-xl leading-none"></i>
+                                                            <span className="text-left text-sm">
+                                                                Change thumbnail
+                                                            </span>
+                                                        </li>
+                                                    )}
+                                                    {token && (
+                                                        <li
+                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={() => {
+                                                                setShowReportFrame(
+                                                                    true,
+                                                                );
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                            <span>Report</span>
+                                                        </li>
+                                                    )}
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <li
+                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={() =>
+                                                                setConfirmDelete(
+                                                                    true,
+                                                                )
+                                                            }
+                                                        >
+                                                            <i className="ri-close-large-line text-xl leading-none"></i>
+                                                            <span>
+                                                                Delete track
+                                                            </span>
+                                                        </li>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                             <div
                                 className="hover:bg my-5 flex max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                 onClick={() => handleArtist(profileId)}

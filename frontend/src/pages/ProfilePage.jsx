@@ -247,86 +247,94 @@ function ProfilePage() {
                 {/* Actions Section */}
                 {!isBanned ? (
                     <>
-                        <div className="flex space-x-6">
-                            {profileAllSongsData && (
-                                <BigPlayButton
-                                    playlist={{
-                                        id: profileId,
-                                        songs: profileAllSongsData,
-                                    }}
-                                />
-                            )}
-                            {isMyProfile ? (
-                                <>
-                                    <Link
-                                        className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                                        to="upload-music"
-                                    >
-                                        Upload Music
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                    </Link>
-                                    <Link
-                                        className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                                        to="editing"
-                                    >
-                                        Edit Profile
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    {id && (
-                                        <button
-                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
-                                            disabled={
-                                                isLoadingFollow ||
-                                                isLoadingUnfollow
-                                            }
-                                            onClick={handleFollowToggle}
+                        {!isAdmin && (
+                            <div className="flex space-x-6">
+                                {profileAllSongsData && (
+                                    <BigPlayButton
+                                        playlist={{
+                                            id: profileId,
+                                            songs: profileAllSongsData,
+                                        }}
+                                    />
+                                )}
+                                {isMyProfile ? (
+                                    <>
+                                        <Link
+                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                            to="upload-music"
                                         >
-                                            {isFollowing
-                                                ? 'Unfollow'
-                                                : 'Follow'}
+                                            Upload Music
                                             <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                        </button>
-                                    )}
-                                    <button className="absolute right-4 h-[70px] min-w-[70px]">
-                                        <i
-                                            className="bx bx-menu text-[42px]"
-                                            onClick={() =>
-                                                setShowProfileOption(true)
-                                            }
-                                        />
-                                        {showProfileOption === true && (
-                                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                                <ul>
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={handleCopyLink}
-                                                    >
-                                                        <i className="ri-share-line text-xl leading-none"></i>
-                                                        <span>Copy link</span>
-                                                    </li>
-                                                    {token && (
+                                        </Link>
+                                        <Link
+                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                            to="editing"
+                                        >
+                                            Edit Profile
+                                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        {id && (
+                                            <button
+                                                className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
+                                                disabled={
+                                                    isLoadingFollow ||
+                                                    isLoadingUnfollow
+                                                }
+                                                onClick={handleFollowToggle}
+                                            >
+                                                {isFollowing
+                                                    ? 'Unfollow'
+                                                    : 'Follow'}
+                                                <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
+                                            </button>
+                                        )}
+                                        <button className="absolute right-4 h-[70px] min-w-[70px]">
+                                            <i
+                                                className="bx bx-menu text-[42px]"
+                                                onClick={() =>
+                                                    setShowProfileOption(true)
+                                                }
+                                            />
+                                            {showProfileOption === true && (
+                                                <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                    <ul>
                                                         <li
-                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                            onClick={() =>
-                                                                setShowReportFrame(
-                                                                    true,
-                                                                )
+                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={
+                                                                handleCopyLink
                                                             }
                                                         >
-                                                            <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                            <span>Report</span>
+                                                            <i className="ri-share-line text-xl leading-none"></i>
+                                                            <span>
+                                                                Copy link
+                                                            </span>
                                                         </li>
-                                                    )}
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                                                        {token && (
+                                                            <li
+                                                                className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                onClick={() =>
+                                                                    setShowReportFrame(
+                                                                        true,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                                <span>
+                                                                    Report
+                                                                </span>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
 
                         {profileAllSongsData && (
                             <>

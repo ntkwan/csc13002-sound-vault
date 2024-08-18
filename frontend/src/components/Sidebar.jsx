@@ -103,14 +103,12 @@ function Sidebar() {
                                 icon={InfoIcon}
                                 label="Terms & Policy"
                             />
+                            <SidebarLink
+                                to={isAdmin ? 'admin/setting' : 'user/setting'}
+                                icon={SettingIcon}
+                                label="setting"
+                            />
                         </>
-                    )}
-                    {token && (
-                        <SidebarLink
-                            to={isAdmin ? 'admin/setting' : 'user/setting'}
-                            icon={SettingIcon}
-                            label="setting"
-                        />
                     )}
                     {token && <Logout />}
                 </div>
@@ -131,7 +129,7 @@ function SidebarLink({ to, icon: Icon, label, children }) {
         <NavLink
             to={to}
             className={({ isActive }) =>
-                `relative my-1 flex items-center rounded-full px-3 py-3 leading-none transition-colors duration-300 ease-in-out ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20'}`
+                `relative my-1 flex items-center rounded-full px-3 py-3 leading-4 transition-colors duration-300 ease-in-out ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20'}`
             }
         >
             {Icon && <Icon />}

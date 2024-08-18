@@ -12,7 +12,6 @@ import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
 import {
     useSetVerifiedArtistByIdMutation,
     useGetAllAccountsQuery,
-    useRemoveAccountByIdMutation,
     useBanAccountMutation,
 } from '@services/api';
 
@@ -52,16 +51,6 @@ function AdminAccountPage() {
             console.error('Failed to verify the artist: ', error);
         }
     };
-    const [removeAccountById, { isLoading: isLoadingRemove }] =
-        useRemoveAccountByIdMutation();
-    const handleRemove = async (id) => {
-        if (isLoadingRemove) return;
-        try {
-            await removeAccountById(id).unwrap();
-        } catch (error) {
-            console.error('Failed to remove the account: ', error);
-        }
-    };
     const [banAccount, { isLoading: isLoadingban }] = useBanAccountMutation();
     const handleBan = async (id) => {
         if (isLoadingban) return;
@@ -88,7 +77,11 @@ function AdminAccountPage() {
                   id: account.id,
                   name: account.name,
                   date: formatDate(new Date(account.createdAt)),
-                  status: account.isVerified ? 'Verified' : 'Unverified',
+                  status: account.isBanned
+                      ? 'Banned'
+                      : account.isVerified
+                        ? 'Verified'
+                        : 'Unverified',
                   isBanned: account.isBanned,
               }));
 
@@ -135,7 +128,7 @@ function AdminAccountPage() {
         { name: 'All accounts', status: 'all' },
         { name: 'Verified', status: 'Verified' },
         { name: 'Unverified', status: 'Unverified' },
-        { name: 'Pending', status: 'Pending' },
+        { name: 'Banned', status: 'Banned' },
     ];
     const sortMethods = ['Name', 'Date (oldest first)', 'Date (newest first)'];
 
@@ -247,8 +240,8 @@ function AdminAccountPage() {
                                                 ? 'bg-[#FFF0F0] text-[#3663c2]'
                                                 : account.status ===
                                                     'Unverified'
-                                                  ? 'bg-[#FFF0E6] text-[#eb4141]'
-                                                  : 'bg-[#E7F7EF] text-[#0CAF60]'
+                                                  ? 'bg-[#FFF0E6] text-[#0CAF60]'
+                                                  : 'bg-[#E7F7EF] text-[#eb4141]'
                                         }`}
                                     >
                                         {account.status}
@@ -280,14 +273,6 @@ function AdminAccountPage() {
                                         children="View"
                                         onClick={() => {
                                             setConfirmAction('view');
-                                            setSelectedAccountId(account.id);
-                                        }}
-                                    />
-                                    <ManagementButtons
-                                        background="bg-[#B63D65]"
-                                        children="Remove"
-                                        onClick={() => {
-                                            setConfirmAction('remove');
                                             setSelectedAccountId(account.id);
                                         }}
                                     />
@@ -345,11 +330,15 @@ function AdminAccountPage() {
                                                 setBanDays(e.target.value)
                                             }
                                         >
-                                            <option value="1">1 day</option>
-                                            <option value="3">3 days</option>
-                                            <option value="7">1 week</option>
-                                            <option value="30">1 month</option>
+                                            <option value="7">7 days</option>
+                                            <option value="30">A month</option>
+                                            <option value="180">
+                                                6 months
+                                            </option>
                                             <option value="365">1 year</option>
+                                            <option value="9999">
+                                                Permanent
+                                            </option>
                                         </select>
                                         <label className="mb-2 mt-4 block font-bold">
                                             Ban Reason:

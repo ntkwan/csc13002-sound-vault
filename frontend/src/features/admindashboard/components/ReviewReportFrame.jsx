@@ -183,7 +183,7 @@ function ReviewReportFrame({ item, onClose }) {
 
                         <div className="m-5 ease-in-out hover:scale-105">
                             <div className="relative w-[200px] rounded-xl border p-3">
-                                Attack Documents
+                                Attach Documents
                             </div>
                         </div>
                     </div>
