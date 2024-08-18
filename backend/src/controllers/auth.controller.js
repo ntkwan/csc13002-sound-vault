@@ -74,6 +74,12 @@ const signin = async (req, res) => {
             });
         }
 
+        if (User.isBanned) {
+            return res.status(400).json({
+                message: 'Your account has been banned',
+            });
+        }
+
         const isValid = await User.validatePassword(password);
         if (!isValid) {
             return res.status(400).json({
