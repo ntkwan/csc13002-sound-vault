@@ -8,6 +8,22 @@ const BlacklistModel = require('../models/blacklist.schema');
 const moment = require('moment');
 const schedule = require('node-schedule');
 
+// web3
+const ethers = require('ethers');
+const INFURA_ENDPOINT = process.env.INFURA_ENDPOINT;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
+const provider = new ethers.JsonRpcProvider(INFURA_ENDPOINT);
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+
+const signerAddress = signer.address;
+
+const contractAddress = '0xDE3A5D367e3e5eFAfAaaA5aB80753c1A761508b5';
+const Copyright = require('../../../ignition/modules/Copyright.json');
+
+const contract = new ethers.Contract(contractAddress, Copyright.abi, signer);
+const ContractWithSigner = contract.connect(signer);
+
 const get_admin_accounts = async (req, res) => {
     try {
         const User = await UserModel.find({ isAdmin: true });
@@ -241,11 +257,36 @@ const set_verified_song = async (req, res) => {
         const Song = await SongModel.findById(songId);
         if (!Song) {
             return res.status(404).json({
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
 
-        Song.isVerified = !Song.isVerified;
+        const User = await UserModel.findById(Song.uploader);
+        if (!User) {
+            return res.status(404).json({
+                message: 'User is not found',
+            });
+        }
+
+        if (User.publicAddress.length == 0) {
+            return res.status(404).json({
+                message: 'User needs to update public address',
+            });
+        }
+
+        if (Song.isVerified == false) {
+            const response = await ContractWithSigner.uploadMusic_batch(
+                Song._id.toString(),
+                Song.title,
+                Song.artist,
+                User.publicAddress,
+            );
+
+            await response.wait();
+            console.log('Transaction Hash:', response.hash);
+            Song.isVerified = true;
+        }
+
         await Song.save();
 
         const message = isVerified

@@ -94,6 +94,10 @@ const UserSchema = new Schema(
                 default: '',
             },
         },
+        publicAddress: {
+            type: String,
+            default: '',
+        },
     },
     {
         timestamps: true,
