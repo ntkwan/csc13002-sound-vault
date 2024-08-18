@@ -24,6 +24,7 @@ function Header() {
     const noticeRef = useRef(null);
     const searchRef = useRef(null);
     const debouncedSearchInput = useDebounce(searchInput);
+    const [hoverAvatar, setHoverAvatar] = useState(false);
 
     // get profile data
     const profile = useSelector(selectCurrentProfile);
@@ -221,8 +222,14 @@ function Header() {
                 {token ? (
                     <div className="header__section flex h-full w-1/4 items-center justify-end space-x-3 text-sm">
                         <div
-                            className="hover:cursor-pointer"
-                            onClick={() => navigate('/profile')}
+                            className="relative hover:cursor-pointer"
+                            onClick={() =>
+                                navigate(
+                                    isAdmin ? 'admin/edit-profile' : '/profile',
+                                )
+                            }
+                            onMouseEnter={() => setHoverAvatar(true)}
+                            onMouseLeave={() => setHoverAvatar(false)}
                         >
                             {avatar ? (
                                 <img
@@ -233,7 +240,13 @@ function Header() {
                             ) : (
                                 <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
                             )}
+                            {hoverAvatar && isAdmin && (
+                                <div className="absolute bottom-[-36px] left-[-10px] z-10 rounded-lg bg-gray-900 px-2 text-center text-xs font-medium text-white shadow-lg">
+                                    Edit Profile
+                                </div>
+                            )}
                         </div>
+
                         {isAdmin ? (
                             <div>
                                 <p className="font-bold">{name}</p>

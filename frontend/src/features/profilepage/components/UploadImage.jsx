@@ -53,7 +53,7 @@ const UploadImage = memo(
             >
                 <label htmlFor={id} className="upload__label inline-block">
                     {label}
-                    <div className="upload__container relative m-auto w-max">
+                    <div className="upload__container relative m-auto w-max pt-3">
                         <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
                             {preview ? (
                                 <img

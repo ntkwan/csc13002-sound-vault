@@ -129,6 +129,13 @@ function Sidebar() {
             <section className="ml-2">
                 <span className="ml-3">Help</span>
                 <div>
+                    {token && !isAdmin && (
+                        <SidebarLink
+                            to="user/setting"
+                            icon={SettingIcon}
+                            label="setting"
+                        />
+                    )}
                     {!isAdmin && (
                         <>
                             <SidebarLink
@@ -141,17 +148,6 @@ function Sidebar() {
                                 icon={InfoIcon}
                                 label="Terms & Policy"
                             />
-                            {token && (
-                                <SidebarLink
-                                    to={
-                                        isAdmin
-                                            ? 'admin/setting'
-                                            : 'user/setting'
-                                    }
-                                    icon={SettingIcon}
-                                    label="setting"
-                                />
-                            )}
                         </>
                     )}
                     {token && <Logout />}

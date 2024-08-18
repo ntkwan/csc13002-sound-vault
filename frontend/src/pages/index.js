@@ -29,3 +29,4 @@ export { default as ArtistTransactionPage } from './ArtistTransactionPage';
 export { default as AdminWithdrawPage } from './AdminWithdrawPage';
 export { default as AdminTransactionPage } from './AdminTransactionPage';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
+export { default as AdminEditProfilePage } from './AdminEditProfilePage';

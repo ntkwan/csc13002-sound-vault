@@ -32,6 +32,7 @@ import {
     AdminTransactionPage,
     AdminWithdrawPage,
     AdminDashboardPage,
+    AdminEditProfilePage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
                     {
                         path: 'admin/transaction',
                         Component: AdminTransactionPage,
+                    },
+                    {
+                        path: 'admin/edit-profile',
+                        Component: AdminEditProfilePage,
                     },
                 ],
             },
