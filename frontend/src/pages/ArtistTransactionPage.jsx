@@ -232,7 +232,23 @@ function ArtistTransactionPage() {
                                             alt="deposit-icon"
                                             className="ml-2 mr-3 inline-block h-6 w-6"
                                         />
-                                        <p>Withdraw money from Wallet</p>
+                                        <p>
+                                            Withdraw money from Wallet{' '}
+                                            {payment.status === 'PENDING' ? (
+                                                <i className="font-bold text-orange-400">
+                                                    Pending
+                                                </i>
+                                            ) : payment.status ===
+                                              'CANCELLED' ? (
+                                                <i className="font-bold text-red-500">
+                                                    Rejected
+                                                </i>
+                                            ) : (
+                                                <i className="font-bold text-green-500">
+                                                    Paid
+                                                </i>
+                                            )}
+                                        </p>
                                     </div>
                                 ) : (
                                     <div className="flex flex-nowrap items-center">
