@@ -100,6 +100,7 @@ const get_profile_by_id = async (req, res) => {
             id: User._id,
             isBanned: User.isBanned,
             shortDesc: User.shortDesc,
+            publicAddress: User.publicAddress,
         });
     } catch (error) {
         return res.status(500).json({

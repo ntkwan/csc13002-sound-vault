@@ -234,8 +234,9 @@ const remove_account_by_id = async (req, res) => {
 const get_all_songs = async (req, res) => {
     try {
         const Songs = await SongModel.find();
-        res.status(200).send(
-            Songs.map((song) => {
+        const songsWithUserDetails = await Promise.all(
+            Songs.map(async (song) => {
+                const user = await UserModel.findById(song.uploader);
                 return {
                     id: song._id,
                     title: song.title,
@@ -244,9 +245,11 @@ const get_all_songs = async (req, res) => {
                     isDisabled: song.isDisabled,
                     createdAt: song.createdAt,
                     image: song.image,
+                    publicAddress: user ? user.publicAddress : null,
                 };
             }),
         );
+        res.status(200).send(songsWithUserDetails);
     } catch (error) {
         res.status(500).json({
             message: error.message,

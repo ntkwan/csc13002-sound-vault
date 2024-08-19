@@ -17,6 +17,7 @@ import {
     useActivateSongMutation,
 } from '@services/api';
 import { Loading } from '@components';
+import { toast } from 'react-toastify';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -47,8 +48,10 @@ function AdminSongPage() {
         if (verifySongIsLoading) return;
         try {
             await setVerifiedSongById(songId);
+            toast.success('Song verified successfully!');
         } catch (error) {
             console.log('Failed to verify song', error);
+            toast.error('Failed to verify song');
         }
     };
     const [removeSongById, { isLoading: removeSongIsLoading }] =
@@ -57,8 +60,10 @@ function AdminSongPage() {
         if (removeSongIsLoading) return;
         try {
             await removeSongById(id);
+            toast.success('Song removed successfully!');
         } catch (error) {
             console.log('Failed to remove song', error);
+            toast.error('Failed to remove song');
         }
     };
     const [deactivateSong, { isLoading: deactivateSongIsLoading }] =
@@ -67,8 +72,10 @@ function AdminSongPage() {
         if (deactivateSongIsLoading) return;
         try {
             await deactivateSong(id);
+            toast.success('Song deactivated successfully!');
         } catch (error) {
             console.log('Failed to deactivate song', error);
+            toast.error('Failed to deactivate song');
         }
     };
     const [activateSong, { isLoading: activateSongIsLoading }] =
@@ -77,8 +84,10 @@ function AdminSongPage() {
         if (activateSongIsLoading) return;
         try {
             await activateSong(id);
+            toast.success('Song activated successfully!');
         } catch (error) {
             console.log('Failed to activate song', error);
+            toast.error('Failed to activate song');
         }
     };
     const handleViewSong = (id) => {
@@ -93,8 +102,13 @@ function AdminSongPage() {
         name: song.title,
         artist: song.artist,
         date: formatDate(new Date(song.createdAt)),
-        status: song.isVerified ? 'Verified' : 'Unverified',
         isDisabled: song.isDisabled,
+        publicAddress: song.publicAddress,
+        status: song.isVerified
+            ? 'Verified'
+            : song.publicAddress != ''
+              ? 'Verifiable'
+              : 'Unverified',
     }));
 
     const filteredSongs = songs.filter((song) => {
@@ -135,6 +149,7 @@ function AdminSongPage() {
     const buttonFilter = [
         { name: 'All songs', status: 'all' },
         { name: 'Verified', status: 'Verified' },
+        { name: 'Verifiable songs', status: 'Verifiable' },
         { name: 'Unverified', status: 'Unverified' },
         { name: 'Pending', status: 'Pending' },
     ];
@@ -264,7 +279,10 @@ function AdminSongPage() {
                                             ? 'bg-[#FE964A]'
                                             : 'bg-[#9F68B2]'
                                     }
-                                    disable={song.status === 'Verified'}
+                                    disable={
+                                        song.status === 'Verified' ||
+                                        song.publicAddress === ''
+                                    }
                                     onClick={() => {
                                         const action =
                                             song.status === 'Verified'
@@ -356,6 +374,20 @@ function AdminSongPage() {
                             >
                                 Confirm
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {verifySongIsLoading && (
+                <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="flex flex-col items-center rounded-lg p-6 shadow-lg outline backdrop-blur-xl">
+                        <div className="flex h-14 items-center space-x-2">
+                            <div>
+                                <Loading className="h-10 w-10" />
+                            </div>
+                            <p className="text-white">
+                                Uploading to blockchain...
+                            </p>
                         </div>
                     </div>
                 </div>

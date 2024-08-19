@@ -75,8 +75,11 @@ function SongPage() {
             skip: !songUploader,
         });
 
-    const { id: profileId, image: { url: profileImageUrl } = {} } =
-        profileByIdData || {};
+    const {
+        id: profileId,
+        publicAddress,
+        image: { url: profileImageUrl } = {},
+    } = profileByIdData || {};
 
     const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
         useGetProfileAllSongsQuery(profileId, {
@@ -148,6 +151,7 @@ function SongPage() {
 
     return (
         <>
+            {console.log(profileByIdData)}
             {showChangeThumbnail && (
                 <UpdateImageFrame
                     setShowFrame={setShowChangeThumbnail}
@@ -325,6 +329,41 @@ function SongPage() {
                                                                 </span>
                                                             </li>
                                                         </>
+                                                    )}
+                                                    {myProfileData?.id ==
+                                                        songUploader &&
+                                                        !songIsVerified &&
+                                                        publicAddress != '' && (
+                                                            <li
+                                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                onClick={() => {
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <i className="ri-copyright-line text-xl leading-none"></i>
+                                                                <span className="text-left text-sm">
+                                                                    Request for
+                                                                    copyright
+                                                                </span>
+                                                            </li>
+                                                        )}
+                                                    {songIsVerified && (
+                                                        <li
+                                                            className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={() => {
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <i className="ri-copyright-fill text-xl leading-none"></i>
+                                                            <span className="text-left text-sm">
+                                                                View on
+                                                                Blockchain
+                                                            </span>
+                                                        </li>
                                                     )}
                                                     <li
                                                         className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"

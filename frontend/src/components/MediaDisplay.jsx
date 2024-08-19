@@ -407,7 +407,7 @@ const BrowseCard = memo(({ type, mediaData }) => {
             }
         >
             <img
-                className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[6.5rem] translate-x-3 translate-y-3 rotate-[30deg]`}
+                className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[9rem] translate-x-[19px] translate-y-4 rotate-[30deg]`}
                 src={imageurl.url}
                 alt={title}
             />

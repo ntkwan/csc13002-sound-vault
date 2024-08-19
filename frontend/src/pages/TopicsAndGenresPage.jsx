@@ -45,7 +45,7 @@ function TopicsAndGenresPage() {
                     imageurl: {
                         url: Jazz,
                     },
-                    bgColor: '#AF2848',
+                    bgColor: '#c93759',
                 },
                 {
                     title: 'R&B',
@@ -73,7 +73,7 @@ function TopicsAndGenresPage() {
                     imageurl: {
                         url: Chill,
                     },
-                    bgColor: '#B9B326',
+                    bgColor: '#dfb43e',
                 },
             ],
         },
@@ -95,14 +95,14 @@ function TopicsAndGenresPage() {
                     imageurl: {
                         url: VPop,
                     },
-                    bgColor: '#1d4a64',
+                    bgColor: '#e4d5d5',
                 },
                 {
                     title: 'K-Pop',
                     imageurl: {
                         url: KPop,
                     },
-                    bgColor: '#b2b2b260',
+                    bgColor: '#302e2e',
                 },
             ],
         },
