@@ -15,7 +15,7 @@ function TopicsAndGenresPage() {
     const mediaData = [
         {
             type: 'browse',
-            title: 'Browse all',
+            title: 'Genres',
             visibility: '',
             link: '',
             data: [

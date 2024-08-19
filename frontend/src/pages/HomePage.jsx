@@ -290,10 +290,8 @@ function HomePage() {
                         className="homepage__intro-desc -translate-x-96 text-xl opacity-0 transition duration-1000 ease-in-out"
                         ref={introDescRef}
                     >
-                        SoundVault is a digital music service that gives users
-                        access to millions of songs. Artists can utilize this
-                        platform as a marketplace to sell their albums and
-                        merchandise.
+                        A blockchain-powered music streaming platform that gives users
+                        access to millions of songs and offers artists full control over their music rights and royalties.
                     </p>
                 </div>
                 {/* Intro image */}
