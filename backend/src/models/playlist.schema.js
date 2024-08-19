@@ -47,4 +47,9 @@ const PlaylistSchema = new Schema(
     },
 );
 
+PlaylistSchema.methods.setPlaylistThumbnail = async function (imageurl) {
+    this.image.publicId = imageurl.public_id;
+    this.image.url = imageurl.secure_url;
+};
+
 module.exports = mongoose.model('Playlist', PlaylistSchema);

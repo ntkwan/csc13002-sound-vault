@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 const uploader = require('../config/cloudinary.config');
 const SongModel = require('../models/song.schema');
 const UserModel = require('../models/user.schema');
+const PlaylistModel = require('../models/playlist.schema');
 
 const upload_song = async (req, res) => {
     if (req.fileValidationError) {
@@ -111,6 +112,37 @@ const upload_song_thumbnail = async (req, res) => {
     await Song.save();
 };
 
+const upload_playlist_thumbnail = async (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).json({
+            message: `File validation error: ${req.fileValidationError}`,
+        });
+    }
+
+    const playlistId = req.params.id;
+    const Playlist = await PlaylistModel.findById(playlistId);
+    if (!Playlist) {
+        return res.status(500).json({
+            message: 'Error occured while uploading playlist thumbnail',
+        });
+    }
+
+    const imageResponse = await uploader.playlistThumbnailUploader(req, res);
+    if (!imageResponse) {
+        return res.status(500).json({
+            message: 'Error occured while uploading playlist thumbnail',
+        });
+    }
+
+    await Playlist.setPlaylistThumbnail(imageResponse);
+    await Playlist.save();
+
+    return res.status(200).json({
+        message: 'Upload playlist thumbnail successfully',
+        imageurl: imageResponse.secure_url,
+    });
+};
+
 const upload_song_cover = async (req, res) => {
     req.isCover = true;
     upload_song_thumbnail(req, res);
@@ -148,4 +180,5 @@ module.exports = {
     upload_song_thumbnail,
     upload_song_cover,
     upload_profile_cover,
+    upload_playlist_thumbnail,
 };

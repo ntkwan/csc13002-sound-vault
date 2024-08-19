@@ -37,4 +37,10 @@ router.post(
     uploader.submit_music,
 );
 
+router.post(
+    '/upload-playlist-thumbnail/:id',
+    stage_file.playlist_thumbnail_upload,
+    uploader.upload_playlist_thumbnail,
+);
+
 module.exports = router;
