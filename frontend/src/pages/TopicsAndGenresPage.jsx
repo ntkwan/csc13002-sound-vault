@@ -1,7 +1,15 @@
 import { MediaDisplay } from '@components/index';
-
-const IMGURL =
-    'https://res.cloudinary.com/drnwr3wz8/image/upload/v1719574528/default.png';
+import Rap from '@assets/img/Rap.jpg';
+import Love from '@assets/img/Love.jpg';
+import Pop from '@assets/img/Pop.jpg';
+import Jazz from '@assets/img/Jazz.jpg';
+import RnB from '@assets/img/RnB.jpg';
+import Party from '@assets/img/Party.jpg';
+import Indie from '@assets/img/Indie.jpg';
+import Chill from '@assets/img/Chill.jpg';
+import USUK from '@assets/img/USUK.jpg';
+import VPop from '@assets/img/Vpop.jpg';
+import KPop from '@assets/img/Kpop.jpg';
 
 function TopicsAndGenresPage() {
     const mediaData = [
@@ -14,58 +22,58 @@ function TopicsAndGenresPage() {
                 {
                     title: 'Rap',
                     imageurl: {
-                        url: IMGURL,
+                        url: Rap,
                     },
-                    bgColor: '#AF2896',
+                    bgColor: '#363636',
                 },
                 {
                     title: 'Love',
                     imageurl: {
-                        url: IMGURL,
+                        url: Love,
                     },
                     bgColor: '#1D3164',
                 },
                 {
                     title: 'Pop',
                     imageurl: {
-                        url: IMGURL,
+                        url: Pop,
                     },
                     bgColor: '#D5A3C7',
                 },
                 {
                     title: 'Jazz',
                     imageurl: {
-                        url: IMGURL,
-                    },
-                    bgColor: '#B2B2B2',
-                },
-                {
-                    title: 'R&B',
-                    imageurl: {
-                        url: IMGURL,
+                        url: Jazz,
                     },
                     bgColor: '#AF2848',
                 },
                 {
+                    title: 'R&B',
+                    imageurl: {
+                        url: RnB,
+                    },
+                    bgColor: '#05131b',
+                },
+                {
                     title: 'Party',
                     imageurl: {
-                        url: IMGURL,
+                        url: Party,
                     },
-                    bgColor: '#B9B326',
+                    bgColor: '#0505057e',
                 },
                 {
                     title: 'Indie',
                     imageurl: {
-                        url: IMGURL,
+                        url: Indie,
                     },
-                    bgColor: '#27856A',
+                    bgColor: '#B2B2B2',
                 },
                 {
                     title: 'Chill',
                     imageurl: {
-                        url: IMGURL,
+                        url: Chill,
                     },
-                    bgColor: '#655192',
+                    bgColor: '#B9B326',
                 },
             ],
         },
@@ -78,23 +86,23 @@ function TopicsAndGenresPage() {
                 {
                     title: 'US-UK',
                     imageurl: {
-                        url: IMGURL,
+                        url: USUK,
                     },
                     bgColor: '#847E9F',
                 },
                 {
                     title: 'V-Pop',
                     imageurl: {
-                        url: IMGURL,
+                        url: VPop,
                     },
-                    bgColor: '#643F1D',
+                    bgColor: '#1d4a64',
                 },
                 {
                     title: 'K-Pop',
                     imageurl: {
-                        url: IMGURL,
+                        url: KPop,
                     },
-                    bgColor: '#007F42',
+                    bgColor: '#b2b2b260',
                 },
             ],
         },
