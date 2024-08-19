@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -7,11 +7,14 @@ import {
     MediaDisplay,
     ConfirmDeletion,
     BigPlayButton,
+    UpdateImageFrame,
 } from '@components';
 import {
     useDeletePlaylistByIdMutation,
     useGetPlaylistByIdQuery,
     useGetProfileByIdQuery,
+    useChangePlaylistDescriptionMutation,
+    useChangePlaylistThumbnailMutation,
 } from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
 
@@ -27,6 +30,45 @@ function PlaylistPage() {
     });
     const [totalTime, setTotalTime] = useState(0);
     const [confirmDelete, setConfirmDelete] = useState(false);
+
+    //handle change thumbnail
+    const [showChangeThumbnail, setShowChangeThumbnail] = useState(false);
+
+    // handle change description
+    const playlistDescFormRef = useRef(null);
+    const [playlistDesc, setPlaylistDesc] = useState('');
+    const [showChangeDescription, setShowChangeDescription] = useState(false);
+    const [changePlaylistDescription, { isLoading: isLoadingChangeDesc }] =
+        useChangePlaylistDescriptionMutation();
+    const handleChangeDescription = async () => {
+        if (isLoadingChangeDesc) return;
+        try {
+            setShowChangeDescription(false);
+            await changePlaylistDescription({
+                playlistId,
+                description: playlistDesc,
+            }).unwrap();
+            toast.success('Playlist description changed successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to change playlist description');
+        }
+    };
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (
+                playlistDescFormRef.current &&
+                !playlistDescFormRef.current.contains(e.target)
+            ) {
+                setShowChangeDescription(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
+    }, []);
 
     // hanlde menu option
     const [showProfileOption, setShowProfileOption] = useState(false);
@@ -95,7 +137,7 @@ function PlaylistPage() {
 
     if (!playlist || !owner) return <Loading />;
 
-    const { name, avatar, cover, songs } = playlist;
+    const { name, avatar, cover, songs, description } = playlist;
 
     const songsDisplay = {
         type: 'Song',
@@ -114,6 +156,47 @@ function PlaylistPage() {
 
     return (
         <>
+            {showChangeThumbnail && (
+                <UpdateImageFrame
+                    setShowFrame={setShowChangeThumbnail}
+                    label="To upload a thumbnail click on box or drop file here!"
+                    useUploadMutation={useChangePlaylistThumbnailMutation} // Hình như api này cũng chưa có luôn
+                />
+            )}
+            {showChangeDescription && (
+                <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div
+                        ref={playlistDescFormRef}
+                        className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
+                    >
+                        <div>
+                            <label
+                                htmlFor="playlistName"
+                                className="block pb-2 text-left text-base"
+                            >
+                                Description for your playlist:
+                            </label>
+                            <textarea
+                                id="playlistName"
+                                rows="4"
+                                cols="50"
+                                onChange={(e) =>
+                                    setPlaylistDesc(e.target.value)
+                                }
+                                className="h-16 w-80 resize-none border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                            />
+                        </div>
+                        <div className="mt-3 flex justify-end">
+                            <button
+                                className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+                                onClick={handleChangeDescription}
+                            >
+                                Change
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {confirmDelete && (
                 <ConfirmDeletion
                     type="playlist"
@@ -152,18 +235,19 @@ function PlaylistPage() {
                             )}
                         </div>
                         {/* playlist info */}
-                        <div className="relative ml-5 w-full cursor-default content-center">
+                        <div className="relative ml-5 h-full w-full cursor-default content-center">
                             <p className="text-shadow-1 font-semibold">
                                 Playlist
                             </p>
                             <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-5xl">
                                 {name}
                             </p>
-                            <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap text-sm font-medium">
-                                {owner && owner?.imageurl?.url ? (
+
+                            <p className="text-shadow-1 flex items-center text-ellipsis whitespace-nowrap text-sm font-medium">
+                                {owner && owner?.image?.url ? (
                                     <img
                                         className="mr-4 inline h-7 w-7 rounded-full object-cover"
-                                        src={owner.imageurl.url}
+                                        src={owner.image.url}
                                         alt=""
                                     />
                                 ) : (
@@ -175,10 +259,13 @@ function PlaylistPage() {
                                     ? `${songs.length} song`
                                     : `${songs.length} songs`}
                                 {' • '}
-                                {owner && owner.name}
-                                {' • '}
                                 {formatDuration(totalTime)}
                             </p>
+                            {description && (
+                                <p className="text-shadow-1 truncate text-sm font-medium text-slate-300">
+                                    Description: {description}
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -195,18 +282,38 @@ function PlaylistPage() {
                         {showProfileOption === true && (
                             <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
-                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-image-2-fill text-xl leading-none"></i>
-                                        <span className="text-left text-sm">
-                                            Change thumbnail
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                        <i className="ri-draft-line text-xl leading-none"></i>
-                                        <span className="text-left text-sm">
-                                            Change description
-                                        </span>
-                                    </li>
+                                    {myProfileData?.id == playlist_owner && (
+                                        <>
+                                            <li
+                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onClick={() => {
+                                                    setShowChangeThumbnail(
+                                                        true,
+                                                    );
+                                                    setShowProfileOption(false);
+                                                }}
+                                            >
+                                                <i className="ri-image-2-fill text-xl leading-none"></i>
+                                                <span className="text-left text-sm">
+                                                    Change thumbnail
+                                                </span>
+                                            </li>
+                                            <li
+                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                onClick={() => {
+                                                    setShowProfileOption(false);
+                                                    setShowChangeDescription(
+                                                        true,
+                                                    );
+                                                }}
+                                            >
+                                                <i className="ri-draft-line text-xl leading-none"></i>
+                                                <span className="text-left text-sm">
+                                                    Change description
+                                                </span>
+                                            </li>
+                                        </>
+                                    )}
                                     <li
                                         className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                         onClick={handleCopyLink}
@@ -218,9 +325,10 @@ function PlaylistPage() {
                                         name != 'Liked Songs' && (
                                             <li
                                                 className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                onClick={() =>
-                                                    setConfirmDelete(true)
-                                                }
+                                                onClick={() => {
+                                                    setConfirmDelete(true);
+                                                    setShowProfileOption(false);
+                                                }}
                                             >
                                                 <i className="ri-close-large-line text-xl leading-none"></i>
                                                 <span>Delete playlist</span>

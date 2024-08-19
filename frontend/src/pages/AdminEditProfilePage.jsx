@@ -100,7 +100,7 @@ function AdminEditProfilePage() {
 
     return (
         <div className="profilepage__editing pt-8">
-            <h1 className="admin-page__title block select-none p-2 text-5xl">
+            <h1 className="admin-page__title block select-none p-2 text-7xl">
                 Edit Profile
             </h1>
 

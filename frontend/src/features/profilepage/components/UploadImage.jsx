@@ -86,7 +86,7 @@ const UploadImage = memo(
                                 {isLoading ? 'Uploading...' : 'Submit'}
                             </button>
                         ) : (
-                            <span className="upload__desc absolute text-[13px] text-[#b2b2b2]">
+                            <span className="upload__desc text-[13px] text-[#b2b2b2]">
                                 {`File size is less than ${sizeLimit} MB`}
                             </span>
                         )}

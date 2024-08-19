@@ -7,6 +7,7 @@ import {
     useGetProfileByIdQuery,
     useGetProfileAllSongsQuery,
     useDeleteTrackByIdMutation,
+    useUploadProfilePicMutation,
 } from '@services/api';
 import {
     MediaDisplay,
@@ -14,6 +15,7 @@ import {
     ReportFrame,
     ConfirmDeletion,
     Loading,
+    UpdateImageFrame,
 } from '@components';
 import {
     selectCurrentAdmin,
@@ -30,6 +32,9 @@ function SongPage() {
     const [showReportFrame, setShowReportFrame] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [showSongOptions, setShowSongOptions] = useState(false);
+    const [showChangeThumbnail, setShowChangeThumbnail] = useState(false);
+    const [showChangeCover, setShowChangeCover] = useState(false);
+
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (showSongOptions === true && !e.target.closest('.menu')) {
@@ -143,6 +148,20 @@ function SongPage() {
 
     return (
         <>
+            {showChangeThumbnail && (
+                <UpdateImageFrame
+                    setShowFrame={setShowChangeThumbnail}
+                    label="To upload a thumbnail click on box or drop file here!"
+                    useUploadMutation={useUploadProfilePicMutation} // Chưa có api đang để đại
+                />
+            )}
+            {showChangeCover && (
+                <UpdateImageFrame
+                    setShowFrame={setShowChangeCover}
+                    label="To upload a cover click on box or drop file here!"
+                    useUploadMutation={useUploadProfilePicMutation} // Chưa có api đang để đại
+                />
+            )}
             {confirmDelete && (
                 <ConfirmDeletion
                     type="song"
@@ -160,7 +179,7 @@ function SongPage() {
                             <div className="absolute left-20 right-0 top-0 h-96">
                                 {!songIsDisabled ? (
                                     <img
-                                        className="song__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
+                                        className="song__cover h-full w-full select-none rounded-xl object-cover shadow-2xl brightness-75"
                                         src={songCoverimg}
                                         alt="cover"
                                     />
@@ -177,7 +196,7 @@ function SongPage() {
                                     <>
                                         {songAvatar ? (
                                             <img
-                                                className="playlist__avatar h-full w-full rounded-sm object-cover shadow-2xl"
+                                                className="playlist__avatar h-full w-full select-none rounded-sm object-cover shadow-2xl"
                                                 src={songAvatar}
                                                 alt=""
                                             />
@@ -208,7 +227,7 @@ function SongPage() {
                                     <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap font-medium">
                                         {profileImageUrl ? (
                                             <img
-                                                className="mx-2 inline h-7 min-w-7 rounded-full object-cover"
+                                                className="mx-2 inline h-7 min-w-7 select-none rounded-full object-cover"
                                                 src={profileImageUrl}
                                                 alt=""
                                             />
@@ -269,6 +288,44 @@ function SongPage() {
                                         {showSongOptions === true && (
                                             <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                                 <ul>
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <>
+                                                            <li
+                                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                onClick={() => {
+                                                                    setShowChangeThumbnail(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <i className="ri-exchange-line text-xl leading-none"></i>
+                                                                <span>
+                                                                    Change cover
+                                                                </span>
+                                                            </li>
+                                                            <li
+                                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                onClick={() => {
+                                                                    setShowChangeCover(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <i className="ri-exchange-fill text-xl leading-none"></i>
+                                                                <span className="text-left text-sm">
+                                                                    Change
+                                                                    thumbnail
+                                                                </span>
+                                                            </li>
+                                                        </>
+                                                    )}
                                                     <li
                                                         className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                                         onClick={handleCopyLink}
@@ -276,24 +333,6 @@ function SongPage() {
                                                         <i className="ri-share-line text-xl leading-none"></i>
                                                         <span>Copy link</span>
                                                     </li>
-                                                    {myProfileData?.id ==
-                                                        songUploader && (
-                                                        <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <i className="ri-exchange-line text-xl leading-none"></i>
-                                                            <span>
-                                                                Change cover
-                                                            </span>
-                                                        </li>
-                                                    )}
-                                                    {myProfileData?.id ==
-                                                        songUploader && (
-                                                        <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <i className="ri-exchange-fill text-xl leading-none"></i>
-                                                            <span className="text-left text-sm">
-                                                                Change thumbnail
-                                                            </span>
-                                                        </li>
-                                                    )}
                                                     {token && (
                                                         <li
                                                             className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"

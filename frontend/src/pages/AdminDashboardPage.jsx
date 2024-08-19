@@ -11,7 +11,7 @@ const StatCard = ({ title, value, bgColor, iconClass }) => {
     return (
         <div className="my-4 flex h-32 w-64 items-center justify-between rounded-xl bg-[#273142] p-1">
             <div className="text-left">
-                <p className="max-w-44 p-3 font-kodchasan font-medium leading-4 text-slate-400">
+                <p className="max-w-44 select-none p-3 font-kodchasan font-medium leading-4 text-slate-400">
                     {title}
                 </p>
                 <p className="p-3 text-3xl font-semibold">{value}</p>
@@ -117,7 +117,7 @@ function AdminDashboardPage() {
     };
     return (
         <div className="admin-dashboard cursor-default">
-            <h1 className="admin-page__title inline-block select-none px-4 py-8 text-5xl">
+            <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
                 Dashboard
             </h1>
             <div className="grid grid-cols-3 justify-center justify-items-center gap-4">
@@ -134,9 +134,9 @@ function AdminDashboardPage() {
             <div className="mt-7 flex justify-center gap-44">
                 <div className="w-[320px] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
                     <div className="flex items-center justify-between">
-                        <p className="font-semibold">User list</p>
+                        <p className="select-none font-semibold">User list</p>
                         <button
-                            className="mr-[9px] rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
+                            className="mr-[9px] select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
                             onClick={handleUserSeeAll}
                         >
                             See all
@@ -145,8 +145,12 @@ function AdminDashboardPage() {
                     <table className="mt-3 w-full">
                         <thead>
                             <tr className="text-sm text-slate-300">
-                                <th className="text-left font-normal">Name</th>
-                                <th className="font-normal">Status</th>
+                                <th className="select-none text-left font-normal">
+                                    Name
+                                </th>
+                                <th className="select-none font-normal">
+                                    Status
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -190,10 +194,10 @@ function AdminDashboardPage() {
                 </div>
 
                 <div className="w-[450px] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
-                    <div className="flex items-center justify-between">
+                    <div className="flex select-none items-center justify-between">
                         <p className="font-semibold">Song list</p>
                         <button
-                            className="mr-[9px] rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
+                            className="mr-[9px] select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
                             onClick={handleSongSeeAll}
                         >
                             See all
@@ -202,9 +206,15 @@ function AdminDashboardPage() {
                     <table className="mt-3 w-full">
                         <thead>
                             <tr className="text-sm text-slate-300">
-                                <th className="text-left font-normal">Name</th>
-                                <th className="font-normal">Status</th>
-                                <th className="font-normal">Artist</th>
+                                <th className="select-none text-left font-normal">
+                                    Name
+                                </th>
+                                <th className="select-none font-normal">
+                                    Status
+                                </th>
+                                <th className="select-none font-normal">
+                                    Artist
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

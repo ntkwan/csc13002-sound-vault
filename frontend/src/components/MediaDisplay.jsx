@@ -862,9 +862,10 @@ const SongBar = memo(
                                         {token && (
                                             <li
                                                 className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                onClick={prevent(() =>
+                                                onClick={prevent(() => {
                                                     setShowReportFrame(true),
-                                                )}
+                                                        setMenuVisible(null);
+                                                })}
                                             >
                                                 <i className="ri-error-warning-line text-xl leading-none"></i>
                                                 <span>Report</span>
