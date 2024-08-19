@@ -40,6 +40,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
+    const { id, type, title, visibility, link, data } = media;
 
     const navigate = useNavigate();
     const handleProfile = (id) => {
@@ -51,14 +52,13 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     const handlePlaylist = (id) => {
-        navigate(`/playlist/${id}`);
+        navigate(`/${type.toLowerCase()}/${id}`);
     };
 
     const handleSong = (id) => {
         navigate(`/song/${id}`);
     };
 
-    const { id, type, title, visibility, link, data } = media;
     let showedData = data;
     if (type.includes('Home')) {
         showedData = data.slice(0, 6);

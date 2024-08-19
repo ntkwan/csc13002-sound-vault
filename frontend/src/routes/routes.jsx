@@ -55,6 +55,7 @@ const router = createBrowserRouter([
                     { path: 'trending', Component: TrendingPage },
                     { path: 'newrelease', Component: NewReleasePage },
                     { path: 'album', Component: AlbumPage },
+                    { path: 'album/:playlistId', Component: PlaylistPage },
                     { path: 'playlist/:playlistId', Component: PlaylistPage },
                     { path: 'artist', Component: ArtistPage },
                     { path: 'aboutus', Component: AboutUsPage },

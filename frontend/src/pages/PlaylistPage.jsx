@@ -101,7 +101,7 @@ function PlaylistPage() {
     const [removePlayList, { isLoading: isLoadingRemovePlayList }] =
         useDeletePlaylistByIdMutation();
     const handleDeletePlaylist = async (playlistId) => {
-        if (isLoadingRemovePlayList) return <Loading />;
+        if (isLoadingRemovePlayList) return;
         try {
             await removePlayList(playlistId).unwrap();
             toast.success('Playlist deleted successfully');
@@ -137,7 +137,7 @@ function PlaylistPage() {
 
     if (!playlist || !owner) return <Loading />;
 
-    const { name, avatar, cover, songs, description } = playlist;
+    const { name, avatar, cover, songs, description, isAlbum } = playlist;
 
     const songsDisplay = {
         type: 'Song',
@@ -237,7 +237,7 @@ function PlaylistPage() {
                         {/* playlist info */}
                         <div className="relative ml-5 h-full w-full cursor-default content-center">
                             <p className="text-shadow-1 font-semibold">
-                                Playlist
+                                {isAlbum ? 'Album' : 'Playlist'}
                             </p>
                             <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-5xl">
                                 {name}
@@ -284,20 +284,24 @@ function PlaylistPage() {
                                 <ul>
                                     {myProfileData?.id == playlist_owner && (
                                         <>
-                                            <li
-                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                onClick={() => {
-                                                    setShowChangeThumbnail(
-                                                        true,
-                                                    );
-                                                    setShowProfileOption(false);
-                                                }}
-                                            >
-                                                <i className="ri-image-2-fill text-xl leading-none"></i>
-                                                <span className="text-left text-sm">
-                                                    Change thumbnail
-                                                </span>
-                                            </li>
+                                            {isAlbum && (
+                                                <li
+                                                    className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    onClick={() => {
+                                                        setShowChangeThumbnail(
+                                                            true,
+                                                        );
+                                                        setShowProfileOption(
+                                                            false,
+                                                        );
+                                                    }}
+                                                >
+                                                    <i className="ri-image-2-fill text-xl leading-none"></i>
+                                                    <span className="text-left text-sm">
+                                                        Change thumbnail
+                                                    </span>
+                                                </li>
+                                            )}
                                             <li
                                                 className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
                                                 onClick={() => {
