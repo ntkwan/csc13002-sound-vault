@@ -155,6 +155,7 @@ function PlaylistPage() {
     const hashedColor =
         name === 'Liked Songs' ? '#6D28C6' : hashColor(playlistId);
     const thumbnailColor = `linear-gradient(to bottom, ${hashedColor}, #FFFFFF)`;
+    const backgroundColor = `linear-gradient(to bottom, ${hashedColor}, #2F2042)`;
 
     const songsDisplay = {
         type: 'Song',
@@ -236,7 +237,10 @@ function PlaylistPage() {
                             />
                         </div>
                     ) : (
-                        <div className="absolute left-20 right-0 top-0 h-96 rounded-xl bg-gradient-to-b from-[#7751A8] to-[#2F2042]"></div>
+                        <div
+                            className="absolute left-20 right-0 top-0 h-96 rounded-xl"
+                            style={{ background: backgroundColor }}
+                        ></div>
                     )}
                     <div className="ml-[5%] flex items-center">
                         <div className="relative h-40 min-w-40 max-w-40">
