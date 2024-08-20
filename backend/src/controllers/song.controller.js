@@ -104,7 +104,7 @@ const play_song = async (req, res) => {
 
         if (user) {
             if (user.recentlyPlayed.includes(songId)) {
-                user.recentlyPlayed = this.recentlyPlayed.filter(
+                user.recentlyPlayed = user.recentlyPlayed.filter(
                     (id) => id.toString() !== songId,
                 );
             }
