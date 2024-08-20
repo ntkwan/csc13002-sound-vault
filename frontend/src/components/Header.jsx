@@ -195,12 +195,14 @@ function Header() {
                 ref={headerRef}
             >
                 {/* Logo */}
-                <p
-                    className="header__logo w-1/4 pr-5 font-lilitaone text-4xl hover:cursor-pointer"
-                    onClick={handleLogoClick}
-                >
-                    SoundVault
-                </p>
+                <div className="header__logo flex-1">
+                    <p
+                        className="max-w-fit pr-5 font-lilitaone text-4xl hover:cursor-pointer"
+                        onClick={handleLogoClick}
+                    >
+                        SoundVault
+                    </p>
+                </div>
                 {/* Search bar */}
                 {!(token && isAdmin) && (
                     <div className="header__search-container relative flex w-1/2 items-center justify-center">
