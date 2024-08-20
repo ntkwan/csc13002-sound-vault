@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
+const { formatInTimeZone } = require('date-fns-tz');
 const mongoose = require('mongoose');
 const moment = require('moment');
 const schedule = require('node-schedule');
@@ -10,6 +11,7 @@ const SongModel = require('../models/song.schema');
 const payos = require('../utils/payos');
 const axios = require('../utils/axios');
 
+const TIMEZONE = 'Asia/Ho_Chi_Minh';
 const DEPOSIT = 'deposit';
 const WITHDRAW = 'withdraw';
 const DONATE = 'donate';
@@ -470,15 +472,16 @@ const get_all_payment_history = async (req, res) => {
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
-                    date: payment.createdAt.toLocaleDateString('vi-VN', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                    }),
-                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    }),
+                    date: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'dd/MM/yyyy',
+                    ),
+                    time: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'HH:mm',
+                    ),
                 };
             }),
         );
@@ -526,15 +529,16 @@ const get_payment_history = async (req, res) => {
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
-                    date: payment.createdAt.toLocaleDateString('vi-VN', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                    }),
-                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    }),
+                    date: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'dd/MM/yyyy',
+                    ),
+                    time: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'HH:mm',
+                    ),
                 };
             }),
         );
@@ -561,15 +565,16 @@ const get_withdraw_requests = async (req, res) => {
                     orderId: payment.orderId,
                     status: payment.status,
                     qrCode: payment.qrCode,
-                    date: payment.createdAt.toLocaleDateString('vi-VN', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                    }),
-                    time: payment.createdAt.toLocaleTimeString('vi-VN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    }),
+                    date: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'dd/MM/yyyy',
+                    ),
+                    time: formatInTimeZone(
+                        payment.createdAt,
+                        TIMEZONE,
+                        'HH:mm',
+                    ),
                 };
             }),
         );
