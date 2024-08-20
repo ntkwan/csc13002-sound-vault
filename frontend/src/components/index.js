@@ -26,4 +26,5 @@ export {
 export * from './UI/Icons';
 export * from './Constants';
 export * from './ArticleSection';
+export * from './PlaylistThumbnailColor';
 /* eslint-disable react-refresh/only-export-components */

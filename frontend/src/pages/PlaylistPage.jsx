@@ -17,6 +17,7 @@ import {
     useChangePlaylistThumbnailMutation,
 } from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
+import { colors } from '@components/PlaylistThumbnailColor';
 
 function PlaylistPage() {
     const myProfileData = useSelector(selectCurrentProfile);
@@ -139,6 +140,22 @@ function PlaylistPage() {
 
     const { name, avatar, cover, songs, description, isAlbum } = playlist;
 
+    //hashing color
+    const hashColor = (id) => {
+        const hash = (str) => {
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash * 33) ^ str.charCodeAt(i);
+            }
+            return hash >>> 0;
+        };
+        const index = hash(id) % colors.length;
+        return colors[index];
+    };
+    const hashedColor =
+        name === 'Liked Songs' ? '#6D28C6' : hashColor(playlistId);
+    const thumbnailColor = `linear-gradient(to bottom, ${hashedColor}, #FFFFFF)`;
+
     const songsDisplay = {
         type: 'Song',
         title: '',
@@ -231,7 +248,10 @@ function PlaylistPage() {
                                     alt=""
                                 />
                             ) : (
-                                <i className="ri-heart-line block h-full w-full content-center rounded-xl bg-gradient-to-b from-[#6D28C6] to-[#FFFFFF] text-center text-8xl leading-none"></i>
+                                <i
+                                    className={`${name == 'Liked Songs' ? 'ri-heart-line' : 'ri-disc-fill'} block h-full w-full content-center rounded-xl text-center text-8xl leading-none`}
+                                    style={{ background: thumbnailColor }}
+                                ></i>
                             )}
                         </div>
                         {/* playlist info */}

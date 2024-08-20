@@ -32,6 +32,7 @@ import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 import { toast } from 'react-toastify';
 import { setCurrentPlaylist } from '@features/playlists/slices';
+import { colors } from '@components/PlaylistThumbnailColor';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const dispatch = useDispatch();
@@ -332,7 +333,7 @@ HomeCard.propTypes = {
 const DetailCard = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
         // Song
-        const { title, image } = mediaData;
+        const { title, image, id } = mediaData;
         // Artist
         const { name, imageurl } = mediaData;
         // Album: name, image
@@ -350,6 +351,19 @@ const DetailCard = memo(
         } else if (type.includes('Album') || type.includes('Playlist')) {
             card_title = name;
         }
+        const hashColor = (id) => {
+            const hash = (str) => {
+                let hash = 5381;
+                for (let i = 0; i < str.length; i++) {
+                    hash = (hash * 33) ^ str.charCodeAt(i);
+                }
+                return hash >>> 0;
+            };
+            const index = hash(id) % colors.length;
+            return colors[index];
+        };
+        const hashedColor = name === 'Liked Songs' ? '#6D28C6' : hashColor(id);
+        const thumbnailColor = `linear-gradient(to bottom, ${hashedColor}, #FFFFFF)`;
 
         return (
             <div
@@ -358,11 +372,22 @@ const DetailCard = memo(
             >
                 <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
                     <div className="media-item__image relative">
-                        <img
-                            className={`${imageClass} media-item__img hover: pointer-events-none aspect-square w-full object-cover`}
-                            src={url}
-                            alt={card_title}
-                        />
+                        {!type.includes('Playlist') ? (
+                            <img
+                                className={`${imageClass} media-item__img aspect-square w-full object-cover hover:pointer-events-none`}
+                                src={url}
+                                alt={card_title}
+                            />
+                        ) : (
+                            <div
+                                className="aspect-square w-full object-cover hover:pointer-events-none"
+                                style={{ background: thumbnailColor }}
+                            >
+                                <i
+                                    className={`${name == 'Liked Songs' ? 'ri-heart-line' : ''} block h-full w-full content-center text-center text-8xl leading-none`}
+                                ></i>
+                            </div>
+                        )}
                         <PlayButton
                             onClick={prevent(onClickButton)}
                             isOnPlaying={isOnPlaying}
