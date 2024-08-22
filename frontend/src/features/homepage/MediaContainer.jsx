@@ -19,28 +19,24 @@ function MediaContainer() {
         {
             type: 'Home Artist',
             title: 'Featured artist',
-            visibility: '',
             link: 'artist',
             data: artist,
         },
         {
             type: 'Home Single Song',
             title: 'Trending',
-            visibility: '',
             link: 'trending',
             data: trendingSongs,
         },
         {
             type: 'Home Single Song',
             title: 'New Releases',
-            visibility: '',
             link: 'newrelease',
             data: newSongs,
         },
         {
             type: 'Album',
             title: 'Popular Album',
-            visibility: '',
             link: 'album',
             data: albums,
         },
