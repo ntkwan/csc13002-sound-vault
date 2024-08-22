@@ -15,6 +15,7 @@ import {
     useBanAccountMutation,
 } from '@services/api';
 import { Loading } from '@components';
+import { toast } from 'react-toastify';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -140,8 +141,10 @@ function AdminAccountPage() {
     const confirmActionHandler = () => {
         if (confirmAction === 'verify' || confirmAction === 'unverify') {
             handleVerify(selectedAccountId);
+            toast.success(`Account has been ${confirmAction}ed successfully`);
         } else if (confirmAction === 'ban' || confirmAction === 'unban') {
             handleBan(selectedAccountId);
+            toast.success(`Account has been ${confirmAction}ned successfully`);
         } else if (confirmAction === 'view') {
             handleView(selectedAccountId);
         }
