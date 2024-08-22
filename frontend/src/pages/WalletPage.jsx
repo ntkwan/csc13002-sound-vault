@@ -86,7 +86,7 @@ function WalletPage() {
                     )}
                     <Link
                         to={`${isVerified ? 'artist/history' : 'history'}`}
-                        className="wallet__action group relative flex w-52 items-center justify-center rounded-full border py-3"
+                        className="wallet__action group relative flex w-52 items-center justify-center rounded-full border-2 py-3"
                     >
                         <img
                             src={historyIcon}
