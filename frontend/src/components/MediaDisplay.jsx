@@ -60,13 +60,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         navigate(`/song/${id}`);
     };
 
-    let showedData = data;
-    if (type.includes('Home')) {
-        showedData = data.slice(0, 6);
-        if (type.includes('Artist')) {
-            showedData = data.slice(0, 5);
-        }
-    }
+    const [sliceData, setSliceData] = useState(0);
 
     const handlePlayClick = (mediaData) => {
         if (
@@ -127,6 +121,20 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     if (!data || !data.length) return;
+    let step = 6;
+    if (type.includes('Home') && type.includes('Artist')) {
+        step = 5;
+    }
+    if (sliceData * step >= data.length) {
+        setSliceData(Math.floor(data.length / step));
+    } else if (sliceData < 0) {
+        setSliceData(0);
+    }
+    const start = sliceData * step;
+    const end = start + step;
+    const showedData = data.slice(start, end);
+    const classNameSliceLeft = start === 0 ? 'opacity-30' : '';
+    const classNameSliceRight = end >= data.length ? 'opacity-30' : '';
 
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
@@ -157,59 +165,72 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 )}
             </h2>
             {/* Media content */}
-            <div className={`${displayType} mt-4 justify-items-center`}>
-                {showedData.map((mediaData, index) => {
-                    let MediaComponent;
-                    switch (displayItems) {
-                        case '1':
-                            MediaComponent = HomeCard;
-                            break;
-                        case '2':
-                            MediaComponent = DetailCard;
-                            break;
-                        case '3':
-                            MediaComponent = BrowseCard;
-                            break;
-                        case '4':
-                            MediaComponent = SongBar;
-                            break;
-                        default:
-                            MediaComponent = HomeCard;
-                    }
+            <div className="flex items-center">
+                <i
+                    className={`ri-arrow-left-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceLeft}`}
+                    onClick={() => setSliceData(sliceData - 1)}
+                ></i>
+                <div
+                    className={`${displayType} mt-4 flex-[1] justify-items-center`}
+                >
+                    {showedData.map((mediaData, index) => {
+                        let MediaComponent;
+                        switch (displayItems) {
+                            case '1':
+                                MediaComponent = HomeCard;
+                                break;
+                            case '2':
+                                MediaComponent = DetailCard;
+                                break;
+                            case '3':
+                                MediaComponent = BrowseCard;
+                                break;
+                            case '4':
+                                MediaComponent = SongBar;
+                                break;
+                            default:
+                                MediaComponent = HomeCard;
+                        }
 
-                    let onClickImage, onClickButton, isOnPlaying;
-                    if (type.includes('Song')) {
-                        onClickImage = () => handleSong(mediaData.id);
-                        onClickButton = () => handlePlayClick(mediaData);
-                        isOnPlaying = currentSong == mediaData.id && isPlaying;
-                    } else if (type.includes('Artist')) {
-                        onClickImage = () => handleProfile(mediaData.id);
-                        onClickButton = () =>
-                            handleArtistPlayClick(mediaData.id);
-                        isOnPlaying =
-                            currentPlaylist.id == mediaData.id && isPlaying;
-                    } else if (
-                        type.includes('Album') ||
-                        type.includes('Playlist')
-                    ) {
-                        onClickImage = () => handlePlaylist(mediaData.id);
-                        onClickButton = () =>
-                            handlePlaylistPlayClick(mediaData.id);
-                        isOnPlaying =
-                            currentPlaylist.id == mediaData.id && isPlaying;
-                    }
-                    return (
-                        <MediaComponent
-                            key={index}
-                            type={type}
-                            mediaData={mediaData}
-                            onClickImage={onClickImage}
-                            onClickButton={onClickButton}
-                            isOnPlaying={isOnPlaying}
-                            index={index}
-                        />
-                    );
-                })}
+                        let onClickImage, onClickButton, isOnPlaying;
+                        if (type.includes('Song')) {
+                            onClickImage = () => handleSong(mediaData.id);
+                            onClickButton = () => handlePlayClick(mediaData);
+                            isOnPlaying =
+                                currentSong == mediaData.id && isPlaying;
+                        } else if (type.includes('Artist')) {
+                            onClickImage = () => handleProfile(mediaData.id);
+                            onClickButton = () =>
+                                handleArtistPlayClick(mediaData.id);
+                            isOnPlaying =
+                                currentPlaylist.id == mediaData.id && isPlaying;
+                        } else if (
+                            type.includes('Album') ||
+                            type.includes('Playlist')
+                        ) {
+                            onClickImage = () => handlePlaylist(mediaData.id);
+                            onClickButton = () =>
+                                handlePlaylistPlayClick(mediaData.id);
+                            isOnPlaying =
+                                currentPlaylist.id == mediaData.id && isPlaying;
+                        }
+                        return (
+                            <MediaComponent
+                                key={index}
+                                type={type}
+                                mediaData={mediaData}
+                                onClickImage={onClickImage}
+                                onClickButton={onClickButton}
+                                isOnPlaying={isOnPlaying}
+                                index={index}
+                            />
+                        );
+                    })}
+                </div>
+                <i
+                    className={`ri-arrow-right-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceRight}`}
+                    onClick={() => setSliceData(sliceData + 1)}
+                ></i>
             </div>
         </section>
     ) : null;
