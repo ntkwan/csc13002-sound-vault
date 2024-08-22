@@ -4,7 +4,7 @@ import WalletIcon from '@assets/img/wallet-icon.svg';
 function WithdrawButton(props) {
     return (
         <button
-            className="group relative flex w-52 items-center justify-center rounded-full border py-3 disabled:cursor-not-allowed disabled:brightness-50"
+            className="group relative flex w-52 items-center justify-center rounded-full border-2 py-3 disabled:cursor-not-allowed disabled:brightness-50"
             onClick={props.openWithdrawModal}
             disabled={props.disabled}
         >
