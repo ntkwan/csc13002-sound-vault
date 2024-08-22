@@ -22,9 +22,6 @@ function TopicsAndGenresSubPage() {
 
     const songs = {
         type: 'Song',
-        // title: '',
-        // visibility: '',
-        // link: '',
         data: genreSongs || regionData || [],
     };
 
