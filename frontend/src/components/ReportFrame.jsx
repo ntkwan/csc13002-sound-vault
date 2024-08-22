@@ -125,8 +125,11 @@ function ReportFrame({ setShowReportFrame, cardSongId }) {
                             <input
                                 id="phoneNumber"
                                 name="phoneNumber"
-                                type="text"
+                                type="tel"
                                 className="input border-b bg-transparent focus:border-slate-500 focus-visible:outline-none"
+                                pattern="[0-9]{10,11}"
+                                title="Phone number must be 10 or 11 digits, consisting only of numbers."
+                                required
                             />
                         </div>
                     </div>
