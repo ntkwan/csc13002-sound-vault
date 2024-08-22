@@ -708,7 +708,7 @@ const SongBar = memo(
                             alt={title}
                         />
                         <p
-                            className={`flex w-full items-center space-x-3 ${titleClassName} hover:cursor-pointer hover:underline`}
+                            className={`flex w-full items-center space-x-3 ${titleClassName} duration-300 ease-in-out hover:cursor-pointer hover:underline hover:underline-offset-2`}
                             onClick={onClickImage}
                         >
                             {title}
@@ -742,12 +742,12 @@ const SongBar = memo(
                             ></i>
                             {menuVisible === index && (
                                 <div
-                                    className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                                    className={`menu absolute z-50 ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl`}
                                 >
                                     <ul>
                                         {token && (
                                             <li
-                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                className="flex space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                 onMouseEnter={() =>
                                                     setPlaylistOptionsVisible(
                                                         true,
@@ -763,11 +763,11 @@ const SongBar = memo(
                                                 <span>Add to playlist</span>
                                                 <i className="ri-triangle-line rotate-90 text-right"></i>
                                                 {playlistOptionsVisible && (
-                                                    <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                    <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-70 text-sm shadow-md">
                                                         <ul>
-                                                            <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
                                                                 <div
-                                                                    className={`mx-4 w-full py-2 text-left ${myPlaylists.length > 1 ? 'border-b border-[#999]' : ''}`}
+                                                                    className={`mx-4 flex w-full items-center space-x-2 py-2 text-left ${myPlaylists.length > 1 ? 'border-b border-[#999]' : ''}`}
                                                                     onClick={() => {
                                                                         setShowPlaylistForm(
                                                                             true,
@@ -777,7 +777,7 @@ const SongBar = memo(
                                                                         );
                                                                     }}
                                                                 >
-                                                                    <i className="ri-add-circle-line" />
+                                                                    <i className="ri-add-circle-line text-xl leading-none" />
                                                                     <span>
                                                                         New
                                                                         playlist
@@ -800,7 +800,7 @@ const SongBar = memo(
                                                                             key={
                                                                                 index
                                                                             }
-                                                                            className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                            className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                                             onClick={() => {
                                                                                 handleAddToPlaylist(
                                                                                     playlist.id,
@@ -827,7 +827,7 @@ const SongBar = memo(
                                         {pathtype == 'profile' &&
                                             pathId == undefined && (
                                                 <li
-                                                    className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                     onClick={prevent(() => {
                                                         setShowAlbumFrame(true),
                                                             setMenuVisible(
@@ -844,7 +844,7 @@ const SongBar = memo(
                                             myProfileID ==
                                                 playlistData?.playlist_owner && (
                                                 <li
-                                                    className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                     onClick={prevent(() =>
                                                         handleRemoveFromPlaylist(
                                                             pathId,
@@ -861,7 +861,7 @@ const SongBar = memo(
                                             )}
                                         {token && (
                                             <li
-                                                className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                 onClick={prevent(() =>
                                                     handleAddToLikedSongs(
                                                         id,
@@ -876,7 +876,7 @@ const SongBar = memo(
                                             </li>
                                         )}
                                         <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                             onClick={prevent(() =>
                                                 handleShare(),
                                             )}
@@ -886,7 +886,7 @@ const SongBar = memo(
                                         </li>
                                         {token && (
                                             <li
-                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                 onClick={prevent(() => {
                                                     setShowReportFrame(true),
                                                         setMenuVisible(null);
@@ -900,7 +900,7 @@ const SongBar = memo(
                                             !isverified &&
                                             pathId == undefined && (
                                                 <li
-                                                    className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                    className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                     onClick={() =>
                                                         setConfirmDelete(
                                                             !confirmDelete,
