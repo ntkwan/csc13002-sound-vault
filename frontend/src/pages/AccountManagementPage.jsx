@@ -321,7 +321,7 @@ function AdminAccountPage() {
                                 {confirmAction === 'ban' && (
                                     <div className="mb-4">
                                         <label className="mb-2 block font-bold">
-                                            Ban Duration (days):
+                                            Ban Duration:
                                         </label>
                                         <select
                                             className="w-full rounded border px-3 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
