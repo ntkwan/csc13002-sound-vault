@@ -412,15 +412,18 @@ function ProfilePage() {
                                 <h2 className="inline text-3xl font-bold">
                                     About
                                 </h2>
-                                <div className="relative mt-4 w-[65%] transition-all duration-300 hover:scale-[102%]">
+                                <div className="absolute left-20 right-0 mt-4 h-[400px]">
                                     <img
                                         src={avatar}
-                                        className="h-[500px] w-full rounded-xl object-cover brightness-[60%]"
+                                        className="h-full w-full rounded-xl object-cover brightness-[60%]"
                                     />
-                                    <div className="absolute bottom-[15%] left-[10%] w-5/6 select-none">
+                                    <div className="absolute bottom-[10%] left-20 right-20 h-2/3 select-none content-end">
                                         <h2 className="font-bold">{name}</h2>
-                                        <p>{shortDesc}</p>
+                                        <p className="text-ellipsis text-justify">
+                                            {shortDesc}
+                                        </p>
                                     </div>
+                                    <div className="pb-44"></div>
                                 </div>
                             </section>
                         )}
