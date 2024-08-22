@@ -9,7 +9,7 @@ import { Loading } from '@components';
 
 const StatCard = ({ title, value, bgColor, iconClass }) => {
     return (
-        <div className="my-4 flex h-32 w-64 items-center justify-between rounded-xl bg-[#273142] p-1">
+        <div className="my-4 flex h-32 items-center justify-between rounded-xl bg-[#273142] p-1">
             <div className="text-left">
                 <p className="max-w-44 select-none p-3 font-kodchasan font-medium leading-4 text-slate-400">
                     {title}
@@ -120,7 +120,7 @@ function AdminDashboardPage() {
             <h1 className="admin-page__title inline-block select-none px-4 py-8 text-7xl">
                 Dashboard
             </h1>
-            <div className="grid grid-cols-3 justify-center justify-items-center gap-4">
+            <div className="admin-page__stat-card grid grid-cols-3 gap-x-24 gap-y-4">
                 {statItems.map((item) => (
                     <StatCard
                         key={item.title}
@@ -131,8 +131,8 @@ function AdminDashboardPage() {
                     />
                 ))}
             </div>
-            <div className="mt-7 flex justify-center gap-44">
-                <div className="w-[320px] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
+            <div className="admin-page__user-song-list mt-8 flex gap-24">
+                <div className="userlist__container flex-[1] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
                     <div className="flex items-center justify-between">
                         <p className="select-none font-semibold">User list</p>
                         <button
@@ -193,7 +193,7 @@ function AdminDashboardPage() {
                     </table>
                 </div>
 
-                <div className="w-[450px] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
+                <div className="flex-[2] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
                     <div className="flex select-none items-center justify-between">
                         <p className="font-semibold">Song list</p>
                         <button
