@@ -4,7 +4,7 @@ import topUpIcon from '@assets/img/top-up-icon.svg';
 function DepositButton(props) {
     return (
         <button
-            className="py-x group relative flex w-52 items-center justify-center rounded-full border py-3"
+            className="py-x group relative flex w-52 items-center justify-center rounded-full border-2 py-3"
             onClick={props.openDepositModal}
         >
             <img
