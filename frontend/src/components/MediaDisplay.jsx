@@ -166,10 +166,12 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             </h2>
             {/* Media content */}
             <div className="flex items-center">
-                <i
-                    className={`ri-arrow-left-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceLeft}`}
-                    onClick={() => setSliceData(sliceData - 1)}
-                ></i>
+                {displayItems != 4 && (
+                    <i
+                        className={`ri-arrow-left-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceLeft}`}
+                        onClick={() => setSliceData(sliceData - 1)}
+                    ></i>
+                )}
                 <div
                     className={`${displayType} mt-4 flex-[1] justify-items-center`}
                 >
@@ -227,10 +229,12 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                         );
                     })}
                 </div>
-                <i
-                    className={`ri-arrow-right-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceRight}`}
-                    onClick={() => setSliceData(sliceData + 1)}
-                ></i>
+                {displayItems != 4 && (
+                    <i
+                        className={`ri-arrow-right-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceRight}`}
+                        onClick={() => setSliceData(sliceData + 1)}
+                    ></i>
+                )}
             </div>
         </section>
     ) : null;
