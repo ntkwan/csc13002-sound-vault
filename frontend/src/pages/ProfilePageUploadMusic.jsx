@@ -26,6 +26,28 @@ function ProfilePageUploadMusic() {
     const { data: followingListData } = useGetFollowingListByIdQuery(id, {
         skip: !id,
     });
+    // handle genres
+    const genres = [
+        { id: 'Rap', display: 'Rap' },
+        { id: 'Love', display: 'Love' },
+        { id: 'Pop', display: 'Pop' },
+        { id: 'Jazz', display: 'Jazz' },
+        { id: 'R&B', display: 'R&B' },
+        { id: 'Party', display: 'Party' },
+    ];
+    const [genre, setGenre] = useState('');
+    // handle size mention-react input
+    const [maxWidthPx, setMaxWidthPx] = useState(0);
+    const updateMaxWidthPx = () => {
+        const viewportWidth = window.innerWidth;
+        const newMaxWidthPx = ((viewportWidth - 160 - 180) / 2) * (5 / 6);
+        setMaxWidthPx(newMaxWidthPx);
+    };
+    useEffect(() => {
+        updateMaxWidthPx();
+        window.addEventListener('resize', updateMaxWidthPx);
+        return () => window.removeEventListener('resize', updateMaxWidthPx);
+    }, []);
 
     // check box for terms and policy
     const [checked, setChecked] = useState(false);
@@ -47,7 +69,7 @@ function ProfilePageUploadMusic() {
         const formData = new FormData(e.target);
         // const collaborators = formData.get('collaborators');
         const songTitle = formData.get('title');
-        const genre = formData.get('genre');
+        // const genre = formData.get('genre');
         const region = formData.get('region');
 
         if (songTitle && genre && region && uploadThumbnail && uploadAudio) {
@@ -81,18 +103,6 @@ function ProfilePageUploadMusic() {
         }));
     }
 
-    const [maxWidthPx, setMaxWidthPx] = useState(0);
-    const updateMaxWidthPx = () => {
-        const viewportWidth = window.innerWidth;
-        const newMaxWidthPx = ((viewportWidth - 160 - 180) / 2) * (5 / 6);
-        setMaxWidthPx(newMaxWidthPx);
-    };
-    useEffect(() => {
-        updateMaxWidthPx();
-        window.addEventListener('resize', updateMaxWidthPx);
-        return () => window.removeEventListener('resize', updateMaxWidthPx);
-    }, []);
-
     return (
         <>
             <div className="upload-music__page pt-8">
@@ -102,34 +112,43 @@ function ProfilePageUploadMusic() {
                         onClose={() => setShowTermsAndPolicy(false)}
                     />
                 )}
-                <PageTitle title="Upload Music " className="mb-8" />
+                {/* title */}
+                <PageTitle title="Upload Music" className="mb-8" />
+
+                {/* upload form */}
                 <form
-                    className="editing__upload grid grid-rows-2 gap-8"
+                    className="upload-music__form grid grid-rows-2 gap-8"
                     onSubmit={handleSubmit}
                 >
-                    <fieldset className="flex h-60">
+                    {/* field upload audio and thumbnail */}
+                    <fieldset className="upload-music__field-1 flex h-60">
+                        {/* upload audio */}
                         <UploadAudio
-                            className="flex-1"
                             id="audio-upload"
+                            className="upload-music__audio flex-1"
                             label="To upload music click on the box or drop file here!"
                             sizeLimit={10}
                             useUploadMutation={setUploadAudio}
                         />
+
+                        {/* upload thumbnail */}
                         <UploadImage
-                            className="flex-1"
                             id="thumbnail-upload"
+                            className="upload-music__thumbnail flex-1"
                             label="To upload a thumbnail click on the box or drop file here!"
                             sizeLimit={10}
                             useUploadMutation={setUploadThumbnail}
                         />
                     </fieldset>
 
+                    {/* field upload information */}
                     <div className="upload-music__infomation relative grid w-full grid-cols-2 items-start gap-4">
-                        <fieldset className="w-5/6 space-y-4 overflow-hidden">
+                        <fieldset className="upload-music__field-2 w-5/6 space-y-4 overflow-hidden">
+                            {/* colaboration */}
                             <MentionsInput
                                 id="collaborators"
                                 name="collaborators"
-                                className="mentions h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                className="upload-music__collaborators h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 placeholder="Mention Collaborators using '@' symbol"
                                 value={suggestion}
                                 onChange={(e) => setSuggestion(e.target.value)}
@@ -170,6 +189,8 @@ function ProfilePageUploadMusic() {
                                     }}
                                 />
                             </MentionsInput>
+
+                            {/* song title */}
                             <InputForm
                                 id="title"
                                 name="title"
@@ -177,23 +198,55 @@ function ProfilePageUploadMusic() {
                                 required
                             />
                         </fieldset>
-                        <fieldset className="w-5/6 space-y-4">
-                            <select
-                                id="genre"
-                                name="genre"
-                                className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
-                                required
+
+                        <fieldset className="upload-music__field-3 w-5/6 space-y-4">
+                            {/* genres  */}
+                            <MentionsInput
+                                id="genres"
+                                name="genres"
+                                className="upload-music__genres h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                placeholder="Mention genres using '@' symbol"
+                                value={genre}
+                                onChange={(e) => setGenre(e.target.value)}
+                                singleLine
+                                style={{
+                                    '&singleLine': {
+                                        display: 'block',
+                                        width: `${maxWidthPx}px`,
+                                    },
+                                    input: {
+                                        padding: '0 16px',
+                                        height: '50px',
+                                        outline: 'none',
+                                    },
+                                    control: {
+                                        color: '#fff',
+                                    },
+                                    suggestions: {
+                                        list: {
+                                            backgroundColor: 'black',
+                                        },
+                                        item: {
+                                            padding: '5px 15px',
+                                            '&focused': {
+                                                backgroundColor:
+                                                    'rgba(255,255,255,0.3)',
+                                            },
+                                        },
+                                    },
+                                }}
                             >
-                                <option value="" defaultValue>
-                                    (Select Genre)
-                                </option>
-                                <option value="Rap">Rap</option>
-                                <option value="Love">Love</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Party">Party</option>
-                            </select>
+                                <Mention
+                                    data={genres}
+                                    appendSpaceOnAdd={true}
+                                    style={{
+                                        backgroundColor: '#0284c7',
+                                        borderRadius: '5px',
+                                    }}
+                                />
+                            </MentionsInput>
+
+                            {/* region */}
                             <select
                                 id="region"
                                 name="region"
