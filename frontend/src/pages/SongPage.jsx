@@ -138,7 +138,9 @@ function SongPage() {
 
     const navigate = useNavigate();
     const handleArtist = (id) => {
-        navigate(`/profile/${id}`);
+        if (id === myProfileData?.id) {
+            navigate('/profile');
+        } else navigate(`/profile/${id}`);
     };
 
     if (
@@ -290,75 +292,28 @@ function SongPage() {
                                             />
                                         </div>
                                         {showSongOptions === true && (
-                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
                                                 <ul>
+                                                    <li
+                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                        onClick={handleCopyLink}
+                                                    >
+                                                        <i className="ri-share-line text-xl leading-none"></i>
+                                                        <span>Copy link</span>
+                                                    </li>
                                                     {myProfileData?.id ==
                                                         songUploader && (
-                                                        <>
-                                                            <li
-                                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                                onClick={() => {
-                                                                    setShowChangeThumbnail(
-                                                                        true,
-                                                                    );
-                                                                    setShowSongOptions(
-                                                                        false,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i className="ri-exchange-line text-xl leading-none"></i>
-                                                                <span>
-                                                                    Change cover
-                                                                </span>
-                                                            </li>
-                                                            <li
-                                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                                onClick={() => {
-                                                                    setShowChangeCover(
-                                                                        true,
-                                                                    );
-                                                                    setShowSongOptions(
-                                                                        false,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i className="ri-exchange-fill text-xl leading-none"></i>
-                                                                <span className="text-left text-sm">
-                                                                    Change
-                                                                    thumbnail
-                                                                </span>
-                                                            </li>
-                                                        </>
+                                                        <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <i className="ri-exchange-line text-xl leading-none"></i>
+                                                            <span>
+                                                                Change cover
+                                                            </span>
+                                                        </li>
                                                     )}
                                                     {myProfileData?.id ==
-                                                        songUploader &&
-                                                        !songIsVerified &&
-                                                        publicAddress != '' && (
-                                                            <li
-                                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                                onClick={() => {
-                                                                    setShowSongOptions(
-                                                                        false,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i className="ri-copyright-line text-xl leading-none"></i>
-                                                                <span className="text-left text-sm">
-                                                                    Request for
-                                                                    copyright
-                                                                </span>
-                                                            </li>
-                                                        )}
-                                                    {songIsVerified && (
-                                                        <li
-                                                            className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                            onClick={() => {
-                                                                setShowSongOptions(
-                                                                    false,
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i className="ri-copyright-fill text-xl leading-none"></i>
+                                                        songUploader && (
+                                                        <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
+                                                            <i className="ri-exchange-fill text-xl leading-none"></i>
                                                             <span className="text-left text-sm">
                                                                 View on
                                                                 Blockchain
@@ -374,7 +329,7 @@ function SongPage() {
                                                     </li>
                                                     {token && (
                                                         <li
-                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                             onClick={() => {
                                                                 setShowReportFrame(
                                                                     true,
@@ -391,7 +346,7 @@ function SongPage() {
                                                     {myProfileData?.id ==
                                                         songUploader && (
                                                         <li
-                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                                             onClick={() =>
                                                                 setConfirmDelete(
                                                                     true,
