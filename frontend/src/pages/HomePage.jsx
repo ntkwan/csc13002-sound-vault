@@ -39,167 +39,219 @@ function HomePage() {
                     // Thêm lớp active với khoảng trễ khác nhau cho từng phần tử
                     if (entry.target === introContainerRef.current) {
                         // intro logo
-                        introLogoRef.current.classList.remove(
-                            'opacity-0',
-                            '-translate-x-96',
-                        );
-                        introLogoRef.current.classList.add('translate-x-2');
-                        setTimeout(() => {
+                        if (introLogoRef.current) {
                             introLogoRef.current.classList.remove(
-                                'translate-x-2',
-                            );
-                        }, 1000);
-
-                        // intro title
-                        setTimeout(() => {
-                            introTitleRef.current.classList.remove(
-                                'opacity-0',
-                                '-translate-x-[400px]',
-                            );
-                            introTitleRef.current.classList.add(
-                                'translate-x-2',
-                            );
-                        }, 200);
-                        setTimeout(() => {
-                            introTitleRef.current.classList.remove(
-                                'translate-x-2',
-                            );
-                        }, 1200);
-
-                        // intro desc
-                        setTimeout(() => {
-                            introDescRef.current.classList.remove(
                                 'opacity-0',
                                 '-translate-x-96',
                             );
-                            introDescRef.current.classList.add('translate-x-2');
-                        }, 400);
-                        setTimeout(() => {
-                            introDescRef.current.classList.remove(
-                                'translate-x-2',
-                            );
-                        }, 1400);
+                            introLogoRef.current.classList.add('translate-x-2');
+                            setTimeout(() => {
+                                if (introLogoRef.current) {
+                                    introLogoRef.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1000);
+                        }
+
+                        // intro title
+                        if (introTitleRef.current) {
+                            setTimeout(() => {
+                                introTitleRef.current.classList.remove(
+                                    'opacity-0',
+                                    '-translate-x-[400px]',
+                                );
+                                introTitleRef.current.classList.add(
+                                    'translate-x-2',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (introTitleRef.current) {
+                                    introTitleRef.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1200);
+                        }
+
+                        // intro desc
+                        if (introDescRef.current) {
+                            setTimeout(() => {
+                                introDescRef.current.classList.remove(
+                                    'opacity-0',
+                                    '-translate-x-96',
+                                );
+                                introDescRef.current.classList.add(
+                                    'translate-x-2',
+                                );
+                            }, 400);
+                            setTimeout(() => {
+                                if (introDescRef.current) {
+                                    introDescRef.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1400);
+                        }
 
                         // intro image
-                        setTimeout(() => {
-                            introImageRef.current.classList.remove(
-                                'opacity-0',
-                                'scale-50',
-                                'translate-x-[50%]',
-                            );
-                            introImageRef.current.classList.add(
-                                'scale-100',
-                                'translate-x-[6%]',
-                            );
-                        }, 200);
-                        setTimeout(() => {
-                            introImageRef.current.classList.remove(
-                                'translate-x-[6%]',
-                            );
-                            introImageRef.current.classList.add(
-                                'translate-x-[10%]',
-                            );
-                        }, 1200);
+                        if (introImageRef.current) {
+                            setTimeout(() => {
+                                introImageRef.current.classList.remove(
+                                    'opacity-0',
+                                    'scale-50',
+                                    'translate-x-[50%]',
+                                );
+                                introImageRef.current.classList.add(
+                                    'scale-100',
+                                    'translate-x-[6%]',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (introImageRef.current) {
+                                    introImageRef.current.classList.remove(
+                                        'translate-x-[6%]',
+                                    );
+                                    introImageRef.current.classList.add(
+                                        'translate-x-[10%]',
+                                    );
+                                }
+                            }, 1200);
+                        }
                     } else if (entry.target === chartContainerRef.current) {
                         // chart logo
-                        chartContainerRef.current.classList.remove(
-                            'overflow-clip',
-                        );
-                        chartLogoRef.current.classList.remove(
-                            'opacity-0',
-                            'translate-x-96',
-                        );
-                        chartLogoRef.current.classList.add('-translate-x-2');
-                        setTimeout(() => {
+                        if (chartContainerRef.current) {
+                            chartContainerRef.current.classList.remove(
+                                'overflow-clip',
+                            );
+                        }
+                        if (chartLogoRef.current) {
                             chartLogoRef.current.classList.remove(
+                                'opacity-0',
+                                'translate-x-96',
+                            );
+                            chartLogoRef.current.classList.add(
                                 '-translate-x-2',
                             );
-                        }, 1000);
+                            setTimeout(() => {
+                                if (chartLogoRef.current) {
+                                    chartLogoRef.current.classList.remove(
+                                        '-translate-x-2',
+                                    );
+                                }
+                            }, 1000);
+                        }
 
                         // chart desc
-                        setTimeout(() => {
-                            chartDescRef.current.classList.remove(
-                                'opacity-0',
-                                'translate-x-96',
-                            );
-                            chartDescRef.current.classList.add(
-                                '-translate-x-2',
-                            );
-                        }, 200);
-                        setTimeout(() => {
-                            chartDescRef.current.classList.remove(
-                                '-translate-x-2',
-                            );
-                        }, 1200);
+                        if (chartDescRef.current) {
+                            setTimeout(() => {
+                                chartDescRef.current.classList.remove(
+                                    'opacity-0',
+                                    'translate-x-96',
+                                );
+                                chartDescRef.current.classList.add(
+                                    '-translate-x-2',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (chartDescRef.current) {
+                                    chartDescRef.current.classList.remove(
+                                        '-translate-x-2',
+                                    );
+                                }
+                            }, 1200);
+                        }
 
                         // chart button
-                        setTimeout(() => {
-                            chartButtonRef.current.classList.remove(
-                                'opacity-0',
-                                'translate-x-96',
-                            );
-                            chartButtonRef.current.classList.add(
-                                '-translate-x-2',
-                            );
-                        }, 400);
-                        setTimeout(() => {
-                            chartButtonRef.current.classList.remove(
-                                '-translate-x-2',
-                            );
-                        }, 1400);
+                        if (chartButtonRef.current) {
+                            setTimeout(() => {
+                                chartButtonRef.current.classList.remove(
+                                    'opacity-0',
+                                    'translate-x-96',
+                                );
+                                chartButtonRef.current.classList.add(
+                                    '-translate-x-2',
+                                );
+                            }, 400);
+                            setTimeout(() => {
+                                if (chartButtonRef.current) {
+                                    chartButtonRef.current.classList.remove(
+                                        '-translate-x-2',
+                                    );
+                                }
+                            }, 1400);
+                        }
 
-                        // chart item 1
-                        setTimeout(() => {
-                            chartItem1Ref.current.classList.remove(
-                                'opacity-0',
-                                '-translate-x-40',
-                                '-translate-y-40',
-                            );
-                            chartItem1Ref.current.classList.add(
-                                'translate-x-2',
-                            );
-                        }, 200);
-                        setTimeout(() => {
-                            chartItem1Ref.classList.remove('translate-x-2');
-                        }, 1200);
+                        // chart items...
+                        if (chartItem1Ref.current) {
+                            setTimeout(() => {
+                                chartItem1Ref.current.classList.remove(
+                                    'opacity-0',
+                                    '-translate-x-40',
+                                    '-translate-y-40',
+                                );
+                                chartItem1Ref.current.classList.add(
+                                    'translate-x-2',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (chartItem1Ref.current) {
+                                    chartItem1Ref.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1200);
+                        }
 
-                        // chart item 2
-                        setTimeout(() => {
-                            chartItem2Ref.current.classList.remove(
-                                'opacity-0',
-                                'translate-x-40',
-                                '-translate-y-40',
-                            );
-                            chartItem2Ref.current.classList.add(
-                                'translate-x-2',
-                            );
-                        }, 200);
-                        setTimeout(() => {
-                            chartItem2Ref.classList.remove('translate-x-2');
-                        }, 1200);
+                        if (chartItem2Ref.current) {
+                            setTimeout(() => {
+                                chartItem2Ref.current.classList.remove(
+                                    'opacity-0',
+                                    'translate-x-40',
+                                    '-translate-y-40',
+                                );
+                                chartItem2Ref.current.classList.add(
+                                    'translate-x-2',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (chartItem2Ref.current) {
+                                    chartItem2Ref.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1200);
+                        }
 
-                        // chart item 2
-                        setTimeout(() => {
-                            chartItem3Ref.current.classList.remove(
+                        if (chartItem3Ref.current) {
+                            setTimeout(() => {
+                                chartItem3Ref.current.classList.remove(
+                                    'opacity-0',
+                                    'translate-y-40',
+                                );
+                                chartItem3Ref.current.classList.add(
+                                    'translate-x-2',
+                                );
+                            }, 200);
+                            setTimeout(() => {
+                                if (chartItem3Ref.current) {
+                                    chartItem3Ref.current.classList.remove(
+                                        'translate-x-2',
+                                    );
+                                }
+                            }, 1200);
+                        }
+                    } else {
+                        if (entry.target) {
+                            entry.target.classList.remove(
                                 'opacity-0',
                                 'translate-y-40',
                             );
-                            chartItem3Ref.current.classList.add(
-                                'translate-x-2',
+                            entry.target.classList.add(
+                                'opacity-100',
+                                'translate-y-0',
                             );
-                        }, 200);
-                        setTimeout(() => {
-                            chartItem3Ref.classList.remove('translate-x-2');
-                        }, 1200);
-                    } else {
-                        entry.target.classList.remove(
-                            'opacity-0',
-                            'translate-y-40',
-                        );
-                        entry.target.classList.add(
-                            'opacity-100',
-                            'translate-y-0',
-                        );
+                        }
                     }
                     observer.unobserve(entry.target);
                 }
@@ -220,10 +272,10 @@ function HomePage() {
             if (introContainerRef.current)
                 observer.unobserve(introContainerRef.current);
             if (chartContainerRef.current)
-                observer.observe(chartContainerRef.current);
+                observer.unobserve(chartContainerRef.current);
             if (mediaRef.current) observer.unobserve(mediaRef.current);
         };
-    }, []);
+    }, [introContainerRef]);
 
     const dispatch = useDispatch();
     const { data: topSongs } = useGetTopSongsQuery();
@@ -290,8 +342,9 @@ function HomePage() {
                         className="homepage__intro-desc -translate-x-96 text-xl opacity-0 transition duration-1000 ease-in-out"
                         ref={introDescRef}
                     >
-                        A blockchain-powered music streaming platform that gives users
-                        access to millions of songs and offers artists full control over their music rights and royalties.
+                        A blockchain-powered music streaming platform that gives
+                        users access to millions of songs and offers artists
+                        full control over their music rights and royalties.
                     </p>
                 </div>
                 {/* Intro image */}
