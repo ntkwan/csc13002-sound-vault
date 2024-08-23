@@ -157,6 +157,59 @@ const undo_play_song = async (req, res) => {
     }
 };
 
+const view_on_blockchain = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        let link = '';
+        if (Song.isVerified == true) {
+            link = process.env.BLOCKCHAIN_EXPLORER + Song.transactionsId;
+        }
+
+        return res.status(200).json({
+            link: link ? link : 'Song has not yet verified',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const request_copyright = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        if (Song.isPending) {
+            return res.status(400).json({
+                message:
+                    'This song has already requested to get copyright, please wait for few days',
+            });
+        }
+
+        Song.isPending = true;
+        return res.status(200).json({
+            message: 'Request successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_song_view = async (req, res) => {
     const songId = req.params.id;
     try {
@@ -366,6 +419,8 @@ const enable_song = async (req, res) => {
 };
 
 module.exports = {
+    request_copyright,
+    view_on_blockchain,
     delete_track_by_id,
     get_song_by_id,
     get_trending_songs,

@@ -246,12 +246,40 @@ const get_all_songs = async (req, res) => {
                     createdAt: song.createdAt,
                     image: song.image,
                     publicAddress: user ? user.publicAddress : null,
+                    isPending: song.isPending,
+                    transactionsId: song.transactionsId,
                 };
             }),
         );
         res.status(200).send(songsWithUserDetails);
     } catch (error) {
         res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const cancel_copyright_request = async (req, res) => {
+    const songId = req.params.songId;
+
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        if (Song.isPending == true) {
+            Song.isPending = false;
+            await Song.save();
+        }
+
+        return res.status(200).json({
+            message: 'Request cancelled successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
             message: error.message,
         });
     }
@@ -440,6 +468,7 @@ const get_dashboard_stats = async (req, res) => {
 };
 
 module.exports = {
+    cancel_copyright_request,
     get_admin_accounts,
     get_account_ban_status_by_id,
     ban_account,

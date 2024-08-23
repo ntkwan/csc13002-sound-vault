@@ -65,6 +65,14 @@ const SongSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        isPending: {
+            type: Boolean,
+            default: false,
+        },
+        transactionsId: {
+            type: String,
+            default: '',
+        },
     },
     {
         timestamps: true,

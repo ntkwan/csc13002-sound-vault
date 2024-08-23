@@ -51,6 +51,12 @@ router.put(
     adminController.set_verified_song,
 );
 
+router.post(
+    '/cancel-copyright-request/',
+    authMiddleware.check_admin,
+    adminController.cancel_copyright_request,
+);
+
 router.delete(
     '/remove-song-by-id/:songId',
     authMiddleware.check_admin,
