@@ -79,6 +79,33 @@ const get_featured_artists = async (req, res) => {
     }
 };
 
+const get_artists_by_region = async (req, res) => {
+    const region = req.params.region;
+    try {
+        const Songs = await SongModel.find({ region: region });
+        console.log(Songs);
+        const Users = await UserModel.find({ isVerified: true });
+        const users = [];
+        for (let i = 0; i < Songs.length; i++) {
+            users.push(await UserModel.findById(Songs[i].uploader));
+        }
+
+        res.status(200).send(
+            users.map((user) => {
+                return {
+                    name: user.name,
+                    image: user.image,
+                    id: user._id,
+                };
+            }),
+        );
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
 
@@ -627,6 +654,7 @@ module.exports = {
     get_my_profile,
     get_profile_all_songs,
     get_featured_artists,
+    get_artists_by_region,
     get_popular_albums,
     get_recently_played_songs,
     get_profile_albums,
