@@ -162,6 +162,9 @@ export const api = createApi({
         getFeaturedArtists: builder.query({
             query: () => '/get-featured-artists',
         }),
+        getArtistsByRegion: builder.query({
+            query: (region) => `/get-artists-by-region/${region}`,
+        }),
         getTrendingSongs: builder.query({
             query: () => '/get-trending-songs',
         }),
@@ -590,6 +593,7 @@ export const {
     useUploadSongThumbnailMutation,
     useSubmitMusicMutation,
     useGetFeaturedArtistsQuery,
+    useGetArtistsByRegionQuery,
     usePlaySongMutation,
     useUndoPlaySongMutation,
     useGetTrendingSongsQuery,

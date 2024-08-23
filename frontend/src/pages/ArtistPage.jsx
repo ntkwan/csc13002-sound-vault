@@ -1,31 +1,43 @@
 import MediaDisplay from '@components/MediaDisplay';
 import { PageTitle } from '@components/index';
-import { useGetFeaturedArtistsQuery } from '@services/api';
+import { Loading } from '@components/index';
+import {
+    useGetFeaturedArtistsQuery,
+    useGetArtistsByRegionQuery,
+} from '@services/api';
 
 function ArtistPage() {
     const { data: Artists } = useGetFeaturedArtistsQuery();
-    if (!Artists) return;
+
+    const regions = ['V-Pop', 'K-Pop', 'USUK'];
+    const { data: artistVPop } = useGetArtistsByRegionQuery(regions[0]);
+    const { data: artistKPop } = useGetArtistsByRegionQuery(regions[1]);
+    const { data: artistUSUK } = useGetArtistsByRegionQuery(regions[2]);
+
+    if (!Artists | !artistVPop | !artistKPop | !artistUSUK) {
+        return <Loading />;
+    }
+
     const mediaData = [
         {
-            type: 'Artist',
-            title: 'Popular Artists',
-            visibility: '',
-            link: '',
-            data: Artists.slice(0, 6),
-        },
-        {
-            type: 'Artist',
+            type: 'Artist Detail',
             title: 'Indie Artists',
-            visibility: '',
-            link: '',
-            data: Artists.slice(6, 12),
+            data: Artists.slice(-6),
         },
         {
-            type: 'Artist',
-            title: 'New Artists',
-            visibility: '',
-            link: '',
-            data: Artists.slice(-6),
+            type: 'Artist Detail',
+            title: 'Vietnamese Artists',
+            data: artistVPop,
+        },
+        {
+            type: 'Artist Detail',
+            title: 'Korean Artists',
+            data: artistKPop,
+        },
+        {
+            type: 'Artist Detail',
+            title: 'US-UK Artists',
+            data: artistUSUK,
         },
     ];
 
