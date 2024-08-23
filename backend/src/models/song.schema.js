@@ -26,7 +26,8 @@ const SongSchema = new Schema(
         }
         */
         genre: {
-            type: String,
+            type: Array,
+            default: [],
         },
         region: {
             type: String,
