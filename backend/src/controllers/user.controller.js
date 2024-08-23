@@ -82,14 +82,40 @@ const get_featured_artists = async (req, res) => {
 const get_artists_by_region = async (req, res) => {
     const region = req.params.region;
     try {
-        const Songs = await SongModel.find({ region: region });
-        console.log(Songs);
-        const Users = await UserModel.find({ isVerified: true });
-        const users = [];
-        for (let i = 0; i < Songs.length; i++) {
-            users.push(await UserModel.findById(Songs[i].uploader));
-        }
-
+        const users = await SongModel.aggregate([
+            {
+                $match: {
+                    region: region,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users', // The collection name for User
+                    localField: 'uploader',
+                    foreignField: '_id',
+                    as: 'uploaderInfo',
+                },
+            },
+            {
+                $match: {
+                    'uploaderInfo.isVerified': true,
+                },
+            },
+            {
+                $unwind: '$uploaderInfo',
+            },
+            {
+                $group: {
+                    _id: '$uploaderInfo._id', // Group by user ID
+                    name: { $first: '$uploaderInfo.name' },
+                    image: { $first: '$uploaderInfo.image' },
+                    createdAt: { $first: '$uploaderInfo.createdAt' },
+                },
+            },
+            {
+                $sort: { createdAt: 1 },
+            },
+        ]);
         res.status(200).send(
             users.map((user) => {
                 return {
