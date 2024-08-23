@@ -71,17 +71,27 @@ function ProfilePageUploadMusic() {
         const songTitle = formData.get('title');
         // const genre = formData.get('genre');
         const region = formData.get('region');
+        // @[Love](Love) @[Love](Love)
+        const genrePrePs = genre.replace(/@\[([^\]]+)\]\(([^\)]+)\)/g, '$1');
+        const words = genrePrePs.split(/\s+/);
+        const uniqueWords = Array.from(new Set(words));
+        const genreArray = uniqueWords.join(' ');
 
-        if (songTitle && genre && region && uploadThumbnail && uploadAudio) {
+        if (
+            songTitle &&
+            genreArray &&
+            region &&
+            uploadThumbnail &&
+            uploadAudio
+        ) {
             try {
                 const uploadForm = new FormData();
                 // formData.append('collaborators', collaborators);
                 uploadForm.append('title', songTitle);
-                uploadForm.append('genre', genre);
+                uploadForm.append('genre', genreArray);
                 uploadForm.append('region', region);
                 uploadForm.append('thumbnail', uploadThumbnail);
                 uploadForm.append('audio', uploadAudio);
-
                 const response = await submitMusic({
                     file: uploadForm,
                 }).unwrap();
@@ -283,8 +293,8 @@ function ProfilePageUploadMusic() {
                             </p>
                         </div>
                         <button
-                            type="submit"
                             className="relative m-auto flex min-w-24 max-w-32 select-none items-center justify-center rounded-full border-2 px-5 py-3"
+                            type="submit"
                         >
                             {isLoadingSubmitMusic && (
                                 <svg
