@@ -7,6 +7,7 @@ export { default as PlaylistPage } from './PlaylistPage';
 export { default as ProfilePage } from './ProfilePage';
 export { default as ProfilePageUploadMusic } from './ProfilePageUploadMusic';
 export { default as ProfilePageEditing } from './ProfilePageEditing';
+export { default as ProfileRequestVerifyPage } from './ProfileRequestVerifyPage';
 export { default as LibraryPage } from './LibraryPage';
 export { default as ArtistPage } from './ArtistPage';
 export { default as AboutUsPage } from './AboutUsPage';

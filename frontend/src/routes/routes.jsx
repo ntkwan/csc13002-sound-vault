@@ -10,6 +10,7 @@ import {
     ProfilePage,
     ProfilePageUploadMusic,
     ProfilePageEditing,
+    ProfileRequestVerifyPage,
     LibraryPage,
     ArtistPage,
     TermAndPolicyPage,
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
                         Component: ProfilePageUploadMusic,
                     },
                     { path: 'profile/editing', Component: ProfilePageEditing },
+                    {
+                        path: 'profile/verify',
+                        Component: ProfileRequestVerifyPage,
+                    },
                     { path: 'user/setting', Component: UserSettingPage },
                     { path: 'wallet', Component: WalletPage },
                 ],
