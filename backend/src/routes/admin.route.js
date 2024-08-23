@@ -52,7 +52,7 @@ router.put(
 );
 
 router.post(
-    '/cancel-copyright-request/',
+    '/cancel-copyright-request/:songId',
     authMiddleware.check_admin,
     adminController.cancel_copyright_request,
 );
