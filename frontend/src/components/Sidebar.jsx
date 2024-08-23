@@ -141,7 +141,7 @@ function Sidebar() {
                             <SidebarLink
                                 to="aboutus"
                                 icon={EmailIcon}
-                                label="About Us"
+                                label="Contact Us"
                             />
                             <SidebarLink
                                 to="termandpolicy"

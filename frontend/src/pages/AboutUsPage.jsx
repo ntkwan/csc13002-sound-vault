@@ -3,7 +3,7 @@ import { PageTitle } from '@components/index';
 function AboutUsPage() {
     return (
         <div className="about-us-page pt-8">
-            <PageTitle title="About Us" />
+            <PageTitle title="Contact Us" />
             <div className="space-y-20">
                 <section className="aup__intro space-y-6">
                     <h2 className="aup__intro-title inline text-3xl font-bold">
