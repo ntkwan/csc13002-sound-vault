@@ -284,7 +284,7 @@ function ProfilePageUploadMusic() {
                         </div>
                         <button
                             type="submit"
-                            className="relative m-auto flex min-w-36 max-w-44 select-none items-center justify-center rounded-full border px-5 py-3"
+                            className="relative m-auto flex min-w-24 max-w-32 select-none items-center justify-center rounded-full border-2 px-5 py-3"
                         >
                             {isLoadingSubmitMusic && (
                                 <svg

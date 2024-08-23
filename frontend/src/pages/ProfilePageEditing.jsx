@@ -99,7 +99,6 @@ function ProfilePageEditing() {
 
     if (isLoadingProfileInfo) return;
     const { name, email, shortDesc } = ProfileInfo || {};
-    const { dob, password } = userProfile;
 
     return (
         <div className="profilepage__editing pt-8">
@@ -155,7 +154,7 @@ function ProfilePageEditing() {
                             initValue={shortDesc}
                         />
                         <button
-                            className="min-w-1/2 group relative float-right flex h-12 items-center rounded-xl bg-[#666] px-4 shadow-md transition duration-300 ease-in-out hover:cursor-pointer hover:bg-[#888]"
+                            className="min-w-1/2 group relative float-right flex h-12 min-w-32 max-w-32 items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
                         >
                             {isLoadingChangeProfile && iconUpdate}
@@ -195,7 +194,7 @@ function ProfilePageEditing() {
                             required
                         />
                         <button
-                            className="min-w-1/2 group relative float-right flex h-12 items-center rounded-xl bg-[#666] px-4 shadow-md transition duration-300 ease-in-out hover:cursor-pointer hover:bg-[#888]"
+                            className="min-w-1/2 group relative float-right flex h-12 min-w-32 max-w-32 items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
                         >
                             {isLoadingChangePassword && iconUpdate}
