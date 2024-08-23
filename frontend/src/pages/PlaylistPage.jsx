@@ -8,6 +8,7 @@ import {
     ConfirmDeletion,
     BigPlayButton,
     UpdateImageFrame,
+    UtilitiesCard,
 } from '@components';
 import {
     useDeletePlaylistByIdMutation,
@@ -304,14 +305,15 @@ function PlaylistPage() {
                             onClick={() => setShowProfileOption(true)}
                         />
                         {showProfileOption === true && (
-                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
                                     {myProfileData?.id == playlist_owner && (
                                         <>
                                             {isAlbum && (
-                                                <li
-                                                    className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={() => {
+                                                <UtilitiesCard
+                                                    icon="ri-image-2-fill"
+                                                    title="Change thumbnail"
+                                                    handleAction={() => {
                                                         setShowChangeThumbnail(
                                                             true,
                                                         );
@@ -319,48 +321,38 @@ function PlaylistPage() {
                                                             false,
                                                         );
                                                     }}
-                                                >
-                                                    <i className="ri-image-2-fill text-xl leading-none"></i>
-                                                    <span className="text-left text-sm">
-                                                        Change thumbnail
-                                                    </span>
-                                                </li>
+                                                    spanClass="text-left"
+                                                />
                                             )}
-                                            <li
-                                                className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                onClick={() => {
+                                            <UtilitiesCard
+                                                icon="ri-draft-line"
+                                                title="Change description"
+                                                handleAction={() => {
                                                     setShowProfileOption(false);
                                                     setShowChangeDescription(
                                                         true,
                                                     );
                                                 }}
-                                            >
-                                                <i className="ri-draft-line text-xl leading-none"></i>
-                                                <span className="text-left text-sm">
-                                                    Change description
-                                                </span>
-                                            </li>
+                                                spanClass="text-left"
+                                            />
                                         </>
                                     )}
-                                    <li
-                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                        onClick={handleCopyLink}
-                                    >
-                                        <i className="ri-share-line text-xl leading-none"></i>
-                                        <span>Copy link</span>
-                                    </li>
+                                    <UtilitiesCard
+                                        icon="ri-share-line"
+                                        title="Copy link"
+                                        handleAction={handleCopyLink}
+                                    />
                                     {myProfileData?.id == playlist_owner &&
                                         name != 'Liked Songs' && (
-                                            <li
-                                                className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                onClick={() => {
+                                            <UtilitiesCard
+                                                icon="ri-close-large-line"
+                                                title={`Delete ${isAlbum ? 'album' : 'playlist'}`}
+                                                handleAction={() => {
                                                     setConfirmDelete(true);
                                                     setShowProfileOption(false);
                                                 }}
-                                            >
-                                                <i className="ri-close-large-line text-xl leading-none"></i>
-                                                <span>Delete playlist</span>
-                                            </li>
+                                                liClass="font-bold text-red-500"
+                                            />
                                         )}
                                 </ul>
                             </div>

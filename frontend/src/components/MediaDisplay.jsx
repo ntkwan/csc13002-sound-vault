@@ -27,6 +27,7 @@ import {
     DonateButton,
     DonateModal,
     AlbumFrame,
+    UtilitiesCard,
 } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
@@ -473,6 +474,69 @@ const BrowseCard = memo(({ type, mediaData }) => {
 BrowseCard.displayName = 'BrowseCard';
 BrowseCard.propTypes = HomeCard.propTypes;
 
+const PlaylistForm = ({ onCreatePlaylist, setShowPlaylistForm }) => {
+    const [playlistName, setPlaylistName] = useState('');
+    const playlistFormRef = useRef(null);
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (
+                playlistFormRef.current &&
+                !playlistFormRef.current.contains(e.target)
+            ) {
+                setShowPlaylistForm(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
+    }, [setShowPlaylistForm]);
+
+    const handleSubmit = () => {
+        const name = playlistName.trim();
+        if (name) {
+            onCreatePlaylist(name);
+            setShowPlaylistForm(false);
+        }
+    };
+
+    return (
+        <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+            <div
+                ref={playlistFormRef}
+                className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
+            >
+                <label
+                    htmlFor="playlistName"
+                    className="block pb-2 text-left text-base"
+                >
+                    Create a name for your playlist:
+                </label>
+                <input
+                    id="playlistName"
+                    type="text"
+                    value={playlistName}
+                    onChange={(e) => setPlaylistName(e.target.value)}
+                    className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                />
+                <div className="mt-3 flex justify-end">
+                    <button
+                        className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+                        onClick={handleSubmit}
+                    >
+                        Create
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+PlaylistForm.propTypes = {
+    onCreatePlaylist: PropTypes.func.isRequired,
+    setShowPlaylistForm: PropTypes.func.isRequired,
+};
+
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
         const token = useSelector(selectCurrentToken);
@@ -483,10 +547,8 @@ const SongBar = memo(
         const [showReportFrame, setShowReportFrame] = useState(false);
         const [showPlaylistForm, setShowPlaylistForm] = useState(false);
         const [showAlbumFrame, setShowAlbumFrame] = useState(false);
-        const playlistFormRef = useRef(null);
         const [playlistOptionsVisible, setPlaylistOptionsVisible] =
             useState(false);
-        const [playlistName, setPlaylistName] = useState('');
         const [confirmDelete, setConfirmDelete] = useState(false);
 
         const location = useLocation();
@@ -498,21 +560,6 @@ const SongBar = memo(
         const toggleMenu = (index) => {
             setMenuVisible(menuVisible === index ? null : index);
         };
-
-        useEffect(() => {
-            const handleOutsideClick = (e) => {
-                if (
-                    playlistFormRef.current &&
-                    !playlistFormRef.current.contains(e.target)
-                ) {
-                    setShowPlaylistForm(false);
-                }
-            };
-
-            document.addEventListener('mousedown', handleOutsideClick);
-            return () =>
-                document.removeEventListener('mousedown', handleOutsideClick);
-        }, []);
 
         useEffect(() => {
             const handleOutsideClick = (e) => {
@@ -575,11 +622,6 @@ const SongBar = memo(
                 console.error('Failed to create playlist:', error);
                 toast.error(`${error.data.message}!`);
             }
-        };
-        const handleSubmitCreatePlaylist = () => {
-            setShowPlaylistForm(false);
-            const name = String(playlistName).trim();
-            handleCreatePlaylist(name, id);
         };
 
         const [addSongToPlaylist, { isLoading: addSongToPlaylistLoading }] =
@@ -682,39 +724,22 @@ const SongBar = memo(
                     />
                 )}
                 {showPlaylistForm && (
-                    <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                        <div
-                            ref={playlistFormRef}
-                            className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
-                        >
-                            <div>
-                                <label
-                                    htmlFor="playlistName"
-                                    className="block pb-2 text-left text-base"
-                                >
-                                    Create a name for your playlist:
-                                </label>
-                                <input
-                                    id="playlistName"
-                                    type="text"
-                                    onChange={(e) =>
-                                        setPlaylistName(e.target.value)
-                                    }
-                                    className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                                />
-                            </div>
-                            <div className="mt-3 flex justify-end">
-                                <button
-                                    className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
-                                    onClick={handleSubmitCreatePlaylist}
-                                >
-                                    Create
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <PlaylistForm
+                        onCreatePlaylist={(name) =>
+                            handleCreatePlaylist(name, id)
+                        }
+                        setShowPlaylistForm={setShowPlaylistForm}
+                    />
                 )}
-                <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
+                {modalVisible && (
+                    <DonateModal
+                        balance={balance}
+                        closeDonateModal={closeDonateModal}
+                        song={title}
+                        artist={artist}
+                    />
+                )}
+                <div className="hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
                     {/* index - img - name */}
                     <div className="flex items-center space-x-8">
                         <div className="">
@@ -821,12 +846,11 @@ const SongBar = memo(
                                                                         return null;
                                                                     }
                                                                     return (
-                                                                        <li
+                                                                        <UtilitiesCard
                                                                             key={
                                                                                 index
                                                                             }
-                                                                            className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                                            onClick={() => {
+                                                                            handleAction={() => {
                                                                                 handleAddToPlaylist(
                                                                                     playlist.id,
                                                                                     id,
@@ -834,13 +858,10 @@ const SongBar = memo(
                                                                                     playlist.name,
                                                                                 );
                                                                             }}
-                                                                        >
-                                                                            <span>
-                                                                                {
-                                                                                    playlist.name
-                                                                                }
-                                                                            </span>
-                                                                        </li>
+                                                                            title={
+                                                                                playlist.name
+                                                                            }
+                                                                        />
                                                                     );
                                                                 },
                                                             )}
@@ -851,90 +872,81 @@ const SongBar = memo(
                                         )}
                                         {pathtype == 'profile' &&
                                             pathId == undefined && (
-                                                <li
-                                                    className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                    onClick={prevent(() => {
-                                                        setShowAlbumFrame(true),
-                                                            setMenuVisible(
-                                                                null,
-                                                            );
-                                                    })}
-                                                >
-                                                    <i className="ri-add-circle-line text-xl leading-none"></i>
-                                                    <span>Add to album</span>
-                                                </li>
+                                                <UtilitiesCard
+                                                    icon="ri-add-circle-line"
+                                                    title="Add to album"
+                                                    handleAction={prevent(
+                                                        () => {
+                                                            setShowAlbumFrame(
+                                                                true,
+                                                            ),
+                                                                setMenuVisible(
+                                                                    null,
+                                                                );
+                                                        },
+                                                    )}
+                                                />
                                             )}
                                         {pathtype == 'playlist' &&
                                             playlistData &&
                                             myProfileID ==
                                                 playlistData?.playlist_owner && (
-                                                <li
-                                                    className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                    onClick={prevent(() =>
+                                                <UtilitiesCard
+                                                    icon="ri-indeterminate-circle-line"
+                                                    title="Remove from this
+                                                        playlist"
+                                                    handleAction={prevent(() =>
                                                         handleRemoveFromPlaylist(
                                                             pathId,
                                                             id,
                                                         ),
                                                     )}
-                                                >
-                                                    <i className="ri-indeterminate-circle-line text-left text-xl"></i>
-                                                    <span className="text-left">
-                                                        Remove from this
-                                                        playlist
-                                                    </span>
-                                                </li>
+                                                    spanClass="text-left"
+                                                />
                                             )}
                                         {token && (
-                                            <li
-                                                className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                onClick={prevent(() =>
+                                            <UtilitiesCard
+                                                icon="ri-heart-line"
+                                                title="Save to your Liked Songs"
+                                                handleAction={prevent(() =>
                                                     handleAddToLikedSongs(
                                                         id,
                                                         title,
                                                     ),
                                                 )}
-                                            >
-                                                <i className="ri-heart-line text-left text-xl"></i>
-                                                <span className="text-left">
-                                                    Save to your Liked Songs
-                                                </span>
-                                            </li>
+                                                spanClass="text-left"
+                                            />
                                         )}
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                            onClick={prevent(() =>
+                                        <UtilitiesCard
+                                            icon="ri-share-line"
+                                            title="Share"
+                                            handleAction={prevent(() =>
                                                 handleShare(),
                                             )}
-                                        >
-                                            <i className="ri-share-line text-xl leading-none"></i>
-                                            <span>Copy link</span>
-                                        </li>
+                                        />
                                         {token && (
-                                            <li
-                                                className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                onClick={prevent(() => {
+                                            <UtilitiesCard
+                                                icon="ri-error-warning-line"
+                                                title="Report"
+                                                handleAction={prevent(() => {
                                                     setShowReportFrame(true),
                                                         setMenuVisible(null);
                                                 })}
-                                            >
-                                                <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                <span>Report</span>
-                                            </li>
+                                            />
                                         )}
                                         {pathtype == 'profile' &&
                                             !isverified &&
                                             pathId == undefined && (
-                                                <li
-                                                    className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                    onClick={() =>
+                                                <UtilitiesCard
+                                                    icon="ri-close-large-line"
+                                                    title="Delete Track"
+                                                    handleAction={() =>
                                                         setConfirmDelete(
                                                             !confirmDelete,
                                                         )
                                                     }
-                                                >
-                                                    <i className="ri-close-large-line text-xl leading-none"></i>
-                                                    <span>Delete Track</span>
-                                                </li>
+                                                    liClass="text-red-500 font-bold rounded-b-xl"
+                                                />
                                             )}
                                     </ul>
                                 </div>
@@ -942,14 +954,6 @@ const SongBar = memo(
                         </button>
                     </div>
                 </div>
-                {modalVisible && (
-                    <DonateModal
-                        balance={balance}
-                        closeDonateModal={closeDonateModal}
-                        song={title}
-                        artist={artist}
-                    />
-                )}
             </>
         );
     },

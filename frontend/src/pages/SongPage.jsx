@@ -16,6 +16,7 @@ import {
     ConfirmDeletion,
     Loading,
     UpdateImageFrame,
+    UtilitiesCard,
 } from '@components';
 import {
     selectCurrentAdmin,
@@ -153,7 +154,6 @@ function SongPage() {
 
     return (
         <>
-            {console.log(profileByIdData)}
             {showChangeThumbnail && (
                 <UpdateImageFrame
                     setShowFrame={setShowChangeThumbnail}
@@ -292,45 +292,77 @@ function SongPage() {
                                             />
                                         </div>
                                         {showSongOptions === true && (
-                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
+                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
                                                 <ul>
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={handleCopyLink}
-                                                    >
-                                                        <i className="ri-share-line text-xl leading-none"></i>
-                                                        <span>Copy link</span>
-                                                    </li>
                                                     {myProfileData?.id ==
                                                         songUploader && (
-                                                        <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <i className="ri-exchange-line text-xl leading-none"></i>
-                                                            <span>
-                                                                Change cover
-                                                            </span>
-                                                        </li>
+                                                        <>
+                                                            <UtilitiesCard
+                                                                icon="ri-exchange-line"
+                                                                title="Change cover"
+                                                                handleAction={() => {
+                                                                    setShowChangeThumbnail(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            />
+                                                            <UtilitiesCard
+                                                                icon="ri-exchange-fill"
+                                                                title="Change thumbnail"
+                                                                handleAction={() => {
+                                                                    setShowChangeCover(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                                spanClass="text-left"
+                                                            />
+                                                        </>
                                                     )}
                                                     {myProfileData?.id ==
-                                                        songUploader && (
-                                                        <li className="flex items-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <i className="ri-exchange-fill text-xl leading-none"></i>
-                                                            <span className="text-left text-sm">
-                                                                View on
-                                                                Blockchain
-                                                            </span>
-                                                        </li>
+                                                        songUploader &&
+                                                        !songIsVerified &&
+                                                        publicAddress != '' && (
+                                                            <UtilitiesCard
+                                                                icon="ri-copyright-line"
+                                                                title="Request for copyright"
+                                                                handleAction={() => {
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                                spanClass="text-left"
+                                                            />
+                                                        )}
+                                                    {songIsVerified && (
+                                                        <UtilitiesCard
+                                                            icon="ri-copyright-fill"
+                                                            title="View on Blockchain"
+                                                            handleAction={() => {
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            spanClass="text-left"
+                                                        />
                                                     )}
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={handleCopyLink}
-                                                    >
-                                                        <i className="ri-share-line text-xl leading-none"></i>
-                                                        <span>Copy link</span>
-                                                    </li>
+                                                    <UtilitiesCard
+                                                        icon="ri-share-line"
+                                                        title="Copy link"
+                                                        handleAction={
+                                                            handleCopyLink
+                                                        }
+                                                    />
                                                     {token && (
-                                                        <li
-                                                            className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                            onClick={() => {
+                                                        <UtilitiesCard
+                                                            icon="ri-error-warning-line"
+                                                            title="Report"
+                                                            handleAction={() => {
                                                                 setShowReportFrame(
                                                                     true,
                                                                 );
@@ -338,26 +370,23 @@ function SongPage() {
                                                                     false,
                                                                 );
                                                             }}
-                                                        >
-                                                            <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                            <span>Report</span>
-                                                        </li>
+                                                        />
                                                     )}
                                                     {myProfileData?.id ==
                                                         songUploader && (
-                                                        <li
-                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                                            onClick={() =>
+                                                        <UtilitiesCard
+                                                            icon="ri-close-large-line"
+                                                            title=" Delete track"
+                                                            handleAction={() => {
                                                                 setConfirmDelete(
                                                                     true,
-                                                                )
-                                                            }
-                                                        >
-                                                            <i className="ri-close-large-line text-xl leading-none"></i>
-                                                            <span>
-                                                                Delete track
-                                                            </span>
-                                                        </li>
+                                                                );
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            liClass="text-red-500 font-bold"
+                                                        />
                                                     )}
                                                 </ul>
                                             </div>
