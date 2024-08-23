@@ -121,10 +121,15 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     if (!data || !data.length) return;
-    let step = 6;
-    if (type.includes('Home') && type.includes('Artist')) {
-        step = 5;
+
+    let step = data.length;
+    if (type.includes('Home')) {
+        step = 6;
+        if (type.includes('Artist')) {
+            step = 5;
+        }
     }
+
     if (sliceData * step >= data.length) {
         setSliceData(Math.floor(data.length / step));
     } else if (sliceData < 0) {
@@ -133,8 +138,20 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const start = sliceData * step;
     const end = start + step;
     const showedData = data.slice(start, end);
-    const classNameSliceLeft = start === 0 ? 'opacity-30' : '';
-    const classNameSliceRight = end >= data.length ? 'opacity-30' : '';
+    console.log(start, end, showedData);
+
+    const classNameSliceLeft =
+        (step > 6) | (data.length <= 6)
+            ? 'hidden'
+            : start === 0
+              ? 'opacity-30'
+              : '';
+    const classNameSliceRight =
+        (step > 6) | (data.length <= 6)
+            ? 'hidden'
+            : end >= data.length
+              ? 'opacity-30'
+              : '';
 
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
