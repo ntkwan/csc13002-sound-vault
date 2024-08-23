@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const playlistController = require('../controllers/playlist.controller');
-const uploader = require('../controllers/upload.controller');
 
 router.post(
     '/create-playlist',
@@ -59,13 +58,6 @@ router.post(
     authMiddleware.check_user,
     authMiddleware.check_playlist_uploader,
     playlistController.change_playlist_description,
-);
-
-router.post(
-    '/change-playlist-thumbnail/:id',
-    authMiddleware.check_user,
-    authMiddleware.check_playlist_uploader,
-    uploader.upload_song_thumbnail,
 );
 
 module.exports = router;

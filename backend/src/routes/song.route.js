@@ -9,6 +9,14 @@ router.get('/get-new-songs', songController.get_new_songs);
 router.get('/get-songs-by-region/:region', songController.get_songs_by_region);
 router.get('/get-songs-by-genre/:genre', songController.get_songs_by_genre);
 router.get('/get-top-songs', songController.get_top_songs);
+router.get('/view-copyright/:id', songController.view_on_blockchain);
+
+router.post(
+    '/request-copyright',
+    authMiddleware.check_user,
+    authMiddleware.check_song_uploader,
+    songController.request_copyright,
+);
 
 router.post(
     '/play-song/:id',
