@@ -15,6 +15,7 @@ export { default as DepositModal } from './Modal/DepositModal';
 export { default as WithdrawModal } from './Modal/WithdrawModal';
 export { default as UpdateImageFrame } from './UpdateImageFrame';
 export { default as QrCodeModal } from './Modal/QrCodeModal';
+export { default as UtilitiesCard } from './UtilitiesCard';
 export {
     default as MediaDisplay,
     HomeCard,
