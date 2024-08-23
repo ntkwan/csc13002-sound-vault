@@ -890,7 +890,7 @@ const SongBar = memo(
                                         {pathtype == 'profile' &&
                                             pathId == undefined && (
                                                 <UtilitiesCard
-                                                    icon="ri-add-circle-line"
+                                                    icon="ri-disc-line"
                                                     title="Add to album"
                                                     handleAction={prevent(
                                                         () => {
