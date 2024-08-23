@@ -129,30 +129,30 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         if (type.includes('Artist')) {
             step = 5;
         }
+    } else if (type.includes('Detail')) {
+        step = 6;
     }
-
     if (sliceData * step >= data.length) {
-        setSliceData(Math.floor(data.length / step));
+        setSliceData(Math.floor((data.length - 1) / step));
     } else if (sliceData < 0) {
         setSliceData(0);
     }
     const start = sliceData * step;
     const end = start + step;
     const showedData = data.slice(start, end);
-    console.log(start, end, showedData);
 
     const classNameSliceLeft =
         (step > 6) | (data.length <= 6)
-            ? 'hidden'
+            ? 'opacity-0'
             : start === 0
-              ? 'opacity-30'
-              : '';
+              ? 'opacity-30 hover:cursor-pointer'
+              : 'hover:cursor-pointer';
     const classNameSliceRight =
         (step > 6) | (data.length <= 6)
-            ? 'hidden'
+            ? 'opacity-0'
             : end >= data.length
-              ? 'opacity-30'
-              : '';
+              ? 'opacity-30 hover:cursor-pointer'
+              : 'hover:cursor-pointer';
 
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
@@ -186,7 +186,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
             <div className="flex items-center">
                 {displayItems != 4 && (
                     <i
-                        className={`ri-arrow-left-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceLeft}`}
+                        className={`ri-arrow-left-s-line text-4xl leading-none ${classNameSliceLeft}`}
                         onClick={() => setSliceData(sliceData - 1)}
                     ></i>
                 )}
@@ -249,7 +249,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 </div>
                 {displayItems != 4 && (
                     <i
-                        className={`ri-arrow-right-s-line text-4xl leading-none hover:cursor-pointer ${classNameSliceRight}`}
+                        className={`ri-arrow-right-s-line text-4xl leading-none ${classNameSliceRight}`}
                         onClick={() => setSliceData(sliceData + 1)}
                     ></i>
                 )}
@@ -385,7 +385,7 @@ const DetailCard = memo(
         // assign data to card
         let imageClass = 'rounded-lg';
         let card_title,
-            card_desc = type;
+            card_desc = type.includes('Artist') ? 'Artist' : type;
         if (type.includes('Artist')) {
             imageClass = 'rounded-full';
             card_title = name;
