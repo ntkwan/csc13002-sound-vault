@@ -131,7 +131,7 @@ const upload_playlist_thumbnail = async (req, res) => {
         });
     }
 
-    const playlistId = req.params.id;
+    const playlistId = req.params.playlistId;
     const Playlist = await PlaylistModel.findById(playlistId);
     if (!Playlist) {
         return res.status(500).json({

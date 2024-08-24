@@ -40,7 +40,7 @@ router.post(
 );
 
 router.post(
-    '/upload-playlist-thumbnail/:id',
+    '/upload-playlist-thumbnail/:playlistId',
     authMiddleware.check_user,
     authMiddleware.check_playlist_uploader,
     stage_file.playlist_thumbnail_upload,
