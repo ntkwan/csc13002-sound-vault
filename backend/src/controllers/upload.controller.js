@@ -40,6 +40,7 @@ const upload_song = async (req, res) => {
     }
 
     req._id = result._id;
+    req.inSubmitMusic = true;
 };
 
 const upload_profile_pic = async (req, res) => {
@@ -112,6 +113,15 @@ const upload_song_thumbnail = async (req, res) => {
         await Song.setSongThumbnail(imageResponse);
     }
     await Song.save();
+
+    if (!req.inSubmitMusic) {
+        return res.status(200).json({
+            message: req.isCover
+                ? 'Upload song cover successfully'
+                : 'Upload song thumbnail successfully',
+            imageurl: imageResponse.secure_url,
+        });
+    }
 };
 
 const upload_playlist_thumbnail = async (req, res) => {
@@ -166,7 +176,7 @@ const submit_music = async (req, res) => {
             songId: req._id,
             message: 'Submit music successfully',
         });
-    }, 15000);
+    }, 25000);
 
     if (res.status == 500) {
         return res.status(500).json({

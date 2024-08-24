@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
-const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 const CLOUD_LIST = JSON.parse(process.env.CLOUD_NAME);
 const CLOUD_KEY = JSON.parse(process.env.API_KEY);
@@ -96,19 +96,23 @@ const songThumbnailDestroyer = async (req, res) => {
 };
 
 const songThumbnailUploader = async (req, res) => {
-    const file = req.isCover == true ? req.files.cover : req.files.thumbnail;
-    const songId = req._id;
-
-    if (!file) {
-        return res.status(400).json({ message: 'File not found' });
-    }
-
-    const fName = req.isCover
-        ? 'cover_' + songId.toString()
-        : songId.toString();
-
     try {
-        const uploadImage = await cloudinary.uploader.upload(file[0].path, {
+        let file = req.file;
+        if (file == undefined) {
+            file = req.isCover == true ? req.files.cover : req.files.thumbnail;
+            file = file[0];
+        }
+        const songId = req.params.id || req._id;
+
+        if (!file) {
+            return res.status(400).json({ message: 'File not found' });
+        }
+
+        const fName = req.isCover
+            ? 'cover_' + songId.toString()
+            : songId.toString();
+
+        const uploadImage = await cloudinary.uploader.upload(file.path, {
             invalidate: 'true',
             resource_type: 'auto',
             public_id: fName,

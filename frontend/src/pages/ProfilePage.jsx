@@ -251,14 +251,14 @@ function ProfilePage() {
                                     {!profileAllSongsData
                                         ? '0 Song'
                                         : profileAllSongsData.length <= 1
-                                          ? `${profileAllSongsData.length} Song`
-                                          : `${profileAllSongsData.length} Songs`}
+                                            ? `${profileAllSongsData.length} Song`
+                                            : `${profileAllSongsData.length} Songs`}
                                     {' • '}
                                     {followers <= 1
                                         ? `${followers} Follower`
                                         : followers > 999
-                                          ? `${followers.toLocaleString()} Followers`
-                                          : `${followers} Followers`}
+                                            ? `${followers.toLocaleString()} Followers`
+                                            : `${followers} Followers`}
                                     {' • '}
                                     {!following
                                         ? '0 Following'
@@ -421,7 +421,7 @@ function ProfilePage() {
                                 </h2>
                                 <div className="absolute left-20 right-0 mt-4 h-[400px]">
                                     <img
-                                        src={avatar}
+                                        src={cover}
                                         className="h-full w-full rounded-xl object-cover brightness-[60%]"
                                     />
                                     <div className="absolute bottom-[10%] left-20 right-20 h-2/3 select-none content-end">
