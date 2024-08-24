@@ -202,6 +202,15 @@ export const api = createApi({
             }),
             invalidatesTags: ['Song'],
         }),
+        viewCopyright: builder.query({
+            query: (id) => `/view-copyright/${id}`,
+        }),
+        requestCopyright: builder.mutation({
+            query: (id) => ({
+                url: `/request-copyright/${id}`,
+                method: 'POST',
+            }),
+        }),
 
         // Playlists ----------------------------------------------------------
         createPlaylist: builder.mutation({
@@ -613,6 +622,8 @@ export const {
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
     useDeleteTrackByIdMutation,
+    useViewCopyrightQuery,
+    useRequestCopyrightMutation,
 
     // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,
