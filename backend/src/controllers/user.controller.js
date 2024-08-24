@@ -5,6 +5,53 @@ const UserModel = require('../models/user.schema');
 const SongModel = require('../models/song.schema');
 const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+
+const contact_to_support = async (req, res) => {
+    const { firstName, lastName, email, phoneNumber, message } = req.body;
+    if (!firstName || !lastName || !email || !phoneNumber || !message) {
+        return res.status(400).json({
+            message: 'Missing required fields',
+        });
+    }
+
+    try {
+        const mailOptions = {
+            from: email,
+            to: process.env.HOST_EMAIL,
+            subject:
+                'Contact from ' +
+                firstName +
+                ' ' +
+                lastName +
+                '<' +
+                email +
+                '>',
+            text:
+                message +
+                '\n\n' +
+                'For more details, please contact phone number: ' +
+                phoneNumber,
+        };
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.HOST_EMAIL,
+                pass: process.env.HOST_PASSWORD,
+            },
+        });
+
+        transporter.sendMail(mailOptions);
+
+        return res.status(200).json({
+            message: 'Contact sent successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
 
 const get_profile_information = async (req, res) => {
     const profileId = req.user._id;
@@ -670,6 +717,7 @@ const update_bank_info = async (req, res) => {
 };
 
 module.exports = {
+    contact_to_support,
     get_profile_information,
     change_profile,
     get_following_list_by_id,
