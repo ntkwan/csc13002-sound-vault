@@ -7,7 +7,8 @@ import {
     useGetProfileByIdQuery,
     useGetProfileAllSongsQuery,
     useDeleteTrackByIdMutation,
-    useUploadProfilePicMutation,
+    useUploadSongThumbnailMutation,
+    useUploadSongCoverMutation,
 } from '@services/api';
 import {
     MediaDisplay,
@@ -158,14 +159,18 @@ function SongPage() {
                 <UpdateImageFrame
                     setShowFrame={setShowChangeThumbnail}
                     label="To upload a thumbnail click on box or drop file here!"
-                    useUploadMutation={useUploadProfilePicMutation} // Chưa có api đang để đại
+                    useUploadMutation={useUploadSongThumbnailMutation}
+                    mediaId={songId}
+                    isThumbnail={true}
                 />
             )}
             {showChangeCover && (
                 <UpdateImageFrame
                     setShowFrame={setShowChangeCover}
                     label="To upload a cover click on box or drop file here!"
-                    useUploadMutation={useUploadProfilePicMutation} // Chưa có api đang để đại
+                    useUploadMutation={useUploadSongCoverMutation}
+                    mediaId={songId}
+                    isThumbnail={false}
                 />
             )}
             {confirmDelete && (
@@ -301,7 +306,7 @@ function SongPage() {
                                                                 icon="ri-exchange-line"
                                                                 title="Change cover"
                                                                 handleAction={() => {
-                                                                    setShowChangeThumbnail(
+                                                                    setShowChangeCover(
                                                                         true,
                                                                     );
                                                                     setShowSongOptions(
@@ -313,7 +318,7 @@ function SongPage() {
                                                                 icon="ri-exchange-fill"
                                                                 title="Change thumbnail"
                                                                 handleAction={() => {
-                                                                    setShowChangeCover(
+                                                                    setShowChangeThumbnail(
                                                                         true,
                                                                     );
                                                                     setShowSongOptions(

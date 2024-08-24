@@ -230,6 +230,7 @@ const get_playlist_by_id = async (req, res) => {
             playlist_owner: Playlist.uploader,
             songs: song_data,
             isAlbum: Playlist.isAlbum,
+            avatar: Playlist.image,
         });
     } catch (error) {
         return res.status(500).json({

@@ -15,7 +15,7 @@ import {
     useGetPlaylistByIdQuery,
     useGetProfileByIdQuery,
     useChangePlaylistDescriptionMutation,
-    useChangePlaylistThumbnailMutation,
+    useUploadPlaylistThumbnailMutation,
 } from '@services/api';
 import { selectCurrentProfile } from '@services/selectors';
 import { colors } from '@components/PlaylistThumbnailColor';
@@ -139,7 +139,7 @@ function PlaylistPage() {
 
     if (!playlist || !owner) return <Loading />;
 
-    const { name, avatar, cover, songs, description, isAlbum } = playlist;
+    const { name, avatar, songs, description, isAlbum } = playlist;
 
     //hashing color
     const hashColor = (id) => {
@@ -179,7 +179,9 @@ function PlaylistPage() {
                 <UpdateImageFrame
                     setShowFrame={setShowChangeThumbnail}
                     label="To upload a thumbnail click on box or drop file here!"
-                    useUploadMutation={useChangePlaylistThumbnailMutation} // Hình như api này cũng chưa có luôn
+                    useUploadMutation={useUploadPlaylistThumbnailMutation}
+                    mediaId={playlistId}
+                    isThumbnail={true}
                 />
             )}
             {showChangeDescription && (
@@ -229,27 +231,17 @@ function PlaylistPage() {
                 {/* playlist header */}
                 <div className="h-96 w-full content-center">
                     {/* playlist cover */}
-                    {cover ? (
-                        <div className="absolute left-20 right-0 top-0 h-96">
-                            <img
-                                className="playlist__cover h-full w-full rounded-xl object-cover shadow-2xl"
-                                src={cover}
-                                alt=""
-                            />
-                        </div>
-                    ) : (
-                        <div
-                            className="absolute left-20 right-0 top-0 h-96 rounded-xl"
-                            style={{ background: backgroundColor }}
-                        ></div>
-                    )}
+                    <div
+                        className="absolute left-20 right-0 top-0 h-96 rounded-xl"
+                        style={{ background: backgroundColor }}
+                    ></div>
                     <div className="ml-[5%] flex items-center">
                         <div className="relative h-40 min-w-40 max-w-40">
                             {/* playlist avatar */}
-                            {avatar ? (
+                            {avatar?.url && isAlbum ? (
                                 <img
                                     className="playlist__avatar h-full w-full object-cover shadow-2xl"
-                                    src={avatar}
+                                    src={avatar?.url}
                                     alt=""
                                 />
                             ) : (

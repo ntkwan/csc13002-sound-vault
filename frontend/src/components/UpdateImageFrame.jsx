@@ -1,7 +1,13 @@
 import { useRef, useEffect } from 'react';
 import { UploadImage } from '@features/profilepage/components';
 
-const UpdateImageFrame = ({ setShowFrame, label, useUploadMutation }) => {
+const UpdateImageFrame = ({
+    setShowFrame,
+    label,
+    useUploadMutation,
+    mediaId,
+    isThumbnail,
+}) => {
     const frameRef = useRef(null);
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -26,6 +32,8 @@ const UpdateImageFrame = ({ setShowFrame, label, useUploadMutation }) => {
                     label={label}
                     sizeLimit={10}
                     useUploadMutation={useUploadMutation}
+                    mediaId={mediaId}
+                    isThumbnail={isThumbnail}
                 />
             </div>
         </div>

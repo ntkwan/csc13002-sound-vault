@@ -130,8 +130,16 @@ export const api = createApi({
             invalidatesTags: ['Song'],
         }),
         uploadSongThumbnail: builder.mutation({
-            query: ({ file }) => ({
-                url: '/upload-song-thumbnail',
+            query: ({ id, file }) => ({
+                url: `/upload-song-thumbnail/${id}`,
+                method: 'POST',
+                body: file,
+            }),
+            invalidatesTags: ['Song'],
+        }),
+        uploadSongCover: builder.mutation({
+            query: ({ id, file }) => ({
+                url: `/upload-song-cover/${id}`,
                 method: 'POST',
                 body: file,
             }),
@@ -254,16 +262,16 @@ export const api = createApi({
             providesTags: ['Playlist'],
         }),
         changePlaylistDescription: builder.mutation({
-            query: ({ playlistId, desc }) => ({
+            query: ({ playlistId, description }) => ({
                 url: `/change-playlist-description/${playlistId}`,
                 method: 'POST',
-                body: { desc },
+                body: { description },
             }),
             invalidatesTags: ['Playlist'],
         }),
-        changePlaylistThumbnail: builder.mutation({
-            query: ({ id, file }) => ({
-                url: `/change-playlist-thumbnail/${id}`,
+        uploadPlaylistThumbnail: builder.mutation({
+            query: ({ playlistId, file }) => ({
+                url: `/upload-playlist-thumbnail/${playlistId}`,
                 method: 'POST',
                 body: file,
             }),
@@ -591,6 +599,7 @@ export const {
     useUploadAudioMutation,
     useUploadSongMutation,
     useUploadSongThumbnailMutation,
+    useUploadSongCoverMutation,
     useSubmitMusicMutation,
     useGetFeaturedArtistsQuery,
     useGetArtistsByRegionQuery,
@@ -616,7 +625,7 @@ export const {
     useLazyGetPlaylistByIdQuery,
     useGetMyPlaylistsQuery,
     useChangePlaylistDescriptionMutation,
-    useChangePlaylistThumbnailMutation,
+    useUploadPlaylistThumbnailMutation,
     useCreateAlbumMutation,
 
     // User -------------------------------------------------------------------
