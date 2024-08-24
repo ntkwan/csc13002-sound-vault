@@ -12,7 +12,7 @@ router.get('/get-top-songs', songController.get_top_songs);
 router.get('/view-copyright/:id', songController.view_on_blockchain);
 
 router.post(
-    '/request-copyright/:id',
+    '/request-copyright/:songId',
     authMiddleware.check_user,
     authMiddleware.check_song_uploader,
     songController.request_copyright,

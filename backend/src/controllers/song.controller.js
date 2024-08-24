@@ -183,7 +183,7 @@ const view_on_blockchain = async (req, res) => {
 };
 
 const request_copyright = async (req, res) => {
-    const songId = req.params.id;
+    const songId = req.params.songId;
     try {
         const Song = await SongModel.findById(songId);
         if (!Song) {
