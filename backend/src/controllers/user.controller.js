@@ -447,8 +447,14 @@ const get_popular_albums = async (req, res) => {
                     const album = await PlaylistModel.findById(
                         users[i].playlist[idx],
                     );
+                    if (album == null) {
+                        continue;
+                    }
                     if (album.isAlbum == true) {
-                        albums.push(await PlaylistModel.findById(album));
+                        let foundAlbum = await PlaylistModel.findById(
+                            album._id,
+                        );
+                        albums.push(foundAlbum);
                     }
                 }
             }

@@ -22,11 +22,7 @@ const PlaylistSchema = new Schema(
             type: Array,
             default: [],
         },
-        type: {
-            type: String,
-            default: 'Playlist',
-            required: true,
-        },
+
         isAlbum: {
             type: Boolean,
             default: false,
