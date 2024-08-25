@@ -45,6 +45,10 @@ const PaymentSchema = new Schema(
             type: Number,
             required: true,
         },
+        toBalance: {
+            type: Number,
+            default: 0,
+        },
         expiredAt: {
             type: Date,
         },

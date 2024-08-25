@@ -342,6 +342,7 @@ const donate = async (req, res) => {
             status: 'PAID',
             type: DONATE,
             balance: user.balance,
+            toBalance: toUser.balance,
         });
         await payment.save();
 
@@ -389,8 +390,22 @@ const withdraw = async (req, res) => {
 };
 
 const process_withdraw = async (req, res) => {
+    const orderId = req.params.orderId;
     try {
         await axios.post('/sync', { bank_acc_id: process.env.BANK_ACC_ID });
+        const payment = await PaymentModel.findOne({ orderId });
+        if (!payment) {
+            return res.status(404).json({
+                code: -1,
+                message: 'Payment not found',
+            });
+        }
+        if (payment.status === PENDING) {
+            return res.status(400).json({
+                code: -1,
+                message: 'Payment not processed',
+            });
+        }
         return res.status(200).json({
             code: 1,
             message: 'Withdraw processed successfully',
@@ -529,6 +544,7 @@ const get_payment_history = async (req, res) => {
                     status: payment.status,
                     type: payment.type,
                     availableBalance: payment.balance,
+                    toBalance: payment.toBalance,
                     date: formatInTimeZone(
                         payment.createdAt,
                         TIMEZONE,
