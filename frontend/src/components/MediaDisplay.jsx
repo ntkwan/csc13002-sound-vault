@@ -362,7 +362,7 @@ HomeCard.propTypes = {
         id: PropTypes.string,
         title: PropTypes.string,
         artist: PropTypes.string,
-        genre: PropTypes.string,
+        genre: PropTypes.array,
         imageurl: PropTypes.shape({
             publicId: PropTypes.string,
             url: PropTypes.string,

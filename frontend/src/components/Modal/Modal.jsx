@@ -7,7 +7,7 @@ function Modal({ children, ...props }) {
             onClick={props.closeModal}
         >
             <div
-                className="absolute left-1/3 top-1/4 z-50 flex h-1/3 min-h-80 w-1/3 min-w-max flex-col items-center justify-evenly rounded-3xl align-middle text-2xl shadow-2xl outline backdrop-blur-xl"
+                className="absolute left-1/3 top-1/4 z-50 flex h-fit min-h-[33.33%] w-1/3 min-w-max flex-col items-center justify-evenly rounded-3xl align-middle text-2xl shadow-2xl outline backdrop-blur-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 <i
@@ -150,20 +150,26 @@ Modal.Withdraw = (props) => {
 Modal.QrCode = (props) => {
     return (
         <>
-            <img src={props.qrCode} alt="qr code" className="w-1/3" />
+            <img src={props.qrCode} alt="qr code" className="m-4 w-1/3" />
             <span>
                 Scan this{' '}
-                <a href={props.qrCode} className="text-blue-600">
+                <a href={props.qrCode} className="text-blue-500">
                     <i>QR Code</i>
                 </a>{' '}
                 to deposit money
             </span>
             <button
-                className="group relative min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
-                onClick={props.handleCancelWithdraw}
+                className="group relative my-4 min-w-40 rounded-full px-6 py-1 outline outline-2 transition duration-300 ease-in-out"
+                onClick={props.handleWithdraw}
             >
-                Cancel Withdraw
+                Withdraw Processed
                 <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-500 ease-in-out group-hover:opacity-100"></div>
+            </button>
+            <button
+                onClick={props.handleCancelWithdraw}
+                className="mb-2 text-base text-red-500"
+            >
+                <i>Cancel Withdraw</i>
             </button>
         </>
     );
@@ -201,6 +207,7 @@ Modal.Withdraw.propTypes = {
 Modal.QrCode.displayName = 'QrCode';
 Modal.QrCode.propTypes = {
     qrCode: PropTypes.string,
+    handleWithdraw: PropTypes.func,
     handleCancelWithdraw: PropTypes.func,
 };
 

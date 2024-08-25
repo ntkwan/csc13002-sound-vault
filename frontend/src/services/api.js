@@ -585,6 +585,7 @@ export const api = createApi({
                 url: `/process-withdraw/${orderId}`,
                 method: 'PUT',
             }),
+            invalidatesTags: ['Payment'],
         }),
         cancelWithdraw: builder.mutation({
             query: (orderId) => ({

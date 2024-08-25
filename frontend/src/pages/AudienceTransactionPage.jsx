@@ -60,7 +60,8 @@ function AudienceTransactionPage() {
             (tabStatus === 'all' || payment.type === tabStatus) &&
             (!filterDate ||
                 isEqual(parseDate1(payment.date), parseDate2(filterDate))) &&
-            rangeCondition
+            rangeCondition &&
+            payment.status !== 'CANCELLED'
         );
     });
 

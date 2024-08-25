@@ -278,11 +278,17 @@ function ArtistTransactionPage() {
                             <td className="px-2 py-5">{payment.date}</td>
                             <td className="px-2 py-5">{payment.time}</td>
                             <td className="px-2 py-5 text-right">
-                                {formatCurrency(payment.availableBalance)}
+                                {payment.type === 'donate'
+                                    ? formatCurrency(payment.toBalance)
+                                    : formatCurrency(payment.availableBalance)}
                             </td>
                             <td className="px-2 py-5 text-right">
-                                {payment.type === 'deposit' ? '+' : '-'}
-                                {formatCurrency(payment.amount)}
+                                {payment.type === 'donate'
+                                    ? '+'
+                                    : payment.status === 'PAID' && '-'}
+                                {payment.status === 'PAID'
+                                    ? formatCurrency(payment.amount)
+                                    : 0}
                             </td>
                         </tr>
                     ))}
