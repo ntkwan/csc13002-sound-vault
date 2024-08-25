@@ -20,6 +20,10 @@ const SongSchema = new Schema(
             type: String,
             required: true,
         },
+        collaborators: {
+            type: Array,
+            default: [],
+        },
         /*
         album: {
             ref: 'Playlist',

@@ -26,6 +26,7 @@ const upload_song = async (req, res) => {
         title: req.body.title,
         artist: req.user.name,
         uploader: req.user._id,
+        collaborators: req.body.collaborators,
         genre: genre,
         region: req.body.region,
         coverimg: req.user.coverimage,
