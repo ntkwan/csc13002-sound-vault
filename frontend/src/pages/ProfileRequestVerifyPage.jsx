@@ -57,10 +57,9 @@ function ProfileRequestVerifyPage() {
 
             {/* page tutorial */}
             <p className="">
-                To verify your account, please fill the basic information and
-                attach to us the documents ( fornt of identification card,
-                passport) or any documents that you are the owner of this
-                account
+                To verify your account, please fill your basic information and
+                attach your personal documents (your picture of ID card,
+                passport) or any documents that prove your identity.
             </p>
 
             {/* form */}
@@ -120,7 +119,7 @@ function ProfileRequestVerifyPage() {
                             label="To attach documents click on box or drop file here!"
                             className=""
                             sizeLimit={10}
-                            // useUploadMutation={setUploadDocument}
+                        // useUploadMutation={setUploadDocument}
                         />
                         <ul className="form__document-desc list-disc">
                             <li className="desc-list">
