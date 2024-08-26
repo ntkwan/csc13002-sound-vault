@@ -350,8 +350,8 @@ function AdminSongPage() {
 
             {/* Modal confirmation */}
             {confirmAction && (
-                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
+                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-30">
+                    <div className="rounded-lg border-2 bg-black bg-opacity-50 p-6 shadow-lg backdrop-blur-xl">
                         <p className="mb-4">
                             {confirmAction === 'view'
                                 ? 'Are you sure you want to leave this page?'
