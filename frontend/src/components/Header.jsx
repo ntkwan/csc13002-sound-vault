@@ -100,17 +100,7 @@ function Header() {
         };
     }, [searchInput]);
 
-    // get search data
-    let [
-        getSearchData,
-        { data: searchData, isFetching, isSuccess, error: noResultsFound },
-    ] = useLazyGetSearchResultsQuery();
-
-    useEffect(() => {
-        if (!debouncedSearchInput.trim()) return;
-        getSearchData(debouncedSearchInput);
-    }, [debouncedSearchInput, getSearchData]);
-
+    // handle observer animation
     const headerRef = useRef(null);
     useEffect(() => {
         const handleObserver = (entries, observer) => {
@@ -139,6 +129,17 @@ function Header() {
             if (headerRef.current) observer.unobserve(headerRef.current);
         };
     }, []);
+
+    // get search data
+    let [
+        getSearchData,
+        { data: searchData, isFetching, isSuccess, error: noResultsFound },
+    ] = useLazyGetSearchResultsQuery();
+
+    useEffect(() => {
+        if (!debouncedSearchInput.trim()) return;
+        getSearchData(debouncedSearchInput);
+    }, [debouncedSearchInput, getSearchData]);
 
     const { artists, users, songs, albums, playlists } = searchData || {};
     const results = [
@@ -314,7 +315,7 @@ function Header() {
                         className="header__search-dropdown fixed bottom-0 left-[180px] right-0 top-[70px] z-30 space-y-8 overflow-y-scroll scroll-auto px-20 pb-28 pt-8 backdrop-blur-2xl"
                         ref={searchRef}
                     >
-                        {isSuccess && noResultsFound ? (
+                        {noResultsFound ? (
                             <div className="break-words text-3xl font-bold">
                                 Nothing matches your input &rsquo;{searchInput}
                                 &rsquo;
