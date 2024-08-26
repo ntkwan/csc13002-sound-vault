@@ -133,22 +133,26 @@ function AdminDashboardPage() {
             </div>
             <div className="admin-page__user-song-list mt-8 flex gap-24">
                 <div className="userlist__container flex-[1] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
-                    <div className="flex items-center justify-between">
-                        <p className="select-none font-semibold">User list</p>
-                        <button
-                            className="mr-[9px] select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
-                            onClick={handleUserSeeAll}
-                        >
-                            See all
-                        </button>
-                    </div>
-                    <table className="mt-3 w-full">
+                    <table className="w-full">
                         <thead>
+                            <tr>
+                                <th className="select-none pb-4 text-left font-semibold">
+                                    User list
+                                </th>
+                                <th className="pb-4">
+                                    <button
+                                        className="select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
+                                        onClick={handleUserSeeAll}
+                                    >
+                                        See all
+                                    </button>
+                                </th>
+                            </tr>
                             <tr className="text-sm text-slate-300">
-                                <th className="select-none text-left font-normal">
+                                <th className="select-none pb-2 text-left font-normal">
                                     Name
                                 </th>
-                                <th className="select-none font-normal">
+                                <th className="select-none pb-2 font-normal">
                                     Status
                                 </th>
                             </tr>
@@ -173,7 +177,7 @@ function AdminDashboardPage() {
                                             </p>
                                         </div>
                                     </td>
-                                    <td className="px-2 py-2">
+                                    <td className="px-2 py-2 text-center">
                                         <span
                                             className={`ml-2 rounded-lg px-2 py-1 text-sm font-bold ${
                                                 account.status === 'Verified'
@@ -194,25 +198,30 @@ function AdminDashboardPage() {
                 </div>
 
                 <div className="flex-[2] rounded-2xl bg-[#273142] pb-4 pl-6 pr-4 pt-7">
-                    <div className="flex select-none items-center justify-between">
-                        <p className="font-semibold">Song list</p>
-                        <button
-                            className="mr-[9px] select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
-                            onClick={handleSongSeeAll}
-                        >
-                            See all
-                        </button>
-                    </div>
-                    <table className="mt-3 w-full">
+                    <table className="w-full">
                         <thead>
+                            <tr>
+                                <th className="select-none pb-4 text-left font-semibold">
+                                    Song list
+                                </th>
+                                <th className="pb-4"></th>
+                                <th className="pb-4">
+                                    <button
+                                        className="mr-[9px] select-none rounded-3xl bg-[#7551FF] px-3 py-2 text-sm font-medium duration-200 ease-in-out hover:scale-105"
+                                        onClick={handleSongSeeAll}
+                                    >
+                                        See all
+                                    </button>
+                                </th>
+                            </tr>
                             <tr className="text-sm text-slate-300">
-                                <th className="select-none text-left font-normal">
+                                <th className="select-none pb-2 text-left font-normal">
                                     Name
                                 </th>
-                                <th className="select-none font-normal">
+                                <th className="select-none pb-2 font-normal">
                                     Status
                                 </th>
-                                <th className="select-none font-normal">
+                                <th className="select-none pb-2 font-normal">
                                     Artist
                                 </th>
                             </tr>
