@@ -34,6 +34,8 @@ function ProfilePageUploadMusic() {
         { id: 'Jazz', display: 'Jazz' },
         { id: 'R&B', display: 'R&B' },
         { id: 'Party', display: 'Party' },
+        { id: 'Indie', display: 'Indie' },
+        { id: 'Chill', display: 'Chill' },
     ];
     const [genre, setGenre] = useState('');
     // handle size mention-react input
