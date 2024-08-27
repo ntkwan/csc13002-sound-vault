@@ -78,37 +78,43 @@ function ProfilePage() {
 
     // Fetch profile data by id
     const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
-        skip: !profileId || !checkValidId.test(profileId),
+        skip: !profileId,
+        // || !checkValidId.test(profileId),
     });
 
     // Fetch following list by id
     const { data: followingListData, isLoading: followingListLoading } =
         useGetFollowingListByIdQuery(profileId || id, {
-            skip: (!profileId && !id) || !checkValidId.test(profileId),
+            skip: !profileId && !id,
+            // || !checkValidId.test(profileId),
         });
 
     // Fetch follow button state by id
     const { data: followButtonData, isLoading: followButtonLoading } =
         useGetFollowButtonByIdQuery(profileId, {
-            skip: !profileId || !id || !checkValidId.test(profileId),
+            skip: !profileId || !id,
+            // || !checkValidId.test(profileId),
         });
 
     // Fetch all songs by profile id
     const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
         useGetProfileAllSongsQuery(profileId || id, {
-            skip: (!profileId && !id) || !checkValidId.test(profileId),
+            skip: !profileId && !id,
+            // || !checkValidId.test(profileId),
         });
 
     // Fetch albums by profile id
     const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
         useGetProfileAlbumsQuery(profileId || id, {
-            skip: (!profileId && !id) || !checkValidId.test(profileId),
+            skip: !profileId && !id,
+            // || !checkValidId.test(profileId),
         });
 
     // Fetch playlists by profile id
     const { data: profilePlaylistData, isLoading: profilePlaylistLoading } =
         useGetProfilePlaylistsQuery(profileId || id, {
-            skip: (!profileId && !id) || !checkValidId.test(profileId),
+            skip: !profileId && !id,
+            // || !checkValidId.test(profileId),
         });
 
     // Follow/Unfollow profile
