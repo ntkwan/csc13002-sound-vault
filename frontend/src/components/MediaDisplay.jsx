@@ -820,10 +820,14 @@ const SongBar = memo(
                     <span className="hover:cursor-default">{view}</span>
                     <span className="hover:cursor-default">{duration}</span>
                     <div className="flex items-center justify-end">
-                        {token && !isVerified && (
+                        {token && (
                             <DonateButton
-                                className="text-white"
-                                openDonateModal={openDonateModal}
+                                className={
+                                    isverified
+                                        ? 'text-white'
+                                        : 'cursor-default opacity-0'
+                                }
+                                openDonateModal={isverified && openDonateModal}
                                 song={title}
                                 artist={artist}
                             />
