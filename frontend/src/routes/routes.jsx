@@ -34,6 +34,7 @@ import {
     AdminWithdrawPage,
     AdminDashboardPage,
     AdminEditProfilePage,
+    AdminCopyrightPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -112,6 +113,7 @@ const router = createBrowserRouter([
                     { path: 'admin/user', Component: AdminAccountPage },
                     { path: 'admin/report', Component: ReviewReportPage },
                     { path: 'admin/withdraw', Component: AdminWithdrawPage },
+                    { path: 'admin/copyright', Component: AdminCopyrightPage },
                     {
                         path: 'admin/transaction',
                         Component: AdminTransactionPage,

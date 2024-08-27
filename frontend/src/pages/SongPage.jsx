@@ -83,6 +83,7 @@ function SongPage() {
         isverified: songIsVerified,
         isdisabled: songIsDisabled,
         createdAt: songCreatedAt,
+        isPending: songIsPending,
     } = songByIdData || {};
     const formattedSongCreatedAt = songCreatedAt
         ? new Date(songCreatedAt).toLocaleDateString()
@@ -387,7 +388,8 @@ function SongPage() {
                                                     {myProfileData?.id ==
                                                         songUploader &&
                                                         !songIsVerified &&
-                                                        publicAddress != '' && (
+                                                        publicAddress != '' &&
+                                                        !songIsPending && (
                                                             <UtilitiesCard
                                                                 icon="ri-copyright-line"
                                                                 title="Request for copyright"

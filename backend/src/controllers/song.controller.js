@@ -28,6 +28,7 @@ const get_song_by_id = async (req, res) => {
             isverified: song.isVerified,
             isdisabled: song.isDisabled,
             createdAt: song.createdAt,
+            isPending: song.isPending,
         });
     } catch (error) {
         return res.status(500).json({
@@ -200,6 +201,7 @@ const request_copyright = async (req, res) => {
         }
 
         Song.isPending = true;
+        await Song.save();
         return res.status(200).json({
             message: 'Request successfully',
         });
