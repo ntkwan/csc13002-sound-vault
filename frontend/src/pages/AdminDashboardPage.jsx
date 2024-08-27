@@ -11,7 +11,7 @@ const StatCard = ({ title, value, bgColor, iconClass }) => {
     return (
         <div className="my-4 flex h-32 items-center justify-between rounded-xl bg-[#273142] p-1">
             <div className="text-left">
-                <p className="max-w-44 select-none p-3 font-kodchasan font-medium leading-4 text-slate-400">
+                <p className="select-none p-3 font-kodchasan font-medium leading-4 text-slate-400">
                     {title}
                 </p>
                 <p className="p-3 text-3xl font-semibold">{value}</p>

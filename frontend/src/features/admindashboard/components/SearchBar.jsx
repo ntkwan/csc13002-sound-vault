@@ -15,7 +15,7 @@ function SearchBar({ searchTerm, onSearch }) {
             <i className="ri-search-line absolute left-6 my-[6px] text-2xl"></i>
             <input
                 className="admin-page__input-search w-full select-none rounded-xl border-none bg-black pl-10 outline-none"
-                placeholder="Search name,..."
+                placeholder="Search name, id,..."
                 type="search"
                 value={searchTerm}
                 onChange={handleSearchChange}

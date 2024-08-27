@@ -176,7 +176,7 @@ function AdminWithdrawPage() {
                     {paginatedRequests.map((request, index) => (
                         <tr
                             key={index}
-                            className={`${request.status === 'PENDING' && 'cursor-pointer'} border-b-2 transition-colors duration-300 ease-in-out`}
+                            className={`${request.status === 'PENDING' ? 'cursor-pointer' : 'cursor-default'} border-b-2 transition-colors duration-300 ease-in-out`}
                             onClick={handleUnpaid(
                                 request.status,
                                 request.orderId,

@@ -84,7 +84,10 @@ function ReviewReportPage() {
             (!filterDate ||
                 isEqual(parseDate1(report.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                report.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+                report.name
+                    .toLowerCase()
+                    .startsWith(searchTerm.toLowerCase()) ||
+                report.idReport.toString().startsWith(searchTerm))
         );
     });
 
@@ -181,6 +184,9 @@ function ReviewReportPage() {
                             Report ID
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
+                            Reporter
+                        </th>
+                        <th className="px-2 py-5 text-left font-normal">
                             Date
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
@@ -205,6 +211,7 @@ function ReviewReportPage() {
                             onClick={() => setSelectedReport(report)}
                         >
                             <td className="px-2 py-6">{report.idReport}</td>
+                            <td className="px-2 py-5">{report.name}</td>
                             <td className="px-2 py-5">{report.date}</td>
                             <td className="py-5 pl-8">
                                 {report.isSong ? 'Song' : 'User'}

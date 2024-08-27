@@ -7,6 +7,7 @@ import {
     TopicsGenreIcon,
     WalletIcon,
     WithdrawIcon,
+    EtherscanIcon,
 } from '.';
 import { selectCurrentAdmin, selectCurrentToken } from '@services/selectors';
 import { useEffect, useRef } from 'react';
@@ -71,6 +72,11 @@ function Sidebar() {
                                 to="admin/song"
                                 icon={MusicIcon}
                                 label="songs"
+                            />
+                            <SidebarLink
+                                to="admin/copyright"
+                                icon={EtherscanIcon}
+                                label="copyright"
                             />
                             <SidebarLink
                                 to="admin/report"

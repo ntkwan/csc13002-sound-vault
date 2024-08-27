@@ -42,20 +42,17 @@ function AdminAccountPage() {
     const [banDays, setBanDays] = useState('1');
     const [banReason, setBanReason] = useState('Violation of terms');
 
-    const [setVerifiedArtistById, { isLoading: isLoadingVerify }] =
-        useSetVerifiedArtistByIdMutation();
+    const [setVerifiedArtistById] = useSetVerifiedArtistByIdMutation();
 
     const handleVerify = async (id) => {
-        if (isLoadingVerify) return <Loading />;
         try {
             await setVerifiedArtistById(id).unwrap();
         } catch (error) {
             console.error('Failed to verify the artist: ', error);
         }
     };
-    const [banAccount, { isLoading: isLoadingban }] = useBanAccountMutation();
+    const [banAccount] = useBanAccountMutation();
     const handleBan = async (id) => {
-        if (isLoadingban) return <Loading />;
         try {
             const profileId = id;
             const days = parseInt(banDays, 10);
@@ -102,7 +99,10 @@ function AdminAccountPage() {
             (!filterDate ||
                 isEqual(parseDate1(account.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                account.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+                account.name
+                    .toLowerCase()
+                    .startsWith(searchTerm.toLowerCase()) ||
+                account.id.toString().startsWith(searchTerm))
         );
     });
 

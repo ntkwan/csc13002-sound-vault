@@ -194,7 +194,7 @@ function AdminTransactionPage() {
                     {paginatedTransactions.map((transaction, index) => (
                         <tr
                             key={index}
-                            className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out"
+                            className="cursor-default border-b-2 transition-colors duration-300 ease-in-out"
                         >
                             <td className="h-[74px] px-2">
                                 <div className="flex flex-col">
@@ -218,7 +218,7 @@ function AdminTransactionPage() {
                                         <img
                                             src={MusicIcon}
                                             alt="deposit-icon"
-                                            className="my-[6px] ml-1 mr-5 inline-block h-9 w-9"
+                                            className="my-[6px] ml-2 mr-5 inline-block h-9 w-9"
                                         />
                                     ) : (
                                         <div className="ml-[6px] mr-3 flex h-10 w-10 items-center justify-center rounded-full border">
