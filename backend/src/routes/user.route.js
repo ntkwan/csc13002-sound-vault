@@ -34,6 +34,7 @@ router.get(
     '/get-profile-all-songs/:profileId',
     userController.get_profile_all_songs,
 );
+router.get('/get-id-by-username/:username', userController.get_id_by_username);
 router.get('/get-profile-by-id/:profileId', userController.get_profile_by_id);
 router.get('/get-featured-artists', userController.get_featured_artists);
 router.get(

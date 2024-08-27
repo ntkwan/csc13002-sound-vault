@@ -179,6 +179,25 @@ const get_artists_by_region = async (req, res) => {
     }
 };
 
+const get_id_by_username = async (req, res) => {
+    const username = req.params.username;
+
+    try {
+        const User = await UserModel.findOne({ name: username });
+        if (!User) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        return res.status(200).json(User._id);
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 const get_profile_by_id = async (req, res) => {
     const profileId = req.params.profileId;
 
@@ -730,6 +749,7 @@ module.exports = {
     get_follow_button_by_id,
     follow_profile_by_id,
     unfollow_profile_by_id,
+    get_id_by_username,
     get_profile_by_id,
     get_my_profile,
     get_profile_all_songs,
