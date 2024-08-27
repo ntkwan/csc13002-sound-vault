@@ -12,13 +12,13 @@ import {
     useAddSongToLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
     useDeleteTrackByIdMutation,
+    useGetMyPlaylistsQuery,
 } from '@services/api';
 import {
     selectCurrentPlaylist,
     selectCurrentProfile,
     selectCurrentTrack,
     selectCurrentToken,
-    selectMyPlaylists,
 } from '@services/selectors';
 import {
     PlayButton,
@@ -626,7 +626,11 @@ const SongBar = memo(
             skip: !playlistId,
         });
 
-        const myPlaylists = useSelector(selectMyPlaylists);
+        const { data: myPlaylistsData } = useGetMyPlaylistsQuery(
+            { isAlbum: false },
+            { skip: !id },
+        );
+        const myPlaylists = myPlaylistsData?.playlists || [];
 
         const [creatPlayList, { isLoading: createPlaylistLoading }] =
             useCreatePlaylistMutation();
@@ -904,14 +908,14 @@ const SongBar = memo(
                                                     )}
                                                 />
                                             )}
-                                        {pathtype == 'playlist' &&
+                                        {(pathtype == 'playlist' ||
+                                            pathtype == 'album') &&
                                             playlistData &&
                                             myProfileID ==
                                                 playlistData?.playlist_owner && (
                                                 <UtilitiesCard
                                                     icon="ri-indeterminate-circle-line"
-                                                    title="Remove from this
-                                                        playlist"
+                                                    title={`Remove from this ${pathtype}`}
                                                     handleAction={prevent(() =>
                                                         handleRemoveFromPlaylist(
                                                             pathId,

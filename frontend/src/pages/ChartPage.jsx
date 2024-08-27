@@ -28,7 +28,7 @@ function ChartPage() {
     return (
         <div>
             <ChartHeader />
-            <h2 className="mx-auto mb-16 w-fit bg-gradient-to-r from-[#FCF2FF] to-[#A31ED2] bg-clip-text px-32 text-center text-5xl font-bold uppercase text-transparent">
+            <h2 className="mx-auto mb-16 w-fit select-none bg-gradient-to-r from-[#FCF2FF] to-[#A31ED2] bg-clip-text px-32 text-center text-5xl font-bold uppercase text-transparent">
                 Weekly top 5 rankings
             </h2>
             {tableDatas.map((tableData) => {

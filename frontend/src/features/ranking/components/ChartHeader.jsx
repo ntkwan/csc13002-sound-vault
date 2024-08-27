@@ -5,7 +5,7 @@ function ChartHeader() {
         day: 'numeric',
     });
     return (
-        <div className="mx-auto mb-20 flex max-w-7xl items-center gap-8 pt-28">
+        <div className="mx-auto mb-20 flex max-w-7xl select-none items-center gap-8 pt-28">
             <p className="hidden flex-1 font-bold xl:flex">
                 SoundVault Chart is a dynamic music ranking chart based on the
                 number of listeners. It tracks the most popular songs across

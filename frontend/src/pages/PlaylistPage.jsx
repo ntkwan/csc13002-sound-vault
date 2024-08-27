@@ -107,7 +107,7 @@ function PlaylistPage() {
         try {
             await removePlayList(playlistId).unwrap();
             toast.success('Playlist deleted successfully');
-            navigate('/');
+            navigate(-1);
         } catch (error) {
             console.error(error);
             toast.error('Failed to delete playlist');
@@ -222,9 +222,9 @@ function PlaylistPage() {
                 <ConfirmDeletion
                     type="playlist"
                     setConfirmAction={setConfirmDelete}
-                    confirmActionHandler={() =>
-                        handleDeletePlaylist(playlistId)
-                    }
+                    confirmActionHandler={() => {
+                        handleDeletePlaylist(playlistId);
+                    }}
                 />
             )}
             <div className="caret-transparent">

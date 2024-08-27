@@ -280,7 +280,7 @@ function Player() {
                     src={currentTrack.thumbnail}
                     alt={currentTrack.title + ' thumbnail'}
                 />
-                <div className="flex flex-col">
+                <div className="flex cursor-default flex-col">
                     <span className="">{currentTrack.title}</span>
                     <span className="opacity-60">{currentTrack.artist}</span>
                 </div>

@@ -251,14 +251,14 @@ function ProfilePage() {
                                     {!profileAllSongsData
                                         ? '0 Song'
                                         : profileAllSongsData.length <= 1
-                                            ? `${profileAllSongsData.length} Song`
-                                            : `${profileAllSongsData.length} Songs`}
+                                          ? `${profileAllSongsData.length} Song`
+                                          : `${profileAllSongsData.length} Songs`}
                                     {' • '}
                                     {followers <= 1
                                         ? `${followers} Follower`
                                         : followers > 999
-                                            ? `${followers.toLocaleString()} Followers`
-                                            : `${followers} Followers`}
+                                          ? `${followers.toLocaleString()} Followers`
+                                          : `${followers} Followers`}
                                     {' • '}
                                     {!following
                                         ? '0 Following'

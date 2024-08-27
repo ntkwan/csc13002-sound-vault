@@ -148,7 +148,7 @@ function SongPage() {
             await deleteTrackById(id).unwrap();
             setConfirmDelete(false);
             toast.success('Song deleted successfully');
-            navigate('/');
+            navigate(-1);
         } catch (error) {
             toast.error('Failed to delete song', error);
         }

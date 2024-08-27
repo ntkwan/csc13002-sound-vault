@@ -206,8 +206,8 @@ export const api = createApi({
             query: (id) => `/view-copyright/${id}`,
         }),
         requestCopyright: builder.mutation({
-            query: (id) => ({
-                url: `/request-copyright/${id}`,
+            query: (songId) => ({
+                url: `/request-copyright/${songId}`,
                 method: 'POST',
             }),
         }),
@@ -376,9 +376,11 @@ export const api = createApi({
         }),
         getProfileAlbums: builder.query({
             query: (id) => `/get-profile-albums/${id}`,
+            providesTags: ['Playlist'],
         }),
         getProfilePlaylists: builder.query({
             query: (id) => `/get-profile-playlists/${id}`,
+            providesTags: ['Playlist'],
         }),
         getSearchResults: builder.query({
             query: (query) => `/search?q=${encodeURIComponent(query)}`,

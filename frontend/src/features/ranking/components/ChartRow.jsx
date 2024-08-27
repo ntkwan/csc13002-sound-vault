@@ -17,7 +17,7 @@ function ChartRow({
     }, [isOnPlaying]);
 
     return (
-        <div className="group relative mb-6 ml-3 flex items-center rounded-full">
+        <div className="group relative mb-6 ml-3 flex cursor-default items-center rounded-full">
             <PlayButton
                 position="bottom-2 left-14"
                 isOnPlaying={isOnPlaying}
