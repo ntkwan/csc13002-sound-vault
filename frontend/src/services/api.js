@@ -319,6 +319,9 @@ export const api = createApi({
             query: () => '/get-my-profile',
             providesTags: ['User'],
         }),
+        getIdByUsername: builder.query({
+            query: (username) => `/get-id-by-username/${username}`,
+        }),
         getProfileById: builder.query({
             query: (id) => `/get-profile-by-id/${id}`,
             providesTags: ['User'],
@@ -646,6 +649,7 @@ export const {
     useGetProfileInfomationQuery,
     useChangeProfileMutation,
     useChangePasswordMutation,
+    useLazyGetIdByUsernameQuery,
     useGetProfileByIdQuery,
     useGetMyProfileQuery,
     useGetFollowingListByIdQuery,

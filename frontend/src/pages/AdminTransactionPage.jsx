@@ -196,7 +196,7 @@ function AdminTransactionPage() {
                             key={index}
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out"
                         >
-                            <td className="h-[98px] px-2 py-5">
+                            <td className="h-[74px] px-2">
                                 <div className="flex flex-col">
                                     <p className="text-lg font-semibold">
                                         {transaction.from}
@@ -206,7 +206,7 @@ function AdminTransactionPage() {
                                     </p>
                                 </div>
                             </td>
-                            <td className="h-[98px] px-2 py-5">
+                            <td className="h-[74px] px-2">
                                 <div className="flex flex-nowrap items-center">
                                     {transaction.type === 'Deposit' ? (
                                         <img
@@ -228,7 +228,7 @@ function AdminTransactionPage() {
                                     <p>{transaction.type} money</p>
                                 </div>
                             </td>
-                            <td className="h-[98px] px-2 py-5">
+                            <td className="h-[74px] px-2">
                                 <div className="flex flex-col">
                                     <p className="text-lg font-semibold">
                                         {transaction.to}
@@ -240,16 +240,16 @@ function AdminTransactionPage() {
                                     )}
                                 </div>
                             </td>
-                            <td className="h-[98px] px-2 py-5">
+                            <td className="h-[74px] px-2">
                                 {transaction.date}
                             </td>
-                            <td className="h-[98px] px-2 py-5 text-right">
+                            <td className="h-[74px] px-2 text-right">
                                 {transaction.time}
                             </td>
-                            <td className="h-[98px] px-2 py-5 text-right">
+                            <td className="h-[74px] px-2 text-right">
                                 {formatCurrency(transaction.availableBalance)}
                             </td>
-                            <td className="h-[98px] px-2 py-5 text-right">
+                            <td className="h-[74px] px-2 text-right">
                                 {transaction.type === 'Deposit'
                                     ? '+'
                                     : transaction.type === 'Withdraw'

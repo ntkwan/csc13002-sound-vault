@@ -8,9 +8,8 @@ function Logout() {
     const [logOut] = useLogOutMutation();
     const handleAction = async () => {
         try {
-            const res = await logOut().unwrap();
+            await logOut().unwrap();
             persistor.purge();
-            console.log(res);
         } catch (error) {
             toast.error(error.message);
         }

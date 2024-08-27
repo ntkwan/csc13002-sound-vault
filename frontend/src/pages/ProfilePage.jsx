@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MediaDisplay, ReportFrame, BigPlayButton } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
 import {
@@ -17,9 +17,12 @@ import {
     useGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,
     useGetProfilePlaylistsQuery,
+    useLazyGetIdByUsernameQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
 import { Loading } from '@components/index';
+
+const checkValidId = new RegExp('^[0-9a-fA-F]{24}$');
 
 function ProfilePage() {
     const token = useSelector(selectCurrentToken);
@@ -27,6 +30,23 @@ function ProfilePage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
+    const nav = useNavigate();
+
+    const [getProfileId] = useLazyGetIdByUsernameQuery();
+    useEffect(() => {
+        async function direct() {
+            try {
+                const data = await getProfileId(profileId).unwrap();
+                nav(`/profile/${data}`, { replace: true });
+            } catch (error) {
+                console.error('Error getting profile by id:', error);
+            }
+        }
+
+        if (!checkValidId.test(profileId)) {
+            direct();
+        }
+    }, [profileId, getProfileId, nav]);
 
     // hanlde menu option
     const [showProfileOption, setShowProfileOption] = useState(false);
@@ -58,37 +78,37 @@ function ProfilePage() {
 
     // Fetch profile data by id
     const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
-        skip: !profileId,
+        skip: !profileId || !checkValidId.test(profileId),
     });
 
     // Fetch following list by id
     const { data: followingListData, isLoading: followingListLoading } =
         useGetFollowingListByIdQuery(profileId || id, {
-            skip: !profileId && !id,
+            skip: (!profileId && !id) || !checkValidId.test(profileId),
         });
 
     // Fetch follow button state by id
     const { data: followButtonData, isLoading: followButtonLoading } =
         useGetFollowButtonByIdQuery(profileId, {
-            skip: !profileId || !id,
+            skip: !profileId || !id || !checkValidId.test(profileId),
         });
 
     // Fetch all songs by profile id
     const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
         useGetProfileAllSongsQuery(profileId || id, {
-            skip: !profileId && !id,
+            skip: (!profileId && !id) || !checkValidId.test(profileId),
         });
 
     // Fetch albums by profile id
     const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
         useGetProfileAlbumsQuery(profileId || id, {
-            skip: !profileId && !id,
+            skip: (!profileId && !id) || !checkValidId.test(profileId),
         });
 
     // Fetch playlists by profile id
     const { data: profilePlaylistData, isLoading: profilePlaylistLoading } =
         useGetProfilePlaylistsQuery(profileId || id, {
-            skip: !profileId && !id,
+            skip: (!profileId && !id) || !checkValidId.test(profileId),
         });
 
     // Follow/Unfollow profile

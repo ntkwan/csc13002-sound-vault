@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     selectCurrentPlayer,
     selectCurrentPlaylist,
@@ -25,6 +26,7 @@ import { DonateButton, DonateModal, DepositModal } from '@components';
 
 function Player() {
     const token = useSelector(selectCurrentToken);
+    const nav = useNavigate();
     const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
@@ -101,6 +103,14 @@ function Player() {
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const isSingle = currentPlaylist.id.includes('Single');
     const { activateSong } = useSong();
+
+    const handleTitleClick = () => {
+        nav(`/song/${currentTrack.id}`);
+    };
+
+    const handleArtistClick = () => {
+        nav(`/profile/${currentTrack.artist}`);
+    };
 
     const handlePrev = () => {
         dispatch(pause());
@@ -281,8 +291,18 @@ function Player() {
                     alt={currentTrack.title + ' thumbnail'}
                 />
                 <div className="flex cursor-default flex-col">
-                    <span className="">{currentTrack.title}</span>
-                    <span className="opacity-60">{currentTrack.artist}</span>
+                    <span
+                        className="cursor-pointer hover:underline"
+                        onClick={handleTitleClick}
+                    >
+                        {currentTrack.title}
+                    </span>
+                    <span
+                        className="cursor-pointer opacity-60 hover:underline"
+                        onClick={handleArtistClick}
+                    >
+                        {currentTrack.artist}
+                    </span>
                 </div>
                 {/* heart-icon */}
                 {token && <LikeButton songId={currentTrack.id} />}

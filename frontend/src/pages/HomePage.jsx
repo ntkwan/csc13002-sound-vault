@@ -428,6 +428,12 @@ const ChartItem = forwardRef(
         const { url } = imageurl;
 
         const nav = useNavigate();
+        const handleSongClick = () => {
+            nav(`/song/${id}`);
+        };
+        const handleArtistClick = () => {
+            nav(`/profile/${artist}`);
+        };
 
         return (
             <div className={`absolute ${className}`} ref={ref}>
@@ -439,9 +445,7 @@ const ChartItem = forwardRef(
                                 className="aspect-square w-full hover:cursor-pointer"
                                 src={url}
                                 alt={title}
-                                onClick={() => {
-                                    nav(`/song/${id}`);
-                                }}
+                                onClick={handleSongClick}
                             />
                             <PlayButton
                                 onClick={handlePlayClick}
@@ -449,12 +453,18 @@ const ChartItem = forwardRef(
                                 position="bottom-1 right-1"
                             />
                         </div>
-                        <span className="w-[155px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <span
+                            className="w-[155px] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
+                            onClick={handleSongClick}
+                        >
                             {title}
                         </span>
                         <div className="flex items-center space-x-2">
                             <img src={ArtistIcon} alt="song icon" />
-                            <span className="w-[135px] overflow-hidden text-ellipsis whitespace-nowrap">
+                            <span
+                                className="w-[135px] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap hover:underline"
+                                onClick={handleArtistClick}
+                            >
                                 {artist}
                             </span>
                         </div>

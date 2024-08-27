@@ -204,7 +204,7 @@ function ReviewReportPage() {
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                             onClick={() => setSelectedReport(report)}
                         >
-                            <td className="px-2 py-5">{report.idReport}</td>
+                            <td className="px-2 py-6">{report.idReport}</td>
                             <td className="px-2 py-5">{report.date}</td>
                             <td className="py-5 pl-8">
                                 {report.isSong ? 'Song' : 'User'}
@@ -212,7 +212,7 @@ function ReviewReportPage() {
                             <td className="px-2 py-5">{report.category}</td>
                             <td className="flex items-end justify-end p-2 py-5">
                                 <div
-                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
+                                    className={`mx-2 my-[6px] h-3 w-[40px] rounded-lg ${
                                         report.status && report.assignee != ''
                                             ? 'bg-[#188038]'
                                             : !report.status &&

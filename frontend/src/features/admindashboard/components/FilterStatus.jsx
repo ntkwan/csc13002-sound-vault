@@ -24,7 +24,7 @@ function FilterStatus({ filterList, tabStatus, onFilterClick, isReviewPage }) {
                     {button.name}
                     {isReviewPage && button.name != 'All reports' && (
                         <div
-                            className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
+                            className={`mx-2 my-[6px] h-3 w-[40px] rounded-lg ${
                                 button.name === 'Finished'
                                     ? 'bg-[#188038]'
                                     : button.name === 'Pending'

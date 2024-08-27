@@ -61,6 +61,10 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
         navigate(`/song/${id}`);
     };
 
+    const handleArtist = (id) => {
+        navigate(`/profile/${id}`);
+    };
+
     const [sliceData, setSliceData] = useState(0);
 
     const handlePlayClick = (mediaData) => {
@@ -212,9 +216,14 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                                 MediaComponent = HomeCard;
                         }
 
-                        let onClickImage, onClickButton, isOnPlaying;
+                        let onClickImage,
+                            onClickArtist,
+                            onClickButton,
+                            isOnPlaying;
                         if (type.includes('Song')) {
                             onClickImage = () => handleSong(mediaData.id);
+                            onClickArtist = () =>
+                                handleArtist(mediaData.artist);
                             onClickButton = () => handlePlayClick(mediaData);
                             isOnPlaying =
                                 currentSong == mediaData.id && isPlaying;
@@ -229,6 +238,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                             type.includes('Playlist')
                         ) {
                             onClickImage = () => handlePlaylist(mediaData.id);
+                            onClickArtist = () =>
+                                handleArtist(mediaData.playlist_owner);
                             onClickButton = () =>
                                 handlePlaylistPlayClick(mediaData.id);
                             isOnPlaying =
@@ -240,6 +251,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                                 type={type}
                                 mediaData={mediaData}
                                 onClickImage={onClickImage}
+                                onClickArtist={onClickArtist}
                                 onClickButton={onClickButton}
                                 isOnPlaying={isOnPlaying}
                                 index={index}
@@ -288,7 +300,14 @@ prevent.prototype = {
 };
 
 const HomeCard = memo(
-    ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
+    ({
+        type,
+        mediaData,
+        onClickImage,
+        onClickArtist,
+        onClickButton,
+        isOnPlaying,
+    }) => {
         // Song
         const { title, artist, image } = mediaData;
         // Artist
@@ -308,7 +327,6 @@ const HomeCard = memo(
         if (type.includes('Artist')) {
             imageClass = 'w-[160px] rounded-full';
             card_title = name;
-            card_desc = '';
         } else if (type.includes('Song')) {
             card_title = title;
             card_desc = artist;
@@ -318,11 +336,11 @@ const HomeCard = memo(
         }
 
         return (
-            <div className="media-item group w-full flex-col space-y-2 hover:cursor-pointer">
-                <div className="relative m-auto w-[160px]">
+            <div className="media-item group w-full flex-col space-y-2">
+                <div className="relative m-auto w-[160px] cursor-pointer">
                     {url ? (
                         <img
-                            className={`media-item__image hover: m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
+                            className={`media-item__image m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
                             src={url}
                             alt={card_title}
                             onClick={onClickImage}
@@ -342,11 +360,17 @@ const HomeCard = memo(
                         }
                     />
                 </div>
-                <p className="media-item__name overflow-hidden text-ellipsis text-nowrap text-center">
+                <p
+                    className="media-item__name cursor-pointer overflow-hidden text-ellipsis text-nowrap text-center"
+                    onClick={onClickImage}
+                >
                     {card_title}
                 </p>
                 {card_desc && (
-                    <p className="media-item__desc overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080]">
+                    <p
+                        className="media-item__desc cursor-pointer overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080] hover:underline"
+                        onClick={onClickArtist}
+                    >
                         {card_desc}
                     </p>
                 )}
@@ -369,6 +393,7 @@ HomeCard.propTypes = {
         }),
     }),
     onClickImage: PropTypes.func,
+    onClickArtist: PropTypes.func,
     onClickButton: PropTypes.func,
     isOnPlaying: PropTypes.bool,
 };

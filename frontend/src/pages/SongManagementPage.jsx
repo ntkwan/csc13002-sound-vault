@@ -255,8 +255,8 @@ function AdminSongPage() {
                 <tbody>
                     {paginatedSongs.map((song, index) => (
                         <tr key={index} className="border-b-2">
-                            <td className="px-2 py-5 text-sm">{song.id}</td>
-                            <td className="px-2 py-5 text-sm">{song.name}</td>
+                            <td className="px-2 py-5">{song.id}</td>
+                            <td className="px-2 py-5">{song.name}</td>
                             <td className="px-2 py-5">{song.date}</td>
                             <td className="px-2 py-5">{song.artist}</td>
                             <td className="px-2 py-5">
