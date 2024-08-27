@@ -456,6 +456,13 @@ export const api = createApi({
             query: () => '/get-dashboard-stats',
             providesTags: ['Admin'],
         }),
+        cancelCopyrightRequest: builder.mutation({
+            query: (songId) => ({
+                url: `/cancel-copyright-request/${songId}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
 
         // Reports -----------------------------------------------------------
         replyReport: builder.mutation({
@@ -678,6 +685,7 @@ export const {
     useDeactivateSongMutation,
     useActivateSongMutation,
     useGetDashboardStatsQuery,
+    useCancelCopyrightRequestMutation,
 
     // Reports ----------------------------------------------------------------
     useReplyReportMutation,

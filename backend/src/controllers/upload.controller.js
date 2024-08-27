@@ -171,6 +171,7 @@ const submit_music = async (req, res) => {
     }
 
     setTimeout(async () => {
+        req.isCover = false;
         upload_song_thumbnail(req, res);
 
         return res.status(200).json({
