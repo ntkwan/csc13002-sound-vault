@@ -39,11 +39,9 @@ const SongSchema = new Schema(
         image: {
             publicId: {
                 type: String,
-                default: 'default',
             },
             url: {
                 type: String,
-                default: process.env.DEFAULT_THUMBNAIL,
             },
         },
         coverimg: {
