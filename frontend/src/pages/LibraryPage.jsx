@@ -7,16 +7,13 @@ import {
     useGetMyPlaylistsQuery,
     useGetRecentlyPlayedSongsQuery,
 } from '@services/api';
-import { selectCurrentProfile } from '@services/selectors';
+import { selectCurrentProfile, selectMyPlaylists } from '@services/selectors';
 
 function LibraryPage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
-    const { data: myPlaylists } = useGetMyPlaylistsQuery(
-        { isAlbum: false },
-        { skip: !id },
-    );
+    const myPlaylists = useSelector(selectMyPlaylists);
 
     const { data: followingListData } = useGetFollowingListByIdQuery(
         profileId || id,
@@ -53,7 +50,7 @@ function LibraryPage() {
             type: 'Playlist',
             title: 'Playlist',
             displayItems: '2',
-            data: myPlaylists?.playlists || [],
+            data: myPlaylists || [],
         },
         {
             type: 'Single Song',

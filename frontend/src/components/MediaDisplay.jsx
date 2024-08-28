@@ -12,7 +12,6 @@ import {
     useAddSongToLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
     useDeleteTrackByIdMutation,
-    useGetMyPlaylistsQuery,
     useViewCopyrightQuery,
 } from '@services/api';
 import {
@@ -20,6 +19,7 @@ import {
     selectCurrentProfile,
     selectCurrentTrack,
     selectCurrentToken,
+    selectMyPlaylists,
 } from '@services/selectors';
 import {
     PlayButton,
@@ -583,7 +583,8 @@ PlaylistForm.propTypes = {
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
         const token = useSelector(selectCurrentToken);
-        const { id: myProfileID } = useSelector(selectCurrentProfile);
+        const { id: myProfileID, isVerified } =
+            useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
@@ -651,11 +652,7 @@ const SongBar = memo(
             skip: !playlistId,
         });
 
-        const { data: myPlaylistsData } = useGetMyPlaylistsQuery(
-            { isAlbum: false },
-            { skip: !id },
-        );
-        const myPlaylists = myPlaylistsData?.playlists || [];
+        const myPlaylists = useSelector(selectMyPlaylists) || [];
 
         const [creatPlayList] = useCreatePlaylistMutation();
         const handleCreatePlaylist = async (name, firstSongId) => {
@@ -817,14 +814,10 @@ const SongBar = memo(
                     <span className="hover:cursor-default">{view}</span>
                     <span className="hover:cursor-default">{duration}</span>
                     <div className="flex items-center justify-end">
-                        {token && (
+                        {token && isverified && !isVerified && (
                             <DonateButton
-                                className={
-                                    isverified
-                                        ? 'text-white'
-                                        : 'cursor-default opacity-0'
-                                }
-                                openDonateModal={isverified && openDonateModal}
+                                className={'text-white'}
+                                openDonateModal={openDonateModal}
                                 song={title}
                                 artist={artist}
                             />
