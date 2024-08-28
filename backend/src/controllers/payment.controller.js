@@ -20,6 +20,24 @@ const PAID = 'PAID';
 const CANCELLED = 'CANCELLED';
 const TEMPLATE = 'shqQiya';
 
+// web3
+const ethers = require('ethers');
+const INFURA_ENDPOINT = process.env.ENDPOINT;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
+const provider = new ethers.JsonRpcProvider(INFURA_ENDPOINT);
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+
+const signerAddress = signer.address;
+
+const contractAddress = '0xc363773e88cdf35331d16cd4b6cf2609f9b46d50';
+const Copyright = require('../../../contracts/Copyright.json');
+const {
+    experimentalAddHardhatNetworkMessageTraceHook,
+} = require('hardhat/config');
+const contract = new ethers.Contract(contractAddress, Copyright.abi, signer);
+const ContractWithSigner = contract.connect(signer);
+
 const confirm_webhook_payos = async (req, res) => {
     const { webhookUrl } = req.body;
     try {
@@ -293,10 +311,10 @@ const job = schedule.scheduleJob('* * * * * *', async () => {
 });
 
 const donate = async (req, res) => {
-    const user = req.user;
-    let { amount, to, song } = req.body;
+    let user = req.user;
+    let { amount, songId } = req.body;
     amount = Number(amount);
-    if (!to || !song) {
+    if (!amount || !songId) {
         return res.status(400).json({
             code: -1,
             message: 'Missing required fields',
@@ -304,62 +322,80 @@ const donate = async (req, res) => {
     }
 
     try {
-        let toUser;
-        if (!mongoose.Types.ObjectId.isValid(to)) {
-            toUser = await UserModel.findOne({ name: to });
-        } else {
-            toUser = await UserModel.findById(to);
-        }
-
-        if (!toUser) {
-            return res.status(404).json({
-                code: -1,
-                message: 'User not found',
-            });
-        }
-        if (!toUser.isVerified) {
-            return res.status(400).json({
-                code: -1,
-                message: 'User not verified',
-            });
-        }
-
-        const songObject = await SongModel.findOne({ title: song });
+        const songObject = await SongModel.findById(songId);
         if (!songObject) {
             return res.status(404).json({
                 code: -1,
-                message: 'Song not found',
+                message: 'Song is not found',
             });
         }
         if (!songObject.isVerified) {
             return res.status(400).json({
                 code: -1,
-                message: 'Song not verified',
+                message: 'Song is not verified',
             });
         }
 
-        toUser.balance += amount;
-        await toUser.save();
+        let to = [];
+        for (let i = 0; i < songObject.collaborators.length; ++i) {
+            to.push(songObject.collaborators[i]);
+        }
+        to.push(songObject.uploader);
+        let users = [];
+        for (let i = 0; i < to.length; ++i) {
+            if (mongoose.Types.ObjectId.isValid(to[i])) {
+                const toUser = await UserModel.findById(to[i]);
+                if (!toUser) {
+                    return res.status(404).json({
+                        code: -1,
+                        message: 'One of to-users is not found',
+                    });
+                }
+                users.push(toUser);
+            }
+        }
 
-        user.balance -= amount;
-        await user.save();
-        const payment = await PaymentModel.create({
-            from: user._id,
-            to: toUser._id,
-            song,
+        let distributed_money = await ContractWithSigner.distributeSongFund(
+            songId,
             amount,
-            orderId: Number(String(new Date().getTime()).slice(1, 11)),
-            status: 'PAID',
-            type: DONATE,
-            balance: user.balance,
-            toBalance: toUser.balance,
-        });
-        await payment.save();
+        );
+        let result = [];
+        for (let i = 0; i < distributed_money.length; ++i) {
+            result.push(distributed_money[i] / 100n);
+        }
 
-        await toUser.notify({
-            message: `You have received a donation of ${amount} VND from ${user.name} for ${song}`,
-            createdAt: new Date(),
-        });
+        for (let i = 0; i < users.length; ++i) {
+            let toUser = users[i];
+            toUser.balance = toUser.balance + Number(result[i]);
+            await toUser.save();
+        }
+
+        user.balance = user.balance - Number(amount);
+        await user.save();
+
+        for (let i = 0; i < users.length; ++i) {
+            const toUser = users[i];
+            const payment = await PaymentModel.create({
+                from: user._id,
+                to: toUser,
+                song,
+                amount,
+                orderId: Number(String(new Date().getTime()).slice(1, 11)),
+                status: 'PAID',
+                type: DONATE,
+                balance: user.balance,
+                toBalance: toUser.balance,
+            });
+            await payment.save();
+        }
+
+        for (let i = 0; i < users.length; ++i) {
+            const toUser = users[i];
+            await toUser.notify({
+                message: `You have received a donation of ${amount} VND from ${user.name} for ${song}`,
+                createdAt: new Date(),
+            });
+        }
 
         return res.status(200).json({
             code: 1,

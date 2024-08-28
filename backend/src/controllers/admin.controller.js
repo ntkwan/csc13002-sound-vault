@@ -365,9 +365,10 @@ const set_verified_song = async (req, res) => {
 
         await Song.save();
 
-        const message = Song.isVerified
-            ? 'Song unverified successfully'
-            : 'Song verified successfully';
+        const message =
+            Song.isVerified == false
+                ? 'Song unverified successfully'
+                : 'Song verified successfully';
         return res.status(200).json({
             message: message,
         });

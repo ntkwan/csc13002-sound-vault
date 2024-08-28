@@ -53,7 +53,6 @@ const get_trending_songs = async (req, res) => {
                     artists.push(artist.name);
                 }
                 collabs.set(song._id, artists.join(', '));
-                console.log(artists);
             }
         }
         res.status(200).send(
@@ -143,7 +142,6 @@ const play_song = async (req, res) => {
             audiourl: Song.audiourl,
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             message: error.message,
         });
