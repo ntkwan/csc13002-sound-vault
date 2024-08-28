@@ -27,14 +27,14 @@ import { DonateButton, DonateModal, DepositModal } from '@components';
 function Player() {
     const token = useSelector(selectCurrentToken);
     const nav = useNavigate();
-    const [isSolidBookmark, setIsSolidBookmark] = useState(false);
+    // const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
 
-    const handleBookmarkClick = () => {
-        setIsSolidBookmark(!isSolidBookmark);
-    };
+    // const handleBookmarkClick = () => {
+    //     setIsSolidBookmark(!isSolidBookmark);
+    // };
 
     const formatTimeDataToRender = (timeData) => {
         const minutes = Math.floor(timeData / 60);
@@ -375,13 +375,13 @@ function Player() {
                     />
                 )}
                 {/* bookmark */}
-                <AudioButton onClick={handleBookmarkClick}>
+                {/* <AudioButton onClick={handleBookmarkClick}>
                     {isSolidBookmark ? (
                         <i className="ri-bookmark-fill"></i>
                     ) : (
                         <i className="ri-bookmark-line"></i>
                     )}
-                </AudioButton>
+                </AudioButton> */}
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
                 {/* expand */}
@@ -505,7 +505,7 @@ function Player() {
                             />
                         )}{' '}
                         {/* bookmark */}
-                        <AudioButton
+                        {/* <AudioButton
                             onClick={handleBookmarkClick}
                             className="text-2xl"
                         >
@@ -514,7 +514,7 @@ function Player() {
                             ) : (
                                 <i className="ri-bookmark-line"></i>
                             )}
-                        </AudioButton>
+                        </AudioButton> */}
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
                         {/* collapse */}

@@ -53,7 +53,7 @@ function Sidebar() {
             className="sidebar fixed bottom-[80px] top-[70px] z-10 mt-6 w-max max-w-[190px] -translate-x-40 select-none flex-col space-y-16 overflow-hidden text-xs uppercase opacity-0 backdrop-blur-xl transition duration-700 ease-in-out hover:overflow-y-scroll"
             ref={sidebar}
         >
-            <section className="ml-2">
+            <section className="ml-2 w-[170px]">
                 <span className="ml-3">Browse</span>
                 <div>
                     {isAdmin ? (
@@ -132,7 +132,7 @@ function Sidebar() {
                     )}
                 </div>
             </section>
-            <section className="ml-2">
+            <section className="ml-2 w-[170px]">
                 <span className="ml-3">Help</span>
                 <div>
                     {token && !isAdmin && (
@@ -175,7 +175,7 @@ function SidebarLink({ to, icon: Icon, label, children }) {
         <NavLink
             to={to}
             className={({ isActive }) =>
-                `relative my-1 flex items-center rounded-full px-3 py-3 leading-4 transition-colors duration-300 ease-in-out ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20'}`
+                `relative my-1 flex w-full items-center rounded-full px-3 py-3 leading-4 transition-colors duration-300 ease-in-out ${isActive ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20'}`
             }
         >
             {Icon && <Icon />}
