@@ -1,17 +1,22 @@
 require('dotenv').config();
 require('@nomicfoundation/hardhat-toolbox');
-
-/** @type import('hardhat/config').HardhatUserConfig */
-
 const { vars } = require('hardhat/config');
-const INFURA_API_KEY = vars.get(process.env.API_KEY);
-const SEPOLIA_PRIVATE_KEY = vars.get(process.env.PRIVATE_KEY);
+const INFURA_ENDPOINT = process.env.ENDPOINT;
+const SEPOLIA_PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 module.exports = {
-    solidity: '0.8.24',
+    solidity: {
+        version: '0.8.24',
+        settings: {
+            optimizer: {
+                enabled: true,
+                runs: 10000,
+            },
+        },
+    },
     networks: {
         sepolia: {
-            url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+            url: INFURA_ENDPOINT,
             accounts: [SEPOLIA_PRIVATE_KEY],
         },
     },
