@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -38,20 +38,6 @@ function SongPage() {
     const [showSongOptions, setShowSongOptions] = useState(false);
     const [showChangeThumbnail, setShowChangeThumbnail] = useState(false);
     const [showChangeCover, setShowChangeCover] = useState(false);
-    const [showViewCopyRight, setShowViewCopyRight] = useState(false);
-    const frameRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (frameRef.current && !frameRef.current.contains(e.target)) {
-                setShowViewCopyRight(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -185,32 +171,6 @@ function SongPage() {
 
     return (
         <>
-            {showViewCopyRight && (
-                <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div
-                        ref={frameRef}
-                        className="relative z-20 cursor-default rounded-[35px] border bg-black px-6 py-8 text-center font-kodchasan shadow-lg"
-                    >
-                        <div className="mb-2 px-1 text-left font-semibold text-white">
-                            View CopyRight on Blockchain:
-                        </div>
-                        <div className="flex items-center justify-center rounded-xl border p-2">
-                            <a
-                                href={copyrightLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mx-3 text-blue-500 underline"
-                            >
-                                {copyrightLink}
-                            </a>
-                            <i
-                                class="ri-file-copy-line text-2xl hover:cursor-pointer"
-                                onClick={() => copyToClipboard(copyrightLink)}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
             {showChangeThumbnail && (
                 <UpdateImageFrame
                     setShowFrame={setShowChangeThumbnail}
@@ -407,11 +367,21 @@ function SongPage() {
                                                             icon="ri-copyright-fill"
                                                             title="View on Blockchain"
                                                             handleAction={() => {
+                                                                if (
+                                                                    copyrightLink
+                                                                ) {
+                                                                    window.open(
+                                                                        copyrightLink,
+                                                                        '_blank',
+                                                                        'noopener,noreferrer',
+                                                                    );
+                                                                } else {
+                                                                    toast.error(
+                                                                        'Link is not available',
+                                                                    );
+                                                                }
                                                                 setShowSongOptions(
                                                                     false,
-                                                                );
-                                                                setShowViewCopyRight(
-                                                                    true,
                                                                 );
                                                             }}
                                                             spanClass="text-left"

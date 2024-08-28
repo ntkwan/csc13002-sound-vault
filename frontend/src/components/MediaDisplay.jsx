@@ -13,6 +13,7 @@ import {
     useGetPlaylistByIdQuery,
     useDeleteTrackByIdMutation,
     useGetMyPlaylistsQuery,
+    useViewCopyrightQuery,
 } from '@services/api';
 import {
     selectCurrentPlaylist,
@@ -582,8 +583,7 @@ PlaylistForm.propTypes = {
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
         const token = useSelector(selectCurrentToken);
-        const { id: myProfileID, isVerified } =
-            useSelector(selectCurrentProfile);
+        const { id: myProfileID } = useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
@@ -657,10 +657,8 @@ const SongBar = memo(
         );
         const myPlaylists = myPlaylistsData?.playlists || [];
 
-        const [creatPlayList, { isLoading: createPlaylistLoading }] =
-            useCreatePlaylistMutation();
+        const [creatPlayList] = useCreatePlaylistMutation();
         const handleCreatePlaylist = async (name, firstSongId) => {
-            if (createPlaylistLoading) return;
             try {
                 await creatPlayList({ name, firstSongId }).unwrap();
                 toast.success('Playlist created successfully!');
@@ -670,15 +668,13 @@ const SongBar = memo(
             }
         };
 
-        const [addSongToPlaylist, { isLoading: addSongToPlaylistLoading }] =
-            useAddSongToPlaylistMutation();
+        const [addSongToPlaylist] = useAddSongToPlaylistMutation();
         const handleAddToPlaylist = async (
             playlistId,
             songId,
             songName,
             playlistName,
         ) => {
-            if (addSongToPlaylistLoading) return;
             try {
                 await addSongToPlaylist({ playlistId, songId }).unwrap();
                 toast.success(
@@ -690,12 +686,8 @@ const SongBar = memo(
             }
         };
 
-        const [
-            removeSongFromPlaylist,
-            { isLoading: removeSongFromPlaylistLoading },
-        ] = useRemoveSongFromPlaylistMutation();
+        const [removeSongFromPlaylist] = useRemoveSongFromPlaylistMutation();
         const handleRemoveFromPlaylist = async (playlistId, songId) => {
-            if (removeSongFromPlaylistLoading) return;
             try {
                 await removeSongFromPlaylist({ playlistId, songId }).unwrap();
                 toast.success('Song removed from playlist successfully!');
@@ -705,12 +697,8 @@ const SongBar = memo(
             }
         };
 
-        const [
-            addSongToLikedPlaylist,
-            { isLoading: addSongToLikedPlaylistLoading },
-        ] = useAddSongToLikedPlaylistMutation();
+        const [addSongToLikedPlaylist] = useAddSongToLikedPlaylistMutation();
         const handleAddToLikedSongs = async (id, songName) => {
-            if (addSongToLikedPlaylistLoading) return;
             try {
                 await addSongToLikedPlaylist(id).unwrap();
                 toast.success(`${songName} added to liked songs successfully!`);
@@ -719,10 +707,8 @@ const SongBar = memo(
                 toast.error(`${error.data.message}!`);
             }
         };
-        const [removeSongById, { isLoading: removeSongIsLoading }] =
-            useDeleteTrackByIdMutation();
+        const [removeSongById] = useDeleteTrackByIdMutation();
         const handleRemoveSong = async (id) => {
-            if (removeSongIsLoading) return;
             try {
                 setConfirmDelete(false);
                 await removeSongById(id).unwrap();
@@ -731,6 +717,17 @@ const SongBar = memo(
                 console.log('Failed to remove song', error);
                 toast.error(`${error.data.message}!`);
             }
+        };
+
+        const { data } = useViewCopyrightQuery(id);
+        const copyrightLink = data?.link;
+        const handleViewOnBlockchain = () => {
+            if (copyrightLink) {
+                window.open(copyrightLink, '_blank', 'noopener,noreferrer');
+            } else {
+                toast.error('Link is not available');
+            }
+            setMenuVisible(null);
         };
 
         const { currentSong } = useSong();
@@ -963,6 +960,16 @@ const SongBar = memo(
                                                         id,
                                                         title,
                                                     ),
+                                                )}
+                                                spanClass="text-left"
+                                            />
+                                        )}
+                                        {isverified && (
+                                            <UtilitiesCard
+                                                icon="ri-copyright-fill"
+                                                title="View on Blockchain"
+                                                handleAction={prevent(() =>
+                                                    handleViewOnBlockchain(),
                                                 )}
                                                 spanClass="text-left"
                                             />
