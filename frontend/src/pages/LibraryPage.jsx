@@ -4,16 +4,20 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
     useGetFollowingListByIdQuery,
-    useGetMyPlaylistsQuery,
     useGetRecentlyPlayedSongsQuery,
 } from '@services/api';
-import { selectCurrentProfile, selectMyPlaylists } from '@services/selectors';
+import {
+    selectCurrentProfile,
+    selectMyAlbums,
+    selectMyPlaylists,
+} from '@services/selectors';
 
 function LibraryPage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
     const myPlaylists = useSelector(selectMyPlaylists);
+    const myAlbums = useSelector(selectMyAlbums);
 
     const { data: followingListData } = useGetFollowingListByIdQuery(
         profileId || id,
@@ -25,11 +29,6 @@ function LibraryPage() {
 
     const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
     const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
-
-    const { data: myAlbumData } = useGetMyPlaylistsQuery(
-        { isAlbum: true },
-        { skip: !id },
-    );
 
     const mediaData = [
         {
@@ -44,7 +43,7 @@ function LibraryPage() {
             type: 'Album',
             title: 'Albums',
             displayItems: '2',
-            data: myAlbumData?.playlists || [],
+            data: myAlbums || [],
         },
         {
             type: 'Playlist',

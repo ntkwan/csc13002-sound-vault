@@ -263,10 +263,9 @@ export const api = createApi({
             providesTags: ['Playlist'],
         }),
         getMyPlaylists: builder.query({
-            query: (params) => ({
+            query: () => ({
                 url: '/get-my-playlists',
                 method: 'GET',
-                params: { isAlbum: params?.isAlbum },
             }),
             providesTags: ['Playlist'],
         }),

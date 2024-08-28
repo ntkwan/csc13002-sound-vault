@@ -3,10 +3,21 @@ import { api } from '@services/api';
 
 const initialState = {
     playlists: [],
+    albums: [],
     currentPlaylist: {
         id: '',
         songs: [],
     },
+};
+
+const addToList = (list, item) => {
+    if (!list) return;
+    if (list.findIndex((i) => i.id === item.id) === -1) {
+        list.push(item);
+    } else {
+        const index = list.findIndex((i) => i.id === item.id);
+        list[index] = item;
+    }
 };
 
 const playlistsSlice = createSlice({
@@ -30,18 +41,11 @@ const playlistsSlice = createSlice({
             api.endpoints.getMyPlaylists.matchFulfilled,
             (state, action) => {
                 action.payload.playlists.forEach((playlist) => {
-                    if (
-                        state.playlists.findIndex(
-                            (p) => p.id === playlist.id,
-                        ) === -1
-                    ) {
-                        state.playlists.push(playlist);
-                    } else {
-                        const index = state.playlists.findIndex(
-                            (p) => p.id === playlist.id,
-                        );
-                        state.playlists[index].songs = playlist.songs;
-                    }
+                    if (playlist.isAlbum) {
+                        console.log('Album:', playlist);
+
+                        addToList(state.albums, playlist);
+                    } else addToList(state.playlists, playlist);
                 });
             },
         );

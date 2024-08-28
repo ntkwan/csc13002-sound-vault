@@ -1,27 +1,26 @@
 import { useState, useRef, useEffect } from 'react';
 import {
     useCreateAlbumMutation,
-    useGetMyPlaylistsQuery,
     useAddSongToPlaylistMutation,
 } from '@services/api';
 import { PropTypes } from 'prop-types';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { selectMyAlbums } from '@services/selectors';
 import { Loading } from '.';
 
 AlbumFrame.propTypes = {
     idSong: PropTypes.string,
     songName: PropTypes.string,
-    myProfileID: PropTypes.string,
     onClose: PropTypes.func,
 };
 
-function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
+function AlbumFrame({ idSong, songName, onClose }) {
     const albumFormRef = useRef(null);
     const albumFrameRef = useRef(null);
     const [albumName, setAlbumName] = useState('');
     const [showAlbumForm, setShowAlbumForm] = useState(false);
-    const { data: myAlbumData, isLoading: isLoadingMyAlbumData } =
-        useGetMyPlaylistsQuery({ isAlbum: true }, { skip: !myProfileID });
+    const myAlbums = useSelector(selectMyAlbums);
     const [creatAlbum, { isLoading: createAlbumLoading }] =
         useCreateAlbumMutation();
     const handleCreateAlbum = async (name) => {
@@ -78,7 +77,7 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
         return () =>
             document.removeEventListener('mousedown', handleOutsideClick);
     }, [onClose]);
-    if (isLoadingMyAlbumData) {
+    if (!myAlbums) {
         return <Loading />;
     }
     return (
@@ -128,8 +127,8 @@ function AlbumFrame({ idSong, songName, myProfileID, onClose }) {
                     />
                 </div>
                 <div className="scrollbar-custom h-[90%] overflow-y-auto">
-                    {myAlbumData?.playlists?.length > 0 ? (
-                        myAlbumData.playlists.map((album) => (
+                    {myAlbums.length > 0 ? (
+                        myAlbums.map((album) => (
                             <div
                                 key={album.id}
                                 className="mt-2 flex rounded-md p-2 hover:bg-white hover:bg-opacity-25"

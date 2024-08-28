@@ -10,4 +10,5 @@ export const selectCurrentGlobalLoading = (state) =>
 export const selectCurrentLocalLoading = (state) =>
     state.loading.isLocalLoading;
 export const selectMyPlaylists = (state) => state.playlists.playlists;
+export const selectMyAlbums = (state) => state.playlists.albums;
 export const selectCurrentPlaylist = (state) => state.playlists.currentPlaylist;
