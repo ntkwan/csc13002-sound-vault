@@ -12,7 +12,7 @@ const schedule = require('node-schedule');
 
 // web3
 const ethers = require('ethers');
-const INFURA_ENDPOINT = process.env.INFURA_ENDPOINT;
+const INFURA_ENDPOINT = process.env.ENDPOINT;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const provider = new ethers.JsonRpcProvider(INFURA_ENDPOINT);
@@ -20,9 +20,8 @@ const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
 const signerAddress = signer.address;
 
-const contractAddress = '0xDE3A5D367e3e5eFAfAaaA5aB80753c1A761508b5';
-const Copyright = require('../../../ignition/modules/Copyright.json');
-
+const contractAddress = '0xc363773e88cdf35331d16cd4b6cf2609f9b46d50';
+const Copyright = require('../../../contracts/Copyright.json');
 const contract = new ethers.Contract(contractAddress, Copyright.abi, signer);
 const ContractWithSigner = contract.connect(signer);
 
@@ -287,7 +286,6 @@ const cancel_copyright_request = async (req, res) => {
 
 const set_verified_song = async (req, res) => {
     const songId = req.params.songId;
-
     try {
         const Song = await SongModel.findById(songId);
         if (!Song) {
@@ -309,22 +307,65 @@ const set_verified_song = async (req, res) => {
             });
         }
 
+        publicAddresses = [];
+        except = [];
+        publicAddresses.push(User.publicAddress);
+        weights = [];
+        weights.push(50);
+        for (let i = 0; i < Song.collaborators.length; i++) {
+            const collab_artist = await UserModel.findById(
+                Song.collaborators[i],
+            );
+            if (!collab_artist.publicAddress) {
+                except.push(collab_artist.name);
+            } else {
+                publicAddresses.push(collab_artist.publicAddress);
+                weights.push(50); // 50% for each collaborator
+            }
+        }
+
+        if (except.length > 0) {
+            return res.status(404).json({
+                message:
+                    'Collaborators need to update public address: ' +
+                    except.join(', '),
+            });
+        }
+
+        collaborators = [];
+        collaborators.push(User.name);
+        for (let i = 0; i < Song.collaborators.length; i++) {
+            const collab_artist = await UserModel.findById(
+                Song.collaborators[i],
+            );
+            collaborators.push(collab_artist.name);
+        }
+
+        console.log(
+            Song._id.toString(),
+            Song.title,
+            collaborators,
+            publicAddresses,
+            weights,
+        );
         if (Song.isVerified == false) {
-            const response = await ContractWithSigner.uploadMusic_batch(
+            const response = await ContractWithSigner.uploadMusic(
                 Song._id.toString(),
                 Song.title,
-                Song.artist,
-                User.publicAddress,
+                collaborators,
+                publicAddresses,
+                weights,
             );
 
             await response.wait();
             console.log('Transaction Hash:', response.hash);
+            Song.transactionsId = response.hash;
             Song.isVerified = true;
         }
 
         await Song.save();
 
-        const message = isVerified
+        const message = Song.isVerified
             ? 'Song unverified successfully'
             : 'Song verified successfully';
         return res.status(200).json({

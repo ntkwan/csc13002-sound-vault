@@ -1,176 +1,114 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.0 <0.9.0;
-
 pragma experimental ABIEncoderV2;
 
 /*
  * Copyright contract
  */
 contract Copyright {
-    // Music metadata
+    address public constant CONTRACT_OWNER =
+        0x7C3E27a2317849A126847de19A50E0cbfc2a3b5A;
+
     struct Music {
-        address uploader;
-        uint256 uploadTime;
-        string name;
-        string artist;
-        string songHash;
+        address[] song_shareholders;
+        uint256 upload_time;
+        string title;
+        string song_hash;
+        uint64[] weights;
     }
+
+    address[] internal allowed_wallet; // list of administrator's public address
+    Music[] internal uploaded_songs; // list of uploaded songs
 
     struct User {
-        string[] upload_music_list;
-        bool isValid;
+        string name;
+        bool isAdmin;
     }
 
-    // song lists
-    Music[] internal musics;
-
-    // user as key
     mapping(address => User) internal users;
 
-    // song hash as key
-    mapping(string => Music) internal music_hash;
+    mapping(string => Music) internal music_hash; // trace song by hash
 
-    // (name, artist) as primary key
-    mapping(string => mapping(string => Music)) internal music;
+    /* Administrative */
+    function addToAllowedWallet(address publicAddress) public returns (bool) {
+        require(msg.sender == CONTRACT_OWNER, "You are not contract owner");
 
-    // Name as primary key
-    mapping(string => Music[]) internal music_artist_list;
-
-    // Artist as primary key
-    mapping(string => Music[]) internal artist_music_list;
-
-
-    /* Public methods */
-
-    function userExists() public view returns (bool) {
-        return users[msg.sender].isValid;
-    }
-
-    function getUserInfo() public view returns (User memory) {
-        return users[msg.sender];
-    }
-
-    function getUploadMusicList() public view returns (string[] memory) {
-        return users[msg.sender].upload_music_list;
-    }
-
-    function findUploadMusic(string memory _songHash)
-        public
-        view
-        returns (bool)
-    {
-        User memory user = users[msg.sender];
-        string[] memory upload_list = user.upload_music_list;
-
-        for (uint256 i = 0; i < upload_list.length; i++) {
-            if (
-                keccak256(abi.encodePacked(_songHash)) ==
-                keccak256(abi.encodePacked(upload_list[i]))
-            ) {
-                return true;
-            }
+        if (users[publicAddress].isAdmin == false) {
+            users[publicAddress].isAdmin = true;
+            return true;
         }
-
         return false;
     }
 
+    function removeFromAllowedWallet(
+        address publicAddress
+    ) public returns (bool) {
+        require(msg.sender == CONTRACT_OWNER, "You are not contract owner");
+
+        if (users[publicAddress].isAdmin == true) {
+            users[publicAddress].isAdmin = false;
+            return true;
+        }
+        return false;
+    }
+
+    /* Public methods */
+    function getUploadedSongs() public view returns (Music[] memory) {
+        return uploaded_songs;
+    }
+
+    function getSongByHash(
+        string calldata song_hash
+    ) public view returns (Music memory) {
+        return music_hash[song_hash];
+    }
+
     function uploadMusic(
-        string memory _songHash,
-        string memory _name,
-        string memory _artist
+        string calldata song_hash,
+        string calldata title,
+        string[] calldata collaborator,
+        address[] calldata song_shareholders,
+        uint64[] calldata weights
     ) public {
-        Music memory _music =
-            Music(
-                msg.sender,
-                block.timestamp,
-                _name,
-                _artist,
-                _songHash
-            );
+        require(
+            users[msg.sender].isAdmin == true || msg.sender == CONTRACT_OWNER,
+            "You dont have permission to perform such function"
+        );
 
-        // Global state update
-        musics.push(_music);
-        music[_name][_artist] = _music;
-        music_hash[_songHash] = _music;
-        music_artist_list[_name].push(_music);
-        artist_music_list[_artist].push(_music);
+        Music memory _music = Music(
+            song_shareholders,
+            block.timestamp,
+            title,
+            song_hash,
+            weights
+        );
 
-        // User state update
-        users[msg.sender].upload_music_list.push(_songHash);
+        music_hash[song_hash] = _music;
+        uploaded_songs.push(_music);
+
+        for (uint32 i; i < song_shareholders.length; i++) {
+            if (bytes(users[song_shareholders[i]].name).length == 0) {
+                users[song_shareholders[i]].name = collaborator[i];
+                users[song_shareholders[i]].isAdmin = false;
+            }
+        }
     }
 
-    function uploadMusic_batch(
-        string memory _songHash,
-        string memory _name,
-        string memory _artist,
-        address uploader_addr
-    ) public {
-        Music memory _music =
-            Music(
-                uploader_addr,
-                block.timestamp,
-                _name,
-                _artist,
-                _songHash
-            );
+    function distributeSongFund(
+        string memory song_hash,
+        uint64 income
+    ) public view returns (uint64[] memory) {
+        require(msg.sender == CONTRACT_OWNER, "You are not contract owner");
 
-        // Global state update
-        musics.push(_music);
-        music[_name][_artist] = _music;
-        music_hash[_songHash] = _music;
-        music_artist_list[_name].push(_music);
-        artist_music_list[_artist].push(_music);
+        Music memory song_info = music_hash[song_hash];
+        uint64[] memory distributed_money = new uint64[](
+            song_info.weights.length
+        );
+        // weights[0] is author's money weight by default
+        for (uint32 i; i < song_info.weights.length; ++i) {
+            distributed_money[i] = income * song_info.weights[i];
+        }
 
-        // User state update
-        users[uploader_addr].upload_music_list.push(_songHash);
+        return distributed_money;
     }
-
-    function musicExists(string memory _name, string memory _artist) 
-        public 
-        view
-        returns (bool)
-    {
-        Music memory _music = music[_name][_artist];
-        address _uploader = _music.uploader;
-        bool exists = _uploader != address(0);
-        return exists;
-    }
-
-    function getMusic(string memory _name, string memory _artist)
-        public
-        view
-        returns (Music memory)
-    {
-        Music memory _music = music[_name][_artist];
-
-        return _music;
-    }
-
-    function getMusicList()
-        public 
-        view 
-        returns (Music[] memory) 
-    {
-        return musics;
-    }
-    
-    function getMusicArtistList(string memory _name)
-        public
-        view
-        returns (Music[] memory)
-    {
-        Music[] memory _music_artist_list = music_artist_list[_name];
-
-        return _music_artist_list;
-    }
-
-    function getArtistMusicList(string memory _artist)
-        public
-        view
-        returns (Music[] memory)
-    {
-        Music[] memory _artist_music_list = artist_music_list[_artist];
-
-        return _artist_music_list;
-    }       
 }

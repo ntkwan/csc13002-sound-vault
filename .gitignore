@@ -134,6 +134,7 @@ node_modules
 /artifacts
 /contracts/artifacts
 /ignition/deployments
+.openzeppelin
 
 # TypeChain files
 /typechain

@@ -269,15 +269,36 @@ const get_profile_all_songs = async (req, res) => {
     const profileId = req.params.profileId;
 
     try {
-        const songs = await SongModel.find({ uploader: profileId }).sort({
-            view: -1,
-        });
+        const songs = await SongModel.find({ uploader: profileId });
+        const collab_songs = await SongModel.find({ collaborators: profileId });
+        songs.push(...collab_songs);
+        const collabs = new Map();
+        for (let song of songs) {
+            let artists = [];
+            if (song.collaborators) {
+                for (let collab of song.collaborators) {
+                    const artist = await UserModel.findById(collab);
+                    if (!artist) {
+                        continue;
+                    }
+                    artists.push(artist.name);
+                }
+                collabs.set(song._id, artists.join(', '));
+                console.log(artists);
+            }
+        }
 
         res.status(200).send(
             songs.map((song) => {
                 return {
                     id: song._id,
-                    title: song.title,
+                    title:
+                        collabs.get(song._id).length === 0
+                            ? song.title
+                            : song.title +
+                              ' (ft ' +
+                              collabs.get(song._id) +
+                              ')',
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
