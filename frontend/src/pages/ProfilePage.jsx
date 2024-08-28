@@ -304,7 +304,7 @@ function ProfilePage() {
                                 {profileAllSongsData && (
                                     <BigPlayButton
                                         playlist={{
-                                            id: profileId,
+                                            id: profileId || id,
                                             songs: profileAllSongsData,
                                         }}
                                     />
