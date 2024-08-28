@@ -98,6 +98,10 @@ const UserSchema = new Schema(
             type: String,
             default: '',
         },
+        notification: {
+            type: Array,
+            default: [],
+        },
     },
     {
         timestamps: true,
@@ -188,6 +192,11 @@ UserSchema.methods.removeFromLikedSongs = async function (songId) {
     const playlist = await Playlist.findById(this.playlist[0]);
     playlist.songs = playlist.songs.filter((id) => id.toString() !== songId);
     await playlist.save();
+};
+
+UserSchema.methods.notify = async function (notification) {
+    this.notification.unshift(notification);
+    await this.save();
 };
 
 module.exports = mongoose.model('User', UserSchema);

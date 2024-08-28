@@ -87,6 +87,11 @@ const receive_webhook_payos = async (req, res) => {
         payment.balance += amount;
         await payment.save();
 
+        await user.notify({
+            message: `You have successfully deposited ${amount} VND`,
+            createdAt: new Date(),
+        });
+
         return res.status(200).json({
             code: 1,
             message: 'Payment processed successfully',
@@ -168,6 +173,11 @@ const receive_webhook_casso = async (req, res) => {
         payment.status = PAID;
         payment.balance = 0;
         await payment.save();
+
+        await user.notify({
+            message: `You have successfully withdrawn ${payment.amount} VND`,
+            createdAt: new Date(),
+        });
 
         return res.status(200).json({
             success: true,
@@ -346,6 +356,11 @@ const donate = async (req, res) => {
         });
         await payment.save();
 
+        await toUser.notify({
+            message: `You have received a donation of ${amount} VND from ${user.name} for ${song}`,
+            createdAt: new Date(),
+        });
+
         return res.status(200).json({
             code: 1,
             message: 'Donate successfully',
@@ -376,6 +391,16 @@ const withdraw = async (req, res) => {
             qrCode: qrcode,
         });
         await payment.save();
+
+        const admins = await UserModel.find({ isAdmin: true });
+        const notification = {
+            message: `Withdraw request from ${req.user.name}`,
+            createdAt: new Date(),
+        };
+        admins.forEach(async (admin) => {
+            await admin.notify(notification);
+        });
+
         return res.status(200).json({
             code: 1,
             message: 'Withdraw request sent successfully',

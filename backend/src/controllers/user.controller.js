@@ -357,6 +357,10 @@ const follow_profile_by_id = async (req, res) => {
 
         targetProfile.followers.push(userId);
         await targetProfile.save({ validateBeforeSave: false });
+        await targetProfile.notify({
+            message: `${thisProfile.name} followed you`,
+            createdAt: new Date(),
+        });
         thisProfile.following.push(profileId);
         await thisProfile.save({ validateBeforeSave: false });
 
@@ -741,6 +745,25 @@ const update_bank_info = async (req, res) => {
     }
 };
 
+const get_notification = async (req, res) => {
+    const user = req.user;
+    try {
+        const notifications = user.notification;
+        return res.status(200).json(
+            notifications.map((notification) => {
+                return {
+                    message: notification.message,
+                    createdAt: notification.createdAt,
+                };
+            }),
+        );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     contact_to_support,
     get_profile_information,
@@ -761,4 +784,5 @@ module.exports = {
     get_profile_playlists,
     get_search_results,
     update_bank_info,
+    get_notification,
 };

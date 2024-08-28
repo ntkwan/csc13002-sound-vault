@@ -169,10 +169,16 @@ const submit_music = async (req, res) => {
             message: 'Failed at uploading audio file',
         });
     }
+    const user = req.user;
 
     setTimeout(async () => {
         req.isCover = false;
         upload_song_thumbnail(req, res);
+
+        await user.notify({
+            message: `Your song "${req.body.title}" has been submitted successfully`,
+            createdAt: new Date(),
+        });
 
         return res.status(200).json({
             songId: req._id,

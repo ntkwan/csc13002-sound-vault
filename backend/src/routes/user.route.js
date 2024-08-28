@@ -8,9 +8,11 @@ router.get(
     authMiddleware.check_user,
     userController.get_profile_information,
 );
-
-router.post('/contact-to-support', userController.contact_to_support);
-
+router.get(
+    '/get-notification',
+    authMiddleware.check_user,
+    userController.get_notification,
+);
 router.get(
     '/get-follow-button-by-id/:profileId',
     authMiddleware.check_user,
@@ -49,6 +51,7 @@ router.get(
 );
 router.get('/search', userController.get_search_results);
 
+router.post('/contact-to-support', userController.contact_to_support);
 router.post(
     '/change-profile',
     authMiddleware.check_user,
