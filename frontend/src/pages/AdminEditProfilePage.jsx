@@ -55,7 +55,7 @@ function AdminEditProfilePage() {
         const repeatPassword = formData.get('pf-repeatPassword');
 
         if (newPassword !== repeatPassword) {
-            toast.error('New passwords do not match!');
+            toast.error('New passwords are not matched!');
             return;
         }
 
@@ -146,7 +146,7 @@ function AdminEditProfilePage() {
                                                 iconUpdate}
                                             {isLoadingChangeProfile
                                                 ? 'Updating...'
-                                                : 'Update'}
+                                                : 'Change information'}
                                         </button>
                                     </fieldset>
                                 </form>
@@ -193,7 +193,7 @@ function AdminEditProfilePage() {
                                 {isLoadingChangePassword && iconUpdate}
                                 {isLoadingChangePassword
                                     ? 'Updating...'
-                                    : 'Update'}
+                                    : 'Change password'}
                             </button>
                         </fieldset>
                     </form>
