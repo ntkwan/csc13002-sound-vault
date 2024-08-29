@@ -391,10 +391,19 @@ const donate = async (req, res) => {
 
         for (let i = 0; i < users.length; ++i) {
             const toUser = users[i];
-            await toUser.notify({
+            const notification = {
                 message: `You have received a donation of ${amount} VND from ${user.name} for ${song}`,
                 createdAt: new Date(),
-            });
+            };
+            await toUser.notify(notification);
+
+            if (!toUser.isVerified) {
+                await toUser.notify({
+                    message:
+                        'You have received a donation. Please verify your account to withdraw the money',
+                    createdAt: new Date(),
+                });
+            }
         }
 
         return res.status(200).json({

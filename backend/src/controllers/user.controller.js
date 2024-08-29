@@ -550,6 +550,7 @@ const get_recently_played_songs = async (req, res) => {
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
+                    audiourl: song.audiourl,
                     coverimg: song.coverimg,
                     view: song.view,
                 };
@@ -653,10 +654,6 @@ const get_search_results = async (req, res) => {
                 { artist: { $regex: query, $options: 'i' } },
             ],
         }).limit(5);
-        const Playlists = await PlaylistModel.find({
-            name: { $regex: query, $options: 'i' },
-            isAlbum: false,
-        }).limit(5);
         const Albums = await PlaylistModel.find({
             name: { $regex: query, $options: 'i' },
             isAlbum: true,
@@ -690,17 +687,6 @@ const get_search_results = async (req, res) => {
                     view: song.view,
                 };
             }) ?? [];
-        let playlists =
-            Playlists?.map((playlist) => {
-                return {
-                    id: playlist._id,
-                    name: playlist.name,
-                    description: playlist.desc,
-                    playlist_owner: playlist.uploader,
-                    image: playlist.image,
-                    songs: playlist.songs,
-                };
-            }) ?? [];
         let albums =
             Albums?.map((album) => {
                 return {
@@ -717,7 +703,6 @@ const get_search_results = async (req, res) => {
             !artists.length &&
             !users.length &&
             !songs.length &&
-            !playlists.length &&
             !albums.length
         ) {
             return res.status(404).json({
@@ -729,7 +714,6 @@ const get_search_results = async (req, res) => {
             users,
             artists,
             songs,
-            playlists,
             albums,
         });
     } catch (error) {
