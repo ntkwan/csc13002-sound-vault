@@ -40,7 +40,9 @@ const get_song_by_id = async (req, res) => {
 
 const get_trending_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find().sort({ view: -1 });
+        const songs = await SongModel.find({ isDisabled: false }).sort({
+            view: -1,
+        });
         const collabs = new Map();
         for (let song of songs) {
             let artists = [];
@@ -84,7 +86,9 @@ const get_trending_songs = async (req, res) => {
 
 const get_new_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find({ view: { $gt: '0' } }).sort({
+        const songs = await SongModel.find({
+            $and: [{ view: { $gt: '0' } }, { isDisabled: false }],
+        }).sort({
             createdAt: -1,
         });
 
@@ -296,8 +300,15 @@ const get_songs_by_genre = async (req, res) => {
             });
         }
 
+        let valid_songs = [];
+        for (let song of songs) {
+            if (song.isDisabled === false) {
+                valid_songs.push(song);
+            }
+        }
+
         res.status(200).send(
-            songs.map((song) => {
+            valid_songs.map((song) => {
                 return {
                     id: song._id,
                     title: song.title,

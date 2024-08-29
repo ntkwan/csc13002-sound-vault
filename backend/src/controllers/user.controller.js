@@ -269,7 +269,10 @@ const get_profile_all_songs = async (req, res) => {
     const profileId = req.params.profileId;
 
     try {
-        const songs = await SongModel.find({ uploader: profileId });
+        const songs = await SongModel.find({
+            uploader: profileId,
+            isDisabled: false,
+        });
         const collab_songs = await SongModel.find({ collaborators: profileId });
         songs.push(...collab_songs);
         const collabs = new Map();

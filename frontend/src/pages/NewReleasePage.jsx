@@ -14,7 +14,7 @@ function NewReleaseBar() {
 
     return (
         <div className="album-bar pt-8">
-            <PageTitle title="New Release" />
+            <PageTitle title="New Releases" />
             <div className="Media__container">
                 <MediaDisplay
                     media={media}

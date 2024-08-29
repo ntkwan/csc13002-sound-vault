@@ -28,13 +28,8 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const provider = new ethers.JsonRpcProvider(INFURA_ENDPOINT);
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
-const signerAddress = signer.address;
-
 const contractAddress = '0xc363773e88cdf35331d16cd4b6cf2609f9b46d50';
 const Copyright = require('../../../contracts/Copyright.json');
-const {
-    experimentalAddHardhatNetworkMessageTraceHook,
-} = require('hardhat/config');
 const contract = new ethers.Contract(contractAddress, Copyright.abi, signer);
 const ContractWithSigner = contract.connect(signer);
 

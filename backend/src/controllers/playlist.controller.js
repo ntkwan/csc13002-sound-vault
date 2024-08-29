@@ -210,7 +210,14 @@ const get_playlist_by_id = async (req, res) => {
             _id: { $in: Playlist.songs },
         });
 
-        song_data = songs.map((song) => {
+        let valid_songs = [];
+        for (let i = 0; i < songs.length; i++) {
+            if (songs[i].isDisabled == false) {
+                valid_songs.push(songs[i]);
+            }
+        }
+
+        let song_data = valid_songs.map((song) => {
             return {
                 id: song._id,
                 title: song.title,
