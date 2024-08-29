@@ -70,6 +70,12 @@ const ban_account = async (req, res) => {
         }
         await User.save();
 
+        const Songs = await SongModel.find({ uploader: profileId });
+        for (let i = 0; i < Songs.length; i++) {
+            Songs[i].isDisabled = true;
+            await Songs[i].save();
+        }
+
         const message = isBanned
             ? 'User unbanned successfully'
             : 'User banned successfully';
