@@ -12,6 +12,7 @@ const initialState = {
         thumbnail: '',
         screen: '',
         theme: '',
+        isVerified: false,
     },
     currentTime: 0,
     duration: 0,

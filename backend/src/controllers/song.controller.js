@@ -145,6 +145,7 @@ const play_song = async (req, res) => {
 
         return res.status(200).json({
             audiourl: Song.audiourl,
+            isVerified: Song.isVerified,
         });
     } catch (error) {
         return res.status(500).json({

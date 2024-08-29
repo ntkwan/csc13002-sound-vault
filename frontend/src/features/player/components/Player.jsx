@@ -367,7 +367,7 @@ function Player() {
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                 {/* donate */}
-                {token && !isVerified && (
+                {token && !isVerified && currentTrack.isVerified && (
                     <DonateButton
                         openDonateModal={openDonateModal}
                         song={currentTrack.title}
@@ -497,7 +497,7 @@ function Player() {
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                         {/* donate */}
-                        {token && !isVerified && (
+                        {token && !isVerified && currentTrack.isVerified && (
                             <DonateButton
                                 openDonateModal={openDonateModal}
                                 song={currentTrack.title}
