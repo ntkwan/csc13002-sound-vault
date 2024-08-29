@@ -776,6 +776,7 @@ const SongBar = memo(
                         balance={balance}
                         closeDonateModal={closeDonateModal}
                         song={title}
+                        songId={id}
                         artist={artist}
                     />
                 )}

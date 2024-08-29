@@ -1,5 +1,5 @@
 import MediaDisplay from '@components/MediaDisplay';
-import { PageTitle } from '@components/index';
+import { Loading, PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -19,16 +19,21 @@ function LibraryPage() {
     const myPlaylists = useSelector(selectMyPlaylists);
     const myAlbums = useSelector(selectMyAlbums);
 
-    const { data: followingListData } = useGetFollowingListByIdQuery(
-        profileId || id,
-        {
+    const { data: followingListData, isLoading: followingListLoading } =
+        useGetFollowingListByIdQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
     const { following } = followingListData || {};
 
-    const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
+    const {
+        data: recentlyPlayedSongsData,
+        isLoading: recentlyPlayedSongsLoading,
+    } = useGetRecentlyPlayedSongsQuery();
     const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
+
+    if (followingListLoading || recentlyPlayedSongsLoading) {
+        return <Loading />;
+    }
 
     const mediaData = [
         {

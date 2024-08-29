@@ -21,8 +21,7 @@ function DonateModal(props) {
         try {
             const res = await donate({
                 amount,
-                to: props.artist,
-                song: props.song,
+                songId: props.songId,
             }).unwrap();
             toast.success(res.message);
         } catch (error) {
@@ -48,6 +47,7 @@ function DonateModal(props) {
 DonateModal.propTypes = {
     balance: PropTypes.number.isRequired,
     song: PropTypes.string,
+    songId: PropTypes.string,
     artist: PropTypes.string,
     closeDonateModal: PropTypes.func.isRequired,
     openDepositModal: PropTypes.func.isRequired,

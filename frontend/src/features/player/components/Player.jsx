@@ -538,6 +538,7 @@ function Player() {
                 <DonateModal
                     balance={balance}
                     song={currentTrack.title}
+                    songId={currentTrack.id}
                     artist={currentTrack.artist}
                     closeDonateModal={closeDonateModal}
                     openDepositModal={openDepositModal}
