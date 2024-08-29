@@ -188,7 +188,6 @@ function Header() {
     }, [debouncedSearchInput, getSearchData]);
 
     const { artists, users, songs, albums, playlists } = searchData || {};
-    console.log(searchData);
     const results = [
         {
             // only one
