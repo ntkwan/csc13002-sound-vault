@@ -135,13 +135,6 @@ function Sidebar() {
             <section className="ml-2 w-[170px]">
                 <span className="ml-3">Help</span>
                 <div>
-                    {token && !isAdmin && (
-                        <SidebarLink
-                            to="user/setting"
-                            icon={SettingIcon}
-                            label="setting"
-                        />
-                    )}
                     {!isAdmin && (
                         <>
                             <SidebarLink
