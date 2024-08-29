@@ -10,16 +10,6 @@ const initialState = {
     },
 };
 
-const addToList = (list, item) => {
-    if (!list) return;
-    if (list.findIndex((i) => i.id === item.id) === -1) {
-        list.push(item);
-    } else {
-        const index = list.findIndex((i) => i.id === item.id);
-        list[index] = item;
-    }
-};
-
 const playlistsSlice = createSlice({
     name: 'playlists',
     initialState,
@@ -40,11 +30,17 @@ const playlistsSlice = createSlice({
         builder.addMatcher(
             api.endpoints.getMyPlaylists.matchFulfilled,
             (state, action) => {
+                let playlists = [];
+                let albums = [];
                 action.payload.playlists.forEach((playlist) => {
                     if (playlist.isAlbum) {
-                        addToList(state.albums, playlist);
-                    } else addToList(state.playlists, playlist);
+                        albums.push(playlist);
+                    } else {
+                        playlists.push(playlist);
+                    }
                 });
+                state.playlists = playlists;
+                state.albums = albums;
             },
         );
     },
