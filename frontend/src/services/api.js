@@ -395,6 +395,13 @@ export const api = createApi({
                 body: { firstName, lastName, email, phoneNumber, message },
             }),
         }),
+        requestAccountVerification: builder.mutation({
+            query: ({ file }) => ({
+                url: '/request-account-verification',
+                method: 'POST',
+                body: file,
+            }),
+        }),
         getNotification: builder.query({
             query: () => '/get-notification',
             providesTags: ['User'],
@@ -699,6 +706,7 @@ export const {
     useGetProfilePlaylistsQuery,
     useLazyGetSearchResultsQuery,
     useContractToSupportMutation,
+    useRequestAccountVerificationMutation,
     useGetNotificationQuery,
     useSetNotificationSeenMutation,
     useUpdateBankInfoMutation,

@@ -4,37 +4,39 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { PageTitle } from '@components';
 import uploadIcon from '@assets/img/upload-icon.svg';
+import { useRequestAccountVerificationMutation } from '@services/api';
 
 function ProfileRequestVerifyPage() {
     // handle upload document
     const [UploadDocument, setUploadDocument] = useState(null);
 
     // handle submit
-    // const [submitMusic, { isLoading: isLoadingSubmitMusic }] =
-    //     useSubmitMusicMutation();
+    const [requestAccountVerification, { isLoading }] =
+        useRequestAccountVerificationMutation();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const fullname = formData.get('vrf-fullname');
+        const fullname = formData.get('vrf-name');
         const dob = formData.get('vrf-dob');
-        const phoneNumber = formData.get('vrf-phoneNumber');
+        const phoneNumber = formData.get('vrf-phone');
+
+        console.log(fullname, dob, phoneNumber, UploadDocument);
 
         if (fullname && dob && phoneNumber && UploadDocument) {
             try {
                 const uploadForm = new FormData();
-                uploadForm.append('fullname', fullname);
+                uploadForm.append('name', fullname);
                 uploadForm.append('dob', dob);
-                uploadForm.append('phoneNumber', phoneNumber);
+                uploadForm.append('phone', phoneNumber);
                 uploadForm.append('document', UploadDocument);
 
-                // const response = await submitMusic({
-                //     file: uploadForm,
-                // }).unwrap();
-                // navigate(`/song/${response.songId}`);
-                toast.success('Uploaded successfully!');
+                const response = await requestAccountVerification({
+                    file: uploadForm,
+                }).unwrap();
+                toast.success('Send request successfully.');
             } catch (error) {
-                toast.error('Error uploading files.');
+                toast.error('Error sending request.');
             }
         } else {
             toast.error('Please provide all required files.');
@@ -70,21 +72,21 @@ function ProfileRequestVerifyPage() {
                         Your Infomation
                     </label>
                     <InputForm
-                        id="vrf-fullname"
-                        name="fullname"
+                        id="vrf-name"
+                        name="vrf-name"
                         placeholder="Full Name"
                         required
                     />
                     <InputForm
                         id="vrf-dob"
-                        name="dob"
+                        name="vrf-dob"
                         placeholder="DOB"
                         type="date"
                         required
                     />
                     <InputForm
-                        id="vrf-phoneNumber"
-                        name="phoneNumber"
+                        id="vrf-phone"
+                        name="vrf-phone"
                         placeholder="Phone Number"
                         type="number"
                         required
@@ -106,7 +108,7 @@ function ProfileRequestVerifyPage() {
                             label="To attach documents click on box or drop file here!"
                             className=""
                             sizeLimit={10}
-                            // useUploadMutation={setUploadDocument}
+                            useUploadMutation={setUploadDocument}
                         />
                         <ul className="form__document-desc list-disc">
                             <li className="desc-list">
@@ -141,10 +143,10 @@ function ProfileRequestVerifyPage() {
                 </fieldset>
 
                 <button
-                    className="form__button-submit relative col-start-2 m-auto flex min-w-36 max-w-44 select-none items-center justify-center justify-self-end rounded-full border-2 px-5 py-3"
+                    className="form__button-submit relative col-start-2 m-auto flex min-w-44 max-w-44 select-none items-center justify-center justify-self-end rounded-full border-2 px-5 py-3"
                     type="submit"
                 >
-                    {/* {isLoadingSubmitMusic && (
+                    {isLoading && (
                         <svg
                             className="mr-4 h-6 w-6 animate-spin text-blue-500"
                             fill="none"
@@ -165,8 +167,7 @@ function ProfileRequestVerifyPage() {
                             ></path>
                         </svg>
                     )}
-                    {isLoadingSubmitMusic ? 'Uploading...' : 'Upload'} */}
-                    Send a request
+                    {isLoading ? 'Sending...' : 'Send a request'}
                 </button>
             </form>
         </div>
@@ -180,10 +181,10 @@ function InputForm({ id, name, placeholder, type = 'text', required = false }) {
         <input
             id={id}
             name={name}
-            className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
             placeholder={placeholder}
             type={type}
             required={required}
+            className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
         />
     );
 }
@@ -301,6 +302,7 @@ function InputUploadDocument({
                             />
                             <input
                                 id={id}
+                                name={id}
                                 className="upload__input absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
                                 type="file"
                                 onChange={handleImageUpload}
