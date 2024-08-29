@@ -143,7 +143,7 @@ function ProfileRequestVerifyPage() {
                 </fieldset>
 
                 <button
-                    className="form__button-submit relative col-start-2 m-auto flex min-w-44 max-w-44 select-none items-center justify-center justify-self-end rounded-full border-2 px-5 py-3"
+                    className="form__button-submit group relative col-start-2 m-auto flex min-w-44 max-w-44 select-none items-center justify-center justify-self-end rounded-full border-2 px-5 py-3"
                     type="submit"
                 >
                     {isLoading && (
@@ -168,6 +168,7 @@ function ProfileRequestVerifyPage() {
                         </svg>
                     )}
                     {isLoading ? 'Sending...' : 'Send a request'}
+                    <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
                 </button>
             </form>
         </div>
