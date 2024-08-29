@@ -72,10 +72,9 @@ const ban_account = async (req, res) => {
 
         const Songs = await SongModel.find({ uploader: profileId });
         for (let i = 0; i < Songs.length; i++) {
-            Songs[i].isDisabled = true;
+            Songs[i].isDisabled = !isBanned;
             await Songs[i].save();
         }
-
         const message = isBanned
             ? 'User unbanned successfully'
             : 'User banned successfully';
@@ -278,6 +277,15 @@ const cancel_copyright_request = async (req, res) => {
         if (Song.isPending == true) {
             Song.isPending = false;
             await Song.save();
+            const User = await UserModel.findById(Song.uploader);
+            const notification = {
+                message:
+                    'Your copyright request for ' +
+                    Song.title +
+                    ' has been cancelled',
+                createdAt: new Date(),
+            };
+            await User.notify(notification);
         }
 
         return res.status(200).json({
@@ -317,16 +325,20 @@ const set_verified_song = async (req, res) => {
         except = [];
         publicAddresses.push(User.publicAddress);
         weights = [];
-        weights.push(50);
-        for (let i = 0; i < Song.collaborators.length; i++) {
-            const collab_artist = await UserModel.findById(
-                Song.collaborators[i],
-            );
-            if (!collab_artist.publicAddress) {
-                except.push(collab_artist.name);
-            } else {
-                publicAddresses.push(collab_artist.publicAddress);
-                weights.push(50); // 50% for each collaborator
+        if (Song.collaborators.length == 0) {
+            weights.push(100);
+        } else {
+            weights.push(50);
+            for (let i = 0; i < Song.collaborators.length; i++) {
+                const collab_artist = await UserModel.findById(
+                    Song.collaborators[i],
+                );
+                if (!collab_artist.publicAddress) {
+                    except.push(collab_artist.name);
+                } else {
+                    publicAddresses.push(collab_artist.publicAddress);
+                    weights.push(50); // 50% for each collaborator
+                }
             }
         }
 
