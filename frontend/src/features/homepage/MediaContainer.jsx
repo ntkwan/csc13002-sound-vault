@@ -36,7 +36,7 @@ function MediaContainer() {
         },
         {
             type: 'Album',
-            title: 'Popular Album',
+            title: 'Popular Albums',
             link: 'album',
             data: albums,
         },

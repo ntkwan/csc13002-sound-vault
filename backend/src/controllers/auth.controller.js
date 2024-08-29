@@ -320,7 +320,7 @@ const send_email = async (send_to, url) => {
         const mailOptions = {
             from: HOST_EMAIL,
             to: send_to,
-            subject: 'Reset Password',
+            subject: '[NO REPLY] Reset password for SoundVault Account',
             html: `<a href="${url}">Click here to reset password</a>`,
         };
 

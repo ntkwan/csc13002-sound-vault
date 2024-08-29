@@ -20,12 +20,14 @@ const upload_song = async (req, res) => {
         });
     }
 
+    const collabs = req.body.collaborators.split(',');
+    const genres = req.body.genre.split(',');
     let song_data = {
         title: req.body.title,
         artist: req.user.name,
         uploader: req.user._id,
-        collaborators: req.body.collaborators,
-        genre: req.body.genre,
+        collaborators: collabs,
+        genre: genres,
         region: req.body.region,
         coverimg: req.user.coverimage,
         audiourl: audioResponse.secure_url,

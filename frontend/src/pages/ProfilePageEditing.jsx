@@ -202,7 +202,7 @@ function ProfilePageEditing() {
                                     Updating...
                                 </span>
                             ) : (
-                                'Update'
+                                'Update new information'
                             )}
                             <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
@@ -311,7 +311,7 @@ function ProfilePageEditing() {
                                         Updating...
                                     </span>
                                 ) : (
-                                    'Update'
+                                    'Update bank information'
                                 )}
                                 <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                             </button>

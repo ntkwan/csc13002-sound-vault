@@ -247,6 +247,8 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                                 handlePlaylistPlayClick(mediaData.id);
                             isOnPlaying =
                                 currentPlaylist.id == mediaData.id && isPlaying;
+                        } else if (type.includes('Profile')) {
+                            onClickImage = () => handleProfile(mediaData.id);
                         }
                         return (
                             <MediaComponent
@@ -459,10 +461,12 @@ const DetailCard = memo(
                                 ></i>
                             </div>
                         )}
-                        <PlayButton
-                            onClick={prevent(onClickButton)}
-                            isOnPlaying={isOnPlaying}
-                        />
+                        {!type.includes('Profile') && (
+                            <PlayButton
+                                onClick={prevent(onClickButton)}
+                                isOnPlaying={isOnPlaying}
+                            />
+                        )}
                     </div>
                     <span className="media-item__name mt-3 overflow-hidden text-ellipsis text-nowrap text-sm">
                         {card_title}

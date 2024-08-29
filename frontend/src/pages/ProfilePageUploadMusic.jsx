@@ -89,7 +89,6 @@ function ProfilePageUploadMusic() {
 
     // handle mention collaborators
     if (followingListData) {
-        console.log(followingListData);
         const { following } = followingListData;
         var originalCollaborator = following?.map((user) => ({
             id: user.name,
@@ -185,7 +184,7 @@ function ProfilePageUploadMusic() {
         ) {
             try {
                 const uploadForm = new FormData();
-                formData.append('collaborators', collaboratorArrayID);
+                uploadForm.append('collaborators', collaboratorArrayID);
                 uploadForm.append('title', songTitle);
                 uploadForm.append('genre', genreArray);
                 uploadForm.append('region', region);
@@ -414,10 +413,10 @@ function ProfilePageUploadMusic() {
                             {isLoadingSubmitMusic && iconUpdate}
                             {isLoadingSubmitMusic ? (
                                 <span className="-translate-x-[7px]">
-                                    Updating...
+                                    Uploading...
                                 </span>
                             ) : (
-                                'Update'
+                                'Upload'
                             )}
                             <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
