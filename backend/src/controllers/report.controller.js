@@ -119,7 +119,7 @@ const auto_email = async (send_to, rpType, reportID, fullName, isSong) => {
             from: HOST_EMAIL,
             to: send_to,
             subject:
-                '[NO-REPLY] Report ' +
+                '[NO-REPLY] We received report ' +
                 reportID.toString() +
                 ' about ' +
                 rpType +
@@ -197,14 +197,62 @@ const reply_report = async (req, res) => {
             message,
             report.fullName,
         );
+
         if (!result) {
             return res.status(500).json({
                 message: 'Failed to send your reply',
             });
         }
 
+        report.status = true;
+        report.assignee = req.user.name;
+        await report.save();
+
         return res.status(200).json({
+            status: report.status,
+            assignee: report.assignee,
             message: 'Reply sent',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const reject_report = async (req, res) => {
+    const { reportID } = req.body;
+    try {
+        const report = await ReportModel.findById(reportID);
+        if (!report) {
+            return res.status(404).json({
+                message: 'Report is not found',
+            });
+        }
+        email = req.user.email;
+        const result = await reply_email(
+            report.email,
+            report.rpType,
+            reportID,
+            email,
+            'Your report has been rejected',
+            report.fullName,
+        );
+
+        if (!result) {
+            return res.status(500).json({
+                message: 'Failed to send your reply',
+            });
+        }
+
+        report.status = false;
+        report.assignee = req.user.name;
+        await report.save();
+
+        return res.status(200).json({
+            status: report.status,
+            assignee: report.assignee,
+            message: 'Report rejected',
         });
     } catch (error) {
         return res.status(500).json({
@@ -231,6 +279,8 @@ const get_reports = async (req, res) => {
                     reason: report.reason,
                     createdAt: report.createdAt,
                     isSong: report.isSong,
+                    assignee: report.assignee,
+                    status: report.status,
                 };
             }),
         );
@@ -243,6 +293,7 @@ const get_reports = async (req, res) => {
 
 module.exports = {
     reply_report,
+    reject_report,
     send_report_on_profile,
     send_report_on_song,
     get_reports,

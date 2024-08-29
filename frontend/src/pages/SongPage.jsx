@@ -1,26 +1,44 @@
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import {
     useGetSongByIdQuery,
     useGetProfileByIdQuery,
     useGetProfileAllSongsQuery,
     useDeleteTrackByIdMutation,
+    useUploadSongThumbnailMutation,
+    useUploadSongCoverMutation,
+    useViewCopyrightQuery,
+    useRequestCopyrightMutation,
 } from '@services/api';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { MediaDisplay } from '@components/index';
-import { selectCurrentAdmin, selectCurrentProfile } from '@services/selectors';
-import { ReportFrame, ConfirmDeletion } from '@components/index';
-import verifiedIcon from '@assets/img/verified-icon.svg';
-import BigPlayButton from '@components/BigPlayButton';
-import { toast } from 'react-toastify';
+import {
+    MediaDisplay,
+    BigPlayButton,
+    ReportFrame,
+    ConfirmDeletion,
+    Loading,
+    UpdateImageFrame,
+    UtilitiesCard,
+} from '@components';
+import {
+    selectCurrentAdmin,
+    selectCurrentProfile,
+    selectCurrentToken,
+} from '@services/selectors';
+import verifiedIcon from '@assets/img/verified-icon-white.svg';
 
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);
+    const token = useSelector(selectCurrentToken);
     const myProfileData = useSelector(selectCurrentProfile);
     const [duration, setDuration] = useState('0:00');
     const [showReportFrame, setShowReportFrame] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [showSongOptions, setShowSongOptions] = useState(false);
+    const [showChangeThumbnail, setShowChangeThumbnail] = useState(false);
+    const [showChangeCover, setShowChangeCover] = useState(false);
+
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (showSongOptions === true && !e.target.closest('.menu')) {
@@ -51,6 +69,7 @@ function SongPage() {
         isverified: songIsVerified,
         isdisabled: songIsDisabled,
         createdAt: songCreatedAt,
+        isPending: songIsPending,
     } = songByIdData || {};
     const formattedSongCreatedAt = songCreatedAt
         ? new Date(songCreatedAt).toLocaleDateString()
@@ -61,8 +80,11 @@ function SongPage() {
             skip: !songUploader,
         });
 
-    const { id: profileId, image: { url: profileImageUrl } = {} } =
-        profileByIdData || {};
+    const {
+        id: profileId,
+        publicAddress,
+        image: { url: profileImageUrl } = {},
+    } = profileByIdData || {};
 
     const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
         useGetProfileAllSongsQuery(profileId, {
@@ -113,7 +135,7 @@ function SongPage() {
             await deleteTrackById(id).unwrap();
             setConfirmDelete(false);
             toast.success('Song deleted successfully');
-            navigate('/');
+            navigate(-1);
         } catch (error) {
             toast.error('Failed to delete song', error);
         }
@@ -121,11 +143,52 @@ function SongPage() {
 
     const navigate = useNavigate();
     const handleArtist = (id) => {
-        navigate(`/profile/${id}`);
+        if (id === myProfileData?.id) {
+            navigate('/profile');
+        } else navigate(`/profile/${id}`);
     };
+
+    const { data } = useViewCopyrightQuery(songId);
+    const copyrightLink = data?.link;
+
+    const [requestCopyright] = useRequestCopyrightMutation();
+    const handleRequestCopyRight = async () => {
+        try {
+            await requestCopyright(songId).unwrap();
+            toast.success('Request sent successfully');
+        } catch (error) {
+            toast.error('Failed to send request', error);
+        }
+    };
+
+    if (
+        songByIdDataLoading ||
+        profileByIdDataLoading ||
+        profileAllSongsLoading
+    ) {
+        return <Loading />;
+    }
 
     return (
         <>
+            {showChangeThumbnail && (
+                <UpdateImageFrame
+                    setShowFrame={setShowChangeThumbnail}
+                    label="To upload a thumbnail click on box or drop file here!"
+                    useUploadMutation={useUploadSongThumbnailMutation}
+                    mediaId={songId}
+                    isThumbnail={true}
+                />
+            )}
+            {showChangeCover && (
+                <UpdateImageFrame
+                    setShowFrame={setShowChangeCover}
+                    label="To upload a cover click on box or drop file here!"
+                    useUploadMutation={useUploadSongCoverMutation}
+                    mediaId={songId}
+                    isThumbnail={false}
+                />
+            )}
             {confirmDelete && (
                 <ConfirmDeletion
                     type="song"
@@ -143,7 +206,7 @@ function SongPage() {
                             <div className="absolute left-20 right-0 top-0 h-96">
                                 {!songIsDisabled ? (
                                     <img
-                                        className="song__cover h-full w-full rounded-xl object-cover shadow-2xl brightness-75"
+                                        className="song__cover h-full w-full select-none rounded-xl object-cover shadow-2xl brightness-75"
                                         src={songCoverimg}
                                         alt="cover"
                                     />
@@ -160,7 +223,7 @@ function SongPage() {
                                     <>
                                         {songAvatar ? (
                                             <img
-                                                className="playlist__avatar h-full w-full rounded-sm object-cover shadow-2xl"
+                                                className="playlist__avatar h-full w-full select-none rounded-sm object-cover shadow-2xl"
                                                 src={songAvatar}
                                                 alt=""
                                             />
@@ -184,14 +247,14 @@ function SongPage() {
                                 <p className="text-shadow-1 font-semibold">
                                     Song
                                 </p>
-                                <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-5xl">
+                                <p className="text-shadow-2 text-stroke-1 py-1 font-alfaslabone text-6xl">
                                     {songTitle}
                                 </p>
                                 {!songIsDisabled && (
                                     <p className="text-shadow-1 absolute flex items-center text-ellipsis whitespace-nowrap font-medium">
                                         {profileImageUrl ? (
                                             <img
-                                                className="mx-2 inline h-7 min-w-7 rounded-full object-cover"
+                                                className="mx-2 inline h-7 min-w-7 select-none rounded-full object-cover"
                                                 src={profileImageUrl}
                                                 alt=""
                                             />
@@ -208,7 +271,7 @@ function SongPage() {
                                         {' • '}
                                         {duration}
                                         {' • '}
-                                        {songView}
+                                        {songView} plays
                                     </p>
                                 )}
                             </div>
@@ -218,74 +281,155 @@ function SongPage() {
                     {/* Actions Section */}
                     {!songIsDisabled ? (
                         <>
-                            <div className="relative mt-8 flex space-x-6">
-                                {allSongExceptCurrent && (
-                                    <BigPlayButton
-                                        playlist={{
-                                            id: songUploader,
-                                            songs: allSongExceptCurrent,
-                                        }}
-                                        forSongPage={true}
-                                        thisSong={{
-                                            id: songId,
-                                            title: songTitle,
-                                            artist: songArtist,
-                                            imageurl: songByIdData?.imageurl,
-                                            coverimg: songByIdData?.coverimg,
-                                        }}
-                                    />
-                                )}
-                                <button className="relative h-[70px] min-w-[70px]">
-                                    <div className="rotate-90">
-                                        <i
-                                            className="ri-more-2-line text-[42px]"
-                                            onClick={() =>
-                                                setShowSongOptions(
-                                                    !showSongOptions,
-                                                )
-                                            }
+                            {!isAdmin && (
+                                <div className="relative mt-8 flex space-x-6">
+                                    {allSongExceptCurrent && (
+                                        <BigPlayButton
+                                            playlist={{
+                                                id: songUploader,
+                                                songs: allSongExceptCurrent,
+                                            }}
+                                            forSongPage={true}
+                                            thisSong={{
+                                                id: songId,
+                                                title: songTitle,
+                                                artist: songArtist,
+                                                imageurl:
+                                                    songByIdData?.imageurl,
+                                                coverimg:
+                                                    songByIdData?.coverimg,
+                                            }}
                                         />
-                                    </div>
-                                    {showSongOptions === true && (
-                                        <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                            <ul>
-                                                <li
-                                                    className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={handleCopyLink}
-                                                >
-                                                    <i className="ri-share-line text-xl leading-none"></i>
-                                                    <span>Copy link</span>
-                                                </li>
-                                                <li
-                                                    className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={() =>
-                                                        setShowReportFrame(true)
-                                                    }
-                                                >
-                                                    <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                    <span>Report</span>
-                                                </li>
-                                                {myProfileData?.id ==
-                                                    songUploader && (
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={() =>
-                                                            setConfirmDelete(
-                                                                true,
-                                                            )
-                                                        }
-                                                    >
-                                                        <i className="ri-close-large-line text-xl leading-none"></i>
-                                                        <span>
-                                                            Delete track
-                                                        </span>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </div>
                                     )}
-                                </button>
-                            </div>
+                                    <button className="relative h-[70px] min-w-[70px]">
+                                        <div className="rotate-90">
+                                            <i
+                                                className="ri-more-2-line text-[42px]"
+                                                onClick={() =>
+                                                    setShowSongOptions(
+                                                        !showSongOptions,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                        {showSongOptions === true && (
+                                            <div className="menu absolute left-10 top-9 z-50 mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
+                                                <ul>
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <>
+                                                            <UtilitiesCard
+                                                                icon="ri-exchange-line"
+                                                                title="Change cover"
+                                                                handleAction={() => {
+                                                                    setShowChangeCover(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            />
+                                                            <UtilitiesCard
+                                                                icon="ri-exchange-fill"
+                                                                title="Change thumbnail"
+                                                                handleAction={() => {
+                                                                    setShowChangeThumbnail(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                                spanClass="text-left"
+                                                            />
+                                                        </>
+                                                    )}
+                                                    {myProfileData?.id ==
+                                                        songUploader &&
+                                                        !songIsVerified &&
+                                                        publicAddress != '' &&
+                                                        !songIsPending && (
+                                                            <UtilitiesCard
+                                                                icon="ri-copyright-line"
+                                                                title="Request for copyright"
+                                                                handleAction={() => {
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                    handleRequestCopyRight();
+                                                                }}
+                                                                spanClass="text-left"
+                                                            />
+                                                        )}
+                                                    {songIsVerified && (
+                                                        <UtilitiesCard
+                                                            icon="ri-copyright-fill"
+                                                            title="View on Blockchain"
+                                                            handleAction={() => {
+                                                                if (
+                                                                    copyrightLink
+                                                                ) {
+                                                                    window.open(
+                                                                        copyrightLink,
+                                                                        '_blank',
+                                                                        'noopener,noreferrer',
+                                                                    );
+                                                                } else {
+                                                                    toast.error(
+                                                                        'Link is not available',
+                                                                    );
+                                                                }
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            spanClass="text-left"
+                                                        />
+                                                    )}
+                                                    <UtilitiesCard
+                                                        icon="ri-share-line"
+                                                        title="Copy link"
+                                                        handleAction={
+                                                            handleCopyLink
+                                                        }
+                                                    />
+                                                    {token && (
+                                                        <UtilitiesCard
+                                                            icon="ri-error-warning-line"
+                                                            title="Report"
+                                                            handleAction={() => {
+                                                                setShowReportFrame(
+                                                                    true,
+                                                                );
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                        />
+                                                    )}
+                                                    {myProfileData?.id ==
+                                                        songUploader && (
+                                                        <UtilitiesCard
+                                                            icon="ri-close-large-line"
+                                                            title=" Delete track"
+                                                            handleAction={() => {
+                                                                setConfirmDelete(
+                                                                    true,
+                                                                );
+                                                                setShowSongOptions(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            liClass="text-red-500 font-bold"
+                                                        />
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                             <div
                                 className="hover:bg my-5 flex max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                                 onClick={() => handleArtist(profileId)}
@@ -312,9 +456,11 @@ function SongPage() {
                                     </p>
                                 </div>
                             </div>
-                            <p className="pb-2 text-[27px] font-medium">
-                                Popular Tracks by
-                            </p>
+                            {allReleases.data.length > 0 && (
+                                <p className="pb-2 text-[27px] font-medium">
+                                    Popular Tracks by
+                                </p>
+                            )}
                             <MediaDisplay
                                 media={allReleases}
                                 displayItems="4"

@@ -10,6 +10,12 @@ router.post(
 );
 
 router.post(
+    '/reject-report',
+    authMiddleware.check_admin,
+    reportController.reject_report,
+);
+
+router.post(
     '/send-report-on-song/:songId',
     authMiddleware.check_user,
     reportController.send_report_on_song,

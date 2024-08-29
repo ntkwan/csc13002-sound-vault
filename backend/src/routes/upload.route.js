@@ -20,12 +20,14 @@ router.post(
 
 router.post(
     '/upload-song-thumbnail/:id',
+    authMiddleware.check_user,
     stage_file.song_thumbnail_upload,
     uploader.upload_song_thumbnail,
 );
 
 router.post(
     '/upload-song-cover/:id',
+    authMiddleware.check_user,
     stage_file.song_cover_upload,
     uploader.upload_song_cover,
 );
@@ -35,6 +37,14 @@ router.post(
     authMiddleware.check_user,
     stage_file.upload_at_once,
     uploader.submit_music,
+);
+
+router.post(
+    '/upload-playlist-thumbnail/:playlistId',
+    authMiddleware.check_user,
+    authMiddleware.check_playlist_uploader,
+    stage_file.playlist_thumbnail_upload,
+    uploader.upload_playlist_thumbnail,
 );
 
 module.exports = router;

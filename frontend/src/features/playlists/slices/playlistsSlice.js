@@ -3,6 +3,7 @@ import { api } from '@services/api';
 
 const initialState = {
     playlists: [],
+    albums: [],
     currentPlaylist: {
         id: '',
         songs: [],
@@ -29,20 +30,17 @@ const playlistsSlice = createSlice({
         builder.addMatcher(
             api.endpoints.getMyPlaylists.matchFulfilled,
             (state, action) => {
+                let playlists = [];
+                let albums = [];
                 action.payload.playlists.forEach((playlist) => {
-                    if (
-                        state.playlists.findIndex(
-                            (p) => p.id === playlist.id,
-                        ) === -1
-                    ) {
-                        state.playlists.push(playlist);
+                    if (playlist.isAlbum) {
+                        albums.push(playlist);
                     } else {
-                        const index = state.playlists.findIndex(
-                            (p) => p.id === playlist.id,
-                        );
-                        state.playlists[index].songs = playlist.songs;
+                        playlists.push(playlist);
                     }
                 });
+                state.playlists = playlists;
+                state.albums = albums;
             },
         );
     },

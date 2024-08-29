@@ -8,7 +8,7 @@ const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
 
 const create_playlist = async (req, res) => {
-    const { name, desc } = req.body;
+    const { name, firstSongId } = req.body;
 
     try {
         const user = await req.user.populate('playlist');
@@ -22,9 +22,21 @@ const create_playlist = async (req, res) => {
 
         const playlist = await PlaylistModel.create({
             name,
-            desc,
             uploader: user._id,
+            isAlbum: req.isAlbum,
         });
+
+        if (firstSongId) {
+            const song = await SongModel.findById(firstSongId);
+            if (!song) {
+                return res.status(404).json({
+                    message: 'Song not found',
+                });
+            }
+
+            playlist.songs.push(new mongoose.Types.ObjectId(firstSongId));
+            await playlist.save({ validateBeforeSave: false });
+        }
 
         user.playlist.push(playlist._id);
         await user.save({ validateBeforeSave: false });
@@ -41,6 +53,11 @@ const create_playlist = async (req, res) => {
             message: error.message,
         });
     }
+};
+
+const create_album = async (req, res) => {
+    req.isAlbum = true;
+    create_playlist(req, res);
 };
 
 const delete_playlist_by_id = async (req, res) => {
@@ -193,7 +210,14 @@ const get_playlist_by_id = async (req, res) => {
             _id: { $in: Playlist.songs },
         });
 
-        song_data = songs.map((song) => {
+        let valid_songs = [];
+        for (let i = 0; i < songs.length; i++) {
+            if (songs[i].isDisabled == false) {
+                valid_songs.push(songs[i]);
+            }
+        }
+
+        let song_data = valid_songs.map((song) => {
             return {
                 id: song._id,
                 title: song.title,
@@ -204,6 +228,9 @@ const get_playlist_by_id = async (req, res) => {
                 audiourl: song.audiourl,
                 view: song.view,
                 region: song.region,
+                isverified: song.isVerified,
+                uploader: song.uploader,
+                isPending: song.isPending,
             };
         });
         return res.status(200).json({
@@ -212,6 +239,8 @@ const get_playlist_by_id = async (req, res) => {
             description: Playlist.desc,
             playlist_owner: Playlist.uploader,
             songs: song_data,
+            isAlbum: Playlist.isAlbum,
+            avatar: Playlist.image,
         });
     } catch (error) {
         return res.status(500).json({
@@ -238,6 +267,7 @@ const get_my_playlists = async (req, res) => {
                     playlistOwner: playlist.uploader,
                     image: playlist.image,
                     songs: playlist.songs,
+                    isAlbum: playlist.isAlbum,
                 };
             }),
         });
@@ -248,7 +278,33 @@ const get_my_playlists = async (req, res) => {
     }
 };
 
+const change_playlist_description = async (req, res) => {
+    const playlistId = req.params.playlistId;
+    const { description } = req.body;
+
+    try {
+        const Playlist = await PlaylistModel.findById(playlistId);
+        if (!Playlist) {
+            return res.status(404).json({
+                message: 'Playlist is not found',
+            });
+        }
+
+        Playlist.desc = description;
+        await Playlist.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: 'Playlist description updated successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
+    create_album,
     create_playlist,
     delete_playlist_by_id,
     add_song_to_playlist,
@@ -257,4 +313,5 @@ module.exports = {
     remove_song_from_liked_playlist,
     get_playlist_by_id,
     get_my_playlists,
+    change_playlist_description,
 };

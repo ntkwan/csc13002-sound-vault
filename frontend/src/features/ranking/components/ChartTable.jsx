@@ -28,7 +28,9 @@ function ChartTable({ tableData }) {
     };
     return (
         <div className="mx-auto mb-28 max-w-7xl rounded-[3rem] border-2 pl-7 pr-10 pt-6 text-[1.325rem]">
-            <h3 className="mb-5 font-kodchasan text-3xl font-bold">{type}</h3>
+            <h3 className="mb-5 select-none font-kodchasan text-3xl font-bold">
+                {type}
+            </h3>
             <div className="grid auto-rows-auto font-bold text-zinc-400">
                 {data.map((rowData, index) => {
                     const isOnPlaying = currentSong === rowData.id && isPlaying;

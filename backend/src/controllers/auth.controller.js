@@ -74,6 +74,12 @@ const signin = async (req, res) => {
             });
         }
 
+        if (User.isBanned) {
+            return res.status(400).json({
+                message: 'Your account has been banned',
+            });
+        }
+
         const isValid = await User.validatePassword(password);
         if (!isValid) {
             return res.status(400).json({
@@ -232,7 +238,6 @@ const change_password = async (req, res) => {
     const userId = req.user._id;
     const { current_password, attempt_password, confirm_password } = req.body;
 
-    console.log(current_password, attempt_password, confirm_password);
     if (!current_password || !attempt_password || !confirm_password) {
         return res.status(400).json({
             message: 'Required fields are missing',

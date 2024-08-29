@@ -1,15 +1,56 @@
-import { PageTitle } from '@components/index';
-import topUpIcon from '@assets/img/top-up-icon.svg';
-import historyIcon from '@assets/img/history-icon.svg';
-import walletIcon from '@assets/img/wallet-icon.svg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import {
+    DepositButton,
+    DepositModal,
+    PageTitle,
+    WithdrawButton,
+    WithdrawModal,
+} from '@components';
+import historyIcon from '@assets/img/history-icon.svg';
 import { selectCurrentProfile } from '@services/selectors';
+import { toast } from 'react-toastify';
 
 function WalletPage() {
-    const balance = 10000;
-    const formattedBalance = balance.toLocaleString('de-DE');
-    const { isAdmin } = useSelector(selectCurrentProfile);
+    const { balance, isVerified, bankInfo } = useSelector(selectCurrentProfile);
+    const formattedBalance = balance.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const openModal = () => {
+        if (isVerified && balance !== 0) {
+            setModalVisible(true);
+            return;
+        }
+        setModalVisible(true);
+    };
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
+    const location = useLocation();
+    const nav = useNavigate();
+    useEffect(() => {
+        if (location.search !== '') {
+            const queryparams = new URLSearchParams(location.search);
+            const status = queryparams.get('status');
+            const id = queryparams.get('id');
+            if (!id || !status) {
+                return;
+            }
+
+            if (status === 'PAID') {
+                toast.success('Deposit SUCCESSFULLY!');
+            } else if (status === 'CANCELLED') {
+                toast.error('Deposit CANCELLED!');
+            }
+            nav('/wallet');
+        }
+    }, [location.search, nav]);
+
     return (
         <div className="wallet">
             <PageTitle title="Wallet" className="py-8" />
@@ -35,19 +76,17 @@ function WalletPage() {
 
                 {/* action container */}
                 <div className="wallet__action-container flex h-full flex-col justify-around">
-                    <Link className="wallet__action py-x group relative flex w-52 items-center justify-center rounded-full border py-3">
-                        <img
-                            src={isAdmin ? walletIcon : topUpIcon}
-                            alt="top-up-icon"
-                            className="mr-3 inline-block h-6 w-6"
+                    {isVerified ? (
+                        <WithdrawButton
+                            openWithdrawModal={openModal}
+                            disabled={balance === 0}
                         />
-                        {isAdmin ? 'Withdraw' : 'Top Up'}
-                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                    </Link>
-
+                    ) : (
+                        <DepositButton openDepositModal={openModal} />
+                    )}
                     <Link
-                        to="history"
-                        className="wallet__action py-x group relative flex w-52 items-center justify-center rounded-full border py-3"
+                        to={`${isVerified ? 'artist/history' : 'history'}`}
+                        className="wallet__action group relative flex w-52 items-center justify-center rounded-full border-2 py-3"
                     >
                         <img
                             src={historyIcon}
@@ -59,6 +98,15 @@ function WalletPage() {
                     </Link>
                 </div>
             </div>
+            {modalVisible &&
+                (isVerified ? (
+                    <WithdrawModal
+                        bankInfo={bankInfo}
+                        closeWithdrawModal={closeModal}
+                    />
+                ) : (
+                    <DepositModal closeDepositModal={closeModal} />
+                ))}
         </div>
     );
 }

@@ -29,7 +29,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         if (refreshResult?.data) {
             const user = api.getState().auth.user;
             api.dispatch(
-                setCredentials({ user, token: refreshResult.data.token }),
+                setCredentials({ user, token: refreshResult.data.accessToken }),
             );
             result = await baseQuery(args, api, extraOptions);
         } else {
@@ -44,10 +44,11 @@ export const api = createApi({
     tagTypes: [
         'User',
         'Song',
-        'Album',
         'Playlist',
         'AdminAccount',
         'AdminSong',
+        'Report',
+        'Payment',
     ],
     endpoints: (builder) => ({
         // Authentication -----------------------------------------------------
@@ -129,8 +130,16 @@ export const api = createApi({
             invalidatesTags: ['Song'],
         }),
         uploadSongThumbnail: builder.mutation({
-            query: ({ file }) => ({
-                url: '/upload-song-thumbnail',
+            query: ({ id, file }) => ({
+                url: `/upload-song-thumbnail/${id}`,
+                method: 'POST',
+                body: file,
+            }),
+            invalidatesTags: ['Song'],
+        }),
+        uploadSongCover: builder.mutation({
+            query: ({ id, file }) => ({
+                url: `/upload-song-cover/${id}`,
                 method: 'POST',
                 body: file,
             }),
@@ -161,6 +170,9 @@ export const api = createApi({
         getFeaturedArtists: builder.query({
             query: () => '/get-featured-artists',
         }),
+        getArtistsByRegion: builder.query({
+            query: (region) => `/get-artists-by-region/${region}`,
+        }),
         getTrendingSongs: builder.query({
             query: () => '/get-trending-songs',
         }),
@@ -173,6 +185,9 @@ export const api = createApi({
         }),
         getChartSongs: builder.query({
             query: (region) => `/get-songs-by-region/${region}`,
+        }),
+        getSongsByGenre: builder.query({
+            query: (genre) => `/get-songs-by-genre/${genre}`,
         }),
         getTopSongs: builder.query({
             query: () => '/get-top-songs',
@@ -187,13 +202,23 @@ export const api = createApi({
             }),
             invalidatesTags: ['Song'],
         }),
+        viewCopyright: builder.query({
+            query: (id) => `/view-copyright/${id}`,
+        }),
+        requestCopyright: builder.mutation({
+            query: (songId) => ({
+                url: `/request-copyright/${songId}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Song'],
+        }),
 
         // Playlists ----------------------------------------------------------
         createPlaylist: builder.mutation({
-            query: ({ name, desc }) => ({
+            query: ({ name, firstSongId }) => ({
                 url: '/create-playlist',
                 method: 'POST',
-                body: { name, desc },
+                body: { name, firstSongId },
             }),
             invalidatesTags: ['Playlist'],
         }),
@@ -239,8 +264,35 @@ export const api = createApi({
             providesTags: ['Playlist'],
         }),
         getMyPlaylists: builder.query({
-            query: () => '/get-my-playlists',
+            query: () => ({
+                url: '/get-my-playlists',
+                method: 'GET',
+            }),
             providesTags: ['Playlist'],
+        }),
+        changePlaylistDescription: builder.mutation({
+            query: ({ playlistId, description }) => ({
+                url: `/change-playlist-description/${playlistId}`,
+                method: 'POST',
+                body: { description },
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
+        uploadPlaylistThumbnail: builder.mutation({
+            query: ({ playlistId, file }) => ({
+                url: `/upload-playlist-thumbnail/${playlistId}`,
+                method: 'POST',
+                body: file,
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
+        createAlbum: builder.mutation({
+            query: ({ name, firstSongId }) => ({
+                url: '/create-album',
+                method: 'POST',
+                body: { name, firstSongId },
+            }),
+            invalidatesTags: ['Playlist'],
         }),
 
         // User --------------------------------------------------------------
@@ -266,6 +318,9 @@ export const api = createApi({
         getMyProfile: builder.query({
             query: () => '/get-my-profile',
             providesTags: ['User'],
+        }),
+        getIdByUsername: builder.query({
+            query: (username) => `/get-id-by-username/${username}`,
         }),
         getProfileById: builder.query({
             query: (id) => `/get-profile-by-id/${id}`,
@@ -302,9 +357,6 @@ export const api = createApi({
             query: (id) => `/get-profile-all-songs/${id}`,
             providesTags: ['Song'],
         }),
-        getProfileAlbums: builder.query({
-            query: (id) => `/get-profile-albums/${id}`,
-        }),
         uploadProfilePic: builder.mutation({
             query: ({ file }) => ({
                 url: '/upload-profile-pic',
@@ -324,6 +376,17 @@ export const api = createApi({
         getRecentlyPlayedSongs: builder.query({
             query: () => '/get-recently-played-songs',
             providesTags: ['User'],
+        }),
+        getProfileAlbums: builder.query({
+            query: (id) => `/get-profile-albums/${id}`,
+            providesTags: ['Playlist'],
+        }),
+        getProfilePlaylists: builder.query({
+            query: (id) => `/get-profile-playlists/${id}`,
+            providesTags: ['Playlist'],
+        }),
+        getSearchResults: builder.query({
+            query: (query) => `/search?q=${encodeURIComponent(query)}`,
         }),
 
         // Admin -------------------------------------------------------------
@@ -389,6 +452,160 @@ export const api = createApi({
             }),
             invalidatesTags: ['AdminSong'],
         }),
+        getDashboardStats: builder.query({
+            query: () => '/get-dashboard-stats',
+            providesTags: ['Admin'],
+        }),
+        cancelCopyrightRequest: builder.mutation({
+            query: (songId) => ({
+                url: `/cancel-copyright-request/${songId}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['AdminSong'],
+        }),
+
+        // Reports -----------------------------------------------------------
+        replyReport: builder.mutation({
+            query: ({ reportID, message }) => ({
+                url: '/reply-report',
+                method: 'POST',
+                body: { reportID, message },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        rejectReport: builder.mutation({
+            query: (reportID) => ({
+                url: '/reject-report',
+                method: 'POST',
+                body: { reportID },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        sendReportOnSong: builder.mutation({
+            query: ({
+                songId,
+                fullName,
+                phoneNumber,
+                email,
+                idNumber,
+                rpType,
+                rpCategory,
+                reason,
+            }) => ({
+                url: `/send-report-on-song/${songId}`,
+                method: 'POST',
+                body: {
+                    fullName,
+                    phoneNumber,
+                    email,
+                    idNumber,
+                    rpType,
+                    rpCategory,
+                    reason,
+                },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        sendReportOnProfile: builder.mutation({
+            query: ({
+                profileId,
+                fullName,
+                phoneNumber,
+                email,
+                idNumber,
+                rpType,
+                rpCategory,
+                reason,
+            }) => ({
+                url: `/send-report-on-profile/${profileId}`,
+                method: 'POST',
+                body: {
+                    fullName,
+                    phoneNumber,
+                    email,
+                    idNumber,
+                    rpType,
+                    rpCategory,
+                    reason,
+                },
+            }),
+            invalidatesTags: ['Report'],
+        }),
+        getReports: builder.query({
+            query: () => '/get-reports',
+            providesTags: ['Report'],
+        }),
+
+        // Payment -----------------------------------------------------------
+        getAllPaymentHistory: builder.query({
+            query: () => '/get-all-payment-history',
+            providesTags: ['Payment'],
+        }),
+        getPaymentHistory: builder.query({
+            query: () => '/get-payment-history',
+            providesTags: ['Payment'],
+        }),
+        getWithdrawRequests: builder.query({
+            query: () => '/get-withdraw-requests',
+            providesTags: ['Payment'],
+        }),
+        confirmWebhookPayos: builder.mutation({
+            query: (body) => ({
+                url: '/payos/confirm-webhook',
+                method: 'POST',
+                body,
+            }),
+        }),
+        confirmWebhookCasso: builder.mutation({
+            query: (body) => ({
+                url: '/casso/confirm-webhook',
+                method: 'POST',
+                body,
+            }),
+        }),
+        deposit: builder.mutation({
+            query: (body) => ({
+                url: '/deposit',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User', 'Payment'],
+        }),
+        donate: builder.mutation({
+            query: (body) => ({
+                url: '/donate',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User', 'Payment'],
+        }),
+        withdraw: builder.mutation({
+            query: () => ({
+                url: '/withdraw',
+                method: 'POST',
+            }),
+            invalidatesTags: ['User', 'Payment'],
+        }),
+        processDeposit: builder.mutation({
+            query: (paymentId) => ({
+                url: `/process-deposit/${paymentId}`,
+                method: 'PUT',
+            }),
+        }),
+        processWithdraw: builder.mutation({
+            query: (orderId) => ({
+                url: `/process-withdraw/${orderId}`,
+                method: 'PUT',
+            }),
+            invalidatesTags: ['Payment'],
+        }),
+        cancelWithdraw: builder.mutation({
+            query: (orderId) => ({
+                url: `/cancel-withdraw/${orderId}`,
+                method: 'PUT',
+            }),
+            invalidatesTags: ['Payment'],
+        }),
     }),
 });
 
@@ -404,17 +621,22 @@ export const {
     useUploadAudioMutation,
     useUploadSongMutation,
     useUploadSongThumbnailMutation,
+    useUploadSongCoverMutation,
     useSubmitMusicMutation,
     useGetFeaturedArtistsQuery,
+    useGetArtistsByRegionQuery,
     usePlaySongMutation,
     useUndoPlaySongMutation,
     useGetTrendingSongsQuery,
     useGetNewSongsQuery,
     useGetSongByIdQuery,
     useGetChartSongsQuery,
+    useGetSongsByGenreQuery,
     useGetTopSongsQuery,
     useGetPopularAlbumsQuery,
     useDeleteTrackByIdMutation,
+    useViewCopyrightQuery,
+    useRequestCopyrightMutation,
 
     // Playlists -------------------------------------------------------------
     useCreatePlaylistMutation,
@@ -426,11 +648,15 @@ export const {
     useGetPlaylistByIdQuery,
     useLazyGetPlaylistByIdQuery,
     useGetMyPlaylistsQuery,
+    useChangePlaylistDescriptionMutation,
+    useUploadPlaylistThumbnailMutation,
+    useCreateAlbumMutation,
 
     // User -------------------------------------------------------------------
     useGetProfileInfomationQuery,
     useChangeProfileMutation,
     useChangePasswordMutation,
+    useLazyGetIdByUsernameQuery,
     useGetProfileByIdQuery,
     useGetMyProfileQuery,
     useGetFollowingListByIdQuery,
@@ -440,10 +666,12 @@ export const {
     useGetProfilePopularSongsQuery,
     useGetProfileAllSongsQuery,
     useLazyGetProfileAllSongsQuery,
-    useGetProfileAlbumsQuery,
     useUploadProfilePicMutation,
     useUploadProfileCoverMutation,
     useGetRecentlyPlayedSongsQuery,
+    useGetProfileAlbumsQuery,
+    useGetProfilePlaylistsQuery,
+    useLazyGetSearchResultsQuery,
 
     // Admin ------------------------------------------------------------------
     useSetVerifiedArtistByIdMutation,
@@ -456,4 +684,26 @@ export const {
     useRemoveSongByIdMutation,
     useDeactivateSongMutation,
     useActivateSongMutation,
+    useGetDashboardStatsQuery,
+    useCancelCopyrightRequestMutation,
+
+    // Reports ----------------------------------------------------------------
+    useReplyReportMutation,
+    useRejectReportMutation,
+    useSendReportOnSongMutation,
+    useSendReportOnProfileMutation,
+    useGetReportsQuery,
+
+    // Payment ----------------------------------------------------------------
+    useGetAllPaymentHistoryQuery,
+    useGetPaymentHistoryQuery,
+    useGetWithdrawRequestsQuery,
+    useConfirmWebhookPayosMutation,
+    useConfirmWebhookCassoMutation,
+    useDepositMutation,
+    useDonateMutation,
+    useWithdrawMutation,
+    useProcessDepositMutation,
+    useProcessWithdrawMutation,
+    useCancelWithdrawMutation,
 } = api;

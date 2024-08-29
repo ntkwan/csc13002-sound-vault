@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 FilterSort.propTypes = {
@@ -30,7 +29,7 @@ function FilterSort({
                     name="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full rounded-md border p-2 hover:cursor-pointer dark:border-gray-600 dark:bg-black dark:text-white"
+                    className="w-full rounded-md border border-gray-600 bg-black p-2 text-white hover:cursor-pointer"
                 />
             </div>
 
@@ -43,7 +42,7 @@ function FilterSort({
                     name="sort"
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
-                    className="w-full rounded-md border p-2 hover:cursor-pointer dark:border-gray-600 dark:bg-black dark:text-white"
+                    className="w-full rounded-md border border-gray-600 bg-black p-2 text-white hover:cursor-pointer"
                 >
                     {sortMethods.map((method, index) => (
                         <option key={index} value={method}>
@@ -56,7 +55,7 @@ function FilterSort({
             <button
                 type="button"
                 onClick={applyFilter}
-                className="rounded-md bg-slate-50 px-4 py-2 text-black hover:bg-blue-500"
+                className="transform rounded-md bg-slate-50 px-4 py-2 text-black transition duration-300 ease-in-out hover:scale-105"
             >
                 Apply Filter
             </button>

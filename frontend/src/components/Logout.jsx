@@ -8,9 +8,8 @@ function Logout() {
     const [logOut] = useLogOutMutation();
     const handleAction = async () => {
         try {
-            const res = await logOut().unwrap();
+            await logOut().unwrap();
             persistor.purge();
-            console.log(res);
         } catch (error) {
             toast.error(error.message);
         }
@@ -21,7 +20,7 @@ function Logout() {
             className="relative my-1 flex items-center rounded-full px-3 py-3 leading-none transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-20"
         >
             {LogoutIcon()}
-            <span className="pl-3">LOGOUT</span>
+            <span className="pl-3">LOG OUT</span>
         </NavLink>
     );
 }

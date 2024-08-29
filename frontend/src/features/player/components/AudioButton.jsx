@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { twMerge } from 'tailwind-merge';
 
 AudioButton.propTypes = {
     onClick: PropTypes.func,
@@ -6,11 +7,12 @@ AudioButton.propTypes = {
     className: PropTypes.string,
     disabled: PropTypes.bool,
 };
-
 function AudioButton({ onClick, children, ...props }) {
-    const className = props.disabled
-        ? 'audio-button text-[#a7a7a7] brightness-50'
-        : `audio-button text-[#a7a7a7] hover:brightness-150 ${props.className}`;
+    const className = twMerge(
+        'text-[#a7a7a7] brightness-50',
+        !props.disabled &&
+            twMerge('brightness-100 hover:brightness-150', props.className),
+    );
     onClick = props.disabled ? () => {} : onClick;
     return (
         <button

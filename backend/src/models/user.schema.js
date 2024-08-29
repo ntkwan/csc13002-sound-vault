@@ -76,6 +76,32 @@ const UserSchema = new Schema(
             type: Array,
             default: [],
         },
+        balance: {
+            type: Number,
+            default: 0,
+        },
+        bankInfo: {
+            bankId: {
+                type: String,
+                default: '',
+            },
+            accountNo: {
+                type: String,
+                default: '',
+            },
+            accountName: {
+                type: String,
+                default: '',
+            },
+        },
+        publicAddress: {
+            type: String,
+            default: '',
+        },
+        notification: {
+            type: Array,
+            default: [],
+        },
     },
     {
         timestamps: true,
@@ -128,20 +154,6 @@ UserSchema.methods.generateRefreshToken = function () {
     );
 };
 
-UserSchema.methods.addToRecentlyPlayed = async function (songId) {
-    if (this.recentlyPlayed.includes(songId)) {
-        this.recentlyPlayed = this.recentlyPlayed.filter(
-            (id) => id.toString() !== songId,
-        );
-    }
-
-    if (this.recentlyPlayed.length === 10) {
-        this.recentlyPlayed.pop();
-    }
-
-    this.recentlyPlayed.unshift(songId);
-};
-
 UserSchema.methods.removeFromRecentlyPlayed = async function (songId) {
     this.recentlyPlayed = this.recentlyPlayed.filter(
         (id) => id.toString() !== songId,
@@ -180,6 +192,11 @@ UserSchema.methods.removeFromLikedSongs = async function (songId) {
     const playlist = await Playlist.findById(this.playlist[0]);
     playlist.songs = playlist.songs.filter((id) => id.toString() !== songId);
     await playlist.save();
+};
+
+UserSchema.methods.notify = async function (notification) {
+    this.notification.unshift(notification);
+    await this.save();
 };
 
 module.exports = mongoose.model('User', UserSchema);

@@ -11,19 +11,31 @@ import {
     useRemoveSongFromPlaylistMutation,
     useAddSongToLikedPlaylistMutation,
     useGetPlaylistByIdQuery,
-    useGetMyPlaylistsQuery,
     useDeleteTrackByIdMutation,
+    useViewCopyrightQuery,
+    useRequestCopyrightMutation,
 } from '@services/api';
 import {
     selectCurrentPlaylist,
     selectCurrentProfile,
     selectCurrentTrack,
+    selectCurrentToken,
+    selectMyPlaylists,
 } from '@services/selectors';
-import { PlayButton, ReportFrame, ConfirmDeletion } from '.';
+import {
+    PlayButton,
+    ReportFrame,
+    ConfirmDeletion,
+    DonateButton,
+    DonateModal,
+    AlbumFrame,
+    UtilitiesCard,
+} from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 import { toast } from 'react-toastify';
 import { setCurrentPlaylist } from '@features/playlists/slices';
+import { colors } from '@components/PlaylistThumbnailColor';
 
 const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     const dispatch = useDispatch();
@@ -32,6 +44,7 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     const myProfileData = useSelector(selectCurrentProfile);
     const myProfileID = myProfileData.id;
+    const { id, type, title, visibility, link, data } = media;
 
     const navigate = useNavigate();
     const handleProfile = (id) => {
@@ -43,21 +56,18 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
     };
 
     const handlePlaylist = (id) => {
-        navigate(`/playlist/${id}`);
+        navigate(`/${type.toLowerCase()}/${id}`);
     };
 
     const handleSong = (id) => {
         navigate(`/song/${id}`);
     };
 
-    const { id, type, title, visibility, link, data } = media;
-    let showedData = data;
-    if (type.includes('Home')) {
-        showedData = data.slice(0, 6);
-        if (type.includes('Artist')) {
-            showedData = data.slice(0, 5);
-        }
-    }
+    const handleArtist = (id) => {
+        navigate(`/profile/${id}`);
+    };
+
+    const [sliceData, setSliceData] = useState(0);
 
     const handlePlayClick = (mediaData) => {
         if (
@@ -119,6 +129,37 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
 
     if (!data || !data.length) return;
 
+    let step = data.length;
+    if (type.includes('Home')) {
+        step = 6;
+        if (type.includes('Artist')) {
+            step = 5;
+        }
+    } else if (type.includes('Detail')) {
+        step = 6;
+    }
+    if (sliceData * step >= data.length) {
+        setSliceData(Math.floor((data.length - 1) / step));
+    } else if (sliceData < 0) {
+        setSliceData(0);
+    }
+    const start = sliceData * step;
+    const end = start + step;
+    const showedData = data.slice(start, end);
+
+    const classNameSliceLeft =
+        (step > 6) | (data.length <= 6)
+            ? 'opacity-0'
+            : start === 0
+              ? 'opacity-30 hover:cursor-pointer'
+              : 'hover:cursor-pointer';
+    const classNameSliceRight =
+        (step > 6) | (data.length <= 6)
+            ? 'opacity-0'
+            : end >= data.length
+              ? 'opacity-30 hover:cursor-pointer'
+              : 'hover:cursor-pointer';
+
     return media ? (
         <section className="media__display grid grid-rows-[min-content_auto]">
             {/* media title container*/}
@@ -148,59 +189,84 @@ const MediaDisplay = memo(({ media, displayItems, displayType }) => {
                 )}
             </h2>
             {/* Media content */}
-            <div className={`${displayType} mt-4 justify-items-center`}>
-                {showedData.map((mediaData, index) => {
-                    let MediaComponent;
-                    switch (displayItems) {
-                        case '1':
-                            MediaComponent = HomeCard;
-                            break;
-                        case '2':
-                            MediaComponent = DetailCard;
-                            break;
-                        case '3':
-                            MediaComponent = BrowseCard;
-                            break;
-                        case '4':
-                            MediaComponent = SongBar;
-                            break;
-                        default:
-                            MediaComponent = HomeCard;
-                    }
+            <div className="flex items-center">
+                {displayItems != 4 && (
+                    <i
+                        className={`ri-arrow-left-s-line text-4xl leading-none ${classNameSliceLeft}`}
+                        onClick={() => setSliceData(sliceData - 1)}
+                    ></i>
+                )}
+                <div
+                    className={`${displayType} mt-4 flex-[1] justify-items-center`}
+                >
+                    {showedData.map((mediaData, index) => {
+                        let MediaComponent;
+                        switch (displayItems) {
+                            case '1':
+                                MediaComponent = HomeCard;
+                                break;
+                            case '2':
+                                MediaComponent = DetailCard;
+                                break;
+                            case '3':
+                                MediaComponent = BrowseCard;
+                                break;
+                            case '4':
+                                MediaComponent = SongBar;
+                                break;
+                            default:
+                                MediaComponent = HomeCard;
+                        }
 
-                    let onClickImage, onClickButton, isOnPlaying;
-                    if (type.includes('Song')) {
-                        onClickImage = () => handleSong(mediaData.id);
-                        onClickButton = () => handlePlayClick(mediaData);
-                        isOnPlaying = currentSong == mediaData.id && isPlaying;
-                    } else if (type.includes('Artist')) {
-                        onClickImage = () => handleProfile(mediaData.id);
-                        onClickButton = () =>
-                            handleArtistPlayClick(mediaData.id);
-                        isOnPlaying =
-                            currentPlaylist.id == mediaData.id && isPlaying;
-                    } else if (
-                        type.includes('Album') ||
-                        type.includes('Playlist')
-                    ) {
-                        onClickImage = () => handlePlaylist(mediaData.id);
-                        onClickButton = () =>
-                            handlePlaylistPlayClick(mediaData.id);
-                        isOnPlaying =
-                            currentPlaylist.id == mediaData.id && isPlaying;
-                    }
-                    return (
-                        <MediaComponent
-                            key={index}
-                            type={type}
-                            mediaData={mediaData}
-                            onClickImage={onClickImage}
-                            onClickButton={onClickButton}
-                            isOnPlaying={isOnPlaying}
-                            index={index}
-                        />
-                    );
-                })}
+                        let onClickImage,
+                            onClickArtist,
+                            onClickButton,
+                            isOnPlaying;
+                        if (type.includes('Song')) {
+                            onClickImage = () => handleSong(mediaData.id);
+                            onClickArtist = () =>
+                                handleArtist(mediaData.artist);
+                            onClickButton = () => handlePlayClick(mediaData);
+                            isOnPlaying =
+                                currentSong == mediaData.id && isPlaying;
+                        } else if (type.includes('Artist')) {
+                            onClickImage = () => handleProfile(mediaData.id);
+                            onClickButton = () =>
+                                handleArtistPlayClick(mediaData.id);
+                            isOnPlaying =
+                                currentPlaylist.id == mediaData.id && isPlaying;
+                        } else if (
+                            type.includes('Album') ||
+                            type.includes('Playlist')
+                        ) {
+                            onClickImage = () => handlePlaylist(mediaData.id);
+                            onClickArtist = () =>
+                                handleArtist(mediaData.playlist_owner);
+                            onClickButton = () =>
+                                handlePlaylistPlayClick(mediaData.id);
+                            isOnPlaying =
+                                currentPlaylist.id == mediaData.id && isPlaying;
+                        }
+                        return (
+                            <MediaComponent
+                                key={index}
+                                type={type}
+                                mediaData={mediaData}
+                                onClickImage={onClickImage}
+                                onClickArtist={onClickArtist}
+                                onClickButton={onClickButton}
+                                isOnPlaying={isOnPlaying}
+                                index={index}
+                            />
+                        );
+                    })}
+                </div>
+                {displayItems != 4 && (
+                    <i
+                        className={`ri-arrow-right-s-line text-4xl leading-none ${classNameSliceRight}`}
+                        onClick={() => setSliceData(sliceData + 1)}
+                    ></i>
+                )}
             </div>
         </section>
     ) : null;
@@ -236,7 +302,14 @@ prevent.prototype = {
 };
 
 const HomeCard = memo(
-    ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
+    ({
+        type,
+        mediaData,
+        onClickImage,
+        onClickArtist,
+        onClickButton,
+        isOnPlaying,
+    }) => {
         // Song
         const { title, artist, image } = mediaData;
         // Artist
@@ -256,7 +329,6 @@ const HomeCard = memo(
         if (type.includes('Artist')) {
             imageClass = 'w-[160px] rounded-full';
             card_title = name;
-            card_desc = '';
         } else if (type.includes('Song')) {
             card_title = title;
             card_desc = artist;
@@ -266,11 +338,11 @@ const HomeCard = memo(
         }
 
         return (
-            <div className="media-item group w-full flex-col space-y-2 hover:cursor-pointer">
-                <div className="relative m-auto w-[160px]">
+            <div className="media-item group w-full flex-col space-y-2">
+                <div className="relative m-auto w-[160px] cursor-pointer">
                     {url ? (
                         <img
-                            className={`media-item__image hover: m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
+                            className={`media-item__image m-auto h-[160px] border-[3px] object-cover ${imageClass}`}
                             src={url}
                             alt={card_title}
                             onClick={onClickImage}
@@ -290,11 +362,17 @@ const HomeCard = memo(
                         }
                     />
                 </div>
-                <p className="media-item__name overflow-hidden text-ellipsis text-nowrap text-center">
+                <p
+                    className="media-item__name cursor-pointer overflow-hidden text-ellipsis text-nowrap text-center"
+                    onClick={onClickImage}
+                >
                     {card_title}
                 </p>
                 {card_desc && (
-                    <p className="media-item__desc overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080]">
+                    <p
+                        className="media-item__desc cursor-pointer overflow-hidden text-ellipsis text-nowrap text-center text-sm text-[#808080] hover:underline"
+                        onClick={onClickArtist}
+                    >
                         {card_desc}
                     </p>
                 )}
@@ -310,13 +388,14 @@ HomeCard.propTypes = {
         id: PropTypes.string,
         title: PropTypes.string,
         artist: PropTypes.string,
-        genre: PropTypes.string,
+        genre: PropTypes.array,
         imageurl: PropTypes.shape({
             publicId: PropTypes.string,
             url: PropTypes.string,
         }),
     }),
     onClickImage: PropTypes.func,
+    onClickArtist: PropTypes.func,
     onClickButton: PropTypes.func,
     isOnPlaying: PropTypes.bool,
 };
@@ -324,7 +403,7 @@ HomeCard.propTypes = {
 const DetailCard = memo(
     ({ type, mediaData, onClickImage, onClickButton, isOnPlaying }) => {
         // Song
-        const { title, image } = mediaData;
+        const { title, image, id } = mediaData;
         // Artist
         const { name, imageurl } = mediaData;
         // Album: name, image
@@ -333,7 +412,7 @@ const DetailCard = memo(
         // assign data to card
         let imageClass = 'rounded-lg';
         let card_title,
-            card_desc = type;
+            card_desc = type.includes('Artist') ? 'Artist' : type;
         if (type.includes('Artist')) {
             imageClass = 'rounded-full';
             card_title = name;
@@ -342,6 +421,19 @@ const DetailCard = memo(
         } else if (type.includes('Album') || type.includes('Playlist')) {
             card_title = name;
         }
+        const hashColor = (id) => {
+            const hash = (str) => {
+                let hash = 5381;
+                for (let i = 0; i < str.length; i++) {
+                    hash = (hash * 33) ^ str.charCodeAt(i);
+                }
+                return hash >>> 0;
+            };
+            const index = hash(id) % colors.length;
+            return colors[index];
+        };
+        const hashedColor = name === 'Liked Songs' ? '#6D28C6' : hashColor(id);
+        const thumbnailColor = `linear-gradient(to bottom, ${hashedColor}, #FFFFFF)`;
 
         return (
             <div
@@ -350,11 +442,22 @@ const DetailCard = memo(
             >
                 <div className="media-item__content absolute left-4 right-4 top-4 flex flex-col font-medium">
                     <div className="media-item__image relative">
-                        <img
-                            className={`${imageClass} media-item__img hover: pointer-events-none aspect-square w-full object-cover`}
-                            src={url}
-                            alt={card_title}
-                        />
+                        {!type.includes('Playlist') ? (
+                            <img
+                                className={`${imageClass} media-item__img aspect-square w-full object-cover hover:pointer-events-none`}
+                                src={url}
+                                alt={card_title}
+                            />
+                        ) : (
+                            <div
+                                className="aspect-square w-full object-cover hover:pointer-events-none"
+                                style={{ background: thumbnailColor }}
+                            >
+                                <i
+                                    className={`${name == 'Liked Songs' ? 'ri-heart-line' : ''} block h-full w-full content-center text-center text-8xl leading-none`}
+                                ></i>
+                            </div>
+                        )}
                         <PlayButton
                             onClick={prevent(onClickButton)}
                             isOnPlaying={isOnPlaying}
@@ -399,7 +502,7 @@ const BrowseCard = memo(({ type, mediaData }) => {
             }
         >
             <img
-                className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[6.5rem] translate-x-3 translate-y-3 rotate-[30deg]`}
+                className={`media-item-3__img absolute bottom-0 right-0 aspect-square h-[9rem] translate-x-[19px] translate-y-4 rotate-[30deg]`}
                 src={imageurl.url}
                 alt={title}
             />
@@ -415,18 +518,84 @@ const BrowseCard = memo(({ type, mediaData }) => {
 BrowseCard.displayName = 'BrowseCard';
 BrowseCard.propTypes = HomeCard.propTypes;
 
+const PlaylistForm = ({ onCreatePlaylist, setShowPlaylistForm }) => {
+    const [playlistName, setPlaylistName] = useState('');
+    const playlistFormRef = useRef(null);
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (
+                playlistFormRef.current &&
+                !playlistFormRef.current.contains(e.target)
+            ) {
+                setShowPlaylistForm(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
+    }, [setShowPlaylistForm]);
+
+    const handleSubmit = () => {
+        const name = playlistName.trim();
+        if (name) {
+            onCreatePlaylist(name);
+            setShowPlaylistForm(false);
+        }
+    };
+
+    return (
+        <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
+            <div
+                ref={playlistFormRef}
+                className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
+            >
+                <label
+                    htmlFor="playlistName"
+                    className="block pb-2 text-left text-base"
+                >
+                    Create a name for your playlist:
+                </label>
+                <input
+                    id="playlistName"
+                    type="text"
+                    value={playlistName}
+                    onChange={(e) => setPlaylistName(e.target.value)}
+                    className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
+                />
+                <div className="mt-3 flex justify-end">
+                    <button
+                        className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+                        onClick={handleSubmit}
+                    >
+                        Create
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+PlaylistForm.propTypes = {
+    onCreatePlaylist: PropTypes.func.isRequired,
+    setShowPlaylistForm: PropTypes.func.isRequired,
+};
+
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
-        const { id: myProfileID } = useSelector(selectCurrentProfile);
+        const token = useSelector(selectCurrentToken);
+        const {
+            id: myProfileID,
+            isVerified,
+            publicAddress,
+        } = useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
         const [showPlaylistForm, setShowPlaylistForm] = useState(false);
-        const playlistFormRef = useRef(null);
+        const [showAlbumFrame, setShowAlbumFrame] = useState(false);
         const [playlistOptionsVisible, setPlaylistOptionsVisible] =
             useState(false);
-        const [playlistName, setPlaylistName] = useState('');
-        const [playlistDesc, setPlaylistDesc] = useState('');
         const [confirmDelete, setConfirmDelete] = useState(false);
 
         const location = useLocation();
@@ -441,21 +610,6 @@ const SongBar = memo(
 
         useEffect(() => {
             const handleOutsideClick = (e) => {
-                if (
-                    playlistFormRef.current &&
-                    !playlistFormRef.current.contains(e.target)
-                ) {
-                    setShowPlaylistForm(false);
-                }
-            };
-
-            document.addEventListener('mousedown', handleOutsideClick);
-            return () =>
-                document.removeEventListener('mousedown', handleOutsideClick);
-        }, []);
-
-        useEffect(() => {
-            const handleOutsideClick = (e) => {
                 if (menuVisible !== null && !e.target.closest('.menu')) {
                     setMenuVisible(null);
                 }
@@ -466,8 +620,17 @@ const SongBar = memo(
                 document.removeEventListener('mousedown', handleOutsideClick);
         }, [menuVisible]);
 
-        const { id, title, artist, view, imageurl, audiourl, isverified } =
-            mediaData;
+        const {
+            id,
+            title,
+            artist,
+            view,
+            imageurl,
+            audiourl,
+            isverified,
+            uploader,
+            isPending,
+        } = mediaData;
         const { url } = imageurl;
 
         useEffect(() => {
@@ -502,39 +665,26 @@ const SongBar = memo(
             skip: !playlistId,
         });
 
-        const { data: myPlayListData, isLoading: isLoadingMyPlayListData } =
-            useGetMyPlaylistsQuery(myProfileID, {
-                skip: !myProfileID,
-            });
+        const myPlaylists = useSelector(selectMyPlaylists) || [];
 
-        const [creatPlayList, { isLoading: createPlaylistLoading }] =
-            useCreatePlaylistMutation();
-        const handleCreatePlaylist = async (name, desc) => {
-            if (createPlaylistLoading) return;
+        const [creatPlayList] = useCreatePlaylistMutation();
+        const handleCreatePlaylist = async (name, firstSongId) => {
             try {
-                await creatPlayList({ name, desc }).unwrap();
+                await creatPlayList({ name, firstSongId }).unwrap();
                 toast.success('Playlist created successfully!');
             } catch (error) {
                 console.error('Failed to create playlist:', error);
                 toast.error(`${error.data.message}!`);
             }
         };
-        const handleSubmitCreatePlaylist = () => {
-            setShowPlaylistForm(false);
-            const name = String(playlistName).trim();
-            const desc = String(playlistDesc).trim();
-            handleCreatePlaylist(name, desc);
-        };
 
-        const [addSongToPlaylist, { isLoading: addSongToPlaylistLoading }] =
-            useAddSongToPlaylistMutation();
+        const [addSongToPlaylist] = useAddSongToPlaylistMutation();
         const handleAddToPlaylist = async (
             playlistId,
             songId,
             songName,
             playlistName,
         ) => {
-            if (addSongToPlaylistLoading) return;
             try {
                 await addSongToPlaylist({ playlistId, songId }).unwrap();
                 toast.success(
@@ -546,12 +696,8 @@ const SongBar = memo(
             }
         };
 
-        const [
-            removeSongFromPlaylist,
-            { isLoading: removeSongFromPlaylistLoading },
-        ] = useRemoveSongFromPlaylistMutation();
+        const [removeSongFromPlaylist] = useRemoveSongFromPlaylistMutation();
         const handleRemoveFromPlaylist = async (playlistId, songId) => {
-            if (removeSongFromPlaylistLoading) return;
             try {
                 await removeSongFromPlaylist({ playlistId, songId }).unwrap();
                 toast.success('Song removed from playlist successfully!');
@@ -561,12 +707,8 @@ const SongBar = memo(
             }
         };
 
-        const [
-            addSongToLikedPlaylist,
-            { isLoading: addSongToLikedPlaylistLoading },
-        ] = useAddSongToLikedPlaylistMutation();
+        const [addSongToLikedPlaylist] = useAddSongToLikedPlaylistMutation();
         const handleAddToLikedSongs = async (id, songName) => {
-            if (addSongToLikedPlaylistLoading) return;
             try {
                 await addSongToLikedPlaylist(id).unwrap();
                 toast.success(`${songName} added to liked songs successfully!`);
@@ -575,10 +717,8 @@ const SongBar = memo(
                 toast.error(`${error.data.message}!`);
             }
         };
-        const [removeSongById, { isLoading: removeSongIsLoading }] =
-            useDeleteTrackByIdMutation();
+        const [removeSongById] = useDeleteTrackByIdMutation();
         const handleRemoveSong = async (id) => {
-            if (removeSongIsLoading) return;
             try {
                 setConfirmDelete(false);
                 await removeSongById(id).unwrap();
@@ -589,12 +729,50 @@ const SongBar = memo(
             }
         };
 
+        const { data } = useViewCopyrightQuery(id);
+        const copyrightLink = data?.link;
+        const handleViewOnBlockchain = () => {
+            if (copyrightLink) {
+                window.open(copyrightLink, '_blank', 'noopener,noreferrer');
+            } else {
+                toast.error('Link is not available');
+            }
+            setMenuVisible(null);
+        };
+
+        const [requestCopyright] = useRequestCopyrightMutation();
+        const handleRequestCopyRight = async () => {
+            try {
+                await requestCopyright(id).unwrap();
+                toast.success('Request sent successfully');
+            } catch (error) {
+                toast.error('Failed to send request', error);
+            }
+        };
+
         const { currentSong } = useSong();
         const titleClassName =
             currentSong === id ? 'text-purple-400 font-bold' : '';
 
+        const { balance } = useSelector(selectCurrentProfile);
+        const [modalVisible, setModalVisible] = useState(false);
+        const openDonateModal = () => {
+            setModalVisible(true);
+        };
+        const closeDonateModal = () => {
+            setModalVisible(false);
+        };
+
         return (
             <>
+                {showAlbumFrame && (
+                    <AlbumFrame
+                        idSong={id}
+                        songName={title}
+                        myProfileID={myProfileID}
+                        onClose={() => setShowAlbumFrame(false)}
+                    />
+                )}
                 {confirmDelete && (
                     <ConfirmDeletion
                         type="song"
@@ -603,59 +781,29 @@ const SongBar = memo(
                     />
                 )}
                 {showReportFrame && (
-                    <ReportFrame setShowReportFrame={setShowReportFrame} />
+                    <ReportFrame
+                        setShowReportFrame={setShowReportFrame}
+                        cardSongId={id}
+                    />
                 )}
                 {showPlaylistForm && (
-                    <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                        <div
-                            ref={playlistFormRef}
-                            className="relative z-20 cursor-default rounded-[35px] border bg-black p-6 text-center font-kodchasan shadow-lg"
-                        >
-                            <div>
-                                <label
-                                    htmlFor="playlistName"
-                                    className="block pb-2 text-left text-base"
-                                >
-                                    Create a name for your playlist:
-                                </label>
-                                <input
-                                    id="playlistName"
-                                    type="text"
-                                    onChange={(e) =>
-                                        setPlaylistName(e.target.value)
-                                    }
-                                    className="w-full border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    htmlFor="playlistName"
-                                    className="block pb-2 text-left text-base"
-                                >
-                                    Description for your playlist:
-                                </label>
-                                <textarea
-                                    id="playlistName"
-                                    rows="4"
-                                    cols="50"
-                                    onChange={(e) =>
-                                        setPlaylistDesc(e.target.value)
-                                    }
-                                    className="h-16 w-80 resize-none border-b bg-transparent focus:border-slate-500 focus:outline-none"
-                                />
-                            </div>
-                            <div className="m-2 flex justify-end">
-                                <button
-                                    className="rounded-lg bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
-                                    onClick={handleSubmitCreatePlaylist}
-                                >
-                                    Create
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <PlaylistForm
+                        onCreatePlaylist={(name) =>
+                            handleCreatePlaylist(name, id)
+                        }
+                        setShowPlaylistForm={setShowPlaylistForm}
+                    />
                 )}
-                <div className="rounded-ful hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
+                {modalVisible && (
+                    <DonateModal
+                        balance={balance}
+                        closeDonateModal={closeDonateModal}
+                        song={title}
+                        songId={id}
+                        artist={artist}
+                    />
+                )}
+                <div className="hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
                     {/* index - img - name */}
                     <div className="flex items-center space-x-8">
                         <div className="">
@@ -674,7 +822,7 @@ const SongBar = memo(
                             alt={title}
                         />
                         <p
-                            className={`flex w-full items-center space-x-3 ${titleClassName} hover:cursor-pointer hover:underline`}
+                            className={`flex w-full items-center space-x-3 ${titleClassName} duration-300 ease-in-out hover:cursor-pointer hover:underline hover:underline-offset-2`}
                             onClick={onClickImage}
                         >
                             {title}
@@ -690,176 +838,203 @@ const SongBar = memo(
                     <span className="hover:cursor-default">{view}</span>
                     <span className="hover:cursor-default">{duration}</span>
                     <div className="flex items-center justify-end">
-                        <i
-                            className="bx bxs-dollar-circle hover: relative flex-[1] text-center text-2xl transition-all duration-75 ease-in hover:cursor-pointer hover:text-3xl"
-                            // onClick={prevent()}
-                            data-title={`Donate for ${title} by ${artist}`}
-                        ></i>
+                        {token && isverified && !isVerified && (
+                            <DonateButton
+                                className={'text-white'}
+                                openDonateModal={openDonateModal}
+                                song={title}
+                                artist={artist}
+                            />
+                        )}
                         <button
                             className="relative flex-[1]"
                             onClick={prevent(() => toggleMenu(index))}
                         >
                             <i
-                                className="ri-more-fill relative text-2xl transition-all duration-75 ease-in-out hover:text-3xl"
+                                className="bx bx-dots-horizontal-rounded relative text-2xl transition-all duration-75 ease-in-out hover:scale-125"
                                 data-title={`More options for ${title} by ${artist}`}
                             ></i>
                             {menuVisible === index && (
                                 <div
-                                    className={`menu absolute ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md`}
+                                    className={`menu absolute z-50 ${playlistOptionsVisible ? 'right-24' : 'right-0'} z-30 mt-2 h-max w-48 rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl`}
                                 >
                                     <ul>
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onMouseEnter={() =>
-                                                setPlaylistOptionsVisible(true)
-                                            }
-                                            onMouseLeave={() =>
-                                                setPlaylistOptionsVisible(false)
-                                            }
-                                        >
-                                            <i className="ri-add-circle-line text-xl leading-none"></i>
-                                            <span>Add to playlist</span>
-                                            <i className="ri-triangle-line rotate-90 text-right"></i>
-                                            {playlistOptionsVisible && (
-                                                <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                                    <ul>
-                                                        <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                            <div
-                                                                className={`mx-4 w-full py-2 text-left ${myPlayListData?.playlists?.length > 1 ? 'border-b border-[#999]' : ''}`}
-                                                                onClick={() => {
-                                                                    setShowPlaylistForm(
-                                                                        true,
-                                                                    );
-                                                                    setPlaylistOptionsVisible(
-                                                                        false,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i className="ri-add-circle-line" />
-                                                                <span>
-                                                                    New playlist
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        {myPlayListData?.playlists?.map(
-                                                            (
-                                                                playlist,
-                                                                index,
-                                                            ) => {
-                                                                if (
-                                                                    playlist.name ===
-                                                                    'Liked Songs'
-                                                                ) {
-                                                                    return null;
-                                                                }
-                                                                return (
-                                                                    <li
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        className="flex space-x-2 px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                                        onClick={() => {
-                                                                            handleAddToPlaylist(
-                                                                                playlist.id,
-                                                                                id,
-                                                                                title,
-                                                                                playlist.name,
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <span>
-                                                                            {
+                                        {token && (
+                                            <li
+                                                className="flex space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
+                                                onMouseEnter={() =>
+                                                    setPlaylistOptionsVisible(
+                                                        true,
+                                                    )
+                                                }
+                                                onMouseLeave={() =>
+                                                    setPlaylistOptionsVisible(
+                                                        false,
+                                                    )
+                                                }
+                                            >
+                                                <i className="ri-add-circle-line text-xl leading-none"></i>
+                                                <span>Add to playlist</span>
+                                                <i className="ri-triangle-line rotate-90 text-right"></i>
+                                                {playlistOptionsVisible && (
+                                                    <div className="absolute left-[180px] top-[-10px] z-[2] mt-2 w-48 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-70 text-sm shadow-md">
+                                                        <ul>
+                                                            <li className="flex space-x-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
+                                                                <div
+                                                                    className={`mx-4 flex w-full items-center space-x-2 py-2 text-left ${myPlaylists.length > 1 ? 'border-b border-[#999]' : ''}`}
+                                                                    onClick={() => {
+                                                                        setShowPlaylistForm(
+                                                                            true,
+                                                                        );
+                                                                        setPlaylistOptionsVisible(
+                                                                            false,
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-add-circle-line text-xl leading-none" />
+                                                                    <span>
+                                                                        New
+                                                                        playlist
+                                                                    </span>
+                                                                </div>
+                                                            </li>
+                                                            {myPlaylists.map(
+                                                                (
+                                                                    playlist,
+                                                                    index,
+                                                                ) => {
+                                                                    if (
+                                                                        playlist.name ===
+                                                                        'Liked Songs'
+                                                                    ) {
+                                                                        return null;
+                                                                    }
+                                                                    return (
+                                                                        <UtilitiesCard
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            handleAction={() => {
+                                                                                handleAddToPlaylist(
+                                                                                    playlist.id,
+                                                                                    id,
+                                                                                    title,
+                                                                                    playlist.name,
+                                                                                );
+                                                                            }}
+                                                                            title={
                                                                                 playlist.name
                                                                             }
-                                                                        </span>
-                                                                    </li>
-                                                                );
-                                                            },
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </li>
-                                        {pathtype == 'profile' &&
+                                                                        />
+                                                                    );
+                                                                },
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </li>
+                                        )}
+                                        {uploader == myProfileID &&
                                             pathId == undefined && (
-                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ri-add-circle-line text-xl leading-none"></i>
-                                                    <span>Add to album</span>
-                                                </li>
+                                                <UtilitiesCard
+                                                    icon="ri-disc-line"
+                                                    title="Add to album"
+                                                    handleAction={prevent(
+                                                        () => {
+                                                            setShowAlbumFrame(
+                                                                true,
+                                                            ),
+                                                                setMenuVisible(
+                                                                    null,
+                                                                );
+                                                        },
+                                                    )}
+                                                />
                                             )}
-                                        {pathtype == 'playlist' &&
+                                        {(pathtype == 'playlist' ||
+                                            pathtype == 'album') &&
                                             playlistData &&
                                             myProfileID ==
                                                 playlistData?.playlist_owner && (
-                                                <li
-                                                    className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={prevent(() =>
+                                                <UtilitiesCard
+                                                    icon="ri-indeterminate-circle-line"
+                                                    title={`Remove from this ${pathtype}`}
+                                                    handleAction={prevent(() =>
                                                         handleRemoveFromPlaylist(
                                                             pathId,
                                                             id,
                                                         ),
                                                     )}
-                                                >
-                                                    <i className="ri-indeterminate-circle-line text-left text-xl"></i>
-                                                    <span className="text-left">
-                                                        Remove from this
-                                                        playlist
-                                                    </span>
-                                                </li>
+                                                    spanClass="text-left"
+                                                />
                                             )}
-                                        <li
-                                            className="flex items-center justify-center space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onClick={prevent(() =>
-                                                handleAddToLikedSongs(
-                                                    id,
-                                                    title,
-                                                ),
+                                        {token && (
+                                            <UtilitiesCard
+                                                icon="ri-heart-line"
+                                                title="Save to your Liked Songs"
+                                                handleAction={prevent(() =>
+                                                    handleAddToLikedSongs(
+                                                        id,
+                                                        title,
+                                                    ),
+                                                )}
+                                                spanClass="text-left"
+                                            />
+                                        )}
+                                        {isverified && (
+                                            <UtilitiesCard
+                                                icon="ri-copyright-fill"
+                                                title="View on Blockchain"
+                                                handleAction={prevent(() =>
+                                                    handleViewOnBlockchain(),
+                                                )}
+                                                spanClass="text-left"
+                                            />
+                                        )}
+                                        {myProfileID == uploader &&
+                                            !isverified &&
+                                            publicAddress != '' &&
+                                            !isPending && (
+                                                <UtilitiesCard
+                                                    icon="ri-copyright-line"
+                                                    title="Request for copyright"
+                                                    handleAction={() => {
+                                                        handleRequestCopyRight();
+                                                        setMenuVisible(null);
+                                                    }}
+                                                    spanClass="text-left"
+                                                />
                                             )}
-                                        >
-                                            <i className="ri-heart-line text-left text-xl"></i>
-                                            <span className="text-left">
-                                                Save to your Liked Songs
-                                            </span>
-                                        </li>
-                                        {pathtype == 'profile' &&
-                                            pathId == undefined && (
-                                                <li className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]">
-                                                    <i className="ri-exchange-line text-xl leading-none"></i>
-                                                    <span>Change cover</span>
-                                                </li>
-                                            )}
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onClick={prevent(() =>
+                                        <UtilitiesCard
+                                            icon="ri-share-line"
+                                            title="Share"
+                                            handleAction={prevent(() =>
                                                 handleShare(),
                                             )}
-                                        >
-                                            <i className="ri-share-line text-xl leading-none"></i>
-                                            <span>Copy link</span>
-                                        </li>
-                                        <li
-                                            className="flex space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                            onClick={prevent(() =>
-                                                setShowReportFrame(true),
-                                            )}
-                                        >
-                                            <i className="ri-error-warning-line text-xl leading-none"></i>
-                                            <span>Report</span>
-                                        </li>
+                                        />
+                                        {token && (
+                                            <UtilitiesCard
+                                                icon="ri-error-warning-line"
+                                                title="Report"
+                                                handleAction={prevent(() => {
+                                                    setShowReportFrame(true),
+                                                        setMenuVisible(null);
+                                                })}
+                                            />
+                                        )}
                                         {pathtype == 'profile' &&
                                             !isverified &&
                                             pathId == undefined && (
-                                                <li
-                                                    className="flex space-x-2 rounded-b-xl border-[#999] px-4 py-2 font-bold text-red-500 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                    onClick={() =>
+                                                <UtilitiesCard
+                                                    icon="ri-close-large-line"
+                                                    title="Delete Track"
+                                                    handleAction={() =>
                                                         setConfirmDelete(
                                                             !confirmDelete,
                                                         )
                                                     }
-                                                >
-                                                    <i className="ri-close-large-line text-xl leading-none"></i>
-                                                    <span>Delete Track</span>
-                                                </li>
+                                                    liClass="text-red-500 font-bold rounded-b-xl"
+                                                />
                                             )}
                                     </ul>
                                 </div>

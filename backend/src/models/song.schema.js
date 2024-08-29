@@ -13,12 +13,16 @@ const SongSchema = new Schema(
         },
         uploader: {
             type: objectId,
-            ref: 'users',
+            ref: 'User',
             required: true,
         },
         artist: {
             type: String,
             required: true,
+        },
+        collaborators: {
+            type: Array,
+            default: [],
         },
         /*
         album: {
@@ -26,7 +30,8 @@ const SongSchema = new Schema(
         }
         */
         genre: {
-            type: String,
+            type: Array,
+            default: [],
         },
         region: {
             type: String,
@@ -34,11 +39,9 @@ const SongSchema = new Schema(
         image: {
             publicId: {
                 type: String,
-                default: 'default',
             },
             url: {
                 type: String,
-                default: process.env.DEFAULT_THUMBNAIL,
             },
         },
         coverimg: {
@@ -64,6 +67,14 @@ const SongSchema = new Schema(
         isDisabled: {
             type: Boolean,
             default: false,
+        },
+        isPending: {
+            type: Boolean,
+            default: false,
+        },
+        transactionsId: {
+            type: String,
+            default: '',
         },
     },
     {

@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     selectCurrentPlayer,
     selectCurrentPlaylist,
+    selectCurrentProfile,
+    selectCurrentToken,
 } from '@services/selectors';
 import {
     play,
@@ -19,16 +22,19 @@ import AudioButton from './AudioButton';
 import VolumeControl from './VolumeControl';
 import LikeButton from './LikeButton';
 import useSong from '@hooks/useSong';
+import { DonateButton, DonateModal, DepositModal } from '@components';
 
 function Player() {
-    const [isSolidBookmark, setIsSolidBookmark] = useState(false);
+    const token = useSelector(selectCurrentToken);
+    const nav = useNavigate();
+    // const [isSolidBookmark, setIsSolidBookmark] = useState(false);
     const [isExpand, setIsExpand] = useState(false);
     const [onMouseDown, setOnMouseDown] = useState(false);
     const [onMouseUp, setOnMouseUp] = useState(false);
 
-    const handleBookmarkClick = () => {
-        setIsSolidBookmark(!isSolidBookmark);
-    };
+    // const handleBookmarkClick = () => {
+    //     setIsSolidBookmark(!isSolidBookmark);
+    // };
 
     const formatTimeDataToRender = (timeData) => {
         const minutes = Math.floor(timeData / 60);
@@ -97,6 +103,14 @@ function Player() {
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const isSingle = currentPlaylist.id.includes('Single');
     const { activateSong } = useSong();
+
+    const handleTitleClick = () => {
+        nav(`/song/${currentTrack.id}`);
+    };
+
+    const handleArtistClick = () => {
+        nav(`/profile/${currentTrack.artist}`);
+    };
 
     const handlePrev = () => {
         dispatch(pause());
@@ -241,10 +255,31 @@ function Player() {
         }
     }, [isPlaying, currentTime]);
 
+    const { balance, isVerified } = useSelector(selectCurrentProfile);
+    const [donateModalVisible, setDonateModalVisible] = useState(false);
+    const [depositModalVisible, setDepositModalVisible] = useState(false);
+    const openDonateModal = () => {
+        if (isExpand) setIsExpand(false);
+        setDonateModalVisible(true);
+    };
+    const closeDonateModal = () => {
+        setDonateModalVisible(false);
+    };
+
+    const openDepositModal = () => {
+        if (isExpand) setIsExpand(false);
+        if (donateModalVisible) setDonateModalVisible(false);
+        setDepositModalVisible(true);
+    };
+
+    const closeDepositModal = () => {
+        setDepositModalVisible(false);
+    };
+
     const DefaultPlayer = (
         <div
             ref={playerRef}
-            className="fixed bottom-0 left-0 right-0 z-10 flex h-20 content-center items-center justify-between bg-opacity-10 bg-musicbar px-5 backdrop-blur-lg before:absolute before:left-5 before:right-5 before:top-0 before:h-px before:bg-[#535353]"
+            className="fixed bottom-0 left-0 right-0 z-40 flex h-20 content-center items-center justify-between bg-opacity-10 bg-musicbar px-5 backdrop-blur-lg before:absolute before:left-5 before:right-5 before:top-0 before:h-px before:bg-[#535353]"
         >
             {/* background */}
 
@@ -253,14 +288,24 @@ function Player() {
                 <img
                     className="size-14 rounded-lg object-cover"
                     src={currentTrack.thumbnail}
-                    alt=""
+                    alt={currentTrack.title + ' thumbnail'}
                 />
-                <div className="flex flex-col">
-                    <span className="">{currentTrack.title}</span>
-                    <span className="opacity-60">{currentTrack.artist}</span>
+                <div className="flex cursor-default flex-col">
+                    <span
+                        className="cursor-pointer hover:underline"
+                        onClick={handleTitleClick}
+                    >
+                        {currentTrack.title}
+                    </span>
+                    <span
+                        className="cursor-pointer opacity-60 hover:underline"
+                        onClick={handleArtistClick}
+                    >
+                        {currentTrack.artist}
+                    </span>
                 </div>
                 {/* heart-icon */}
-                <LikeButton songId={currentTrack.id} />
+                {token && <LikeButton songId={currentTrack.id} />}
             </div>
             {/* between */}
             <div className="flex flex-[2] flex-col items-center justify-between">
@@ -322,21 +367,21 @@ function Player() {
             {/* right */}
             <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                 {/* donate */}
-                <AudioButton className="text-[1.375rem]">
-                    <i className="bx bxs-dollar-circle"></i>
-                </AudioButton>
+                {token && !isVerified && (
+                    <DonateButton
+                        openDonateModal={openDonateModal}
+                        song={currentTrack.title}
+                        artist={currentTrack.artist}
+                    />
+                )}
                 {/* bookmark */}
-                <AudioButton onClick={handleBookmarkClick}>
+                {/* <AudioButton onClick={handleBookmarkClick}>
                     {isSolidBookmark ? (
                         <i className="ri-bookmark-fill"></i>
                     ) : (
                         <i className="ri-bookmark-line"></i>
                     )}
-                </AudioButton>
-                {/* playlist */}
-                <AudioButton>
-                    <i className="playlist-icon ri-play-list-2-fill"></i>
-                </AudioButton>
+                </AudioButton> */}
                 {/* volume */}
                 <VolumeControl volume={volume} dispatch={dispatch} />
                 {/* expand */}
@@ -353,7 +398,7 @@ function Player() {
             <div className="absolute bottom-0 left-0 right-0 top-0 -z-20">
                 <img
                     src={currentTrack?.screen}
-                    alt="Song Screen Image"
+                    alt={currentTrack.title + ' screen'}
                     className="absolute size-full object-cover"
                 />
                 <div className="absolute size-full bg-black opacity-70"></div>
@@ -368,7 +413,7 @@ function Player() {
                 <img
                     className={`size-44 animate-fade-in rounded-lg object-cover transition-all duration-1000 ${isLoading ? 'size-[30rem]' : ''}`}
                     src={currentTrack.thumbnail}
-                    alt=""
+                    alt={currentTrack.title + ' thumbnail'}
                 />
                 <div
                     className={`-ml-40 flex translate-x-40 flex-col gap-3 self-end ${isLoading ? 'transition-transform duration-1000' : ''}`}
@@ -401,7 +446,7 @@ function Player() {
                     {/* bottom */}
                     {/* left */}
                     <div className="flex flex-[1]">
-                        <LikeButton songId={currentTrack.id} />
+                        {token && <LikeButton songId={currentTrack.id} />}
                     </div>
                     {/* between */}
                     {/* top */}
@@ -452,11 +497,15 @@ function Player() {
                     {/* right */}
                     <div className="flex flex-[1] items-center justify-end space-x-3 text-xl [&_:is(i)]:p-1">
                         {/* donate */}
-                        <AudioButton className="text-[1.625rem]">
-                            <i className="bx bxs-dollar-circle"></i>
-                        </AudioButton>
+                        {token && !isVerified && (
+                            <DonateButton
+                                openDonateModal={openDonateModal}
+                                song={currentTrack.title}
+                                artist={currentTrack.artist}
+                            />
+                        )}{' '}
                         {/* bookmark */}
-                        <AudioButton
+                        {/* <AudioButton
                             onClick={handleBookmarkClick}
                             className="text-2xl"
                         >
@@ -465,7 +514,7 @@ function Player() {
                             ) : (
                                 <i className="ri-bookmark-line"></i>
                             )}
-                        </AudioButton>
+                        </AudioButton> */}
                         {/* volume */}
                         <VolumeControl volume={volume} dispatch={dispatch} />
                         {/* collapse */}
@@ -485,6 +534,19 @@ function Player() {
         <>
             <audio ref={audioRef} src={currentTrack?.url} />
             {isExpand ? ExpandPlayer : DefaultPlayer}
+            {donateModalVisible && (
+                <DonateModal
+                    balance={balance}
+                    song={currentTrack.title}
+                    songId={currentTrack.id}
+                    artist={currentTrack.artist}
+                    closeDonateModal={closeDonateModal}
+                    openDepositModal={openDepositModal}
+                />
+            )}
+            {depositModalVisible && (
+                <DepositModal closeDepositModal={closeDepositModal} />
+            )}
         </>
     );
 }

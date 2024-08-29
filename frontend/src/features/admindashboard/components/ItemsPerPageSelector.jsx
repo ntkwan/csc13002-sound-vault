@@ -5,7 +5,7 @@ function ItemsPerPageSelector({ itemsPerPage, handleItemsPerPageChange }) {
         <div className="flex select-none items-center">
             <span className="mr-2 text-[#718096]">Show result:</span>
             <select
-                className="w-14 rounded-lg p-2.5 px-2 py-1 text-sm hover:cursor-pointer dark:border-gray-600 dark:bg-black dark:text-white"
+                className="w-14 rounded-lg border-gray-600 bg-black p-2.5 px-2 py-1 text-sm text-white hover:cursor-pointer"
                 value={itemsPerPage}
                 onChange={handleItemsPerPageChange}
             >

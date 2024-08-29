@@ -1,9 +1,18 @@
+import PropTypes from 'prop-types';
 import { useState, useRef, memo } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import uploadIcon from '@assets/img/upload-icon.svg';
 
 const UploadImage = memo(
-    ({ className, id, label, sizeLimit, useUploadMutation }) => {
+    ({
+        className,
+        id,
+        label,
+        sizeLimit,
+        useUploadMutation,
+        mediaId,
+        isThumbnail,
+    }) => {
         const [preview, setPreview] = useState(null);
         const [uploadImage, setUploadImage] = useState(null);
         const formRef = useRef(null);
@@ -29,13 +38,23 @@ const UploadImage = memo(
             e.preventDefault();
             if (uploadImage) {
                 const formData = new FormData();
-                formData.append('image', uploadImage);
+                if (isThumbnail && mediaId) {
+                    formData.append('thumbnail', uploadImage, uploadImage.name);
+                } else if (mediaId) {
+                    formData.append('cover', uploadImage, uploadImage.name);
+                } else {
+                    formData.append('image', uploadImage, uploadImage.name);
+                }
                 try {
-                    await uploadProfilePic({
+                    const response = await uploadProfilePic({
+                        id: mediaId,
+                        playlistId: mediaId,
                         file: formData,
                     }).unwrap();
+                    console.log(response);
                     toast.success('Uploaded successfully!');
                 } catch (error) {
+                    console.error('Error uploading image:', error);
                     toast.error('Error uploading image.');
                 }
             }
@@ -52,7 +71,7 @@ const UploadImage = memo(
             >
                 <label htmlFor={id} className="upload__label inline-block">
                     {label}
-                    <div className="upload__container relative m-auto w-max">
+                    <div className="upload__container relative m-auto w-max pt-3">
                         <div className="upload__onclick relative h-44 w-44 content-center rounded-xl border-2 border-dashed">
                             {preview ? (
                                 <img
@@ -74,6 +93,13 @@ const UploadImage = memo(
                                 accept="image/*"
                                 aria-label="File upload"
                                 onChange={handleImageUpload}
+                                name={
+                                    isThumbnail
+                                        ? 'thumbnail'
+                                        : mediaId
+                                          ? 'cover'
+                                          : 'image'
+                                }
                             />
                         </div>
                         {preview ? (
@@ -85,7 +111,7 @@ const UploadImage = memo(
                                 {isLoading ? 'Uploading...' : 'Submit'}
                             </button>
                         ) : (
-                            <span className="upload__desc absolute text-[13px] text-[#b2b2b2]">
+                            <span className="upload__desc text-[13px] text-[#b2b2b2]">
                                 {`File size is less than ${sizeLimit} MB`}
                             </span>
                         )}
@@ -95,5 +121,17 @@ const UploadImage = memo(
         );
     },
 );
+
+UploadImage.displayName = 'UploadImage';
+
+UploadImage.propTypes = {
+    className: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    sizeLimit: PropTypes.number.isRequired,
+    useUploadMutation: PropTypes.func.isRequired,
+    mediaId: PropTypes.string,
+    isThumbnail: PropTypes.bool,
+};
 
 export default UploadImage;

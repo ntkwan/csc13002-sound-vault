@@ -22,10 +22,10 @@ const PlaylistSchema = new Schema(
             type: Array,
             default: [],
         },
-        type: {
-            type: String,
-            default: 'Playlist',
-            required: true,
+
+        isAlbum: {
+            type: Boolean,
+            default: false,
         },
         image: {
             publicId: {
@@ -42,5 +42,10 @@ const PlaylistSchema = new Schema(
         timestamps: true,
     },
 );
+
+PlaylistSchema.methods.setPlaylistThumbnail = async function (imageurl) {
+    this.image.publicId = imageurl.public_id;
+    this.image.url = imageurl.secure_url;
+};
 
 module.exports = mongoose.model('Playlist', PlaylistSchema);

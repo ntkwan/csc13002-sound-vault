@@ -31,12 +31,17 @@
     ]
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/hardhat-upgrades": "^3.2.1",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.8",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.1"
   },
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "ethers": "^6.13.2"
   }
 }

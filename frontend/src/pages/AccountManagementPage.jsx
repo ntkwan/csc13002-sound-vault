@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ManagementButtons,
@@ -12,9 +12,10 @@ import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
 import {
     useSetVerifiedArtistByIdMutation,
     useGetAllAccountsQuery,
-    useRemoveAccountByIdMutation,
     useBanAccountMutation,
 } from '@services/api';
+import { Loading } from '@components';
+import { toast } from 'react-toastify';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -41,30 +42,17 @@ function AdminAccountPage() {
     const [banDays, setBanDays] = useState('1');
     const [banReason, setBanReason] = useState('Violation of terms');
 
-    const [setVerifiedArtistById, { isLoading: isLoadingVerify }] =
-        useSetVerifiedArtistByIdMutation();
+    const [setVerifiedArtistById] = useSetVerifiedArtistByIdMutation();
 
     const handleVerify = async (id) => {
-        if (isLoadingVerify) return;
         try {
             await setVerifiedArtistById(id).unwrap();
         } catch (error) {
             console.error('Failed to verify the artist: ', error);
         }
     };
-    const [removeAccountById, { isLoading: isLoadingRemove }] =
-        useRemoveAccountByIdMutation();
-    const handleRemove = async (id) => {
-        if (isLoadingRemove) return;
-        try {
-            await removeAccountById(id).unwrap();
-        } catch (error) {
-            console.error('Failed to remove the account: ', error);
-        }
-    };
-    const [banAccount, { isLoading: isLoadingban }] = useBanAccountMutation();
+    const [banAccount] = useBanAccountMutation();
     const handleBan = async (id) => {
-        if (isLoadingban) return;
         try {
             const profileId = id;
             const days = parseInt(banDays, 10);
@@ -81,16 +69,19 @@ function AdminAccountPage() {
 
     const { data: accountListData, isLoading: accountListIsLoading } =
         useGetAllAccountsQuery();
-    const accounts =
-        accountListIsLoading || !accountListData
-            ? []
-            : accountListData.map((account) => ({
-                  id: account.id,
-                  name: account.name,
-                  date: formatDate(new Date(account.createdAt)),
-                  status: account.isVerified ? 'Verified' : 'Unverified',
-                  isBanned: account.isBanned,
-              }));
+    if (accountListIsLoading) return <Loading />;
+
+    const accounts = accountListData.map((account) => ({
+        id: account.id,
+        name: account.name,
+        date: formatDate(new Date(account.createdAt)),
+        status: account.isBanned
+            ? 'Banned'
+            : account.isVerified
+              ? 'Verified'
+              : 'Unverified',
+        isBanned: account.isBanned,
+    }));
 
     const applyFilter = () => {
         setCurrentPage(1);
@@ -108,7 +99,10 @@ function AdminAccountPage() {
             (!filterDate ||
                 isEqual(parseDate1(account.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                account.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+                account.name
+                    .toLowerCase()
+                    .startsWith(searchTerm.toLowerCase()) ||
+                account.id.toString().startsWith(searchTerm))
         );
     });
 
@@ -135,7 +129,7 @@ function AdminAccountPage() {
         { name: 'All accounts', status: 'all' },
         { name: 'Verified', status: 'Verified' },
         { name: 'Unverified', status: 'Unverified' },
-        { name: 'Pending', status: 'Pending' },
+        { name: 'Banned', status: 'Banned' },
     ];
     const sortMethods = ['Name', 'Date (oldest first)', 'Date (newest first)'];
 
@@ -147,10 +141,10 @@ function AdminAccountPage() {
     const confirmActionHandler = () => {
         if (confirmAction === 'verify' || confirmAction === 'unverify') {
             handleVerify(selectedAccountId);
-        } else if (confirmAction === 'remove') {
-            handleRemove(selectedAccountId);
+            toast.success(`Account has been ${confirmAction}ed successfully`);
         } else if (confirmAction === 'ban' || confirmAction === 'unban') {
             handleBan(selectedAccountId);
+            toast.success(`Account has been ${confirmAction}ned successfully`);
         } else if (confirmAction === 'view') {
             handleView(selectedAccountId);
         }
@@ -185,7 +179,7 @@ function AdminAccountPage() {
                         }}
                     />
                     <button
-                        className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
+                        className="admin-page__filter h-11 select-none rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                         onClick={() => setShowFilters(!showFilters)}
                     >
                         <i className="ri-equalizer-2-line px-1"></i>
@@ -204,7 +198,7 @@ function AdminAccountPage() {
                     />
                 )}
 
-                <table className="w-full overflow-hidden">
+                <table className="w-full cursor-default overflow-hidden">
                     <thead>
                         <tr className="cursor-default border-b-2 text-[#718096]">
                             <th className="px-2 py-5 text-left font-normal">
@@ -244,11 +238,11 @@ function AdminAccountPage() {
                                     <span
                                         className={`rounded-lg px-2 py-1 ${
                                             account.status === 'Verified'
-                                                ? 'bg-[#FFF0F0] text-[#3663c2]'
+                                                ? 'bg-[#FFF0F0] text-[#0CAF60]'
                                                 : account.status ===
                                                     'Unverified'
                                                   ? 'bg-[#FFF0E6] text-[#eb4141]'
-                                                  : 'bg-[#E7F7EF] text-[#0CAF60]'
+                                                  : 'bg-[#E7F7EF] text-[#FE964A]'
                                         }`}
                                     >
                                         {account.status}
@@ -261,11 +255,6 @@ function AdminAccountPage() {
                                                 ? 'bg-[#FE964A]'
                                                 : 'bg-[#9F68B2]'
                                         }
-                                        children={
-                                            account.status === 'Verified'
-                                                ? 'Unverify'
-                                                : 'Verify'
-                                        }
                                         onClick={() => {
                                             const action =
                                                 account.status === 'Verified'
@@ -274,31 +263,25 @@ function AdminAccountPage() {
                                             setConfirmAction(action);
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
+                                    >
+                                        {account.status === 'Verified'
+                                            ? 'Unverify'
+                                            : 'Verify'}
+                                    </ManagementButtons>
                                     <ManagementButtons
                                         background="bg-[#195FF0]"
-                                        children="View"
                                         onClick={() => {
                                             setConfirmAction('view');
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
-                                    <ManagementButtons
-                                        background="bg-[#B63D65]"
-                                        children="Remove"
-                                        onClick={() => {
-                                            setConfirmAction('remove');
-                                            setSelectedAccountId(account.id);
-                                        }}
-                                    />
+                                    >
+                                        View
+                                    </ManagementButtons>
                                     <ManagementButtons
                                         background={
                                             account.isBanned
                                                 ? 'bg-[#0CAF60]'
                                                 : 'bg-[#CACD6D]'
-                                        }
-                                        children={
-                                            account.isBanned ? 'Unban' : 'Ban'
                                         }
                                         onClick={() => {
                                             const action = account.isBanned
@@ -307,7 +290,9 @@ function AdminAccountPage() {
                                             setConfirmAction(action);
                                             setSelectedAccountId(account.id);
                                         }}
-                                    />
+                                    >
+                                        {account.isBanned ? 'Unban' : 'Ban'}
+                                    </ManagementButtons>
                                 </td>
                             </tr>
                         ))}
@@ -327,16 +312,16 @@ function AdminAccountPage() {
 
                 {/* Modal confirmation */}
                 {confirmAction && (
-                    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                        <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
-                            <p className="mb-4">
+                    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-30">
+                        <div className="rounded-lg border-2 bg-black bg-opacity-50 p-6 shadow-lg backdrop-blur-xl">
+                            <div className="mb-4">
                                 {confirmAction === 'view'
                                     ? 'Are you sure you want to leave this page?'
                                     : `Are you sure you want to ${confirmAction} this account?`}
                                 {confirmAction === 'ban' && (
                                     <div className="mb-4">
                                         <label className="mb-2 block font-bold">
-                                            Ban Duration (days):
+                                            Ban Duration:
                                         </label>
                                         <select
                                             className="w-full rounded border px-3 py-2 text-gray-900 hover:cursor-pointer focus:border-slate-500 focus:ring-0 dark:bg-black dark:text-white"
@@ -345,11 +330,15 @@ function AdminAccountPage() {
                                                 setBanDays(e.target.value)
                                             }
                                         >
-                                            <option value="1">1 day</option>
-                                            <option value="3">3 days</option>
-                                            <option value="7">1 week</option>
-                                            <option value="30">1 month</option>
+                                            <option value="7">7 days</option>
+                                            <option value="30">A month</option>
+                                            <option value="180">
+                                                6 months
+                                            </option>
                                             <option value="365">1 year</option>
+                                            <option value="9999">
+                                                Permanent
+                                            </option>
                                         </select>
                                         <label className="mb-2 mt-4 block font-bold">
                                             Ban Reason:
@@ -374,7 +363,7 @@ function AdminAccountPage() {
                                         </select>
                                     </div>
                                 )}
-                            </p>
+                            </div>
                             <div className="flex justify-end">
                                 <button
                                     className="mr-2 rounded-md bg-gray-300 px-4 py-2"

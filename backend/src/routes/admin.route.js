@@ -51,6 +51,12 @@ router.put(
     adminController.set_verified_song,
 );
 
+router.post(
+    '/cancel-copyright-request/:songId',
+    authMiddleware.check_admin,
+    adminController.cancel_copyright_request,
+);
+
 router.delete(
     '/remove-song-by-id/:songId',
     authMiddleware.check_admin,
@@ -67,6 +73,12 @@ router.post(
     '/activate-song/:songId',
     authMiddleware.check_admin,
     adminController.activate_song,
+);
+
+router.get(
+    '/get-dashboard-stats',
+    authMiddleware.check_admin,
+    adminController.get_dashboard_stats,
 );
 
 module.exports = router;

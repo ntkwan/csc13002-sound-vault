@@ -1,14 +1,15 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { SearchIcon } from '.';
+import { Loading, SearchIcon } from '.';
 import {
     selectCurrentAdmin,
     selectCurrentProfile,
     selectCurrentToken,
 } from '@services/selectors';
-import { useGetFeaturedArtistsQuery } from '@services/api';
+import { useLazyGetSearchResultsQuery } from '@services/api';
 import { MediaDisplay } from '.';
+import { useDebounce } from '@hooks';
 
 function Header() {
     // hooks
@@ -19,8 +20,11 @@ function Header() {
     const [pingNotice, setPingNotice] = useState(true);
     const [showNotice, setShowNotice] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
     const noticeRef = useRef(null);
     const searchRef = useRef(null);
+    const debouncedSearchInput = useDebounce(searchInput);
+    const [hoverAvatar, setHoverAvatar] = useState(false);
 
     // get profile data
     const profile = useSelector(selectCurrentProfile);
@@ -70,8 +74,6 @@ function Header() {
         };
     }, [showNotice]);
 
-    // get search data
-    const { data: artist } = useGetFeaturedArtistsQuery();
     // handle search
     useEffect(() => {
         setSearchInput('');
@@ -79,62 +81,103 @@ function Header() {
 
     const handleClickOutsideSearch = (event) => {
         if (searchRef.current && !searchRef.current.contains(event.target)) {
-            setSearchInput('');
+            setShowSearch(false);
             return;
         }
     };
 
     useEffect(() => {
         if (searchInput) {
-            document.body.style.overflow = 'hidden';
+            // document.body.style.overflow = 'hidden';
             document.addEventListener('mousedown', handleClickOutsideSearch);
         } else {
-            document.body.style.overflow = 'auto';
+            // document.body.style.overflow = 'auto';
             document.removeEventListener('mousedown', handleClickOutsideSearch);
         }
         return () => {
-            document.body.style.overflow = 'auto';
+            // document.body.style.overflow = 'auto';
             document.removeEventListener('mousedown', handleClickOutsideSearch);
         };
     }, [searchInput]);
 
-    if (!artist) return;
-    const searchData = [
+    // handle observer animation
+    const headerRef = useRef(null);
+    useEffect(() => {
+        const handleObserver = (entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (entry.target === headerRef.current) {
+                        setTimeout(() => {
+                            headerRef.current.classList.remove(
+                                'opacity-0',
+                                '-translate-y-14',
+                            );
+                        }, 500);
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(handleObserver, {
+            threshold: 0.1,
+        });
+
+        if (headerRef.current) observer.observe(headerRef.current);
+
+        return () => {
+            if (headerRef.current) observer.unobserve(headerRef.current);
+        };
+    }, []);
+
+    // get search data
+    let [
+        getSearchData,
+        { data: searchData, isFetching, isSuccess, error: noResultsFound },
+    ] = useLazyGetSearchResultsQuery();
+
+    useEffect(() => {
+        if (!debouncedSearchInput.trim()) return;
+        getSearchData(debouncedSearchInput);
+    }, [debouncedSearchInput, getSearchData]);
+
+    const { artists, users, songs, albums, playlists } = searchData || {};
+    const results = [
         {
             // only one
             type: 'Artist',
             title: 'Top result',
             visibility: '',
             link: '',
-            data: artist || [],
+            data: [],
         },
         {
             title: 'Song',
             visibility: '',
             type: 'Song',
             link: '',
-            data: artist || [],
+            data: songs || [],
         },
         {
             type: 'Artist',
             title: 'Artists',
             visibility: '',
             link: '',
-            data: artist || [],
+            data: artists || [],
         },
         {
             type: 'Album',
             title: 'Albums',
             visibility: '',
             link: '',
-            data: artist || [],
+            data: albums || [],
         },
         {
             type: 'Playlist',
             title: 'Playlists',
             visibility: '',
             link: '',
-            data: artist || [],
+            data: playlists || [],
         },
         {
             // account not verified
@@ -142,31 +185,25 @@ function Header() {
             title: 'Profiles',
             visibility: '',
             link: '',
-            data: artist || [],
+            data: users || [],
         },
     ];
 
-    const filteredSearchData = searchData
-        .map((item) => ({
-            ...item,
-            data: item.data.filter((dataItem) =>
-                dataItem.name.toLowerCase().includes(searchInput.toLowerCase()),
-            ),
-        }))
-        .filter((item) => item.data.length > 0);
-
-    const noResultsFound = filteredSearchData.length === 0;
-
     return (
         <>
-            <header className="header after:contents-[''] fixed left-0 right-0 top-0 z-40 flex h-[70px] select-none items-center justify-between px-5 text-sm backdrop-blur-md after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white">
+            <header
+                className="header after:contents-[''] fixed left-0 right-0 top-0 z-40 flex h-[70px] -translate-y-14 select-none items-center justify-between px-5 text-sm opacity-0 backdrop-blur-md transition duration-700 ease-in-out after:absolute after:bottom-0 after:left-5 after:right-5 after:h-px after:bg-white"
+                ref={headerRef}
+            >
                 {/* Logo */}
-                <p
-                    className="header__logo w-1/4 pr-5 font-lilitaone text-4xl hover:cursor-pointer"
-                    onClick={handleLogoClick}
-                >
-                    SoundVault
-                </p>
+                <div className="header__logo flex-1">
+                    <p
+                        className="max-w-fit pr-5 font-lilitaone text-4xl hover:cursor-pointer"
+                        onClick={handleLogoClick}
+                    >
+                        SoundVault
+                    </p>
+                </div>
                 {/* Search bar */}
                 {!(token && isAdmin) && (
                     <div className="header__search-container relative flex w-1/2 items-center justify-center">
@@ -178,6 +215,7 @@ function Header() {
                             placeholder="search music, album, artist,..."
                             type="search"
                             onChange={(e) => setSearchInput(e.target.value)}
+                            onFocus={() => setShowSearch(true)}
                             value={searchInput}
                         />
                     </div>
@@ -186,15 +224,32 @@ function Header() {
                 {/* Action */}
                 {token ? (
                     <div className="header__section flex h-full w-1/4 items-center justify-end space-x-3 text-sm">
-                        {avatar ? (
-                            <img
-                                className="inline h-10 w-10 rounded-full object-cover"
-                                src={avatar}
-                                alt={name}
-                            />
-                        ) : (
-                            <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
-                        )}
+                        <div
+                            className="relative hover:cursor-pointer"
+                            onClick={() =>
+                                navigate(
+                                    isAdmin ? 'admin/edit-profile' : '/profile',
+                                )
+                            }
+                            onMouseEnter={() => setHoverAvatar(true)}
+                            onMouseLeave={() => setHoverAvatar(false)}
+                        >
+                            {avatar ? (
+                                <img
+                                    className="inline h-10 w-10 rounded-full object-cover"
+                                    src={avatar}
+                                    alt={name}
+                                />
+                            ) : (
+                                <i className="bx bxs-user-circle aspect-square w-10 text-5xl leading-none"></i>
+                            )}
+                            {hoverAvatar && isAdmin && (
+                                <div className="absolute bottom-[-36px] left-[-10px] z-10 rounded-lg bg-gray-900 px-2 text-center text-xs font-medium text-white shadow-lg">
+                                    Edit Profile
+                                </div>
+                            )}
+                        </div>
+
                         {isAdmin ? (
                             <div>
                                 <p className="font-bold">{name}</p>
@@ -253,27 +308,32 @@ function Header() {
                 )}
             </header>
 
-            {searchInput && (
-                <div
-                    className="header__search-dropdown fixed bottom-0 left-[175px] right-0 top-[70px] z-10 space-y-8 overflow-y-scroll scroll-auto px-20 pb-28 pt-8 backdrop-blur-2xl"
-                    ref={searchRef}
-                >
-                    {noResultsFound ? (
-                        <div className="break-words text-3xl font-bold">
-                            Nothing matches your input '{searchInput}'
-                        </div>
-                    ) : (
-                        filteredSearchData.map((item, index) => (
-                            <MediaDisplay
-                                key={index}
-                                media={item}
-                                displayItems="2"
-                                displayType="grid grid-cols-6 gap-8"
-                            />
-                        ))
-                    )}
-                </div>
-            )}
+            {searchInput &&
+                showSearch &&
+                (!isFetching ? (
+                    <div
+                        className="header__search-dropdown fixed bottom-0 left-[180px] right-0 top-[70px] z-30 space-y-8 overflow-y-scroll scroll-auto px-20 pb-28 pt-8 backdrop-blur-2xl"
+                        ref={searchRef}
+                    >
+                        {noResultsFound ? (
+                            <div className="break-words text-3xl font-bold">
+                                Nothing matches your input &rsquo;{searchInput}
+                                &rsquo;
+                            </div>
+                        ) : (
+                            results.map((item, index) => (
+                                <MediaDisplay
+                                    key={index}
+                                    media={item}
+                                    displayItems="2"
+                                    displayType="grid grid-cols-6 gap-8"
+                                />
+                            ))
+                        )}
+                    </div>
+                ) : (
+                    <Loading />
+                ))}
         </>
     );
 }

@@ -757,7 +757,9 @@ export const sections = [
         content: (
             <>
                 <p>
-                    <p className="mx-1 inline font-bold">Introduction: </p>
+                    <span className="mx-1 inline font-bold">
+                        Introduction:{' '}
+                    </span>
                     SoundVault integrates blockchain technology to revolutionize
                     the music industry by empowering artists and ensuring
                     transparent rights management. This platform offers a secure
@@ -765,16 +767,18 @@ export const sections = [
                     their music.
                 </p>
                 <p>
-                    <p className="mx-1 inline font-bold">
+                    <span className="mx-1 inline font-bold">
                         Copyright Protection:
-                    </p>
+                    </span>
                     Artists retain full ownership and control over their music
                     uploaded on SoundVault. Blockchain ensures immutable records
                     of ownership and rights, safeguarding against unauthorized
                     use or distribution.
                 </p>
                 <p>
-                    <p className="mx-1 inline font-bold">Receive Donations:</p>
+                    <span className="mx-1 inline font-bold">
+                        Receive Donations:
+                    </span>
                     Artists using SoundVault have the right to receive donations
                     from users for their songs on this platform.
                 </p>

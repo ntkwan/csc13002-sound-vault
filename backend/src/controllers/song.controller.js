@@ -2,7 +2,9 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+const uploader = require('../config/cloudinary.config');
 const SongModel = require('../models/song.schema');
+const UserModel = require('../models/user.schema');
 
 const get_song_by_id = async (req, res) => {
     const songId = req.params.id;
@@ -27,6 +29,7 @@ const get_song_by_id = async (req, res) => {
             isverified: song.isVerified,
             isdisabled: song.isDisabled,
             createdAt: song.createdAt,
+            isPending: song.isPending,
         });
     } catch (error) {
         return res.status(500).json({
@@ -37,13 +40,34 @@ const get_song_by_id = async (req, res) => {
 
 const get_trending_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find().sort({ view: -1 });
-
+        const songs = await SongModel.find({ isDisabled: false }).sort({
+            view: -1,
+        });
+        const collabs = new Map();
+        for (let song of songs) {
+            let artists = [];
+            if (song.collaborators) {
+                for (let collab of song.collaborators) {
+                    const artist = await UserModel.findById(collab);
+                    if (!artist) {
+                        continue;
+                    }
+                    artists.push(artist.name);
+                }
+                collabs.set(song._id, artists.join(', '));
+            }
+        }
         res.status(200).send(
             songs.map((song) => {
                 return {
                     id: song._id,
-                    title: song.title,
+                    title:
+                        collabs.get(song._id).length === 0
+                            ? song.title
+                            : song.title +
+                              ' (ft ' +
+                              collabs.get(song._id) +
+                              ')',
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
@@ -62,7 +86,9 @@ const get_trending_songs = async (req, res) => {
 
 const get_new_songs = async (req, res) => {
     try {
-        const songs = await SongModel.find({ view: { $gt: '0' } }).sort({
+        const songs = await SongModel.find({
+            $and: [{ view: { $gt: '0' } }, { isDisabled: false }],
+        }).sort({
             createdAt: -1,
         });
 
@@ -102,8 +128,18 @@ const play_song = async (req, res) => {
         await Song.save();
 
         if (user) {
-            await user.addToRecentlyPlayed(songId);
-            await user.save();
+            if (user.recentlyPlayed.includes(songId)) {
+                user.recentlyPlayed = user.recentlyPlayed.filter(
+                    (id) => id.toString() !== songId,
+                );
+            }
+
+            if (user.recentlyPlayed.length === 10) {
+                user.recentlyPlayed.pop();
+            }
+
+            user.recentlyPlayed.unshift(songId);
+            await user.updateOne({ recentlyPlayed: user.recentlyPlayed });
         }
 
         return res.status(200).json({
@@ -137,6 +173,60 @@ const undo_play_song = async (req, res) => {
 
         return res.status(200).json({
             message: 'Undo play song successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const view_on_blockchain = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        let link = '';
+        if (Song.isVerified == true) {
+            link = process.env.BLOCKCHAIN_EXPLORER + Song.transactionsId;
+        }
+
+        return res.status(200).json({
+            link: link ? link : 'Song has not yet verified',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const request_copyright = async (req, res) => {
+    const songId = req.params.songId;
+    try {
+        const Song = await SongModel.findById(songId);
+        if (!Song) {
+            return res.status(404).json({
+                message: 'Song is not found',
+            });
+        }
+
+        if (Song.isPending) {
+            return res.status(400).json({
+                message:
+                    'This song has already requested to get copyright, please wait for few days',
+            });
+        }
+
+        Song.isPending = true;
+        await Song.save();
+        return res.status(200).json({
+            message: 'Request successfully',
         });
     } catch (error) {
         return res.status(500).json({
@@ -181,6 +271,44 @@ const get_songs_by_region = async (req, res) => {
 
         res.status(200).send(
             songs.map((song) => {
+                return {
+                    id: song._id,
+                    title: song.title,
+                    artist: song.artist,
+                    genre: song.genre,
+                    imageurl: song.image,
+                    coverimg: song.coverimg,
+                    view: song.view,
+                };
+            }),
+        );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const get_songs_by_genre = async (req, res) => {
+    const genre = req.params.genre;
+    try {
+        const songs = await SongModel.find({ genre: genre }).sort({ view: -1 });
+
+        if (!songs) {
+            return res.status(404).json({
+                message: 'The genre is not found',
+            });
+        }
+
+        let valid_songs = [];
+        for (let song of songs) {
+            if (song.isDisabled === false) {
+                valid_songs.push(song);
+            }
+        }
+
+        res.status(200).send(
+            valid_songs.map((song) => {
                 return {
                     id: song._id,
                     title: song.title,
@@ -265,6 +393,28 @@ const delete_track_by_id = async (req, res) => {
             });
         }
 
+        req.publicId = song.image.publicId;
+        let log = await uploader.songThumbnailDestroyer(req, res);
+        if (log.result !== 'ok') {
+            return res.status(500).json({
+                message: 'Error occured while deleting song',
+            });
+        }
+
+        const coverimage = song.coverimg;
+        if (JSON.stringify(coverimage) !== '{}') {
+            const coverprofile = req.user.coverimage.publicId;
+            if (coverimage.publicId !== coverprofile) {
+                req.publicId = coverimage.publicId;
+                log = await uploader.songThumbnailDestroyer(req, res);
+                if (log.result !== 'ok') {
+                    return res.status(500).json({
+                        message: 'Error occured while deleting song',
+                    });
+                }
+            }
+        }
+
         await SongModel.deleteOne({ _id: song._id });
 
         return res.status(200).json({
@@ -301,6 +451,8 @@ const enable_song = async (req, res) => {
 };
 
 module.exports = {
+    request_copyright,
+    view_on_blockchain,
     delete_track_by_id,
     get_song_by_id,
     get_trending_songs,
@@ -309,6 +461,7 @@ module.exports = {
     undo_play_song,
     get_song_view,
     get_songs_by_region,
+    get_songs_by_genre,
     get_top_songs,
     disable_song,
     enable_song,

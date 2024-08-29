@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
-import { MediaDisplay } from '@components';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { MediaDisplay, ReportFrame, BigPlayButton } from '@components';
 import verifiedIcon from '@assets/img/verified-icon.svg';
-import { selectCurrentProfile } from '@services/selectors';
+import {
+    selectCurrentProfile,
+    selectCurrentToken,
+    selectCurrentAdmin,
+} from '@services/selectors';
 import {
     useGetProfileByIdQuery,
     useGetFollowingListByIdQuery,
@@ -12,17 +16,37 @@ import {
     useUnfollowProfileByIdMutation,
     useGetProfileAllSongsQuery,
     useGetProfileAlbumsQuery,
+    useGetProfilePlaylistsQuery,
+    useLazyGetIdByUsernameQuery,
 } from '@services/api';
 import { toast } from 'react-toastify';
-import { ReportFrame } from '@components/index';
-import { selectCurrentAdmin } from '@services/selectors';
-import BigPlayButton from '@components/BigPlayButton';
+import { Loading } from '@components/index';
+
+const checkValidId = new RegExp('^[0-9a-fA-F]{24}$');
 
 function ProfilePage() {
+    const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
+    const nav = useNavigate();
+
+    const [getProfileId] = useLazyGetIdByUsernameQuery();
+    useEffect(() => {
+        async function direct() {
+            try {
+                const data = await getProfileId(profileId).unwrap();
+                nav(`/profile/${data}`, { replace: true });
+            } catch (error) {
+                console.error('Error getting profile by id:', error);
+            }
+        }
+
+        if (profileId && !checkValidId.test(profileId)) {
+            direct();
+        }
+    }, [profileId, getProfileId, nav]);
 
     // hanlde menu option
     const [showProfileOption, setShowProfileOption] = useState(false);
@@ -53,39 +77,47 @@ function ProfilePage() {
     };
 
     // Fetch profile data by id
-    const { data: profileByIdData, isLoading: profileByIdLoading } =
-        useGetProfileByIdQuery(profileId, {
-            skip: !profileId,
-        });
-
-    // Fetch following list by id
-    const { data: followingListData } = useGetFollowingListByIdQuery(
-        profileId || id,
-        {
-            skip: !profileId && !id,
-        },
-    );
-
-    // Fetch follow button state by id
-    const { data: followButtonData } = useGetFollowButtonByIdQuery(profileId, {
-        skip: !profileId || !id,
+    const { data: profileByIdData } = useGetProfileByIdQuery(profileId, {
+        skip: !profileId || !checkValidId.test(profileId),
     });
 
+    // Fetch following list by id
+    const { data: followingListData, isLoading: followingListLoading } =
+        useGetFollowingListByIdQuery(profileId || id, {
+            skip:
+                (!profileId && !id) ||
+                (profileId && !checkValidId.test(profileId)),
+        });
+
+    // Fetch follow button state by id
+    const { data: followButtonData, isLoading: followButtonLoading } =
+        useGetFollowButtonByIdQuery(profileId, {
+            skip: !profileId || !id || !checkValidId.test(profileId),
+        });
+
     // Fetch all songs by profile id
-    const { data: profileAllSongsData } = useGetProfileAllSongsQuery(
-        profileId || id,
-        {
-            skip: !profileId && !id,
-        },
-    );
+    const { data: profileAllSongsData, isLoading: profileAllSongsLoading } =
+        useGetProfileAllSongsQuery(profileId || id, {
+            skip:
+                (!profileId && !id) ||
+                (profileId && !checkValidId.test(profileId)),
+        });
 
     // Fetch albums by profile id
-    const { data: profileAlbumsData } = useGetProfileAlbumsQuery(
-        profileId || id,
-        {
-            skip: !profileId && !id,
-        },
-    );
+    const { data: profileAlbumsData, isLoading: profileAlbumsLoading } =
+        useGetProfileAlbumsQuery(profileId || id, {
+            skip:
+                (!profileId && !id) ||
+                (profileId && !checkValidId.test(profileId)),
+        });
+
+    // Fetch playlists by profile id
+    const { data: profilePlaylistData, isLoading: profilePlaylistLoading } =
+        useGetProfilePlaylistsQuery(profileId || id, {
+            skip:
+                (!profileId && !id) ||
+                (profileId && !checkValidId.test(profileId)),
+        });
 
     // Follow/Unfollow profile
     const [followProfile, { isLoading: isLoadingFollow }] =
@@ -138,6 +170,9 @@ function ProfilePage() {
     } = userProfile || {};
 
     const { following } = followingListData || {};
+    const { playlists } = profilePlaylistData || {};
+    const { albums } = profileAlbumsData || {};
+
     const isSliceAllReleases =
         profileAllSongsData && profileAllSongsData.length > 5;
     const allReleases = {
@@ -151,21 +186,43 @@ function ProfilePage() {
                 : profileAllSongsData,
     };
 
-    // const albums = {
-    //     type: 'Album',
-    //     title: 'Albums',
-    //     visibility: '',
-    //     link: '',
-    //     data: profileAlbumsData || [],
-    // };
+    const isSliceAlbums = profileAlbumsData && albums.length > 6;
+    const albumsDisplay = {
+        type: 'Album',
+        title: 'Albums',
+        visibility: '',
+        link: isSliceAlbums ? '/library' : '',
+        data: isSliceAlbums ? albums.slice(0, 6) : albums,
+    };
+
+    const isSlicePlaylists = profilePlaylistData && playlists.length > 6;
+    const playlistsDisplay = {
+        type: 'Playlist',
+        title: 'Playlist',
+        visibility: '',
+        link: isSlicePlaylists ? '/library' : '',
+        data: isSlicePlaylists ? playlists.slice(0, 6) : playlists,
+    };
+
     const isSliceFollowing = following && following.length > 6;
     const followingDisplay = {
         type: 'Artist',
         title: 'Following',
         visibility: '(only me)',
-        link: '/library',
+        link: isSliceFollowing ? '/library' : '',
         data: isSliceFollowing ? following.slice(0, 6) : following,
     };
+
+    if (
+        profileAllSongsLoading ||
+        profileAlbumsLoading ||
+        profilePlaylistLoading ||
+        followButtonLoading ||
+        followingListLoading ||
+        (profileId && !checkValidId.test(profileId))
+    ) {
+        return <Loading />;
+    }
 
     return (
         <div className={isAdmin ? 'pointer-events-none' : ''}>
@@ -245,84 +302,103 @@ function ProfilePage() {
                 {/* Actions Section */}
                 {!isBanned ? (
                     <>
-                        <div className="flex space-x-6">
-                            {profileAllSongsData && (
-                                <BigPlayButton
-                                    playlist={{
-                                        id: profileId,
-                                        songs: profileAllSongsData,
-                                    }}
-                                />
-                            )}
-                            {isMyProfile ? (
-                                <>
-                                    <Link
-                                        className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                                        to="upload-music"
-                                    >
-                                        Upload Music
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                    </Link>
-                                    <Link
-                                        className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
-                                        to="editing"
-                                    >
-                                        Edit Profile
-                                        <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    {id && (
-                                        <button
-                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
-                                            disabled={
-                                                isLoadingFollow ||
-                                                isLoadingUnfollow
-                                            }
-                                            onClick={handleFollowToggle}
+                        {!isAdmin && (
+                            <div className="flex space-x-6">
+                                {profileAllSongsData && (
+                                    <BigPlayButton
+                                        playlist={{
+                                            id: profileId || id,
+                                            songs: profileAllSongsData,
+                                        }}
+                                    />
+                                )}
+                                {isMyProfile ? (
+                                    <>
+                                        <Link
+                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                            to="upload-music"
                                         >
-                                            {isFollowing
-                                                ? 'Unfollow'
-                                                : 'Follow'}
+                                            Upload Music
                                             <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
-                                        </button>
-                                    )}
-                                    <button className="absolute right-4 h-[70px] min-w-[70px]">
-                                        <i
-                                            className="bx bx-menu text-[42px]"
-                                            onClick={() =>
-                                                setShowProfileOption(true)
-                                            }
-                                        />
-                                        {showProfileOption === true && (
-                                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
-                                                <ul>
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={handleCopyLink}
-                                                    >
-                                                        <i className="ri-share-line text-xl leading-none"></i>
-                                                        <span>Copy link</span>
-                                                    </li>
-                                                    <li
-                                                        className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
-                                                        onClick={() =>
-                                                            setShowReportFrame(
-                                                                true,
-                                                            )
-                                                        }
-                                                    >
-                                                        <i className="ri-error-warning-line text-xl leading-none"></i>
-                                                        <span>Report</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        </Link>
+                                        <Link
+                                            className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                            to="editing"
+                                        >
+                                            Edit Profile
+                                            <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
+                                        </Link>
+                                        {!isVerified && (
+                                            <Link
+                                                className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
+                                                to="verify"
+                                            >
+                                                Request Verify
+                                                <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
+                                            </Link>
                                         )}
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        {id && (
+                                            <button
+                                                className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase disabled:opacity-75"
+                                                disabled={
+                                                    isLoadingFollow ||
+                                                    isLoadingUnfollow
+                                                }
+                                                onClick={handleFollowToggle}
+                                            >
+                                                {isFollowing
+                                                    ? 'Unfollow'
+                                                    : 'Follow'}
+                                                <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
+                                            </button>
+                                        )}
+                                        <button className="absolute right-4 h-[70px] min-w-[70px]">
+                                            <i
+                                                className="bx bx-menu text-[42px]"
+                                                onClick={() =>
+                                                    setShowProfileOption(true)
+                                                }
+                                            />
+                                            {showProfileOption === true && (
+                                                <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                                                    <ul>
+                                                        <li
+                                                            className="z-10 flex cursor-pointer space-x-2 rounded-t-xl border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                            onClick={
+                                                                handleCopyLink
+                                                            }
+                                                        >
+                                                            <i className="ri-share-line text-xl leading-none"></i>
+                                                            <span>
+                                                                Copy link
+                                                            </span>
+                                                        </li>
+                                                        {token && (
+                                                            <li
+                                                                className="z-10 flex cursor-pointer space-x-2 border-[#999] px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-[#443f3fb9]"
+                                                                onClick={() =>
+                                                                    setShowReportFrame(
+                                                                        true,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="ri-error-warning-line text-xl leading-none"></i>
+                                                                <span>
+                                                                    Report
+                                                                </span>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
 
                         {profileAllSongsData && (
                             <>
@@ -345,13 +421,13 @@ function ProfilePage() {
                             </>
                         )}
 
-                        {/* {profileAlbumsData && (
+                        {albums && (
                             <MediaDisplay
-                                media={albums}
+                                media={albumsDisplay}
                                 displayItems="2"
                                 displayType="grid grid-cols-6"
                             />
-                        )} */}
+                        )}
 
                         {following && isMyProfile && (
                             <MediaDisplay
@@ -360,20 +436,32 @@ function ProfilePage() {
                                 displayType="grid grid-cols-6"
                             />
                         )}
+
+                        {playlists && (
+                            <MediaDisplay
+                                media={playlistsDisplay}
+                                displayItems="2"
+                                displayType="grid grid-cols-6"
+                            />
+                        )}
+
                         {shortDesc && (
                             <section className="">
                                 <h2 className="inline text-3xl font-bold">
                                     About
                                 </h2>
-                                <div className="relative mt-4 w-[65%] transition-all duration-300 hover:scale-[102%]">
+                                <div className="absolute left-20 right-0 mt-4 h-[400px]">
                                     <img
-                                        src={avatar}
-                                        className="h-[500px] w-full rounded-xl object-cover brightness-[60%]"
+                                        src={cover}
+                                        className="h-full w-full rounded-xl object-cover brightness-[60%]"
                                     />
-                                    <div className="absolute bottom-[15%] left-[10%] w-5/6 select-none">
+                                    <div className="absolute bottom-[10%] left-20 right-20 h-2/3 select-none content-end">
                                         <h2 className="font-bold">{name}</h2>
-                                        <p>{shortDesc}</p>
+                                        <p className="text-ellipsis text-justify">
+                                            {shortDesc}
+                                        </p>
                                     </div>
+                                    <div className="pb-44"></div>
                                 </div>
                             </section>
                         )}

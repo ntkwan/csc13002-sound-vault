@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FilterStatus,
     SearchBar,
@@ -8,170 +8,21 @@ import {
     ReviewReportFrame,
 } from '@features/admindashboard/components';
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
+import { useGetReportsQuery } from '@services/api';
+import { Loading } from '@components';
 
-const sampleReports = [
-    {
-        report: {
-            reportid: '1',
-            username: 'SmokeShack Burger',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'song',
-            date: '23-05-2024',
-            time: '12:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '1',
-            adminname: 'Silva',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Finished',
-    },
-    {
-        report: {
-            reportid: '2',
-            username: 'Waffle Fries',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'artist',
-            date: '21-04-2022',
-            time: '9:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '2',
-            adminname: 'Rice',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Pending',
-    },
-    {
-        report: {
-            reportid: '3',
-            username: 'Chalupa Supreme',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'song',
-            date: '19-01-2020',
-            time: '9:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '3',
-            adminname: 'Saka',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Reject',
-    },
-    {
-        report: {
-            reportid: '4',
-            username: 'Checkers Seasoned Fries',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'song',
-            date: '02-10-2024',
-            time: '9:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '4',
-            adminname: 'Bruno',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Pending',
-    },
-    {
-        report: {
-            reportid: '5',
-            username: 'French Fries',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'artist',
-            date: '03-12-2019',
-            time: '9:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '5',
-            adminname: 'Booker',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Finished',
-    },
-    {
-        report: {
-            reportid: '6',
-            username: 'Taquito with Cheese',
-            idcard: '123456789',
-            email: 'abcxyz@gmail.com',
-            phone: '0123456789',
-            linktocontent: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            reporttype: 'violence',
-            category: 'artist',
-            date: '23-04-2024',
-            time: '9:00',
-            describe:
-                'For example, mt-6 would add 1.5rem of margin to the top of an element, mr-4 would add 1rem of margin to the right of an element, mb-8 would add 2rem of margin to the bottom of an element, and ml-2 would add 0.5rem of margin to the left of an element.',
-        },
-        assignee: {
-            adminid: '6',
-            adminname: 'Kendall',
-            image: {
-                url: '',
-            },
-        },
-        status: 'Reject',
-    },
-];
-
-const generateReports = (samples, counts) => {
-    let reports = [];
-    samples.forEach((sample, index) => {
-        for (let i = 0; i < counts[index]; i++) {
-            reports.push({ ...sample });
-        }
-    });
-    return reports;
+const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
 };
-
-const counts = [10, 10, 10, 10, 5, 5];
-
-const initialReports = generateReports(sampleReports, counts);
-
+const formatTime = (date) => {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
 function ReviewReportPage() {
-    const [reports, setReports] = useState(initialReports);
     const [date, setDate] = useState('');
     const [sortOption, setSortOption] = useState('Date (newest first)');
     const [filterDate, setFilterDate] = useState('');
@@ -183,8 +34,33 @@ function ReviewReportPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
-    const [hoveredIndex, setHoveredIndex] = useState(null);
     const [selectedReport, setSelectedReport] = useState(null);
+
+    const { data: reportListData, isLoading: reportListIsLoading } =
+        useGetReportsQuery();
+    if (reportListIsLoading) return <Loading />;
+    const reports =
+        reportListIsLoading || !reportListData
+            ? []
+            : reportListData.map((report) => ({
+                  // report info
+                  idReport: report.id,
+                  contentLink: report.contentLink,
+                  date: formatDate(new Date(report.createdAt)),
+                  time: formatTime(new Date(report.createdAt)),
+                  isSong: report.isSong,
+                  reason: report.reason,
+                  category: report.rpCategory,
+                  type: report.rpType,
+                  status: report.status,
+                  assignee: report.assignee,
+                  // user info
+                  idUser: report.account,
+                  name: report.fullName,
+                  email: report.email,
+                  idNumber: report.idNumber,
+                  phone: report.phoneNumber,
+              }));
 
     const applyFilter = () => {
         setCurrentPage(1);
@@ -197,17 +73,21 @@ function ReviewReportPage() {
             parse(dateStr, 'dd-MM-yyyy', new Date());
         const parseDate2 = (dateStr) =>
             parse(dateStr, 'yyyy-MM-dd', new Date());
+        const status =
+            report.status && report.assignee != ''
+                ? 'Finished'
+                : !report.status && report.assignee == ''
+                  ? 'Pending'
+                  : 'Reject';
         return (
-            (tabStatus === 'all' || report.status === tabStatus) &&
+            (tabStatus === 'all' || status === tabStatus) &&
             (!filterDate ||
-                isEqual(
-                    parseDate1(report.report.date),
-                    parseDate2(filterDate),
-                )) &&
+                isEqual(parseDate1(report.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                report.report.username
+                report.name
                     .toLowerCase()
-                    .startsWith(searchTerm.toLowerCase()))
+                    .startsWith(searchTerm.toLowerCase()) ||
+                report.idReport.toString().startsWith(searchTerm))
         );
     });
 
@@ -215,19 +95,13 @@ function ReviewReportPage() {
         const parseDate = (dateStr) => parse(dateStr, 'dd-MM-yyyy', new Date());
 
         if (filterSortOption === 'Username') {
-            return a.report.username.localeCompare(b.report.username);
+            return a.name.localeCompare(b.name);
         } else if (filterSortOption === 'Admin Assignee') {
-            return a.assignee.adminname.localeCompare(b.assignee.adminname);
+            return a.assignee.localeCompare(b.assignee);
         } else if (filterSortOption === 'Date (oldest first)') {
-            return compareAsc(
-                parseDate(a.report.date),
-                parseDate(b.report.date),
-            );
+            return compareAsc(parseDate(a.date), parseDate(b.date));
         } else if (filterSortOption === 'Date (newest first)') {
-            return compareDesc(
-                parseDate(a.report.date),
-                parseDate(b.report.date),
-            );
+            return compareDesc(parseDate(a.date), parseDate(b.date));
         }
     });
 
@@ -310,6 +184,9 @@ function ReviewReportPage() {
                             Report ID
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
+                            Reporter
+                        </th>
+                        <th className="px-2 py-5 text-left font-normal">
                             Date
                         </th>
                         <th className="px-2 py-5 text-left font-normal">
@@ -321,7 +198,7 @@ function ReviewReportPage() {
                         <th className="px-2 py-5 text-right font-normal">
                             Status
                         </th>
-                        <th className="px-2 py-5 text-right font-normal">
+                        <th className="px-2 py-5 text-center font-normal">
                             Assignee
                         </th>
                     </tr>
@@ -333,48 +210,29 @@ function ReviewReportPage() {
                             className="cursor-pointer border-b-2 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
                             onClick={() => setSelectedReport(report)}
                         >
-                            <td className="px-2 py-5">
-                                {report.report.username}
+                            <td className="px-2 py-6">{report.idReport}</td>
+                            <td className="px-2 py-5">{report.name}</td>
+                            <td className="px-2 py-5">{report.date}</td>
+                            <td className="py-5 pl-8">
+                                {report.isSong ? 'Song' : 'User'}
                             </td>
-                            <td className="px-2 py-5">{report.report.date}</td>
-                            <td className="px-2 py-5">
-                                {report.report.reporttype}
-                            </td>
-                            <td className="px-2 py-5">
-                                {report.report.category}
-                            </td>
+                            <td className="px-2 py-5">{report.category}</td>
                             <td className="flex items-end justify-end p-2 py-5">
                                 <div
-                                    className={`mx-2 my-[6px] h-4 w-[40px] rounded-lg ${
-                                        report.status === 'Finished'
+                                    className={`mx-2 my-[6px] h-3 w-[40px] rounded-lg ${
+                                        report.status && report.assignee != ''
                                             ? 'bg-[#188038]'
-                                            : report.status === 'Pending'
+                                            : !report.status &&
+                                                report.assignee == ''
                                               ? 'bg-[#F6FE00]'
                                               : 'bg-[#FD0053]'
                                     }`}
                                 />
                             </td>
-                            <td className="relative">
-                                <div
-                                    className="ml-auto flex h-[40px] w-[40px] items-center justify-center rounded-full border-[3px] px-1"
-                                    onMouseEnter={() => setHoveredIndex(index)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                >
-                                    {report?.assignee?.image?.url ? (
-                                        <img
-                                            src={report.assignee.image.url}
-                                            alt="user avatar"
-                                            className="h-full w-full rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <i className="ri-user-3-fill text-2xl" />
-                                    )}
-                                </div>
-                                {hoveredIndex === index && (
-                                    <div className="absolute right-0 rounded-lg bg-gray-900 px-2 text-center text-xs text-white shadow-lg">
-                                        {report.assignee.adminname}
-                                    </div>
-                                )}
+                            <td className="px-2 py-5 text-center">
+                                {report.assignee
+                                    ? report.assignee
+                                    : 'Unassigned'}
                             </td>
                         </tr>
                     ))}

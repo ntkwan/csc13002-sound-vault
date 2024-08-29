@@ -33,11 +33,27 @@ function ProfilePageEditing() {
         const name = formData.get('pf-fullname');
         const email = formData.get('pf-email');
         const shortDesc = formData.get('pf-shortDesc');
+        const walletAddress = formData.get('pf-walletAddress');
+
+        if (
+            ProfileInfo.name === name &&
+            ProfileInfo.email === email &&
+            ProfileInfo.shortDesc === shortDesc
+            // && ProfileInfo.walletAddress === walletAddress
+        ) {
+            toast.error('No information changed!');
+            return;
+        }
 
         try {
-            await changeProfile({ name, email, shortDesc }).unwrap();
+            await changeProfile({
+                name,
+                email,
+                shortDesc,
+                walletAddress,
+            }).unwrap();
             toast.success('Updated Information Successfully!');
-            dispatch(updateInfo({ name, email, shortDesc }));
+            dispatch(updateInfo({ name, email, shortDesc, walletAddress }));
         } catch (error) {
             console.error('Error updating profile:', error);
             toast.error('Update Information Failed!');
@@ -77,7 +93,7 @@ function ProfilePageEditing() {
     // icon updating
     const iconUpdate = (
         <svg
-            className="mr-4 h-6 w-6 animate-spin text-blue-500"
+            className="mr-4 min-h-5 min-w-5 animate-spin text-blue-500"
             fill="none"
             viewBox="0 0 24 24"
         >
@@ -98,8 +114,7 @@ function ProfilePageEditing() {
     );
 
     if (isLoadingProfileInfo) return;
-    const { name, email, shortDesc } = ProfileInfo || {};
-    const { dob, password } = userProfile;
+    const { name, email, shortDesc, walletAddress } = ProfileInfo || {};
 
     return (
         <div className="profilepage__editing pt-8">
@@ -143,23 +158,38 @@ function ProfilePageEditing() {
                             id="pf-fullname"
                             placeholder="Full Name"
                             initValue={name}
+                            required
                         />
                         <InputForm
                             id="pf-email"
                             placeholder="Email"
+                            type="email"
                             initValue={email}
+                            required
                         />
                         <InputForm
                             id="pf-shortDesc"
                             placeholder="Short Description"
                             initValue={shortDesc}
                         />
+                        <InputForm
+                            id="pf-walletAddress"
+                            placeholder="Wallet Address"
+                            initValue={walletAddress}
+                        />
                         <button
-                            className="min-w-1/2 group relative float-right flex h-12 items-center rounded-xl bg-[#666] px-4 shadow-md transition duration-300 ease-in-out hover:cursor-pointer hover:bg-[#888]"
+                            className="min-w-1/2 group relative float-right flex h-12 min-w-36 max-w-36 items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
                         >
-                            {isLoadingChangeProfile && iconUpdate}
-                            {isLoadingChangeProfile ? 'Updating...' : 'Update'}
+                            {isLoadingChangePassword && iconUpdate}
+                            {isLoadingChangePassword ? (
+                                <span className="-translate-x-[7px]">
+                                    Updating...
+                                </span>
+                            ) : (
+                                'Update'
+                            )}
+                            <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
                     </fieldset>
                 </form>
@@ -186,6 +216,7 @@ function ProfilePageEditing() {
                             id="pf-newPassword"
                             placeholder="New password"
                             isPassword
+                            isCheck
                             required
                         />
                         <InputForm
@@ -195,11 +226,18 @@ function ProfilePageEditing() {
                             required
                         />
                         <button
-                            className="min-w-1/2 group relative float-right flex h-12 items-center rounded-xl bg-[#666] px-4 shadow-md transition duration-300 ease-in-out hover:cursor-pointer hover:bg-[#888]"
+                            className="min-w-1/2 group relative float-right flex h-12 min-w-36 max-w-36 items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
                         >
                             {isLoadingChangePassword && iconUpdate}
-                            {isLoadingChangePassword ? 'Updating...' : 'Update'}
+                            {isLoadingChangePassword ? (
+                                <span className="-translate-x-[7px]">
+                                    Updating...
+                                </span>
+                            ) : (
+                                'Update'
+                            )}
+                            <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
                     </fieldset>
                 </form>

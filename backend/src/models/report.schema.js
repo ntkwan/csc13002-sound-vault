@@ -21,6 +21,15 @@ const ReportSchema = new Schema(
             type: Boolean,
             required: true,
         },
+        assignee: {
+            type: String,
+            default: '',
+        },
+        status: {
+            type: Boolean,
+            default: false,
+            required: true,
+        },
 
         //user input
         email: {
@@ -32,7 +41,7 @@ const ReportSchema = new Schema(
             required: true,
         },
         idNumber: {
-            type: Number,
+            type: String,
             required: true,
         },
         phoneNumber: {

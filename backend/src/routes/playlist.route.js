@@ -8,6 +8,13 @@ router.post(
     authMiddleware.check_user,
     playlistController.create_playlist,
 );
+
+router.post(
+    '/create-album',
+    authMiddleware.check_artist,
+    playlistController.create_album,
+);
+
 router.delete(
     '/delete-playlist-by-id/:playlistId',
     authMiddleware.check_user,
@@ -39,10 +46,18 @@ router.get(
     '/get-playlist-by-id/:playlistId',
     playlistController.get_playlist_by_id,
 );
+
 router.get(
     '/get-my-playlists',
     authMiddleware.check_user,
     playlistController.get_my_playlists,
+);
+
+router.post(
+    '/change-playlist-description/:playlistId',
+    authMiddleware.check_user,
+    authMiddleware.check_playlist_uploader,
+    playlistController.change_playlist_description,
 );
 
 module.exports = router;

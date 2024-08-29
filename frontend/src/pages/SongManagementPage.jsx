@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ManagementButtons,
@@ -11,11 +11,12 @@ import {
 import { parse, compareAsc, compareDesc, isEqual } from 'date-fns';
 import {
     useGetAllSongsQuery,
-    useSetVerifiedSongByIdMutation,
     useRemoveSongByIdMutation,
     useDeactivateSongMutation,
     useActivateSongMutation,
 } from '@services/api';
+import { Loading } from '@components';
+import { toast } from 'react-toastify';
 
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -40,44 +41,34 @@ function AdminSongPage() {
     const [confirmAction, setConfirmAction] = useState(null);
     const [selectedSong, setSelectSong] = useState(null);
 
-    const [setVerifiedSongById, { isLoading: verifySongIsLoading }] =
-        useSetVerifiedSongByIdMutation();
-    const handleVerifySong = async (songId) => {
-        if (verifySongIsLoading) return;
-        try {
-            await setVerifiedSongById(songId);
-        } catch (error) {
-            console.log('Failed to verify song', error);
-        }
-    };
-    const [removeSongById, { isLoading: removeSongIsLoading }] =
-        useRemoveSongByIdMutation();
+    const [removeSongById] = useRemoveSongByIdMutation();
     const handleRemoveSong = async (id) => {
-        if (removeSongIsLoading) return;
         try {
             await removeSongById(id);
+            toast.success('Song removed successfully!');
         } catch (error) {
             console.log('Failed to remove song', error);
+            toast.error('Failed to remove song');
         }
     };
-    const [deactivateSong, { isLoading: deactivateSongIsLoading }] =
-        useDeactivateSongMutation();
+    const [deactivateSong] = useDeactivateSongMutation();
     const handleDeactivateSong = async (id) => {
-        if (deactivateSongIsLoading) return;
         try {
             await deactivateSong(id);
+            toast.success('Song deactivated successfully!');
         } catch (error) {
             console.log('Failed to deactivate song', error);
+            toast.error('Failed to deactivate song');
         }
     };
-    const [activateSong, { isLoading: activateSongIsLoading }] =
-        useActivateSongMutation();
+    const [activateSong] = useActivateSongMutation();
     const handleActivateSong = async (id) => {
-        if (activateSongIsLoading) return;
         try {
             await activateSong(id);
+            toast.success('Song activated successfully!');
         } catch (error) {
             console.log('Failed to activate song', error);
+            toast.error('Failed to activate song');
         }
     };
     const handleViewSong = (id) => {
@@ -86,17 +77,20 @@ function AdminSongPage() {
 
     const { data: songListData, isLoading: songListIsLoading } =
         useGetAllSongsQuery();
-    const songs =
-        songListIsLoading || !songListData
-            ? []
-            : songListData.map((song) => ({
-                  id: song.id,
-                  name: song.title,
-                  artist: song.artist,
-                  date: formatDate(new Date(song.createdAt)),
-                  status: song.isVerified ? 'Verified' : 'Unverified',
-                  isDisabled: song.isDisabled,
-              }));
+    if (songListIsLoading) return <Loading />;
+    const songs = songListData.map((song) => ({
+        id: song.id,
+        name: song.title,
+        artist: song.artist,
+        date: formatDate(new Date(song.createdAt)),
+        isDisabled: song.isDisabled,
+        publicAddress: song.publicAddress,
+        status: song.isDisabled
+            ? 'Disable'
+            : song.isVerified
+              ? 'Verified'
+              : 'Unverified',
+    }));
 
     const filteredSongs = songs.filter((song) => {
         const parseDate1 = (dateStr) =>
@@ -108,7 +102,9 @@ function AdminSongPage() {
             (!filterDate ||
                 isEqual(parseDate1(song.date), parseDate2(filterDate))) &&
             (!searchTerm ||
-                song.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+                song.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+                song.id.toString().startsWith(searchTerm.toLowerCase()) ||
+                song.artist.toLowerCase().startsWith(searchTerm.toLowerCase()))
         );
     });
 
@@ -137,7 +133,7 @@ function AdminSongPage() {
         { name: 'All songs', status: 'all' },
         { name: 'Verified', status: 'Verified' },
         { name: 'Unverified', status: 'Unverified' },
-        { name: 'Pending', status: 'Pending' },
+        { name: 'Disable', status: 'Disable' },
     ];
 
     const sortMethods = [
@@ -159,9 +155,7 @@ function AdminSongPage() {
     };
 
     const confirmActionHandler = () => {
-        if (confirmAction === 'verify' || confirmAction === 'unverify') {
-            handleVerifySong(selectedSong);
-        } else if (confirmAction === 'remove') {
+        if (confirmAction === 'remove') {
             handleRemoveSong(selectedSong);
         } else if (confirmAction === 'deactivate') {
             handleDeactivateSong(selectedSong);
@@ -200,7 +194,7 @@ function AdminSongPage() {
                     }}
                 />
                 <button
-                    className="admin-page__filter h-11 rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
+                    className="admin-page__filter h-11 select-none rounded-xl bg-black px-4 duration-200 ease-in-out hover:scale-105"
                     onClick={() => setShowFilters(!showFilters)}
                 >
                     <i className="ri-equalizer-2-line px-1"></i>
@@ -219,7 +213,7 @@ function AdminSongPage() {
                 />
             )}
 
-            <table className="w-full overflow-hidden">
+            <table className="w-full cursor-default overflow-hidden">
                 <thead>
                     <tr className="cursor-default border-b-2 text-[#718096]">
                         <th className="px-2 py-5 text-left font-normal">ID</th>
@@ -241,79 +235,61 @@ function AdminSongPage() {
                 <tbody>
                     {paginatedSongs.map((song, index) => (
                         <tr key={index} className="border-b-2">
-                            <td className="px-2 py-5 text-sm">{song.id}</td>
-                            <td className="px-2 py-5 text-sm">{song.name}</td>
+                            <td className="px-2 py-5">{song.id}</td>
+                            <td className="px-2 py-5">{song.name}</td>
                             <td className="px-2 py-5">{song.date}</td>
                             <td className="px-2 py-5">{song.artist}</td>
                             <td className="px-2 py-5">
                                 <span
                                     className={`rounded-lg px-2 py-1 ${
                                         song.status === 'Verified'
-                                            ? 'bg-[#FFF0F0] text-[#3663c2]'
+                                            ? 'bg-[#FFF0F0] text-[#0CAF60]'
                                             : song.status === 'Unverified'
                                               ? 'bg-[#FFF0E6] text-[#eb4141]'
-                                              : 'bg-[#E7F7EF] text-[#0CAF60]'
+                                              : 'bg-[#E7F7EF] text-[#FE964A]'
                                     }`}
                                 >
                                     {song.status}
                                 </span>
                             </td>
-                            <td className="flex justify-evenly p-2 py-5">
-                                <ManagementButtons
-                                    background={
-                                        song.status === 'Verified'
-                                            ? 'bg-[#FE964A]'
-                                            : 'bg-[#9F68B2]'
-                                    }
-                                    children={
-                                        song.status === 'Verified'
-                                            ? 'Unverify'
-                                            : 'Verify'
-                                    }
-                                    disable={song.status === 'Verified'}
-                                    onClick={() => {
-                                        const action =
-                                            song.status === 'Verified'
-                                                ? 'unverify'
-                                                : 'verify';
-                                        setConfirmAction(action);
-                                        setSelectSong(song.id);
-                                    }}
-                                />
-                                <ManagementButtons
-                                    background="bg-[#195FF0]"
-                                    children="View"
-                                    onClick={() => {
-                                        setConfirmAction('view');
-                                        setSelectSong(song.id);
-                                    }}
-                                />
-                                <ManagementButtons
-                                    background="bg-[#B63D65]"
-                                    children="Remove"
-                                    disable={song.status === 'Verified'}
-                                    onClick={() => {
-                                        setConfirmAction('remove');
-                                        setSelectSong(song.id);
-                                    }}
-                                />
-                                <ManagementButtons
-                                    background={
-                                        song.isBanned
-                                            ? 'bg-[#0CAF60]'
-                                            : 'bg-[#CACD6D]'
-                                    }
-                                    children={
-                                        song.isDisabled ? 'Active' : 'Disable'
-                                    }
-                                    onClick={() => {
-                                        const action = song.isDisabled
-                                            ? 'activate'
-                                            : 'deactivate';
-                                        setConfirmAction(action);
-                                        setSelectSong(song.id);
-                                    }}
-                                />
+                            <td className="px-2 py-5">
+                                <div className="flex justify-evenly">
+                                    <ManagementButtons
+                                        background={
+                                            song.isBanned
+                                                ? 'bg-[#0CAF60]'
+                                                : 'bg-[#CACD6D]'
+                                        }
+                                        onClick={() => {
+                                            const action = song.isDisabled
+                                                ? 'activate'
+                                                : 'deactivate';
+                                            setConfirmAction(action);
+                                            setSelectSong(song.id);
+                                        }}
+                                    >
+                                        {song.isDisabled ? 'Active' : 'Disable'}
+                                    </ManagementButtons>
+                                    <ManagementButtons
+                                        background="bg-[#195FF0]"
+                                        onClick={() => {
+                                            setConfirmAction('view');
+                                            setSelectSong(song.id);
+                                        }}
+                                    >
+                                        View
+                                    </ManagementButtons>
+                                    <ManagementButtons
+                                        background="bg-[#B63D65]"
+                                        disable={song.status === 'Verified'}
+                                        onClick={() => {
+                                            setConfirmAction('remove');
+                                            setSelectSong(song.id);
+                                        }}
+                                    >
+                                        Remove
+                                    </ManagementButtons>
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -333,12 +309,12 @@ function AdminSongPage() {
 
             {/* Modal confirmation */}
             {confirmAction && (
-                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div className="rounded-lg bg-slate-500 p-6 shadow-lg">
+                <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-30">
+                    <div className="rounded-lg border-2 bg-black bg-opacity-50 p-6 shadow-lg backdrop-blur-xl">
                         <p className="mb-4">
                             {confirmAction === 'view'
                                 ? 'Are you sure you want to leave this page?'
-                                : `Are you sure you want to ${confirmAction} this account?`}
+                                : `Are you sure you want to ${confirmAction} this song?`}
                         </p>
                         <div className="flex justify-end">
                             <button

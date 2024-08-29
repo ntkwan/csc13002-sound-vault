@@ -1,32 +1,39 @@
 import MediaDisplay from '@components/MediaDisplay';
-import { PageTitle } from '@components/index';
+import { Loading, PageTitle } from '@components/index';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
     useGetFollowingListByIdQuery,
     useGetRecentlyPlayedSongsQuery,
-    useGetMyPlaylistsQuery,
 } from '@services/api';
-import { selectCurrentProfile } from '@services/selectors';
+import {
+    selectCurrentProfile,
+    selectMyAlbums,
+    selectMyPlaylists,
+} from '@services/selectors';
 
 function LibraryPage() {
     const { profileId } = useParams();
     const myProfileData = useSelector(selectCurrentProfile);
     const { id } = myProfileData;
+    const myPlaylists = useSelector(selectMyPlaylists);
+    const myAlbums = useSelector(selectMyAlbums);
 
-    const { data: followingListData } = useGetFollowingListByIdQuery(
-        profileId || id,
-        {
+    const { data: followingListData, isLoading: followingListLoading } =
+        useGetFollowingListByIdQuery(profileId || id, {
             skip: !profileId && !id,
-        },
-    );
+        });
     const { following } = followingListData || {};
 
-    const { data: recentlyPlayedSongsData } = useGetRecentlyPlayedSongsQuery();
+    const {
+        data: recentlyPlayedSongsData,
+        isLoading: recentlyPlayedSongsLoading,
+    } = useGetRecentlyPlayedSongsQuery();
     const { songs: recentlyPlayedSongs } = recentlyPlayedSongsData || {};
 
-    const { data: myPlaylistsData } = useGetMyPlaylistsQuery();
-    const { playlists: myPlaylists } = myPlaylistsData || {};
+    if (followingListLoading || recentlyPlayedSongsLoading) {
+        return <Loading />;
+    }
 
     const mediaData = [
         {
@@ -36,6 +43,12 @@ function LibraryPage() {
             visibility: '',
             link: '',
             data: following || [],
+        },
+        {
+            type: 'Album',
+            title: 'Albums',
+            displayItems: '2',
+            data: myAlbums || [],
         },
         {
             type: 'Playlist',

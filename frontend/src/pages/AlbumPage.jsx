@@ -1,17 +1,18 @@
-import { useGetNewSongsQuery } from '@services/api';
+import { useGetPopularAlbumsQuery } from '@services/api';
 import { PageTitle, MediaDisplay } from '@components';
+import { Loading } from '@components';
 
 function AlbumPage() {
-    const { data: newSongs } = useGetNewSongsQuery();
+    const { data, isLoading } = useGetPopularAlbumsQuery();
 
-    if (!newSongs) return;
+    if (isLoading) return <Loading />;
 
     const media = {
         type: 'Album',
         header: '',
         visibility: '',
         link: '',
-        data: newSongs,
+        data: data.albums,
     };
 
     return (

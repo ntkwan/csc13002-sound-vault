@@ -10,6 +10,7 @@ import {
     ProfilePage,
     ProfilePageUploadMusic,
     ProfilePageEditing,
+    ProfileRequestVerifyPage,
     LibraryPage,
     ArtistPage,
     TermAndPolicyPage,
@@ -25,12 +26,14 @@ import {
     TopicsAndGenresPage,
     TopicsAndGenresSubPage,
     SongPage,
-    UserSettingPage,
     WalletPage,
     AudienceTransactionPage,
     ArtistTransactionPage,
     AdminTransactionPage,
     AdminWithdrawPage,
+    AdminDashboardPage,
+    AdminEditProfilePage,
+    AdminCopyrightPage,
 } from '@pages';
 
 const router = createBrowserRouter([
@@ -53,6 +56,7 @@ const router = createBrowserRouter([
                     { path: 'trending', Component: TrendingPage },
                     { path: 'newrelease', Component: NewReleasePage },
                     { path: 'album', Component: AlbumPage },
+                    { path: 'album/:playlistId', Component: PlaylistPage },
                     { path: 'playlist/:playlistId', Component: PlaylistPage },
                     { path: 'artist', Component: ArtistPage },
                     { path: 'aboutus', Component: AboutUsPage },
@@ -74,14 +78,27 @@ const router = createBrowserRouter([
                         Component: ProfilePageUploadMusic,
                     },
                     { path: 'profile/editing', Component: ProfilePageEditing },
-                    { path: 'user/setting', Component: UserSettingPage },
+                    {
+                        path: 'profile/verify',
+                        Component: ProfileRequestVerifyPage,
+                    },
                     { path: 'wallet', Component: WalletPage },
+                ],
+            },
+            {
+                element: <Protected roles={'user only'} />,
+                children: [
                     {
                         path: 'wallet/history',
                         Component: AudienceTransactionPage,
                     },
+                ],
+            },
+            {
+                element: <Protected roles={'artist'} />,
+                children: [
                     {
-                        path: 'artist/wallet/history',
+                        path: 'wallet/artist/history',
                         Component: ArtistTransactionPage,
                     },
                 ],
@@ -89,13 +106,19 @@ const router = createBrowserRouter([
             {
                 element: <Protected roles={'admin'} />,
                 children: [
+                    { path: 'admin/dashboard', Component: AdminDashboardPage },
                     { path: 'admin/song', Component: AdminSongPage },
                     { path: 'admin/user', Component: AdminAccountPage },
                     { path: 'admin/report', Component: ReviewReportPage },
                     { path: 'admin/withdraw', Component: AdminWithdrawPage },
+                    { path: 'admin/copyright', Component: AdminCopyrightPage },
                     {
                         path: 'admin/transaction',
                         Component: AdminTransactionPage,
+                    },
+                    {
+                        path: 'admin/edit-profile',
+                        Component: AdminEditProfilePage,
                     },
                 ],
             },

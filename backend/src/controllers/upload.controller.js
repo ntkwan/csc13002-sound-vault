@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 const uploader = require('../config/cloudinary.config');
 const SongModel = require('../models/song.schema');
 const UserModel = require('../models/user.schema');
+const PlaylistModel = require('../models/playlist.schema');
 
 const upload_song = async (req, res) => {
     if (req.fileValidationError) {
@@ -19,11 +20,14 @@ const upload_song = async (req, res) => {
         });
     }
 
+    let genre = req.body.genre;
+    genre = genre.split(' ');
     let song_data = {
         title: req.body.title,
         artist: req.user.name,
         uploader: req.user._id,
-        genre: req.body.genre,
+        collaborators: req.body.collaborators,
+        genre: genre,
         region: req.body.region,
         coverimg: req.user.coverimage,
         audiourl: audioResponse.secure_url,
@@ -37,6 +41,7 @@ const upload_song = async (req, res) => {
     }
 
     req._id = result._id;
+    req.inSubmitMusic = true;
 };
 
 const upload_profile_pic = async (req, res) => {
@@ -109,6 +114,46 @@ const upload_song_thumbnail = async (req, res) => {
         await Song.setSongThumbnail(imageResponse);
     }
     await Song.save();
+
+    if (!req.inSubmitMusic) {
+        return res.status(200).json({
+            message: req.isCover
+                ? 'Upload song cover successfully'
+                : 'Upload song thumbnail successfully',
+            imageurl: imageResponse.secure_url,
+        });
+    }
+};
+
+const upload_playlist_thumbnail = async (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).json({
+            message: `File validation error: ${req.fileValidationError}`,
+        });
+    }
+
+    const playlistId = req.params.playlistId;
+    const Playlist = await PlaylistModel.findById(playlistId);
+    if (!Playlist) {
+        return res.status(500).json({
+            message: 'Error occured while uploading playlist thumbnail',
+        });
+    }
+
+    const imageResponse = await uploader.playlistThumbnailUploader(req, res);
+    if (!imageResponse) {
+        return res.status(500).json({
+            message: 'Error occured while uploading playlist thumbnail',
+        });
+    }
+
+    await Playlist.setPlaylistThumbnail(imageResponse);
+    await Playlist.save();
+
+    return res.status(200).json({
+        message: 'Upload playlist thumbnail successfully',
+        imageurl: imageResponse.secure_url,
+    });
 };
 
 const upload_song_cover = async (req, res) => {
@@ -124,15 +169,22 @@ const submit_music = async (req, res) => {
             message: 'Failed at uploading audio file',
         });
     }
+    const user = req.user;
 
     setTimeout(async () => {
+        req.isCover = false;
         upload_song_thumbnail(req, res);
+
+        await user.notify({
+            message: `Your song "${req.body.title}" has been submitted successfully`,
+            createdAt: new Date(),
+        });
 
         return res.status(200).json({
             songId: req._id,
             message: 'Submit music successfully',
         });
-    }, 15000);
+    }, 25000);
 
     if (res.status == 500) {
         return res.status(500).json({
@@ -148,4 +200,5 @@ module.exports = {
     upload_song_thumbnail,
     upload_song_cover,
     upload_profile_cover,
+    upload_playlist_thumbnail,
 };
