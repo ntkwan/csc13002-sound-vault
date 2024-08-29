@@ -30,6 +30,7 @@ import {
     DonateModal,
     AlbumFrame,
     UtilitiesCard,
+    DepositModal,
 } from '.';
 import { useSong } from '@hooks';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
@@ -755,12 +756,20 @@ const SongBar = memo(
             currentSong === id ? 'text-purple-400 font-bold' : '';
 
         const { balance } = useSelector(selectCurrentProfile);
-        const [modalVisible, setModalVisible] = useState(false);
+        const [donateModalVisible, setDonateModalVisible] = useState(false);
+        const [depositModalVisible, setDepositModalVisible] = useState(false);
         const openDonateModal = () => {
-            setModalVisible(true);
+            setDonateModalVisible(true);
         };
         const closeDonateModal = () => {
-            setModalVisible(false);
+            setDonateModalVisible(false);
+        };
+        const openDepositModal = () => {
+            if (donateModalVisible) setDonateModalVisible(false);
+            setDepositModalVisible(true);
+        };
+        const closeDepositModal = () => {
+            setDepositModalVisible(false);
         };
 
         return (
@@ -794,14 +803,18 @@ const SongBar = memo(
                         setShowPlaylistForm={setShowPlaylistForm}
                     />
                 )}
-                {modalVisible && (
+                {donateModalVisible && (
                     <DonateModal
                         balance={balance}
                         closeDonateModal={closeDonateModal}
+                        openDepositModal={openDepositModal}
                         song={title}
                         songId={id}
                         artist={artist}
                     />
+                )}
+                {depositModalVisible && (
+                    <DepositModal closeDepositModal={closeDepositModal} />
                 )}
                 <div className="hover:bg hover: group relative grid w-full grid-cols-[500px_100px_60px_120px] items-center justify-between rounded-full p-2 px-8 transition-colors duration-300 ease-in-out hover:bg-white hover:bg-opacity-25">
                     {/* index - img - name */}

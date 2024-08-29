@@ -365,16 +365,15 @@ const donate = async (req, res) => {
             await toUser.save();
         }
 
-        user.balance = user.balance - Number(amount);
-        await user.save();
-
         for (let i = 0; i < users.length; ++i) {
+            user.balance = user.balance - Number(result[i]);
+            await user.save();
             const toUser = users[i];
             const payment = await PaymentModel.create({
                 from: user._id,
                 to: toUser,
-                song,
-                amount,
+                song: songObject.title,
+                amount: Number(result[i]),
                 orderId: Number(String(new Date().getTime()).slice(1, 11)),
                 status: 'PAID',
                 type: DONATE,
@@ -387,7 +386,7 @@ const donate = async (req, res) => {
         for (let i = 0; i < users.length; ++i) {
             const toUser = users[i];
             const notification = {
-                message: `You have received a donation of ${amount} VND from ${user.name} for ${song}`,
+                message: `You have received a donation of ${amount} VND from ${user.name} for ${songObject.title}`,
                 createdAt: new Date(),
             };
             await toUser.notify(notification);
