@@ -24,6 +24,7 @@ function useSong() {
                             url: res.audiourl,
                             thumbnail: imageurl.url,
                             screen: coverimg?.url ?? '',
+                            isVerified: res.isVerified,
                         }),
                     );
                     dispatch(play());
