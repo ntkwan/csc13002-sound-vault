@@ -34,8 +34,8 @@ const InputForm = memo(
         };
 
         return (
-            <div className="">
-                <div className="">
+            <div>
+                <div className="relative">
                     <input
                         className="h-[50px] w-full rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                         id={id}
