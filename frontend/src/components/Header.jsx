@@ -227,7 +227,7 @@ function Header() {
         },
         {
             // account not verified
-            type: 'Artist',
+            type: 'Profile',
             title: 'Profiles',
             visibility: '',
             link: '',
