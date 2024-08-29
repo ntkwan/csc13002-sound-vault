@@ -188,6 +188,7 @@ function Header() {
     }, [debouncedSearchInput, getSearchData]);
 
     const { artists, users, songs, albums, playlists } = searchData || {};
+    console.log(searchData);
     const results = [
         {
             // only one
@@ -227,7 +228,7 @@ function Header() {
         },
         {
             // account not verified
-            type: 'Profile',
+            type: 'Artist',
             title: 'Profiles',
             visibility: '',
             link: '',
