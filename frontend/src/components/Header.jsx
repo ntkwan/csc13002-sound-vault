@@ -7,9 +7,34 @@ import {
     selectCurrentProfile,
     selectCurrentToken,
 } from '@services/selectors';
-import { useLazyGetSearchResultsQuery } from '@services/api';
+import {
+    useGetNotificationQuery,
+    useLazyGetSearchResultsQuery,
+    useSetNotificationSeenMutation,
+} from '@services/api';
 import { MediaDisplay } from '.';
 import { useDebounce } from '@hooks';
+
+const showTimeDifference = (date) => {
+    const currentDate = new Date();
+    const noticeDate = new Date(date);
+    const diff = currentDate - noticeDate;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(weeks / 4);
+    const years = Math.floor(months / 12);
+
+    if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
+    if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
+    if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    if (seconds > 0) return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
+};
 
 function Header() {
     // hooks
@@ -17,7 +42,7 @@ function Header() {
     const location = useLocation();
     const token = useSelector(selectCurrentToken);
     const isAdmin = useSelector(selectCurrentAdmin);
-    const [pingNotice, setPingNotice] = useState(true);
+    const [pingNotice, setPingNotice] = useState(false);
     const [showNotice, setShowNotice] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [showSearch, setShowSearch] = useState(false);
@@ -36,17 +61,38 @@ function Header() {
     };
 
     // notification data
-    const notices = [
-        {
-            message: 'Welcome to SoundVault',
-            time: '1 minute ago',
-            seen: false,
-        },
-    ];
+    const { data: notices } = useGetNotificationQuery({
+        skip: !token,
+    });
+
+    useEffect(() => {
+        if (notices && notices.length > 0) {
+            const unseenNotice = notices.find((item) => !item.seen);
+            if (unseenNotice) setPingNotice(true);
+        }
+    }, [notices]);
+
     // handle notification
+    const [setNotificationSeen] = useSetNotificationSeenMutation();
+    const markNotificationSeen = async () => {
+        if (notices) {
+            const unseenNotice = notices.find((item) => !item.seen);
+            if (unseenNotice) {
+                try {
+                    await setNotificationSeen().unwrap();
+                    setPingNotice(false);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    };
+
     const handleShowNotice = () => {
         setShowNotice(!showNotice);
-        setPingNotice(false);
+        if (pingNotice) {
+            markNotificationSeen();
+        }
     };
     // handle click outside notification
     const handleClickOutsideNotification = (event) => {
@@ -133,7 +179,7 @@ function Header() {
     // get search data
     let [
         getSearchData,
-        { data: searchData, isFetching, isSuccess, error: noResultsFound },
+        { data: searchData, isFetching, error: noResultsFound },
     ] = useLazyGetSearchResultsQuery();
 
     useEffect(() => {
@@ -181,7 +227,7 @@ function Header() {
         },
         {
             // account not verified
-            type: 'Artist',
+            type: 'Profile',
             title: 'Profiles',
             visibility: '',
             link: '',
@@ -273,19 +319,29 @@ function Header() {
                             )}
                             {showNotice && (
                                 <div className="absolute right-0 z-[11] mt-2 h-max w-60 rounded-xl bg-white text-sm shadow-md">
-                                    {notices.map((item, index) => (
-                                        <div
-                                            className={`${item.seen ? 'bg-[#c8c8c8]' : 'bg-white hover:bg-[#c8c8c8]'} grid auto-rows-max p-3 text-black ring-1 ring-black transition-colors duration-300 ease-in-out hover:cursor-pointer`}
-                                            key={index}
-                                        >
-                                            <span className="text-start">
-                                                Title: {item.message}
-                                            </span>
-                                            <span className="text-start">
-                                                Time: {item.time}
+                                    {notices.length > 0 ? (
+                                        notices.map((item, index) => (
+                                            <div
+                                                className="group grid auto-rows-max rounded-xl bg-white p-3 text-black transition-colors duration-300 ease-in-out hover:bg-[#c8c8c8]"
+                                                key={index}
+                                            >
+                                                <span className="truncate text-start text-base group-hover:text-pretty">
+                                                    {item.message}
+                                                </span>
+                                                <span className="text-start text-xs font-bold text-blue-500">
+                                                    {showTimeDifference(
+                                                        item.createdAt,
+                                                    )}
+                                                </span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="group grid auto-rows-max rounded-xl bg-white p-3 text-black transition-colors duration-300 ease-in-out hover:bg-[#c8c8c8]">
+                                            <span className="truncate text-start text-base group-hover:text-pretty">
+                                                You have no notification !
                                             </span>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             )}
                         </div>

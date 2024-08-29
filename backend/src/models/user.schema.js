@@ -195,7 +195,10 @@ UserSchema.methods.removeFromLikedSongs = async function (songId) {
 };
 
 UserSchema.methods.notify = async function (notification) {
-    this.notification.unshift(notification);
+    this.notification.unshift({
+        ...notification,
+        seen: false,
+    });
     await this.save();
 };
 

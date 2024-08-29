@@ -54,6 +54,11 @@ const playlist_thumbnail_upload = multer({
     imageFilter,
 }).single('thumbnail');
 
+const personal_document_upload = multer({
+    storage,
+    imageFilter,
+}).single('document');
+
 const upload_at_once = multer({
     storage,
     audioFilter,
@@ -68,6 +73,7 @@ module.exports = {
     profile_pic_upload,
     song_thumbnail_upload,
     playlist_thumbnail_upload,
+    personal_document_upload,
     song_cover_upload,
     upload_at_once,
 };

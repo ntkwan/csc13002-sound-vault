@@ -200,7 +200,7 @@ function AdminWithdrawPage() {
                             </td>
                             <td className="flex items-end justify-end p-2 py-5">
                                 <span
-                                    className={`w-1/3 min-w-fit rounded-lg px-2 py-1 ${
+                                    className={`w-1/3 min-w-fit rounded-lg px-2 py-1 font-bold ${
                                         request.status === 'PAID'
                                             ? 'bg-[#FFF0F0] text-center text-[#0CAF60]'
                                             : 'bg-[#FFF0E6] text-center text-[#eb4141]'

@@ -21,13 +21,13 @@ function ProfilePageUploadMusic() {
     const [uploadAudio, setUploadAudio] = useState(null);
 
     // handle suggestion for collaborators
-    const [suggestion, setSuggestion] = useState('');
     const { id } = useSelector(selectCurrentProfile);
     const { data: followingListData } = useGetFollowingListByIdQuery(id, {
         skip: !id,
     });
+
     // handle genres
-    const genres = [
+    const originalGenres = [
         { id: 'Rap', display: 'Rap' },
         { id: 'Love', display: 'Love' },
         { id: 'Pop', display: 'Pop' },
@@ -37,7 +37,38 @@ function ProfilePageUploadMusic() {
         { id: 'Indie', display: 'Indie' },
         { id: 'Chill', display: 'Chill' },
     ];
-    const [genre, setGenre] = useState('');
+    const [genres, setGenres] = useState(originalGenres);
+    const [selectedGenres, setSelectedGenres] = useState('');
+    const handleGenreChange = (e) => {
+        const newValue = e.target.value;
+        const lastIndexOfAt = newValue.lastIndexOf('@');
+        const lastString = newValue.slice(lastIndexOfAt + 1);
+        if (lastString.length === 1 || newValue.includes('@@')) {
+            return;
+        }
+        setSelectedGenres(newValue);
+
+        const genreMatch = newValue.replace(/@\[([^\]]+)\]\(([^\)]+)\)/g, '$1');
+        const updatedGenres = originalGenres.reduce((acc, genre) => {
+            if (!genreMatch.includes(genre.id)) {
+                return [...acc, genre];
+            }
+            return acc;
+        }, []);
+        setGenres(updatedGenres);
+    };
+
+    // Function to handle key down event
+    const handleKeyDownGenre = (e) => {
+        const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete'];
+        if (
+            (e.key !== '@' || genres.length === 0) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
+        }
+    };
+
     // handle size mention-react input
     const [maxWidthPx, setMaxWidthPx] = useState(0);
     const updateMaxWidthPx = () => {
@@ -55,9 +86,63 @@ function ProfilePageUploadMusic() {
     const [checked, setChecked] = useState(false);
     // show terms and policy
     const [showTermsAndPolicy, setShowTermsAndPolicy] = useState(false);
+
+    // handle mention collaborators
+    if (followingListData) {
+        console.log(followingListData);
+        const { following } = followingListData;
+        var originalCollaborator = following?.map((user) => ({
+            id: user.name,
+            display: user.name,
+            _id: user.id,
+        }));
+        if (originalCollaborator.length === 0) {
+            var originalCollaborator = [
+                {
+                    id: 'No user following',
+                    display: 'No user following',
+                },
+            ];
+        }
+    }
+
+    const [collaborator, setCollaborator] = useState(originalCollaborator);
+    const [selectedCollaborator, setSelectedCollaborator] = useState('');
+    const handleCollaboratorChange = (e) => {
+        const newValue = e.target.value;
+        const lastIndexOfAt = newValue.lastIndexOf('@');
+        const lastString = newValue.slice(lastIndexOfAt + 1);
+        if (lastString.length === 1 || newValue.includes('@@')) {
+            return;
+        }
+        setSelectedCollaborator(newValue);
+
+        const collaboratorMatch = newValue.replace(
+            /@\[([^\]]+)\]\(([^\)]+)\)/g,
+            '$1',
+        );
+        const updateCollaborator = originalCollaborator.reduce((acc, colab) => {
+            if (!collaboratorMatch.includes(colab.id)) {
+                return [...acc, colab];
+            }
+            return acc;
+        }, []);
+        setCollaborator(updateCollaborator);
+    };
+
+    // Function to handle key down event
+    const handleKeyDownCollaborator = (e) => {
+        const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete'];
+        if (
+            (e.key !== '@' || collaborator.length === 0) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
+        }
+    };
+
     // handle navigate
     const navigate = useNavigate();
-
     // handle submit
     const [submitMusic, { isLoading: isLoadingSubmitMusic }] =
         useSubmitMusicMutation();
@@ -73,11 +158,23 @@ function ProfilePageUploadMusic() {
         const songTitle = formData.get('title');
         // const genre = formData.get('genre');
         const region = formData.get('region');
-        // @[Love](Love) @[Love](Love)
-        const genrePrePs = genre.replace(/@\[([^\]]+)\]\(([^\)]+)\)/g, '$1');
-        const words = genrePrePs.split(/\s+/);
-        const uniqueWords = Array.from(new Set(words));
-        const genreArray = uniqueWords.join(' ');
+        // @[Love](Love)
+        const genreArray = originalGenres.reduce((acc, genre) => {
+            if (selectedGenres.includes(genre.id)) {
+                return [...acc, genre.id];
+            }
+            return acc;
+        }, []);
+        // colaborators
+        const collaboratorArrayID = originalCollaborator.reduce(
+            (acc, colab) => {
+                if (selectedCollaborator.includes(colab.id)) {
+                    return [...acc, colab._id];
+                }
+                return acc;
+            },
+            [],
+        );
 
         if (
             songTitle &&
@@ -88,7 +185,7 @@ function ProfilePageUploadMusic() {
         ) {
             try {
                 const uploadForm = new FormData();
-                // formData.append('collaborators', collaborators);
+                formData.append('collaborators', collaboratorArrayID);
                 uploadForm.append('title', songTitle);
                 uploadForm.append('genre', genreArray);
                 uploadForm.append('region', region);
@@ -106,14 +203,6 @@ function ProfilePageUploadMusic() {
             toast.error('Please provide all required files.');
         }
     };
-
-    if (followingListData) {
-        const { following } = followingListData;
-        var users = following?.map((user) => ({
-            id: user.name,
-            display: user.name,
-        }));
-    }
 
     const iconUpdate = (
         <svg
@@ -184,8 +273,9 @@ function ProfilePageUploadMusic() {
                                 name="collaborators"
                                 className="upload-music__collaborators h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 placeholder="Mention Collaborators using '@' symbol"
-                                value={suggestion}
-                                onChange={(e) => setSuggestion(e.target.value)}
+                                value={selectedCollaborator}
+                                onChange={handleCollaboratorChange}
+                                onKeyDown={handleKeyDownCollaborator}
                                 singleLine
                                 style={{
                                     '&singleLine': {
@@ -215,7 +305,7 @@ function ProfilePageUploadMusic() {
                                 }}
                             >
                                 <Mention
-                                    data={users ?? []}
+                                    data={collaborator}
                                     appendSpaceOnAdd={true}
                                     style={{
                                         backgroundColor: '#0284c7',
@@ -238,10 +328,11 @@ function ProfilePageUploadMusic() {
                             <MentionsInput
                                 id="genres"
                                 name="genres"
-                                className="upload-music__genres h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                className="upload-music__genres z-50 h-[50px] w-full content-center hyphens-manual text-nowrap rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
                                 placeholder="Mention genres using '@' symbol"
-                                value={genre}
-                                onChange={(e) => setGenre(e.target.value)}
+                                value={selectedGenres}
+                                onChange={handleGenreChange}
+                                onKeyDown={handleKeyDownGenre}
                                 singleLine
                                 style={{
                                     '&singleLine': {

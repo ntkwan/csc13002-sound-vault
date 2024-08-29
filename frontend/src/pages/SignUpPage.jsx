@@ -4,7 +4,6 @@ import { useSignUpMutation } from '@services/api';
 import {
     AuthenTitle,
     FormInput,
-    GoogleButton,
     ConfirmButton,
     TermAndPolicyBox,
 } from '@features/authentication/components';
@@ -93,7 +92,6 @@ function SignUpPage() {
                             />
                         ))}
                         <div className="mt-6 flex select-none space-x-2">
-                            <GoogleButton />
                             <ConfirmButton
                                 title="Sign up"
                                 disabled={

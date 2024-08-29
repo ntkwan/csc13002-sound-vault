@@ -149,10 +149,33 @@ const playlistThumbnailUploader = async (req, res) => {
     }
 };
 
+const documentUploader = async (req, res) => {
+    const file = req.file;
+
+    if (!file) {
+        return res.status(400).json({ message: 'File not found' });
+    }
+
+    const fName = file.originalname;
+
+    try {
+        const document = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: 'auto',
+            public_id: fName,
+            folder: 'documents',
+        });
+
+        return document;
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
     playlistThumbnailUploader,
     songThumbnailDestroyer,
     audioUploader,
     profileUploader,
     songThumbnailUploader,
+    documentUploader,
 };

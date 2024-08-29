@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { PageTitle } from '@components';
 import { UploadImage, InputForm } from '@features/profilepage/components';
 import { updateInfo } from '@features/profilepage/slices';
@@ -9,22 +10,20 @@ import {
     useUploadProfileCoverMutation,
     useChangeProfileMutation,
     useChangePasswordMutation,
+    useUpdateBankInfoMutation,
 } from '@services/api';
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
 
 function ProfilePageEditing() {
     // extract user information
     const dispatch = useDispatch();
-    const userProfile = useSelector(selectCurrentProfile);
+    const { isVerified } = useSelector(selectCurrentProfile);
 
     // get user profile information
     const { data: ProfileInfo, isLoading: isLoadingProfileInfo } =
         useGetProfileInfomationQuery();
 
     // handle update information
-    const [changeProfile, { isLoading: isLoadingChangeProfile }] =
-        useChangeProfileMutation();
+    const [changeProfile] = useChangeProfileMutation();
 
     const handleUpdateInfo = async (e) => {
         e.preventDefault();
@@ -33,13 +32,11 @@ function ProfilePageEditing() {
         const name = formData.get('pf-fullname');
         const email = formData.get('pf-email');
         const shortDesc = formData.get('pf-shortDesc');
-        const walletAddress = formData.get('pf-walletAddress');
 
         if (
             ProfileInfo.name === name &&
             ProfileInfo.email === email &&
             ProfileInfo.shortDesc === shortDesc
-            // && ProfileInfo.walletAddress === walletAddress
         ) {
             toast.error('No information changed!');
             return;
@@ -50,13 +47,36 @@ function ProfilePageEditing() {
                 name,
                 email,
                 shortDesc,
-                walletAddress,
             }).unwrap();
             toast.success('Updated Information Successfully!');
-            dispatch(updateInfo({ name, email, shortDesc, walletAddress }));
+            dispatch(updateInfo({ name, email, shortDesc }));
         } catch (error) {
             console.error('Error updating profile:', error);
             toast.error('Update Information Failed!');
+        }
+    };
+
+    // handle update bank information
+    const [updateBankInfo, { isLoading: isLoadingUpdateBankInfo }] =
+        useUpdateBankInfoMutation();
+
+    const handleUpdateBankInfo = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const bankId = formData.get('bank');
+        const accountNo = formData.get('pf-accountNumber');
+        const accountName = formData.get('pf-accountName');
+
+        try {
+            const res = await updateBankInfo({
+                bankId,
+                accountNo,
+                accountName,
+            }).unwrap();
+            toast.success(res.message);
+        } catch (error) {
+            toast.error(error.data.message);
         }
     };
 
@@ -114,7 +134,7 @@ function ProfilePageEditing() {
     );
 
     if (isLoadingProfileInfo) return;
-    const { name, email, shortDesc, walletAddress } = ProfileInfo || {};
+    const { name, email, shortDesc } = ProfileInfo || {};
 
     return (
         <div className="profilepage__editing pt-8">
@@ -172,11 +192,6 @@ function ProfilePageEditing() {
                             placeholder="Short Description"
                             initValue={shortDesc}
                         />
-                        <InputForm
-                            id="pf-walletAddress"
-                            placeholder="Wallet Address"
-                            initValue={walletAddress}
-                        />
                         <button
                             className="min-w-1/2 group relative float-right flex h-12 min-w-36 max-w-36 items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
@@ -193,6 +208,116 @@ function ProfilePageEditing() {
                         </button>
                     </fieldset>
                 </form>
+
+                {/* Bank Account Information Form */}
+                {isVerified && (
+                    <form
+                        className="editing__bank flex flex-1 flex-col space-y-4"
+                        onSubmit={handleUpdateBankInfo}
+                    >
+                        <label
+                            htmlFor="pf-bankInfo"
+                            className="inline w-5/6 text-3xl font-bold"
+                        >
+                            Bank Information
+                        </label>
+                        <fieldset className="w-5/6 space-y-4">
+                            <select
+                                className="relative h-[50px] w-full appearance-none rounded-xl bg-[#383838] px-4 shadow-md placeholder:text-[#a5a5a5] focus:outline-none focus:ring-0 focus:ring-white"
+                                id="bank"
+                                name="bank"
+                                required
+                            >
+                                <option value="ICB">VietinBank</option>
+                                <option value="VCB">Vietcombank</option>
+                                <option value="BIDV">BIDV</option>
+                                <option value="VBA">Agribank</option>
+                                <option value="OCB">OCB</option>
+                                <option value="MB">MBBank</option>
+                                <option value="TCB">Techcombank</option>
+                                <option value="ACB">ACB</option>
+                                <option value="VPB">VPBank</option>
+                                <option value="TPB">TPBank</option>
+                                <option value="STB">Sacombank</option>
+                                <option value="HDB">HDBank</option>
+                                <option value="VCCB">VietCapitalBank</option>
+                                <option value="SCB">SCB</option>
+                                <option value="VIB">VIB</option>
+                                <option value="SHB">SHB</option>
+                                <option value="EIB">Eximbank</option>
+                                <option value="MSB">MSB</option>
+                                <option value="CAKE">CAKE</option>
+                                <option value="Ubank">Ubank</option>
+                                <option value="TIMO">Timo</option>
+                                <option value="VTLMONEY">ViettelMoney</option>
+                                <option value="VNPTMONEY">VNPTMoney</option>
+                                <option value="SGICB">SaigonBank</option>
+                                <option value="BAB">BacABank</option>
+                                <option value="PVCB">PVcomBank</option>
+                                <option value="Oceanbank">Oceanbank</option>
+                                <option value="NCB">NCB</option>
+                                <option value="SHBVN">ShinhanBank</option>
+                                <option value="ABB">ABBANK</option>
+                                <option value="VAB">VietABank</option>
+                                <option value="NAB">NamABank</option>
+                                <option value="PGB">PGBank</option>
+                                <option value="VIETBANK">VietBank</option>
+                                <option value="BVB">BaoVietBank</option>
+                                <option value="SEAB">SeABank</option>
+                                <option value="COOPBANK">COOPBANK</option>
+                                <option value="LPB">LienVietPostBank</option>
+                                <option value="KLB">KienLongBank</option>
+                                <option value="KBank">KBank</option>
+                                <option value="KBHN">KookminHN</option>
+                                <option value="KEBHANAHCM">KEBHanaHCM</option>
+                                <option value="KEBHANAHN">KEBHANAHN</option>
+                                <option value="MAFC">MAFC</option>
+                                <option value="CITIBANK">Citibank</option>
+                                <option value="KBHCM">KookminHCM</option>
+                                <option value="VBSP">VBSP</option>
+                                <option value="WVN">Woori</option>
+                                <option value="VRB">VRB</option>
+                                <option value="UOB">UnitedOverseas</option>
+                                <option value="SCVN">StandardChartered</option>
+                                <option value="PBVN">PublicBank</option>
+                                <option value="NHB HN">Nonghyup</option>
+                                <option value="IVB">IndovinaBank</option>
+                                <option value="IBK - HCM">IBKHCM</option>
+                                <option value="IBK - HN">IBKHN</option>
+                                <option value="HSBC">HSBC</option>
+                                <option value="HLBVN">HongLeong</option>
+                                <option value="GPB">GPBank</option>
+                                <option value="DOB">DongABank</option>
+                                <option value="DBS">DBSBank</option>
+                                <option value="CIMB">CIMB</option>
+                                <option value="CBB">CBBank</option>
+                            </select>
+                            <InputForm
+                                id="pf-accountNumber"
+                                placeholder="Account Number"
+                            />
+                            <InputForm
+                                id="pf-accountName"
+                                placeholder="Account Name"
+                                initValue={name}
+                            />
+                            <button
+                                className="min-w-1/2 group relative float-right flex h-12 min-w-36 max-w-36 items-center justify-center rounded-full border-2 px-5 py-3"
+                                type="submit"
+                            >
+                                {isLoadingUpdateBankInfo && iconUpdate}
+                                {isLoadingUpdateBankInfo ? (
+                                    <span className="-translate-x-[7px]">
+                                        Updating...
+                                    </span>
+                                ) : (
+                                    'Update'
+                                )}
+                                <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
+                            </button>
+                        </fieldset>
+                    </form>
+                )}
 
                 {/* Password recovery form */}
                 <form

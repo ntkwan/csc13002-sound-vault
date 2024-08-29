@@ -6,6 +6,7 @@ const SongModel = require('../models/song.schema');
 const PlaylistModel = require('../models/playlist.schema');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+const uploader = require('../config/cloudinary.config');
 
 const contact_to_support = async (req, res) => {
     const { firstName, lastName, email, phoneNumber, message } = req.body;
@@ -767,9 +768,92 @@ const get_notification = async (req, res) => {
                 return {
                     message: notification.message,
                     createdAt: notification.createdAt,
+                    seen: notification.seen,
                 };
             }),
         );
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const set_notification_seen = async (req, res) => {
+    const user = req.user;
+    try {
+        user.notification = user.notification.map((notification) => {
+            return {
+                ...notification,
+                seen: true,
+            };
+        });
+        await user.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: 'Notification seen',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+const request_account_verification = async (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).json({
+            message: `File validation error: ${req.fileValidationError}`,
+        });
+    }
+
+    const user = req.user;
+    const { name, dob, phone } = req.body;
+    if (!name || !dob || !phone) {
+        return res.status(400).json({
+            message: 'Missing required fields',
+        });
+    }
+
+    try {
+        const documentResponse = await uploader.documentUploader(req, res);
+        if (!documentResponse) {
+            return res.status(500).json({
+                message: 'Error occured while uploading document',
+            });
+        }
+
+        const mailOptions = {
+            from: user.email,
+            to: process.env.HOST_EMAIL,
+            subject: 'Account verification request from ' + user.name,
+            text:
+                'Name: ' +
+                name +
+                '\n' +
+                'Date of Birth: ' +
+                dob +
+                '\n' +
+                'Phone: ' +
+                phone +
+                '\n' +
+                'Document: ' +
+                documentResponse.secure_url,
+        };
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.HOST_EMAIL,
+                pass: process.env.HOST_PASSWORD,
+            },
+        });
+
+        transporter.sendMail(mailOptions);
+
+        return res.status(200).json({
+            message: 'Request sent successfully',
+        });
     } catch (error) {
         return res.status(500).json({
             message: error.message,
@@ -798,4 +882,6 @@ module.exports = {
     get_search_results,
     update_bank_info,
     get_notification,
+    set_notification_seen,
+    request_account_verification,
 };

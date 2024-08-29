@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import { useState, memo } from 'react';
 import { HideIcon, NoHideIcon } from '@components/index';
 
@@ -71,5 +72,17 @@ const InputForm = memo(
         );
     },
 );
+
+InputForm.displayName = 'InputForm';
+
+InputForm.propTypes = {
+    id: propTypes.string.isRequired,
+    placeholder: propTypes.string.isRequired,
+    initValue: propTypes.string,
+    isPassword: propTypes.bool,
+    isCheck: propTypes.bool,
+    type: propTypes.string,
+    required: propTypes.bool,
+};
 
 export default InputForm;

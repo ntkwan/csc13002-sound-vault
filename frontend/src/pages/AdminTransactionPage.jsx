@@ -212,7 +212,7 @@ function AdminTransactionPage() {
                                         <img
                                             src={DepositeIcon}
                                             alt="deposit-icon"
-                                            className="mr-3 inline-block h-14 w-14"
+                                            className="mr-2 inline-block h-14 w-14"
                                         />
                                     ) : transaction.type === 'Donate' ? (
                                         <img
@@ -221,11 +221,29 @@ function AdminTransactionPage() {
                                             className="my-[6px] ml-2 mr-5 inline-block h-9 w-9"
                                         />
                                     ) : (
-                                        <div className="ml-[6px] mr-3 flex h-10 w-10 items-center justify-center rounded-full border">
+                                        <div className="ml-[6px] mr-[1.2rem] flex h-10 w-10 items-center justify-center rounded-full border">
                                             <WalletIcon />
                                         </div>
                                     )}
-                                    <p>{transaction.type} money</p>
+                                    <div className="flex flex-col">
+                                        <p>{transaction.type} money</p>
+                                        {transaction.status === 'PENDING' ? (
+                                            <i className="text-sm font-bold text-orange-400">
+                                                Pending
+                                            </i>
+                                        ) : transaction.status ===
+                                          'CANCELLED' ? (
+                                            <i className="text-sm font-bold text-red-500">
+                                                {transaction.type === 'Withdraw'
+                                                    ? 'Rejected'
+                                                    : 'Cancelled'}
+                                            </i>
+                                        ) : (
+                                            <i className="text-sm font-bold text-green-500">
+                                                Paid
+                                            </i>
+                                        )}
+                                    </div>
                                 </div>
                             </td>
                             <td className="h-[74px] px-2">
