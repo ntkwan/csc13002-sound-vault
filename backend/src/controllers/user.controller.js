@@ -423,18 +423,13 @@ const unfollow_profile_by_id = async (req, res) => {
         profileId = new mongoose.Types.ObjectId(profileId);
         userId = new mongoose.Types.ObjectId(userId);
 
-        if (targetProfile.followers.length < thisProfile.following.length) {
-            if (!targetProfile.followers.includes(userId)) {
-                return res.status(400).json({
-                    message: 'You are not following this user',
-                });
-            }
-        } else {
-            if (!thisProfile.following.includes(profileId)) {
-                return res.status(400).json({
-                    message: 'You are not following this user',
-                });
-            }
+        if (
+            !targetProfile.followers.includes(userId) &&
+            !thisProfile.following.includes(profileId)
+        ) {
+            return res.status(400).json({
+                message: 'You are not following this user',
+            });
         }
 
         targetProfile.followers = targetProfile.followers.filter(

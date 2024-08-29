@@ -89,7 +89,6 @@ function ProfilePageUploadMusic() {
 
     // handle mention collaborators
     if (followingListData) {
-        console.log(followingListData);
         const { following } = followingListData;
         var originalCollaborator = following?.map((user) => ({
             id: user.name,
@@ -185,7 +184,7 @@ function ProfilePageUploadMusic() {
         ) {
             try {
                 const uploadForm = new FormData();
-                formData.append('collaborators', collaboratorArrayID);
+                uploadForm.append('collaborators', collaboratorArrayID);
                 uploadForm.append('title', songTitle);
                 uploadForm.append('genre', genreArray);
                 uploadForm.append('region', region);
