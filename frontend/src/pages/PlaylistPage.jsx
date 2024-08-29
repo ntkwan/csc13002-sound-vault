@@ -280,7 +280,7 @@ function PlaylistPage() {
                             </p>
                             {description && (
                                 <p className="text-shadow-1 truncate text-sm font-medium text-slate-300">
-                                    Description: {description}
+                                    {description}
                                 </p>
                             )}
                         </div>
