@@ -249,6 +249,7 @@ const get_my_profile = async (req, res) => {
             isBanned: User.isBanned,
             shortDesc: User.shortDesc,
             balance: User.balance,
+            publicAddress: User.publicAddress,
         };
         if (User.isVerified) {
             response = {
@@ -309,6 +310,8 @@ const get_profile_all_songs = async (req, res) => {
                     view: song.view,
                     region: song.region,
                     isverified: song.isVerified,
+                    uploader: song.uploader,
+                    isPending: song.isPending,
                 };
             }),
         );
@@ -556,6 +559,9 @@ const get_recently_played_songs = async (req, res) => {
                     audiourl: song.audiourl,
                     coverimg: song.coverimg,
                     view: song.view,
+                    isverified: song.isVerified,
+                    uploader: song.uploader,
+                    isPending: song.isPending,
                 };
             }),
         });

@@ -313,7 +313,7 @@ function SongPage() {
                                             />
                                         </div>
                                         {showSongOptions === true && (
-                                            <div className="menu absolute left-10 top-9 z-[2] mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
+                                            <div className="menu absolute left-10 top-9 z-50 mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-black bg-opacity-50 text-sm shadow-md backdrop-blur-xl">
                                                 <ul>
                                                     {myProfileData?.id ==
                                                         songUploader && (

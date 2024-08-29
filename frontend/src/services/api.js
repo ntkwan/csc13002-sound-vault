@@ -210,6 +210,7 @@ export const api = createApi({
                 url: `/request-copyright/${songId}`,
                 method: 'POST',
             }),
+            invalidatesTags: ['Song'],
         }),
 
         // Playlists ----------------------------------------------------------

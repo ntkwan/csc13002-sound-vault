@@ -13,6 +13,7 @@ import {
     useGetPlaylistByIdQuery,
     useDeleteTrackByIdMutation,
     useViewCopyrightQuery,
+    useRequestCopyrightMutation,
 } from '@services/api';
 import {
     selectCurrentPlaylist,
@@ -583,8 +584,11 @@ PlaylistForm.propTypes = {
 const SongBar = memo(
     ({ mediaData, onClickImage, onClickButton, isOnPlaying, index }) => {
         const token = useSelector(selectCurrentToken);
-        const { id: myProfileID, isVerified } =
-            useSelector(selectCurrentProfile);
+        const {
+            id: myProfileID,
+            isVerified,
+            publicAddress,
+        } = useSelector(selectCurrentProfile);
         const [duration, setDuration] = useState('0:00');
         const [menuVisible, setMenuVisible] = useState(null);
         const [showReportFrame, setShowReportFrame] = useState(false);
@@ -616,8 +620,17 @@ const SongBar = memo(
                 document.removeEventListener('mousedown', handleOutsideClick);
         }, [menuVisible]);
 
-        const { id, title, artist, view, imageurl, audiourl, isverified } =
-            mediaData;
+        const {
+            id,
+            title,
+            artist,
+            view,
+            imageurl,
+            audiourl,
+            isverified,
+            uploader,
+            isPending,
+        } = mediaData;
         const { url } = imageurl;
 
         useEffect(() => {
@@ -725,6 +738,16 @@ const SongBar = memo(
                 toast.error('Link is not available');
             }
             setMenuVisible(null);
+        };
+
+        const [requestCopyright] = useRequestCopyrightMutation();
+        const handleRequestCopyRight = async () => {
+            try {
+                await requestCopyright(id).unwrap();
+                toast.success('Request sent successfully');
+            } catch (error) {
+                toast.error('Failed to send request', error);
+            }
         };
 
         const { currentSong } = useSong();
@@ -911,7 +934,7 @@ const SongBar = memo(
                                                 )}
                                             </li>
                                         )}
-                                        {pathtype == 'profile' &&
+                                        {uploader == myProfileID &&
                                             pathId == undefined && (
                                                 <UtilitiesCard
                                                     icon="ri-disc-line"
@@ -968,6 +991,20 @@ const SongBar = memo(
                                                 spanClass="text-left"
                                             />
                                         )}
+                                        {myProfileID == uploader &&
+                                            !isverified &&
+                                            publicAddress != '' &&
+                                            !isPending && (
+                                                <UtilitiesCard
+                                                    icon="ri-copyright-line"
+                                                    title="Request for copyright"
+                                                    handleAction={() => {
+                                                        handleRequestCopyRight();
+                                                        setMenuVisible(null);
+                                                    }}
+                                                    spanClass="text-left"
+                                                />
+                                            )}
                                         <UtilitiesCard
                                             icon="ri-share-line"
                                             title="Share"

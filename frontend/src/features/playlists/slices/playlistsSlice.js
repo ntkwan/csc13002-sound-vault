@@ -42,8 +42,6 @@ const playlistsSlice = createSlice({
             (state, action) => {
                 action.payload.playlists.forEach((playlist) => {
                     if (playlist.isAlbum) {
-                        console.log('Album:', playlist);
-
                         addToList(state.albums, playlist);
                     } else addToList(state.playlists, playlist);
                 });

@@ -228,6 +228,9 @@ const get_playlist_by_id = async (req, res) => {
                 audiourl: song.audiourl,
                 view: song.view,
                 region: song.region,
+                isverified: song.isVerified,
+                uploader: song.uploader,
+                isPending: song.isPending,
             };
         });
         return res.status(200).json({

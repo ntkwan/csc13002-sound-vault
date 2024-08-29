@@ -297,7 +297,7 @@ function PlaylistPage() {
                             onClick={() => setShowProfileOption(true)}
                         />
                         {showProfileOption === true && (
-                            <div className="menu absolute right-0 z-[2] mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
+                            <div className="menu absolute right-0 z-50 mt-2 h-max w-44 overflow-hidden rounded-xl border-[2px] border-[#999] bg-[#222] text-sm shadow-md">
                                 <ul>
                                     {myProfileData?.id == playlist_owner && (
                                         <>
