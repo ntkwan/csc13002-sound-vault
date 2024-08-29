@@ -395,6 +395,25 @@ export const api = createApi({
                 body: { firstName, lastName, email, phoneNumber, message },
             }),
         }),
+        getNotification: builder.query({
+            query: () => '/get-notification',
+            providesTags: ['User'],
+        }),
+        setNotificationSeen: builder.mutation({
+            query: () => ({
+                url: '/set-notification-seen',
+                method: 'POST',
+            }),
+            invalidatesTags: ['User'],
+        }),
+        updateBankInfo: builder.mutation({
+            query: (body) => ({
+                url: '/update-bank-info',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User'],
+        }),
 
         // Admin -------------------------------------------------------------
         setVerifiedArtistById: builder.mutation({
@@ -680,6 +699,9 @@ export const {
     useGetProfilePlaylistsQuery,
     useLazyGetSearchResultsQuery,
     useContractToSupportMutation,
+    useGetNotificationQuery,
+    useSetNotificationSeenMutation,
+    useUpdateBankInfoMutation,
 
     // Admin ------------------------------------------------------------------
     useSetVerifiedArtistByIdMutation,

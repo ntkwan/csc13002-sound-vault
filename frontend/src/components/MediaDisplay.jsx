@@ -414,7 +414,7 @@ const DetailCard = memo(
         let imageClass = 'rounded-lg';
         let card_title,
             card_desc = type.includes('Artist') ? 'Artist' : type;
-        if (type.includes('Artist')) {
+        if (type.includes('Artist') || type.includes('Profile')) {
             imageClass = 'rounded-full';
             card_title = name;
         } else if (type.includes('Song')) {

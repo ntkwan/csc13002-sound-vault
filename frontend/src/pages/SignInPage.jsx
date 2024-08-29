@@ -4,7 +4,6 @@ import { useSignInMutation } from '@services/api';
 import {
     AuthenTitle,
     FormInput,
-    GoogleButton,
     ConfirmButton,
 } from '@features/authentication/components';
 import { INPUTS } from '@components';
@@ -62,7 +61,6 @@ function SignInPage() {
                         Forgot your password?
                     </Link>
                     <div className="mt-6 flex select-none space-x-2">
-                        <GoogleButton />
                         <ConfirmButton
                             title="Sign in"
                             disabled={

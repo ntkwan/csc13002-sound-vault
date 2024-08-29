@@ -14,22 +14,16 @@ function ProfileRequestVerifyPage() {
     //     useSubmitMusicMutation();
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!checked) {
-            toast.error('You must accept the terms and policies to proceed.');
-            return;
-        }
 
         const formData = new FormData(e.target);
         const fullname = formData.get('vrf-fullname');
-        const email = formData.get('vrf-email');
         const dob = formData.get('vrf-dob');
         const phoneNumber = formData.get('vrf-phoneNumber');
 
-        if (fullname && email && dob && phoneNumber && UploadDocument) {
+        if (fullname && dob && phoneNumber && UploadDocument) {
             try {
                 const uploadForm = new FormData();
                 uploadForm.append('fullname', fullname);
-                uploadForm.append('email', email);
                 uploadForm.append('dob', dob);
                 uploadForm.append('phoneNumber', phoneNumber);
                 uploadForm.append('document', UploadDocument);
@@ -82,13 +76,6 @@ function ProfileRequestVerifyPage() {
                         required
                     />
                     <InputForm
-                        id="vrf-email"
-                        name="email"
-                        placeholder="Email"
-                        type="email"
-                        required
-                    />
-                    <InputForm
                         id="vrf-dob"
                         name="dob"
                         placeholder="DOB"
@@ -119,7 +106,7 @@ function ProfileRequestVerifyPage() {
                             label="To attach documents click on box or drop file here!"
                             className=""
                             sizeLimit={10}
-                        // useUploadMutation={setUploadDocument}
+                            // useUploadMutation={setUploadDocument}
                         />
                         <ul className="form__document-desc list-disc">
                             <li className="desc-list">
