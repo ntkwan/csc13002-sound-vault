@@ -317,7 +317,7 @@ function ProfilePageUploadMusic() {
                             </p>
                         </div>
                         <button
-                            className="relative m-auto flex min-w-36 max-w-36 select-none items-center justify-center rounded-full border-2 px-5 py-3"
+                            className="group relative m-auto flex min-w-36 max-w-36 select-none items-center justify-center rounded-full border-2 px-5 py-3"
                             type="submit"
                         >
                             {isLoadingSubmitMusic && iconUpdate}
@@ -328,6 +328,7 @@ function ProfilePageUploadMusic() {
                             ) : (
                                 'Update'
                             )}
+                            <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
                     </div>
                 </form>

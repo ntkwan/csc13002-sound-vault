@@ -85,9 +85,10 @@ function AboutUsPage() {
 
                         <button
                             type="submit"
-                            className="button col-span-2 m-auto rounded-full border px-6 py-3"
+                            className="button group relative col-span-2 m-auto rounded-full border-2 px-6 py-3"
                         >
                             Send Message
+                            <div className="absolute left-0 top-0 z-[-1] h-full w-full rounded-full bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 group-disabled:opacity-0"></div>
                         </button>
                     </form>
                 </section>
