@@ -549,11 +549,32 @@ const get_recently_played_songs = async (req, res) => {
             );
         });
 
+        const collabs = new Map();
+        for (let song of orderedSongs) {
+            let artists = [];
+            if (song.collaborators) {
+                for (let collab of song.collaborators) {
+                    const artist = await UserModel.findById(collab);
+                    if (!artist) {
+                        continue;
+                    }
+                    artists.push(artist.name);
+                }
+                collabs.set(song._id, artists.join(', '));
+            }
+        }
+
         return res.status(200).json({
             songs: orderedSongs.map((song) => {
                 return {
                     id: song._id,
-                    title: song.title,
+                    title:
+                        collabs.get(song._id).length === 0
+                            ? song.title
+                            : song.title +
+                              ' (ft ' +
+                              collabs.get(song._id) +
+                              ')',
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
