@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const userController = require('../controllers/user.controller');
+const stage_file = require('../middleware/multer');
 
 router.get(
     '/get-profile-information',
@@ -71,5 +72,16 @@ router.post(
     '/update-bank-info',
     authMiddleware.check_artist,
     userController.update_bank_info,
+);
+router.post(
+    '/set-notification-seen',
+    authMiddleware.check_user,
+    userController.set_notification_seen,
+);
+router.post(
+    '/request-account-verification',
+    authMiddleware.check_user,
+    stage_file.personal_document_upload,
+    userController.request_account_verification,
 );
 module.exports = router;
