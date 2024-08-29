@@ -350,7 +350,7 @@ const forgot_password = async (req, res) => {
         const token = jwt.sign({ email: email }, process.env.RESET_PSW_KEY, {
             expiresIn: '1m',
         });
-        const url = `http://localhost:${process.env.CLIENT_PORT}/reset-password?email=${email}&token=${token}`;
+        const url = `${process.env.CLIENT_URI}/reset-password?email=${email}&token=${token}`;
         send_email(email, url)
             .then((result) => {
                 return res.status(200).json({

@@ -1,6 +1,31 @@
 import { PageTitle } from '@components/index';
+import { toast } from 'react-toastify';
+import { useContractToSupportMutation } from '@services/api';
 
 function AboutUsPage() {
+    const [contractToSupport] = useContractToSupportMutation();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const content = {
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            phoneNumber: formData.get('phone'),
+            message: formData.get('message'),
+        };
+
+        try {
+            await contractToSupport(content).unwrap();
+            toast.success('Message sent successfully');
+            e.target.reset();
+        } catch (error) {
+            toast.error('Error sending message');
+            console.error('Error sending message:', error);
+        }
+    };
+
     return (
         <div className="about-us-page pt-8">
             <PageTitle title="Contact Us" />
@@ -28,7 +53,10 @@ function AboutUsPage() {
                         We&rsquo;d love to hear from you. Please fill out this
                         form.
                     </p>
-                    <form className="m-auto grid w-2/3 auto-rows-auto grid-cols-2 gap-10 rounded-xl border p-12">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="m-auto grid w-2/3 auto-rows-auto grid-cols-2 gap-10 rounded-xl border p-12"
+                    >
                         <label
                             htmlFor="firstName"
                             className="block text-xl italic"
@@ -36,8 +64,10 @@ function AboutUsPage() {
                             <span className="block">First Name</span>
                             <input
                                 id="firstName"
+                                name="firstName"
                                 type="text"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
+                                required
                             />
                         </label>
 
@@ -48,8 +78,10 @@ function AboutUsPage() {
                             <span className="block">Last Name</span>
                             <input
                                 id="lastName"
+                                name="lastName"
                                 type="text"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
+                                required
                             />
                         </label>
 
@@ -57,8 +89,10 @@ function AboutUsPage() {
                             <span className="block">Email</span>
                             <input
                                 id="email"
+                                name="email"
                                 type="email"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
+                                required
                             />
                         </label>
 
@@ -66,8 +100,12 @@ function AboutUsPage() {
                             <span className="block">Phone Number</span>
                             <input
                                 id="phone"
+                                name="phone"
                                 type="tel"
                                 className="input w-5/6 border-b bg-transparent focus-visible:outline-none"
+                                title="Phone number must be 10 or 11 digits, consisting only of numbers."
+                                pattern="[0-9]{10,11}"
+                                required
                             />
                         </label>
 
@@ -78,8 +116,10 @@ function AboutUsPage() {
                             <span className="block">Message</span>
                             <textarea
                                 id="message"
+                                name="message"
                                 className="w-full border-b bg-transparent focus-visible:outline-none"
                                 rows="3"
+                                required
                             ></textarea>
                         </label>
 

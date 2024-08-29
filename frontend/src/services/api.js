@@ -388,6 +388,13 @@ export const api = createApi({
         getSearchResults: builder.query({
             query: (query) => `/search?q=${encodeURIComponent(query)}`,
         }),
+        contractToSupport: builder.mutation({
+            query: ({ firstName, lastName, email, phoneNumber, message }) => ({
+                url: '/contact-to-support',
+                method: 'POST',
+                body: { firstName, lastName, email, phoneNumber, message },
+            }),
+        }),
 
         // Admin -------------------------------------------------------------
         setVerifiedArtistById: builder.mutation({
@@ -672,6 +679,7 @@ export const {
     useGetProfileAlbumsQuery,
     useGetProfilePlaylistsQuery,
     useLazyGetSearchResultsQuery,
+    useContractToSupportMutation,
 
     // Admin ------------------------------------------------------------------
     useSetVerifiedArtistByIdMutation,

@@ -28,6 +28,40 @@ import {
 } from '@services/selectors';
 import verifiedIcon from '@assets/img/verified-icon-white.svg';
 
+function ArtistCard({ artistID, handleArtist }) {
+    const { data: profileByIdData } = useGetProfileByIdQuery(artistID, {
+        skip: !artistID,
+    });
+    const { image: { url: profileImageUrl } = {}, name: songArtist } =
+        profileByIdData || {};
+    return (
+        <div
+            className="hover:bg my-5 flex min-w-80 max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
+            onClick={() => handleArtist(artistID)}
+        >
+            <div className="relative mx-3 h-20 min-w-20 max-w-20">
+                {/* playlist avatar */}
+                {profileImageUrl ? (
+                    <img
+                        className="playlist__avatar h-full w-full rounded-full object-cover shadow-2xl"
+                        src={profileImageUrl}
+                        alt=""
+                    />
+                ) : (
+                    <i className="bx bxs-user-circle block h-full w-full content-center rounded-full text-center text-7xl leading-none"></i>
+                )}
+            </div>
+
+            <div className="flex cursor-pointer flex-col justify-center">
+                <p className="text-shadow-1 font-semibold">Artist</p>
+                <p className="text-shadow-2 font-bold hover:underline hover:underline-offset-2">
+                    {songArtist}
+                </p>
+            </div>
+        </div>
+    );
+}
+
 function SongPage() {
     const isAdmin = useSelector(selectCurrentAdmin);
     const token = useSelector(selectCurrentToken);
@@ -70,6 +104,7 @@ function SongPage() {
         isdisabled: songIsDisabled,
         createdAt: songCreatedAt,
         isPending: songIsPending,
+        collaborators: songCollaborators,
     } = songByIdData || {};
     const formattedSongCreatedAt = songCreatedAt
         ? new Date(songCreatedAt).toLocaleDateString()
@@ -430,31 +465,41 @@ function SongPage() {
                                     </button>
                                 </div>
                             )}
-                            <div
-                                className="hover:bg my-5 flex max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
-                                onClick={() => handleArtist(profileId)}
-                            >
-                                <div className="relative mx-3 h-20 min-w-20 max-w-20">
-                                    {/* playlist avatar */}
-                                    {profileImageUrl ? (
-                                        <img
-                                            className="playlist__avatar h-full w-full rounded-full object-cover shadow-2xl"
-                                            src={profileImageUrl}
-                                            alt=""
-                                        />
-                                    ) : (
-                                        <i className="bx bxs-user-circle block h-full w-full content-center rounded-full text-center text-7xl leading-none"></i>
-                                    )}
-                                </div>
+                            <div className="flex">
+                                <div
+                                    className="hover:bg my-5 flex min-w-80 max-w-80 rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-25"
+                                    onClick={() => handleArtist(profileId)}
+                                >
+                                    <div className="relative mx-3 h-20 min-w-20 max-w-20">
+                                        {/* playlist avatar */}
+                                        {profileImageUrl ? (
+                                            <img
+                                                className="playlist__avatar h-full w-full rounded-full object-cover shadow-2xl"
+                                                src={profileImageUrl}
+                                                alt=""
+                                            />
+                                        ) : (
+                                            <i className="bx bxs-user-circle block h-full w-full content-center rounded-full text-center text-7xl leading-none"></i>
+                                        )}
+                                    </div>
 
-                                <div className="flex cursor-pointer flex-col justify-center">
-                                    <p className="text-shadow-1 font-semibold">
-                                        Artist
-                                    </p>
-                                    <p className="text-shadow-2 font-bold hover:underline hover:underline-offset-2">
-                                        {songArtist}
-                                    </p>
+                                    <div className="flex cursor-pointer flex-col justify-center">
+                                        <p className="text-shadow-1 font-semibold">
+                                            Artist
+                                        </p>
+                                        <p className="text-shadow-2 font-bold hover:underline hover:underline-offset-2">
+                                            {songArtist}
+                                        </p>
+                                    </div>
                                 </div>
+                                {songCollaborators.length > 0 &&
+                                    songCollaborators.map((collaborator) => (
+                                        <ArtistCard
+                                            key={collaborator}
+                                            artistID={collaborator}
+                                            handleArtist={handleArtist}
+                                        />
+                                    ))}
                             </div>
                             {allReleases.data.length > 0 && (
                                 <p className="pb-2 text-[27px] font-medium">

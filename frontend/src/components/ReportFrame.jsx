@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     useSendReportOnSongMutation,
     useSendReportOnProfileMutation,
