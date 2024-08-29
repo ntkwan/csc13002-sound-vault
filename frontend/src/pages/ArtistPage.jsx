@@ -21,8 +21,8 @@ function ArtistPage() {
     const mediaData = [
         {
             type: 'Artist Detail',
-            title: 'Indie Artists',
-            data: Artists.slice(-6),
+            title: 'New Artists',
+            data: Artists,
         },
         {
             type: 'Artist Detail',
