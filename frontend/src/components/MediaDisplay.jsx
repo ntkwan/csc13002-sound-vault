@@ -1029,7 +1029,7 @@ const SongBar = memo(
                                                 handleShare(),
                                             )}
                                         />
-                                        {token && (
+                                        {token && myProfileID != uploader && (
                                             <UtilitiesCard
                                                 icon="ri-error-warning-line"
                                                 title="Report"

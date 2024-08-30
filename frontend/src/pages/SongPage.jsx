@@ -429,20 +429,22 @@ function SongPage() {
                                                             handleCopyLink
                                                         }
                                                     />
-                                                    {token && (
-                                                        <UtilitiesCard
-                                                            icon="ri-error-warning-line"
-                                                            title="Report"
-                                                            handleAction={() => {
-                                                                setShowReportFrame(
-                                                                    true,
-                                                                );
-                                                                setShowSongOptions(
-                                                                    false,
-                                                                );
-                                                            }}
-                                                        />
-                                                    )}
+                                                    {token &&
+                                                        songUploader !=
+                                                            myProfileData?.id && (
+                                                            <UtilitiesCard
+                                                                icon="ri-error-warning-line"
+                                                                title="Report"
+                                                                handleAction={() => {
+                                                                    setShowReportFrame(
+                                                                        true,
+                                                                    );
+                                                                    setShowSongOptions(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            />
+                                                        )}
                                                     {myProfileData?.id ==
                                                         songUploader && (
                                                         <UtilitiesCard
