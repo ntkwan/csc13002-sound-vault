@@ -261,21 +261,43 @@ const get_songs_by_region = async (req, res) => {
     // 3 regions: 'VPop', 'KPop', 'US-UK'
     const region = req.params.region;
     try {
-        const songs = await SongModel.find({ region: region })
-            .sort({ view: -1 })
-            .limit(5);
-
-        if (!songs) {
+        const songs = await SongModel.find({ isDisabled: false }).sort({
+            view: -1,
+        });
+        let valid_songs = songs.filter((song) => song.region === region);
+        if (valid_songs.length === 0) {
             return res.status(404).json({
                 message: 'The region is not found',
             });
         }
 
+        valid_songs = valid_songs.slice(0, 5);
+        const collabs = new Map();
+        for (let song of valid_songs) {
+            let artists = [];
+            if (song.collaborators) {
+                for (let collab of song.collaborators) {
+                    const artist = await UserModel.findById(collab);
+                    if (!artist) {
+                        continue;
+                    }
+                    artists.push(artist.name);
+                }
+                collabs.set(song._id, artists.join(', '));
+            }
+        }
+
         res.status(200).send(
-            songs.map((song) => {
+            valid_songs.map((song) => {
                 return {
                     id: song._id,
-                    title: song.title,
+                    title:
+                        collabs.get(song._id).length === 0
+                            ? song.title
+                            : song.title +
+                              ' (ft ' +
+                              collabs.get(song._id) +
+                              ')',
                     artist: song.artist,
                     genre: song.genre,
                     imageurl: song.image,
