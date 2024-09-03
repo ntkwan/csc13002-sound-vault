@@ -42,15 +42,37 @@ SoundVault not only emphasizes core functionalities but also prioritizes UI/UX t
 ![soundvault-screenshot](screenshots/screenshot2.png)
 
 # Tech stack
-**Frontend** 
+## Frontend 
 ![ReactJS][React]
 
-* **Backend:** Express.js, MongoDB, Ethers.js
+## Backend 
+![Express.js][Express.js]
+![MongoDB][MongoDB] ![Mongoose][Mongoose]
+![Cloudinary][Cloudinary]
+![Ethers.js][Ethers.js]
 
-# How to run
+## Blockchain
+![Hardhat][Hardhat]
+
+## Deployment
+![Render][Render]
+![Vercel][Vercel]
+
+# Building
 1. Install [Node.js](https://nodejs.org/en/)
-2. Run `npm install` to install all dependencies (do it individually with `backend`, `frontend` and `root` directory).
-3. Run `npm run start` in the `root` directory to concurrently start the server and client.
+2. Clone the repository
+```sh
+git clone https://github.com/ntkwan/csc13002-sound-vault.git
+```
+3. Run `npm install` to install all dependencies (do it individually with `backend`, `frontend` and `root` directory).
+
+
+# Usage
+Run in the `root` directory to concurrently start the server and client.
+```sh
+npm run start
+```
+**Note:** Deposit feature requires Viet Nam bank account ID and actually working in production environment. 
 
 # Client
 ```
@@ -92,4 +114,15 @@ SoundVault not only emphasizes core functionalities but also prioritizes UI/UX t
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [React]: https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black
-[Express.js]: https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black
+[Express.js]: https://img.shields.io/badge/express-%23000000?style=for-the-badge&logo=express&logoColor=white
+[MongoDB]: https://img.shields.io/badge/mongodb-%2347A248?style=for-the-badge&logo=mongodb&logoColor=white
+[Mongoose]: https://img.shields.io/badge/mongoose-%23880000?style=for-the-badge&logo=mongoose&logoColor=white
+[Ethers.js]: https://img.shields.io/badge/ethers-%232535A0?style=for-the-badge&logo=ethers&logoColor=white
+[Cloudinary]: https://img.shields.io/badge/cloudinary-%233448C5?style=for-the-badge&logo=cloudinary&logoColor=white
+[Render]: https://img.shields.io/badge/Render-%23000000?style=for-the-badge&logo=render&logoColor=white
+[Vercel]:https://img.shields.io/badge/vercel-%23000000?style=for-the-badge&logo=vercel&logoColor=white
+[Hardhat]: https://img.shields.io/badge/hardhat-FFCC2F?style=for-the-badge&logo=hardhat&logoColor=black
+
+
+
+
