@@ -323,12 +323,13 @@ const set_verified_song = async (req, res) => {
 
         publicAddresses = [];
         except = [];
-        publicAddresses.push(User.publicAddress);
         weights = [];
+        publicAddresses.push(User.publicAddress);
         if (Song.collaborators.length == 0) {
             weights.push(100);
         } else {
-            weights.push(50);
+            const money = 100 / (Song.collaborators.length + 1);
+            weights.push(money);
             for (let i = 0; i < Song.collaborators.length; i++) {
                 const collab_artist = await UserModel.findById(
                     Song.collaborators[i],
@@ -337,7 +338,7 @@ const set_verified_song = async (req, res) => {
                     except.push(collab_artist.name);
                 } else {
                     publicAddresses.push(collab_artist.publicAddress);
-                    weights.push(50); // 50% for each collaborator
+                    weights.push(money);
                 }
             }
         }
