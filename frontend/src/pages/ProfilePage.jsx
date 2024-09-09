@@ -280,14 +280,14 @@ function ProfilePage() {
                                     {!profileAllSongsData
                                         ? '0 Song'
                                         : profileAllSongsData.length <= 1
-                                          ? `${profileAllSongsData.length} Song`
-                                          : `${profileAllSongsData.length} Songs`}
+                                            ? `${profileAllSongsData.length} Song`
+                                            : `${profileAllSongsData.length} Songs`}
                                     {' • '}
                                     {followers <= 1
                                         ? `${followers} Follower`
                                         : followers > 999
-                                          ? `${followers.toLocaleString()} Followers`
-                                          : `${followers} Followers`}
+                                            ? `${followers.toLocaleString()} Followers`
+                                            : `${followers} Followers`}
                                     {' • '}
                                     {!following
                                         ? '0 Following'
@@ -333,7 +333,7 @@ function ProfilePage() {
                                                 className="button group relative m-auto w-[200px] text-nowrap rounded-xl border-[2px] border-white py-3 text-center text-xs uppercase"
                                                 to="verify"
                                             >
-                                                Request Verify
+                                                Request Verification
                                                 <div className="button__bg absolute left-0 top-0 z-[-1] h-full w-full rounded-lg bg-gradient-to-r from-[#06DBAC] to-[#BD00FF] opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"></div>
                                             </Link>
                                         )}
