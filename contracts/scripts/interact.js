@@ -10,7 +10,7 @@ const ethers = require('ethers');
 const provider = new ethers.JsonRpcProvider(API_URI);
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
-const contractAddress = '0xc363773e88cdf35331d16cd4b6cf2609f9b46d50';
+const contractAddress = process.env.CONTRACT_ADDR;
 const contractInstance = new ethers.Contract(
     contractAddress,
     contract.abi,
