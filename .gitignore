@@ -127,6 +127,7 @@ dist
 .pnp.*
 
 node_modules
+build
 .env
 
 # Hardhat files

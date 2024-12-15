@@ -485,7 +485,7 @@ const get_following_list_by_id = async (req, res) => {
 const get_popular_albums = async (req, res) => {
     try {
         const users = await UserModel.find({ isVerified: true });
-        albums = [];
+        let albums = [];
         for (let i = 0; i < users.length; i++) {
             if (users[i].playlist.length > 0) {
                 for (let idx = 0; idx < users[i].playlist.length; ++idx) {
